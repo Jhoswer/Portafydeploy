@@ -1,0 +1,111 @@
+/* ============================================================
+   src/styles/components/admin/adminSearchBar.css
+   Barra de búsqueda del panel admin.
+   Misma forma visual que SearchInput del sistema de búsqueda.
+   ============================================================ */
+
+.adm-searchbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* ── Input pill ── */
+.adm-searchbar__input-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.adm-searchbar__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted, #9ca3af);
+  pointer-events: none;
+  transition: color var(--ease, 0.15s);
+}
+
+.adm-searchbar__input-wrap:focus-within .adm-searchbar__icon {
+  color: var(--color-red, #c62525);
+}
+
+.adm-searchbar__input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  font-size: 13.5px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1.5px solid var(--color-border, #d0d9e8);
+  background: var(--color-white, #fff);
+  color: var(--text-primary, #0c2140);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  transition: border-color var(--ease, 0.15s), box-shadow var(--ease, 0.15s);
+}
+
+.adm-searchbar__input::placeholder {
+  color: var(--text-muted, #9ca3af);
+}
+
+.adm-searchbar__input:hover {
+  border-color: rgba(198, 37, 37, 0.35);
+}
+
+.adm-searchbar__input:focus {
+  border-color: rgba(198, 37, 37, 0.6);
+  box-shadow: 0 0 0 3px rgba(198, 37, 37, 0.10);
+}
+
+/* ── Botón filtros ── */
+.adm-searchbar__filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1.5px solid var(--color-border, #d0d9e8);
+  background: var(--color-white, #fff);
+  color: var(--text-primary, #1a3a6b);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--ease, 0.15s);
+}
+
+.adm-searchbar__filter-btn:hover {
+  border-color: rgba(198, 37, 37, 0.4);
+  color: var(--color-red, #c62525);
+}
+
+.adm-searchbar__filter-btn--open {
+  background: rgba(198, 37, 37, 0.07);
+  border-color: rgba(198, 37, 37, 0.4);
+  color: var(--color-red, #c62525);
+}
+
+/* Badge contador de filtros activos */
+.adm-searchbar__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 9999px;
+  background: var(--color-red, #c62525);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Flecha del botón de filtros */
+.adm-searchbar__chevron--open {
+  transform: rotate(180deg);
+  transition: transform 0.2s;
+}

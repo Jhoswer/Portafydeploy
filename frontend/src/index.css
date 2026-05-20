@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Manrope:wght@400;500;600&display=swap');
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@import "./styles/Globals.css";
+@import "./styles/Variables.css";
+@import "./styles/Utilities.css";
+
+@import "./styles/components/landing/Navbar.css";
+@import "./styles/components/landing/AuthTopbar.css";
+@import "./styles/components/landing/Hero.css"; 
+@import "./styles/components/landing/Feature.css";
+@import "./styles/components/landing/CtaSection.css";
+@import "./styles/components/landing/HowItWorks.css"; 
+@import "./styles/components/landing/Footer.css";
+@import "./styles/components/notifications/Notifications.css";
+
+@import "./styles/components/ui/Button.css";
+
+@import "./styles/components/auth/Auth.css";
+@import "./styles/components/auth/Login.css";
+
+@import "./styles/components/dashboard/DashboardShell.css";
+
+@import "./styles/components/feed/Feed.css";
+@import "./styles/components/feed/LeftSidebar.css";
+@import "./styles/components/feed/RightSidebar.css";
+@import "./styles/components/feed/Layout.css";
+@import "./styles/components/feed/SavedPage.css";
+
+@import "./styles/components/search/search-card.css";
+@import "./styles/components/recruiter/RecruiterLayout.css";
+
+/* ── Admin panel — base ── */
+@import "./styles/components/admin/LeftSidebarAdmin.css";
+@import "./styles/components/admin/RightSidebarAdmin.css";
+@import "./styles/components/admin/Adminfeed.css";
+@import "./styles/components/admin/Adminsearchbar.css";
+@import "./styles/components/admin/Adminfilterbar.css";
+@import "./styles/components/admin/Reportcard.css";
+@import "./styles/components/admin/Adminreports.css";
+
+/* ── Admin panel — módulo Reportes ── */
+@import "./styles/components/admin/components/Report/ReportOpen.css";
+
+/* ── Admin panel — módulo Sugerencias ── */
+@import "./styles/components/admin/components/Sugerencias/SugerenciaCard.css";
+@import "./styles/components/admin/components/Sugerencias/SugerenciaOpen.css";
+
+@import "./styles//components/ui/ThemeToggle.css";
+@import "./styles/components/recruiter/RecruiterLayout.css";
+@import "./styles/components/recruiter/CompanyHeader.css";
+@import "./styles/components/recruiter/JobPostCard.css";
+@import "./styles/components/recruiter/CompanyAboutCard.css";
+@import "./styles/components/recruiter/CompanyContactCard.css";
+@import "./styles/components/recruiter/EmpresaPerfil.css";
+@import "./styles/components/recruiter/DashboardCompany.css";
+@import "./styles/components/recruiter/MisConvocatorias.css";
+@import "./styles/components/recruiter/NewConvocatory.css";
+@import "./styles/components/recruiter/convocatory/AudienceModal.css";
+@import "./styles/components/recruiter/Postulantesconvocatoria.css";
+
+@import "./styles/components/recruiter/ProfileTabs.css";
+@import "./styles/components/recruiter/CompanyProfile.css";
+@import "./styles/components/recruiter/CompanyInfo.css";
+
+@import "./styles/components/admin/components/Edicion/Edicion.css";
+@import "./styles/components/admin/components/Edicion/EdicionPanel.css";
+@import "./styles/components/admin/components/Edicion/EdicionModalesTablas.css";

@@ -1,0 +1,234 @@
+/* ══════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════ */
+
+.pf-hero {
+  position: relative;
+  min-height: calc(100vh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding lateral fijo — no depende del zoom */
+  padding: clamp(40px, 6vw, 80px) 24px 64px;
+  overflow: hidden;
+}
+
+/* ── Contenedor principal ─────────────────────── */
+.pf-hero__inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  /* mismo max-width que el resto de secciones */
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* ── Blobs decorativos ────────────────────────── */
+.pf-hero__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.pf-hero__blob--1 {
+  top: -160px;
+  right: -120px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(232,72,74,.07) 0%, transparent 70%);
+}
+
+.pf-hero__blob--2 {
+  bottom: -80px;
+  left: -180px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(162,214,249,.22) 0%, transparent 70%);
+}
+
+/* ── Grid lines ───────────────────────────────── */
+.pf-hero__grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(162,214,249,.25) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ── Texto ────────────────────────────────────── */
+.pf-hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pf-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  background: rgba(255,255,255,.75);
+  border: 1.5px solid rgba(162,214,249,.40);
+  border-radius: 999px;
+  padding: 6px 16px;
+  width: fit-content;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.pf-hero__title {
+  font-weight: 900;
+  font-size: clamp(36px, 4.5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  color: var(--text);
+}
+
+.pf-hero__subtitle {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--body);
+  max-width: 480px;
+}
+
+.pf-hero__actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ── Social proof ─────────────────────────────── */
+.pf-hero__proof {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pf-hero__avatars {
+  display: flex;
+}
+
+.pf-hero__av {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,.85);
+  background: linear-gradient(135deg, #8BC6EC, #9599E2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  margin-left: -10px;
+}
+
+.pf-hero__av:first-child {
+  margin-left: 0;
+}
+
+.pf-hero__proof-text {
+  font-size: 14px;
+  color: var(--body);
+}
+
+.pf-hero__proof-text strong {
+  color: var(--text);
+}
+
+/* ── Visual / slider ──────────────────────────── */
+.pf-hero__visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pf-hero__slider-wrap {
+  width: 100%;
+  /* altura fija — no crece con el zoom */
+  height: 420px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(14,30,60,.14);
+  border: 1px solid rgba(162,214,249,.30);
+  background: #f0f6ff;
+}
+
+/* ── ImageSlider ──────────────────────────────── */
+.pf-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.pf-slider__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.pf-slider__img--active {
+  opacity: 1;
+}
+
+/* Dots */
+.pf-slider__dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.pf-slider__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.5);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.pf-slider__dot--active {
+  background: #fff;
+  transform: scale(1.3);
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 1024px) {
+  .pf-hero__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-hero__visual {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .pf-hero {
+    padding: 52px 16px 64px;
+  }
+
+  .pf-hero__title {
+    font-size: 36px;
+    letter-spacing: -1px;
+  }
+}

@@ -1,0 +1,130 @@
+/* ============================================================
+   src/styles/Login.css
+   Estilos del módulo Login. Todas las clases llevan prefijo
+   "login-" para que nunca colisionen con otros módulos.
+   Usa las variables de Variables.css — nunca colores hardcoded.
+   Importar una sola vez en Login.jsx o en main.jsx.
+   ============================================================ */
+
+/* ── Banner de error general ────────────────────────────── */
+.login-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+
+  color: var(--color-red);
+  background: var(--color-red-soft);
+  border: 1px solid rgba(232, 72, 74, .18);
+  border-radius: var(--radius-m);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+/* ── Forgot password link ───────────────────────────────── */
+.login-forgot {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-blue-mid);
+  transition: color var(--ease), opacity var(--ease);
+}
+
+.login-forgot:hover {
+  color: var(--color-accent);
+  opacity: 0.85;
+}
+
+/* ── Link "Registrarse" en el footer ────────────────────── */
+.login-switch-link {
+  font-weight: 500;
+  color: #3b82f6;
+  transition: color var(--ease);
+}
+
+.login-switch-link:hover {
+  color: #2563eb;
+}
+
+/* ── Botón submit ───────────────────────────────────────── */
+.login-submit {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+
+  color: #fff;
+  background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
+  border: none;
+  border-radius: var(--radius-m);
+  cursor: pointer;
+
+  box-shadow: 0 2px 12px rgba(59, 130, 246, .30);
+  transition: opacity var(--ease), box-shadow var(--ease);
+}
+
+.login-submit:hover:not(:disabled) {
+  opacity: 0.92;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, .40);
+}
+
+.login-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Spinner dentro del botón ───────────────────────────── */
+.login-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, .30);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: login-spin 0.7s linear infinite;
+}
+
+@keyframes login-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   DARK MODE
+   Activa añadiendo class="dark" en <html>.
+   ============================================================ */
+
+.dark .login-error-banner {
+  background: rgba(232, 72, 74, .15);
+  border-color: rgba(232, 72, 74, .25);
+}
+
+.dark .login-forgot {
+  color: var(--color-blue-light);
+}
+
+.dark .login-forgot:hover {
+  color: #fff;
+  opacity: 1;
+}
+
+.dark .login-switch-link {
+  color: #60a5fa;
+}
+
+.dark .login-switch-link:hover {
+  color: #93c5fd;
+}
+
+.dark .login-submit {
+  box-shadow: 0 2px 12px rgba(59, 130, 246, .20);
+}

@@ -1,0 +1,185 @@
+/* ============================================================
+   src/styles/SidebarRight.css
+   Estilos del sidebar derecho: sugerencias de conexión,
+   recursos, card-title y section-divider compartidos.
+   ============================================================ */
+
+/* ── Contenedor ───────────────────────────────────────────── */
+.sidebar-right {
+  width: 236px;
+  flex-shrink: 0;
+  top: 80px;
+}
+
+/* ── Títulos de card ──────────────────────────────────────── */
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+  letter-spacing: -0.2px;
+}
+
+/* ── Divisor interno ──────────────────────────────────────── */
+.section-divider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 14px 0;
+}
+
+/* ── Suggestion items ─────────────────────────────────────── */
+.suggestion-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.suggestion-item:hover {
+  background: rgba(162, 214, 249, 0.12);
+  border-color: rgba(162, 214, 249, 0.28);
+  transform: translateX(2px);
+}
+
+.suggestion-item:focus-visible {
+  outline: 3px solid rgba(96, 165, 250, 0.25);
+  outline-offset: 2px;
+}
+
+.suggestion-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  transition: transform 0.16s ease;
+}
+
+.suggestion-item:hover .suggestion-avatar {
+  transform: scale(1.04);
+}
+
+.suggestion-avatar-img {
+  object-fit: cover;
+  background: #eaf4ff;
+}
+
+.sug-a,
+.sug-1 { background: #1e40af; }
+.sug-b,
+.sug-2 { background: #6d28d9; }
+.sug-c,
+.sug-3 { background: #0f766e; }
+
+.suggestion-info { flex: 1; min-width: 0; }
+
+.suggestion-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-role {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.connect-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(239, 246, 255, 0.95);
+  color: #1d4ed8;
+  border: 1px solid rgba(147, 197, 253, 0.6);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+
+.suggestion-item:hover .connect-btn {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
+
+.suggestion-loading,
+.suggestion-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.suggestion-loading svg {
+  animation: feed-sidebar-spin 0.9s linear infinite;
+}
+
+@keyframes feed-sidebar-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Resource items ───────────────────────────────────────── */
+.resource-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s, transform 0.15s;
+}
+
+.resource-item:hover {
+  background: var(--bg);
+  transform: translateX(2px);
+}
+
+.resource-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 15px;
+}
+
+.res-blue   { background: var(--blue-light);   }
+.res-violet { background: var(--violet-light); }
+.res-teal   { background: var(--teal-light);   }
+
+.resource-label { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+.resource-sub   { font-size: 11px;   color: var(--text-muted); }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar-right { display: none; }
+}

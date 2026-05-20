@@ -1,0 +1,225 @@
+/* ============================================================
+   src/styles/components/recruiter/CompanyContactCard.css
+   ============================================================ */
+
+/* ── Card ─────────────────────────────────────────────────── */
+.contact-card {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--ease), background var(--ease);
+}
+
+.contact-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.contact-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid rgba(205, 225, 245, 0.4);
+}
+
+.contact-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-title);
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+.contact-card__edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  color: var(--color-muted-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--ease);
+  padding: 0;
+}
+
+.contact-card__edit-btn:hover {
+  color: var(--color-text);
+}
+
+.contact-card__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contact-card__cancel-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  color: var(--color-muted-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--ease);
+  padding: 0;
+}
+
+.contact-card__cancel-btn:hover { color: var(--color-text); }
+.contact-card__cancel-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Body ─────────────────────────────────────────────────── */
+.contact-card__body {
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Error ────────────────────────────────────────────────── */
+.contact-card__error {
+  font-size: 12px;
+  color: var(--color-red);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ── Filas de contacto ────────────────────────────────────── */
+.contact-card__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-card__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--color-body);
+  font-family: var(--font-body);
+}
+
+.contact-card__row-icon {
+  color: var(--color-muted-text);
+  flex-shrink: 0;
+}
+
+.contact-card__empty {
+  font-style: italic;
+  color: var(--color-muted-text);
+  opacity: 0.7;
+}
+
+.contact-card__link {
+  color: var(--color-blue-mid);
+  transition: color var(--ease);
+}
+
+.contact-card__link:hover {
+  color: var(--color-red);
+}
+
+/* ── Inputs ───────────────────────────────────────────────── */
+.contact-card__input-group {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.contact-card__input {
+  flex: 1;
+  border-radius: var(--radius-m);
+  border: 1.5px solid rgba(162, 214, 249, 0.55);
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.contact-card__input::placeholder {
+  color: var(--color-muted-text);
+  opacity: 0.6;
+}
+
+.contact-card__input:focus {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px var(--color-red-soft);
+}
+
+.contact-card__input--prefix {
+  flex: none;
+  width: 64px;
+}
+
+/* ── Redes sociales ───────────────────────────────────────── */
+.contact-card__social-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  margin: 0 0 8px;
+}
+
+.contact-card__social-row {
+  display: flex;
+  gap: 10px;
+}
+
+.contact-card__social-link {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-section-alt);
+  color: var(--color-body);
+  border: 1px solid rgba(162, 214, 249, 0.30);
+  transition: background var(--ease), color var(--ease), border-color var(--ease);
+}
+
+.contact-card__social-link:hover {
+  background: rgba(162, 214, 249, 0.30);
+  color: var(--color-text);
+  border-color: rgba(162, 214, 249, 0.55);
+}
+
+/* ── Dark mode ────────────────────────────────────────────── */
+.dark .contact-card {
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .contact-card__header {
+  border-bottom-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .contact-card__input {
+  border-color: rgba(162, 214, 249, 0.15);
+}
+
+.dark .contact-card__input:focus {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(232, 72, 74, .15);
+}
+
+.dark .contact-card__social-link {
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .contact-card__social-link:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(162, 214, 249, 0.15);
+}

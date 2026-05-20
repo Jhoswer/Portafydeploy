@@ -1,0 +1,408 @@
+/* ============================================================
+   src/styles/components/recruiter/RecruiterLayout.css
+   ============================================================ */
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.page-wrapper {
+  min-height: 100vh;
+}
+
+/* ── Layout principal ─────────────────────────────────────── */
+.layoutrecruiter {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 120px 16px 48px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+/* ── Feed central ─────────────────────────────────────────── */
+.feed {
+  flex: 1;
+  min-width: 0;
+  max-width: 660px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Sidebars fijos ───────────────────────────────────────── */
+.sidebar-left,
+.sidebar-right {
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sidebar-left  { width: 252px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+.sidebar-right { width: 236px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+
+.sidebar-left::-webkit-scrollbar,
+.sidebar-right::-webkit-scrollbar { display: none; }
+
+/* ── Card base ────────────────────────────────────────────── */
+.card {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--ease), background var(--ease), border-color var(--ease);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card-body {
+  padding: 18px;
+}
+
+/* ── Card title ───────────────────────────────────────────── */
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 14px;
+  letter-spacing: -0.2px;
+  font-family: var(--font-title);
+}
+
+.section-divider {
+  height: 1px;
+  background: rgba(162, 214, 249, 0.25);
+  margin: 14px 0;
+}
+
+/* ── Recruiter layout ─────────────────────────────────────── */
+.recruiter-layout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.recruiter-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Sidebar reclutador ───────────────────────────────────── */
+.sidebar-left.recruiter {
+  width: 240px;
+  min-width: 240px;
+  transition: width 0.25s ease, min-width 0.25s ease;
+}
+
+.sidebar-left.recruiter.collapsed {
+  width: 64px;
+  min-width: 64px;
+}
+
+/* ── Toggle button ────────────────────────────────────────── */
+.sidebar-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted-text);
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--color-bg-section-alt);
+  color: var(--color-text);
+}
+
+/* ── Panel card title ─────────────────────────────────────── */
+.sidebar-left.recruiter .panel-card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sidebar-left.recruiter.collapsed .panel-card-title {
+  justify-content: center;
+}
+
+/* ── Section header ───────────────────────────────────────── */
+.recruiter-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sidebar-left.recruiter.collapsed .recruiter-section-header {
+  justify-content: center;
+  cursor: default;
+}
+
+.recruiter-section-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.55px;
+  text-transform: uppercase;
+  color: var(--color-muted-text);
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  max-height: 24px;
+  transition: opacity 0.18s, max-height 0.22s;
+  font-family: var(--font-ui);
+}
+
+.sidebar-left.recruiter.collapsed .recruiter-section-title {
+  opacity: 0;
+  max-height: 0;
+}
+
+.recruiter-chevron {
+  color: var(--color-muted-text);
+  flex-shrink: 0;
+  opacity: 1;
+  transition: opacity 0.18s;
+}
+
+.sidebar-left.recruiter.collapsed .recruiter-chevron {
+  opacity: 0;
+}
+
+/* ── Badge ────────────────────────────────────────────────── */
+.recruiter-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  background: rgba(136, 135, 128, 0.12);
+  color: var(--color-muted-text);
+}
+
+.resource-item.active .recruiter-badge {
+  background: rgba(229, 57, 53, 0.12);
+  color: var(--color-red);
+}
+
+/* ── Collapsed states ─────────────────────────────────────── */
+.sidebar-left.recruiter.collapsed .card-title:not(.panel-card-title) {
+  opacity: 0;
+  max-height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+.sidebar-left.recruiter .resource-item.collapsed {
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.sidebar-left.recruiter .resource-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sidebar-left.recruiter.collapsed .resource-item .resource-text {
+  display: none;
+}
+
+/* ── Misc ─────────────────────────────────────────────────── */
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-bg-section-alt);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-blue-soft);
+  color: var(--color-blue-mid);
+  font-size: 12px;
+  margin-right: 6px;
+}
+
+.feed--search { max-width: 1000px; }
+.page-search .layout { padding-top: 0; }
+.search-header { padding: 18px; }
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .sidebar-right { display: none; }
+  .feed { max-width: 100%; }
+}
+
+@media (max-width: 900px) {
+  .sidebar-left.recruiter {
+    width: 64px;
+    min-width: 64px;
+  }
+  .sidebar-left.recruiter .resource-item .resource-text {
+    display: none;
+  }
+  .sidebar-left.recruiter .recruiter-section-title {
+    opacity: 0;
+    max-height: 0;
+  }
+  .sidebar-left.recruiter .recruiter-chevron {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .recruiter-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .sidebar-left.recruiter {
+    position: sticky;
+    top: 64px;
+    z-index: 40;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-height: none;
+    overflow-y: visible;
+    overflow-x: auto;
+    flex-direction: row !important;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--color-white);
+    border-bottom: 1px solid rgba(205, 225, 245, 0.7);
+    box-shadow: var(--shadow-sm);
+    border-radius: 0;
+  }
+
+  .sidebar-left.recruiter .card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .sidebar-left.recruiter .card-body {
+    padding: 0;
+    display: flex;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .sidebar-left.recruiter .recruiter-section-title,
+  .sidebar-left.recruiter .recruiter-section-header,
+  .sidebar-left.recruiter .card-title {
+    display: none;
+  }
+
+  .sidebar-left.recruiter .resource-item {
+    flex-direction: column !important;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    gap: 3px;
+    min-width: 60px;
+    border-radius: 10px;
+  }
+
+  .sidebar-left.recruiter .resource-item .resource-text {
+    display: flex !important;
+  }
+
+  .sidebar-left.recruiter .resource-label {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .recruiter-content {
+    width: 100%;
+    padding: 0;
+  }
+
+  .layoutrecruiter {
+    padding: 80px 12px 48px;
+    flex-direction: column;
+  }
+
+  .sidebar-left:not(.recruiter) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .layoutrecruiter {
+    padding: 72px 8px 40px;
+  }
+  .sidebar-left.recruiter {
+    padding: 8px;
+    gap: 4px;
+  }
+  .sidebar-left.recruiter .resource-item {
+    min-width: 52px;
+    padding: 5px 8px;
+  }
+  .sidebar-left.recruiter .resource-label {
+    font-size: 9px;
+  }
+}
+
+
+/* ============================================================
+   DARK MODE
+   Solo los rgba() que no pueden resolverse con variables.
+   El resto (textos, fondos, cards) lo manejan las variables
+   de Variables.css automaticamente.
+   ============================================================ */
+
+.dark .card {
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .card:hover {
+  border-color: rgba(162, 214, 249, 0.14);
+}
+
+.dark .section-divider {
+  background: rgba(162, 214, 249, 0.08);
+}
+
+.dark .recruiter-badge {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.dark .resource-item.active .recruiter-badge {
+  background: rgba(232, 72, 74, 0.18);
+}
+
+@media (max-width: 768px) {
+  .dark .sidebar-left.recruiter {
+    border-bottom-color: rgba(162, 214, 249, 0.08);
+  }
+}

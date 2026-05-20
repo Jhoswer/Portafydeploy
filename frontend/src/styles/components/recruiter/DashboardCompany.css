@@ -1,0 +1,412 @@
+/* ============================================================
+   src/styles/components/recruiter/DashboardCompany.css
+   ============================================================ */
+
+/* ── Root ─────────────────────────────────────────────────── */
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--font-ui);
+}
+
+/* ── Skeleton ─────────────────────────────────────────────── */
+@keyframes dash-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.dash-skeleton {
+  background: rgba(162, 214, 249, 0.25);
+  border-radius: var(--radius-m);
+  animation: dash-pulse 1.5s ease-in-out infinite;
+}
+
+.dash-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.dash-skeleton-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ── Banner ───────────────────────────────────────────────── */
+.dash-banner {
+  background: linear-gradient(135deg, #0d1f3c 0%, #1a3560 60%, #1e4080 100%);
+  border-radius: var(--radius-l);
+  padding: 22px 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.025) 0px,
+    rgba(255,255,255,0.025) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+}
+
+.dash-banner__eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #7dd3fc;
+  margin-bottom: 6px;
+  font-family: var(--font-ui);
+}
+
+.dash-banner__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f0f9ff;
+  margin-bottom: 5px;
+  font-family: var(--font-title);
+}
+
+.dash-banner__sub {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.5;
+  font-family: var(--font-body);
+}
+
+.dash-banner__highlight {
+  color: #bae6fd;
+  font-weight: 600;
+}
+
+.dash-banner__btn {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-ui);
+  padding: 9px 18px;
+  border-radius: var(--radius-m);
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.10);
+  color: #f0f9ff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--ease), border-color var(--ease);
+  position: relative;
+}
+
+.dash-banner__btn:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.28);
+}
+
+/* ── Stats grid ───────────────────────────────────────────── */
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .dash-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+.dash-stat {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-m);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: box-shadow var(--ease), transform var(--ease), background var(--ease);
+}
+
+.dash-stat:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.dash-stat__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-muted-text);
+  margin-bottom: 8px;
+  letter-spacing: 0.1px;
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+}
+
+.dash-stat__value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+  font-family: var(--font-title);
+}
+
+.dash-stat__badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
+}
+
+/* Colores de badges — pastel vivos */
+.dash-badge--blue  { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.dash-badge--amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+.dash-badge--green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+.dash-badge--gray  { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+.dash-badge--red   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+.dash-badge--violet{ background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+.dash-badge--teal  { background: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
+
+/* ── Dos columnas ─────────────────────────────────────────── */
+.dash-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .dash-two-col { grid-template-columns: 1fr; }
+}
+
+/* ── Card genérica ────────────────────────────────────────── */
+.dash-card {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-l);
+  padding: 18px;
+  transition: box-shadow var(--ease), background var(--ease);
+}
+
+.dash-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.dash-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.dash-card__title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-title);
+  margin: 0;
+}
+
+.dash-card__link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-blue-mid);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: color var(--ease);
+  padding: 0;
+}
+
+.dash-card__link:hover { color: var(--color-red); }
+
+.dash-card__empty {
+  font-size: 13px;
+  color: var(--color-muted-text);
+  text-align: center;
+  padding: 24px 0;
+  font-family: var(--font-body);
+}
+
+/* ── Lista convocatorias ──────────────────────────────────── */
+.dash-conv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.dash-conv-item {
+  border: 1px solid rgba(205, 225, 245, 0.5);
+  border-radius: var(--radius-s);
+  padding: 10px 13px;
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.dash-conv-item:hover {
+  background: var(--color-bg-section-alt);
+  border-color: rgba(162, 214, 249, 0.55);
+}
+
+.dash-conv-item__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.dash-conv-item__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+}
+
+.dash-conv-item__meta {
+  font-size: 11px;
+  color: var(--color-muted-text);
+  margin-top: 4px;
+  font-family: var(--font-body);
+}
+
+/* ── Lista candidatos ─────────────────────────────────────── */
+.dash-cand-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(205, 225, 245, 0.4);
+}
+
+.dash-cand-item:last-child { border-bottom: none; }
+
+.dash-cand-item__info { flex: 1; min-width: 0; }
+
+.dash-cand-item__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+}
+
+.dash-cand-item__role {
+  font-size: 11px;
+  color: var(--color-muted-text);
+  margin-top: 1px;
+  font-family: var(--font-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Avatar ───────────────────────────────────────────────── */
+.dash-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.dash-avatar--initials {
+  background: #dbeafe;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-ui);
+  border: 1px solid #bfdbfe;
+}
+
+/* ── Visibilidad ──────────────────────────────────────────── */
+.dash-vis {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-l);
+  padding: 18px;
+  transition: background var(--ease);
+}
+
+.dash-vis__title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-title);
+  margin: 0 0 14px;
+}
+
+.dash-vis__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 28px;
+}
+
+@media (max-width: 480px) {
+  .dash-vis__grid { grid-template-columns: 1fr; }
+}
+
+.dash-vis__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(205, 225, 245, 0.4);
+}
+
+.dash-vis__label {
+  font-size: 13px;
+  font-family: var(--font-body);
+  transition: color var(--ease);
+}
+
+.dash-vis__label--on  { color: var(--color-text); }
+.dash-vis__label--off { color: var(--color-muted-text); }
+
+.dash-vis__summary {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-ui);
+}
+
+.dash-vis__summary--on  { color: #15803d; }
+.dash-vis__summary--off { color: var(--color-muted-text); }
+
+/* ── Dark mode ────────────────────────────────────────────── */
+.dark .dash-stat        { border-color: rgba(162, 214, 249, 0.08); }
+.dark .dash-card        { border-color: rgba(162, 214, 249, 0.08); }
+.dark .dash-vis         { border-color: rgba(162, 214, 249, 0.08); }
+
+.dark .dash-conv-item   { border-color: rgba(162, 214, 249, 0.08); }
+.dark .dash-conv-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(162,214,249,0.16); }
+
+.dark .dash-cand-item   { border-bottom-color: rgba(162, 214, 249, 0.08); }
+.dark .dash-vis__row    { border-bottom-color: rgba(162, 214, 249, 0.08); }
+
+.dark .dash-badge--blue  { background: rgba(29,78,216,0.18);  color: #93c5fd; border-color: rgba(29,78,216,0.25);  }
+.dark .dash-badge--amber { background: rgba(180,83,9,0.18);   color: #fcd34d; border-color: rgba(180,83,9,0.25);   }
+.dark .dash-badge--green { background: rgba(21,128,61,0.18);  color: #86efac; border-color: rgba(21,128,61,0.25);  }
+.dark .dash-badge--gray  { background: rgba(71,85,105,0.18);  color: #94a3b8; border-color: rgba(71,85,105,0.25);  }
+.dark .dash-badge--red   { background: rgba(185,28,28,0.18);  color: #fca5a5; border-color: rgba(185,28,28,0.25);  }
+.dark .dash-badge--violet{ background: rgba(109,40,217,0.18); color: #c4b5fd; border-color: rgba(109,40,217,0.25); }
+.dark .dash-badge--teal  { background: rgba(15,118,110,0.18); color: #5eead4; border-color: rgba(15,118,110,0.25); }
+
+.dark .dash-avatar--initials {
+  background: rgba(29,78,216,0.18);
+  color: #93c5fd;
+  border-color: rgba(29,78,216,0.25);
+}
+
+.dark .dash-vis__summary--on { color: #86efac; }

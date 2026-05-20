@@ -1,0 +1,420 @@
+/* ============================================================
+   src/styles/components/recruiter/CompanyHeader.css
+   ============================================================ */
+
+.company-header {
+  position: relative;
+  margin-bottom: 24px;
+  border-radius: var(--radius-l);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: var(--color-white);
+  transition: box-shadow var(--ease);
+}
+
+/* ── Banner ───────────────────────────────────────────────── */
+.company-header__banner {
+  height: 128px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .company-header__banner { height: 160px; }
+}
+
+.company-header__banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.05);
+  transition: transform 500ms ease;
+}
+
+.company-header__banner:hover img {
+  transform: scale(1.10);
+}
+
+.company-header__banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.40), rgba(0,0,0,.10), transparent);
+}
+
+.company-header__banner-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0,0,0,.50);
+  border: 1px solid rgba(255,255,255,.20);
+  border-radius: var(--radius-s);
+  padding: 6px 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: background var(--ease), opacity var(--ease);
+}
+
+.company-header__banner:hover .company-header__banner-btn,
+.company-header__banner-btn.visible {
+  opacity: 1;
+}
+
+.company-header__banner-btn:hover {
+  background: rgba(0,0,0,.70);
+}
+
+/* ── Contenido ────────────────────────────────────────────── */
+.company-header__body {
+  padding: 0 24px 20px;
+  background: var(--color-surface);
+  backdrop-filter: blur(8px);
+  transition: background var(--ease);
+}
+
+/* ── Inner layout ─────────────────────────────────────────── */
+.company-header__inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.company-header__left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.company-header__info {
+  padding-top: 12px;
+  min-width: 0;
+}
+
+/* ── Avatar ───────────────────────────────────────────────── */
+.company-header__avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+@media (min-width: 768px) {
+  .company-header__avatar-wrap { margin-top: 5px; } 
+}
+
+.company-header__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 4px solid var(--color-white);
+  box-shadow: var(--shadow-md);
+  background: var(--color-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  overflow: hidden;
+  transition: border-color var(--ease);
+}
+
+@media (min-width: 768px) {
+  .company-header__avatar { width: 80px; height: 80px; }
+}
+
+.company-header__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.company-header__avatar-edit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.8);
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity var(--ease), transform var(--ease), background var(--ease);
+}
+
+.company-header__avatar-edit.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.company-header__avatar-edit:hover {
+  background: var(--color-muted);
+}
+
+/* ── Info textual ─────────────────────────────────────────── */
+.company-header__name {
+  font-family: var(--font-title);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.company-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+
+.company-header__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+}
+
+.company-header__meta-item a {
+  font-size: 13.5px;
+  color: var(--color-muted-text);
+  transition: color var(--ease);
+}
+
+.company-header__meta-item a:hover {
+  color: var(--color-red);
+}
+
+/* Meta line (vista de solo lectura) */
+.company-header__meta-line {
+  font-size: 13.5px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ── Follow row ───────────────────────────────────────────── */
+.company-header__follow-row {
+  margin-top: 8px;
+}
+
+/* ── Input inline ─────────────────────────────────────────── */
+.company-header__input {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--color-red);
+  color: var(--color-text);
+  font-size: 13.5px;
+  font-family: var(--font-body);
+  outline: none;
+  width: 100%;
+  padding-bottom: 2px;
+  transition: border-color var(--ease);
+}
+
+.company-header__input::placeholder {
+  color: var(--color-muted-text);
+}
+
+.company-header__input--name {
+  font-family: var(--font-title);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  border-bottom-width: 2px;
+}
+
+/* ── Hiring badge ─────────────────────────────────────────── */
+.company-header__hiring {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  color: #34d399;
+  background: rgba(52, 211, 153, .10);
+  border: 1px solid rgba(52, 211, 153, .22);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+}
+
+.company-header__hiring-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  animation: ch-pulse 2s infinite;
+}
+
+@keyframes ch-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── Suggestions dropdown ─────────────────────────────────── */
+.company-header__suggestions {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.8);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  z-index: 20;
+  box-shadow: var(--shadow-md);
+  min-width: 160px;
+}
+
+.company-header__suggestion-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--ease);
+}
+
+.company-header__suggestion-item:hover {
+  background: var(--color-bg-section-alt);
+}
+
+/* ── Error ────────────────────────────────────────────────── */
+.company-header__error {
+  font-size: 12px;
+  color: var(--color-red);
+  margin-top: 8px;
+  font-family: var(--font-body);
+}
+
+/* ── Actions (columna derecha) ────────────────────────────── */
+.company-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 42px; 
+  flex-shrink: 0;
+}
+
+/* ── Copied feedback ──────────────────────────────────────── */
+.company-header__copied {
+  font-size: 12px;
+  color: var(--color-success);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* ── Tabs de navegación ───────────────────────────────────── */
+.company-header__tabs {
+  display: flex;
+  border-top: 1px solid rgba(205, 225, 245, 0.6);
+  padding: 0 24px;
+}
+
+.company-header__tab {
+  padding: 14px 18px;
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  color: var(--color-muted-text);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color var(--ease), border-color var(--ease);
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.company-header__tab:hover {
+  color: var(--color-text);
+}
+
+.company-header__tab.active {
+  color: var(--color-red);
+  border-bottom-color: var(--color-red);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .company-header__body {
+    padding: 0 16px 16px;
+  }
+
+  .company-header__inner {
+    flex-direction: column;
+  }
+
+  .company-header__actions {
+    padding-top: 0;
+    width: 100%;
+  }
+
+  .company-header__tabs {
+    overflow-x: auto;
+    padding: 0 16px;
+    scrollbar-width: none;
+  }
+
+  .company-header__tabs::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Dark mode ────────────────────────────────────────────── */
+.dark .company-header {
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .company-header__avatar {
+  border-color: var(--color-white);
+}
+
+.dark .company-header__avatar-edit {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .company-header__suggestions {
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .company-header__suggestion-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .company-header__tabs {
+  border-top-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .company-header__tab {
+  color: var(--color-muted-text);
+}
+
+.dark .company-header__tab:hover {
+  color: var(--color-text);
+}

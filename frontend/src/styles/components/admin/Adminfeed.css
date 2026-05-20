@@ -1,0 +1,33 @@
+.admin-feed {
+  flex: 1;
+  min-width: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: transparent;
+  width: 100%;
+}
+
+/* ── Responsive: Pantallas medianas (1200px) ── */
+@media (max-width: 1200px) {
+  .admin-feed {
+    padding: 12px;
+  }
+}
+
+/* ── Responsive: Pantallas pequeñas (1024px) ── */
+@media (max-width: 1024px) {
+  .admin-feed {
+    padding: 8px;
+    gap: 12px;
+  }
+}
+
+/* ── Responsive: Tablets (768px) ── */
+@media (max-width: 768px) {
+  .admin-feed {
+    padding: 12px;
+    gap: 14px;
+  }
+}

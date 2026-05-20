@@ -1,0 +1,113 @@
+/* ============================================================
+   src/styles/components/ui/Button.css
+   ============================================================ */
+
+/* ── Base ───────────────────────────────────────────────── */
+.pf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius-pill);
+  padding: 10px 22px;
+  border: none;
+  transition: all var(--ease);
+  white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+
+.pf-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  pointer-events: none;
+}
+
+/* ── Variantes ──────────────────────────────────────────── */
+.pf-btn--red {
+  background: linear-gradient(135deg, #ef5759 0%, var(--color-red) 50%, #d53638 100%);
+  color: #fff;
+  box-shadow: var(--shadow-red), 0 2px 6px rgba(0,0,0,.10);
+}
+.pf-btn--red:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 40px var(--color-red-glow), 0 4px 12px rgba(0,0,0,.12);
+  background: linear-gradient(135deg, #f46365 0%, #e84849 50%, #c73032 100%);
+}
+.pf-btn--red:active { transform: translateY(0) scale(.99); }
+
+.pf-btn--ghost {
+  background: rgba(255,255,255,.80);
+  backdrop-filter: blur(8px);
+  color: var(--color-text);
+  border: 1.5px solid rgba(162,214,249,.55);
+  box-shadow: var(--shadow-xs);
+}
+.pf-btn--ghost:hover {
+  background: rgba(255,255,255,.95);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: rgba(162,214,249,.80);
+}
+
+.pf-btn--glass {
+  background: rgba(255,255,255,.20);
+  backdrop-filter: blur(12px);
+  color: var(--color-text);
+  border: 1.5px solid rgba(255,255,255,.55);
+}
+.pf-btn--glass:hover {
+  background: rgba(255,255,255,.35);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.pf-btn--outline {
+  background: transparent;
+  border: 1.5px solid rgba(162,214,249,.55);
+  color: var(--color-text);
+}
+.pf-btn--outline:hover {
+  background: var(--color-bg-section-alt);
+  border-color: rgba(162,214,249,.80);
+}
+
+/* ── Tamaños ────────────────────────────────────────────── */
+.pf-btn--sm   { font-size: 13px; padding: 8px 18px; }
+.pf-btn--lg   { font-size: 15px; padding: 13px 28px; }
+.pf-btn--xl   { font-size: 16px; padding: 16px 40px; letter-spacing: -.2px; }
+.pf-btn--full { width: 100%; }
+
+/* ── Dark mode ──────────────────────────────────────────── */
+.dark .pf-btn--ghost {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(162,214,249,.15);
+  color: var(--color-text);
+}
+.dark .pf-btn--ghost:hover {
+  background: rgba(255,255,255,.10);
+  border-color: rgba(162,214,249,.28);
+}
+
+.dark .pf-btn--glass {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.12);
+}
+.dark .pf-btn--glass:hover {
+  background: rgba(255,255,255,.11);
+}
+
+.dark .pf-btn--outline {
+  border-color: rgba(162,214,249,.15);
+  color: var(--color-text);
+}
+.dark .pf-btn--outline:hover {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(162,214,249,.28);
+}

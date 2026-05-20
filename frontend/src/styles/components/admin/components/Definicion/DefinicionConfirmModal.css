@@ -1,0 +1,232 @@
+/* ============================================================
+   src/styles/components/admin/components/DefinicionConfirmModal.css
+   ============================================================ */
+
+/* ── Backdrop ── */
+.dcm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 15, 31, 0.58);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1400;
+  animation: dcm-bg-in 0.2s ease both;
+}
+
+@keyframes dcm-bg-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal ── */
+.dcm-modal {
+  position: relative;
+  width: min(100%, 460px);
+  background: #ffffff;
+  border: 1px solid rgba(208, 217, 232, 0.9);
+  border-radius: 22px;
+  box-shadow: 0 32px 80px rgba(12, 33, 64, 0.26);
+  padding: 28px 26px 22px;
+  animation: dcm-modal-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes dcm-modal-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* ── Botón cerrar ── */
+.dcm-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 999px;
+  background: #f3f6fb;
+  color: #28405f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+
+.dcm-close:hover:not(:disabled) {
+  background: #e6edf7;
+  color: #0c2140;
+}
+
+.dcm-close:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── Icono ── */
+.dcm-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff7e6 0%, #ffedd5 100%);
+  color: #c2410c;
+  border: 1.5px solid #fed7aa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+/* ── Textos ── */
+.dcm-title {
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0c2140;
+  line-height: 1.25;
+  padding-right: 32px; /* evita solaparse con el cierre */
+}
+
+.dcm-text {
+  margin: 0 0 10px;
+  font-size: 0.93rem;
+  color: #40546d;
+  line-height: 1.6;
+}
+
+.dcm-text--secondary {
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.dcm-text strong {
+  color: #0c2140;
+  font-weight: 700;
+}
+
+/* ── Resumen de campos ── */
+.dcm-summary {
+  margin-top: 16px;
+  border: 1px solid #e8eef6;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fafbfd;
+}
+
+.dcm-summary__title {
+  margin: 0;
+  padding: 9px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  border-bottom: 1px solid #e8eef6;
+  background: #f3f6fb;
+}
+
+.dcm-summary__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dcm-summary__item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px;
+  border-bottom: 1px dashed #eef2f8;
+  font-size: 0.85rem;
+}
+
+.dcm-summary__item:last-child { border-bottom: none; }
+
+.dcm-summary__label {
+  color: #64748b;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.dcm-summary__value {
+  font-weight: 700;
+  color: #1e293b;
+  text-align: right;
+  word-break: break-word;
+  max-width: 220px;
+}
+
+.dcm-summary__empty {
+  font-weight: 400;
+  color: #b0bac8;
+  font-style: italic;
+}
+
+/* ── Acciones ── */
+.dcm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+/* ── Botones ── */
+.dcm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 120px;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 11px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+              background 0.18s ease, border-color 0.18s ease;
+}
+
+.dcm-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.dcm-btn:active:not(:disabled) { transform: scale(0.97); }
+.dcm-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Cancelar */
+.dcm-btn--cancel {
+  background: #f8fafc;
+  color: #1e293b;
+  border-color: #dbe4f0;
+}
+.dcm-btn--cancel:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #c8d6e8;
+}
+
+/* Confirmar */
+.dcm-btn--confirm {
+  background: var(--color-red, #c62525);
+  color: #fff;
+  border-color: var(--color-red, #c62525);
+  box-shadow: 0 8px 20px rgba(198, 37, 37, 0.24);
+}
+.dcm-btn--confirm:hover:not(:disabled) {
+  background: #a81e1e;
+  border-color: #a81e1e;
+  box-shadow: 0 12px 28px rgba(198, 37, 37, 0.32);
+}
+
+/* ── Responsive ── */
+@media (max-width: 520px) {
+  .dcm-modal {
+    padding: 22px 18px 18px;
+    border-radius: 18px;
+  }
+
+  .dcm-actions {
+    flex-direction: column-reverse;
+  }
+
+  .dcm-btn { width: 100%; }
+}

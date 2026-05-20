@@ -1,0 +1,97 @@
+/* ───────────── SECCIÓN BASE ───────────── */
+.pf-features {
+  padding: 100px 0;
+  background: transparent;
+  position: relative;
+}
+
+/* ───────────── GRID ───────────── */
+.pf-features__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+/* ───────────── CARD ───────────── */
+.pf-fcard {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 24px;
+  border: 1px solid #eef2f7;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover elegante */
+.pf-fcard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+}
+
+/* Glow suave al hover */
+.pf-fcard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(30,150,252,0.08), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pf-fcard:hover::before {
+  opacity: 1;
+}
+
+/* ───────────── ICONO ───────────── */
+.pf-fcard__icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+
+  background: linear-gradient(135deg, #072AC8, #1E96FC);
+  color: white;
+
+  box-shadow: 0 10px 20px rgba(30,150,252,0.25);
+}
+
+.pf-fcard__icon {
+  stroke-width: 2;
+}
+
+/* ───────────── TEXTO ───────────── */
+.pf-fcard__title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #0c2140;
+  margin-bottom: 10px;
+}
+
+.pf-fcard__desc {
+  font-size: 14px;
+  color: #6b7a90;
+  line-height: 1.6;
+}
+
+/* ───────────── EFECTO BORDE ACTIVO ───────────── */
+.pf-fcard:hover {
+  border-color: rgba(30,150,252,0.3);
+}
+
+/* ───────────── RESPONSIVE ───────────── */
+@media (max-width: 1024px) {
+  .pf-features__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .pf-features__grid {
+    grid-template-columns: 1fr;
+  }
+}

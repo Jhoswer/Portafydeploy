@@ -1,0 +1,747 @@
+/* ============================================================
+   AudienceModal.css
+   Incluye también los estilos de la píldora de audiencia
+   que vive dentro de NewConvocatory.
+   ============================================================ */
+
+/* ── Píldora de audiencia (dentro del composer) ─────────── */
+.new-conv__author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.new-conv__audience-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(205, 225, 245, 0.7);
+  background: var(--color-bg-section-alt);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-ui);
+  color: var(--color-body);
+  width: fit-content;
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.new-conv__audience-pill:hover {
+  background: rgba(232, 72, 74, 0.08);
+  border-color: rgba(232, 72, 74, 0.22);
+}
+
+.dark .new-conv__audience-pill {
+  border-color: rgba(162, 214, 249, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Overlay ──────────────────────────────────────────────── */
+.aud-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  animation: aud-fade 0.15s ease;
+}
+
+@keyframes aud-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal ────────────────────────────────────────────────── */
+.aud-modal {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(205, 225, 245, 0.5);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  animation: aud-up 0.18s ease;
+}
+
+@keyframes aud-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.aud-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(205, 225, 245, 0.5);
+}
+
+.aud-back-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-bg-section-alt);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-body);
+  flex-shrink: 0;
+  transition: background var(--ease);
+}
+
+.aud-back-btn:hover {
+  background: rgba(162, 214, 249, 0.25);
+}
+
+.aud-header-text h2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  margin: 0;
+}
+
+.aud-header-text p {
+  font-size: 12px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+  margin: 2px 0 0;
+}
+
+/* ── Lista de opciones ────────────────────────────────────── */
+.aud-list {
+  padding: 6px 0;
+}
+
+.aud-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: background var(--ease);
+}
+
+.aud-item:hover,
+.aud-item--selected {
+  background: rgba(232, 72, 74, 0.06);
+}
+
+.aud-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aud-text { flex: 1; }
+
+.aud-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+}
+
+.aud-sub {
+  font-size: 12px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+  margin-top: 2px;
+}
+
+/* Radio */
+.aud-radio {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(162, 214, 249, 0.6);
+  flex-shrink: 0;
+  transition: all var(--ease);
+  position: relative;
+}
+
+.aud-radio--checked {
+  background: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.aud-radio--checked::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.aud-footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(205, 225, 245, 0.5);
+}
+
+.aud-btn-done {
+  width: 100%;
+  padding: 11px;
+  border-radius: var(--radius-m);
+  border: none;
+  background: #ef6b6d;
+  box-shadow: 0 6px 18px rgba(232, 72, 74, 0.22);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  transition: background var(--ease), transform var(--ease);
+}
+
+.aud-btn-done:hover:not(:disabled) {
+  background: #e45457;
+  transform: translateY(-1px);
+}
+.aud-btn-done:disabled {
+  background: rgba(162, 214, 249, 0.55);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Vista profesionales ──────────────────────────────────── */
+.aud-prof-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.aud-filter-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted-text);
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.aud-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.aud-chip {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(205, 225, 245, 0.7);
+  background: none;
+  font-size: 13px;
+  font-family: var(--font-ui);
+  color: var(--color-body);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+
+.aud-chip:hover,
+.aud-chip--on {
+  border-color: var(--color-red);
+  color: #ef6b6d;
+  background: #faebeb;
+}
+
+.aud-chip--on {
+  font-weight: 700;
+}
+
+.aud-preview-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--color-bg-section-alt);
+  border-radius: var(--radius-m);
+  border: 1px solid rgba(162, 214, 249, 0.35);
+  font-size: 13px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+/* ── Áreas ─────────────────────────────────────────────────── */
+.aud-area-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1.5px solid transparent;
+  margin-bottom: 6px;
+}
+.aud-area-item:hover {
+  background: var(--color-hover, #f5f5f5);
+}
+.aud-area-item--selected {
+  border-color: #E45457;
+  background: rgba(232,72,74,0.08);
+}
+.aud-area-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.aud-area-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.aud-area-count {
+  font-size: 12px;
+  color: var(--color-muted-text, #888);
+}
+
+/* ── Carreras ───────────────────────────────────────────────── */
+.aud-careers-divider {
+  text-align: center;
+  font-size: 11px;
+  color: var(--color-muted-text, #aaa);
+  margin: 10px 0 8px;
+  position: relative;
+}
+.aud-careers-divider::before,
+.aud-careers-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 28%;
+  height: 1px;
+  background: var(--color-border, #e5e5e5);
+}
+.aud-careers-divider::before { left: 0; }
+.aud-careers-divider::after  { right: 0; }
+
+.aud-career-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 4px;
+}
+.aud-career-item:hover {
+  background: var(--color-hover, #f5f5f5);
+}
+.aud-career-item--selected {
+  background: #FAEEDA;
+}
+.aud-career-name {
+  font-size: 13.5px;
+  color: var(--color-text);
+}
+
+/* Checkbox custom */
+.aud-check-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 2px solid var(--color-border, #ccc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.aud-check-box--on {
+  background: #E45457;
+  border-color: #E45457;
+}
+
+/* ── Dark mode ────────────────────────────────────────────── */
+.dark .aud-modal       { border-color: rgba(162, 214, 249, 0.08); }
+.dark .aud-header      { border-bottom-color: rgba(162, 214, 249, 0.08); }
+.dark .aud-footer      { border-top-color: rgba(162, 214, 249, 0.08); }
+.dark .aud-item:hover,
+.dark .aud-item--selected { background: rgba(255,255,255,0.05); }
+.dark .aud-chip        { border-color: rgba(162, 214, 249, 0.12); }
+.dark .aud-chip:hover,
+.dark .aud-chip--on    { background: rgba(26,111,189,0.18); border-color: rgba(26,111,189,0.35); color: #7db8e8; }
+.dark .aud-preview-box { background: rgba(255,255,255,0.04); border-color: rgba(162, 214, 249, 0.10); }
+
+/* ── Agregar al final de AudienceModal.css ───────────────────
+   Estilos para el dropdown de área y los chips de carreras
+─────────────────────────────────────────────────────────── */
+
+/* Cuerpo scrolleable de la vista profesional */
+.aud-prof-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Campo con label */
+.aud-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aud-field-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted-text);
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.aud-field-label-hint {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 11px;
+  color: var(--color-muted-text);
+}
+
+.aud-field-hint {
+  font-size: 12px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ── Dropdown ─────────────────────────────────────────────── */
+.aud-dropdown {
+  position: relative;
+}
+
+.aud-dropdown__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-m);
+  border: 1.5px solid rgba(205, 225, 245, 0.7);
+  background: var(--color-bg-section-alt);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--color-body);
+  transition: border-color var(--ease), background var(--ease);
+  text-align: left;
+}
+
+.aud-dropdown__trigger:hover,
+.aud-dropdown__trigger--open {
+  border-color: rgba(133, 79, 11, 0.5);
+  background: #FAEEDA44;
+}
+
+.aud-dropdown__value {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.aud-dropdown__placeholder {
+  color: var(--color-muted-text);
+}
+
+/* Menú desplegable */
+.aud-dropdown__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border: 1.5px solid rgba(205, 225, 245, 0.7);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
+  max-height: 220px;
+  overflow-y: auto;
+  animation: aud-up 0.12s ease;
+}
+
+.aud-dropdown__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--color-body);
+  text-align: left;
+  transition: background var(--ease);
+}
+
+.aud-dropdown__option:hover {
+  background: var(--color-bg-section-alt);
+}
+
+.aud-dropdown__option--selected {
+  background: #FAEEDA;
+  color: #E45457;
+  font-weight: 600;
+}
+
+/* ── Chips de carreras ────────────────────────────────────── */
+.aud-careers-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.aud-career-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 13px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(205, 225, 245, 0.7);
+  background: none;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--color-body);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+
+.aud-career-chip:hover {
+  border-color: rgba(133, 79, 11, 0.35);
+  background: #FAEEDA55;
+  color: #E45457;
+}
+
+.aud-career-chip--on {
+  border-color: #E45457;
+  background: #FAEEDA;
+  color: #E45457;
+  font-weight: 700;
+}
+
+/* Preview box — ya existe en tu CSS, solo agrego la variante de color */
+.aud-preview-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #FAEEDA55;
+  border-radius: var(--radius-m);
+  border: 1px solid rgba(133, 79, 11, 0.2);
+  font-size: 12.5px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+
+/* Botón aplicar con color profesional */
+.aud-btn-done--professional {
+  background: #E45457;
+}
+
+.aud-btn-done--professional:hover:not(:disabled) {
+  background: #d04a4c;
+}
+
+/* Dark mode */
+.dark .aud-dropdown__trigger {
+  border-color: rgba(162, 214, 249, 0.12);
+  background: rgba(255,255,255,0.05);
+}
+.dark .aud-dropdown__menu {
+  background: var(--color-card, #1e1e1e);
+  border-color: rgba(162, 214, 249, 0.1);
+}
+.dark .aud-dropdown__option:hover      { background: rgba(255,255,255,0.05); }
+.dark .aud-dropdown__option--selected  { background: rgba(133,79,11,0.25); color: #e8a96a; }
+.dark .aud-career-chip                 { border-color: rgba(162,214,249,0.12); }
+.dark .aud-career-chip:hover           { background: rgba(133,79,11,0.2); border-color: rgba(133,79,11,0.4); color: #e8a96a; }
+.dark .aud-career-chip--on             { background: rgba(133,79,11,0.3); border-color: #E45457; color: #e8a96a; }
+.dark .aud-preview-box                 { background: rgba(133,79,11,0.15); border-color: rgba(133,79,11,0.25); }
+
+/* ── Agregar al final de AudienceModal.css ───────────────────
+   Dropdowns en cascada: Área → Carrera
+─────────────────────────────────────────────────────────── */
+
+/* Cuerpo de la vista profesional */
+.aud-cascade-body {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Campo con label */
+.aud-cascade-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.aud-field-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted-text);
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* Trigger del dropdown */
+.aud-cascade-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-radius: var(--radius-m, 10px);
+  border: 1.5px solid rgba(205, 225, 245, 0.7);
+  background: var(--color-bg-section-alt);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.aud-cascade-trigger:hover:not(:disabled) {
+  border-color: rgba(133, 79, 11, 0.4);
+  background: #FAEEDA33;
+}
+
+.aud-cascade-trigger--open {
+  border-color: rgba(133, 79, 11, 0.5);
+  background: #FAEEDA33;
+}
+
+.aud-cascade-trigger--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.aud-cascade-value {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.aud-cascade-placeholder {
+  color: var(--color-muted-text);
+}
+
+/* Icono chevron con rotación suave */
+.aud-cascade-chevron {
+  flex-shrink: 0;
+  color: var(--color-muted-text);
+  transition: transform 0.2s ease;
+}
+
+.aud-cascade-chevron--open {
+  transform: rotate(180deg);
+}
+
+/* Menú desplegable */
+.aud-cascade-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border: 1.5px solid rgba(205, 225, 245, 0.7);
+  border-radius: var(--radius-m, 10px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  z-index: 100;
+  max-height: 210px;
+  overflow-y: auto;
+  animation: aud-up 0.12s ease;
+}
+
+.aud-cascade-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--color-body);
+  text-align: left;
+  transition: background 0.12s;
+}
+
+.aud-cascade-option:first-child { border-radius: var(--radius-m, 10px) var(--radius-m, 10px) 0 0; }
+.aud-cascade-option:last-child  { border-radius: 0 0 var(--radius-m, 10px) var(--radius-m, 10px); }
+
+.aud-cascade-option:hover {
+  background: var(--color-bg-section-alt);
+}
+
+.aud-cascade-option--selected {
+  background: #FAEEDA;
+  color: #E45457;
+  font-weight: 700;
+}
+
+/* Preview de selección */
+.aud-cascade-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #FAEEDA55;
+  border-radius: var(--radius-m, 10px);
+  border: 1px solid rgba(133, 79, 11, 0.2);
+  font-size: 12.5px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+/* Botón aplicar color profesional */
+.aud-btn-done--professional {
+  background: #E45457;
+}
+.aud-btn-done--professional:hover:not(:disabled) {
+  background: #d04a4c;
+}
+
+/* ── Dark mode ────────────────────────────────────────────── */
+.dark .aud-cascade-trigger {
+  border-color: rgba(162,214,249,0.12);
+  background: rgba(255,255,255,0.05);
+}
+.dark .aud-cascade-trigger:hover:not(:disabled),
+.dark .aud-cascade-trigger--open {
+  background: rgba(133,79,11,0.15);
+  border-color: rgba(133,79,11,0.35);
+}
+.dark .aud-cascade-menu {
+  background: var(--color-card, #1e1e1e);
+  border-color: rgba(162,214,249,0.1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+.dark .aud-cascade-option:hover     { background: rgba(255,255,255,0.06); }
+.dark .aud-cascade-option--selected { background: rgba(133,79,11,0.3); color: #e8a96a; }
+.dark .aud-cascade-preview          { background: rgba(133,79,11,0.15); border-color: rgba(133,79,11,0.25); }

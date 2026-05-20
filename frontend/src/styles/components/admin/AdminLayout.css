@@ -1,0 +1,75 @@
+/* ============================================================
+   src/styles/components/admin/AdminLayout.css
+   Layout responsivo para página Admin (3 columnas)
+   ============================================================ */
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.page-admin {
+  min-height: 100vh;
+}
+
+/* ── Layout principal 3 columnas ──────────────────────────── */
+.page-admin .layout {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 50px 98px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Responsive: Pantallas medianas (1200px) ─────────────── */
+@media (max-width: 1200px) {
+  .page-admin .layout {
+    gap: 16px;
+    padding: 20px 32px;
+  }
+}
+
+/* ── Responsive: Pantallas pequeñas (1024px) ──────────────── */
+@media (max-width: 1024px) {
+  .page-admin .layout {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px 12px;
+  }
+
+  .page-admin .layout > .admin-sidebar-left {
+    order: 1;
+    width: 100%;
+  }
+
+  .page-admin .layout > .admin-sidebar-right {
+    order: 2;
+    width: 100%;
+  }
+
+  .page-admin .layout > .admin-feed {
+    order: 3;
+  }
+}
+
+/* ── Responsive: Tablets (768px) ──────────────────────────── */
+@media (max-width: 768px) {
+  .page-admin .layout {
+    gap: 8px;
+    padding: 12px 8px;
+  }
+
+  .page-admin .layout > .admin-sidebar-left,
+  .page-admin .layout > .admin-sidebar-right {
+    width: 100%;
+  }
+}
+
+/* ── Responsive: Mobile (576px) ───────────────────────────── */
+@media (max-width: 576px) {
+  .page-admin .layout {
+    flex-direction: column;
+    padding: 12px 8px;
+    gap: 12px;
+  }
+}

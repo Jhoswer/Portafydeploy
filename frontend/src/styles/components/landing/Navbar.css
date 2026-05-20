@@ -1,0 +1,1053 @@
+/* ============================================================
+   src/styles/Navbar.css
+   Navbar PortaFy — sticky, glass, responsive, user menu
+   Depende de Variables.css (tokens --color-*, --shadow-*, etc.)
+   ============================================================ */
+
+/* ── Top bar ──────────────────────────────────────────────── */
+.pf-nav {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 100;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(248, 251, 255, .92));
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border-bottom: 1px solid rgba(185, 210, 236, .55);
+  box-shadow: 0 10px 34px rgba(14, 30, 60, .07);
+  transition: background var(--ease), border-color var(--ease), box-shadow var(--ease);
+}
+
+.pf-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, #0f2a4d 0%, #2468b8 42%, #ef4444 72%, rgba(239, 68, 68, 0) 100%);
+  opacity: .86;
+  pointer-events: none;
+}
+
+.pf-nav--scrolled {
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 14px 42px rgba(14, 30, 60, .11);
+}
+
+
+
+/* Themes */
+.pf-nav--theme-gold    { background: rgba(255, 215, 120, 0.15); }
+.pf-nav--theme-emerald { background: rgba(16, 185, 129, 0.15); }
+.pf-nav--theme-violet  { background: rgba(124, 92, 255, 0.15); }
+
+/* ── Layout top ───────────────────────────────────────────── */
+.pf-nav-top {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  min-height: 72px;
+  gap: 22px;
+}
+
+/* ── Logos section ────────────────────────────────────────── */
+.pf-nav-logos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 6px;
+  border: 1px solid rgba(205, 225, 245, .72);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .72);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 24px rgba(14, 30, 60, .045);
+}
+
+.pf-nav-logos__sep {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(180deg, rgba(15,42,77,0), rgba(162,214,249,.8), rgba(15,42,77,0));
+  flex-shrink: 0;
+}
+
+.pf-nav-inst {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+  padding: 5px 9px 5px 6px;
+  border-radius: 14px;
+  transition: background var(--ease), transform var(--ease);
+}
+
+.pf-nav-inst:hover {
+  background: rgba(239, 246, 255, .78);
+  transform: translateY(-1px);
+}
+
+.pf-nav-inst__logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.pf-nav-inst__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.pf-nav-inst__name {
+  font-family: var(--font-ui);
+  font-weight: 850;
+  font-size: 12.5px;
+  color: #0f172a;
+  letter-spacing: .2px;
+}
+
+.pf-nav-inst__sub {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* ── Logo PortaFy ─────────────────────────────────────────── */
+.pf-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: -.4px;
+  color: var(--color-text);
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 7px 10px;
+  border-radius: 14px;
+  transition: background var(--ease), transform var(--ease), opacity var(--ease);
+}
+
+.pf-logo:hover {
+  background: rgba(255, 245, 245, .72);
+  transform: translateY(-1px);
+  opacity: .95;
+}
+
+.pf-logo__img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.pf-logo__fy {
+  color: var(--color-red);
+}
+
+/* ── Search ───────────────────────────────────────────────── */
+.pf-nav-search {
+  position: relative;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.pf-nav-search--mobile {
+  max-width: 100%;
+  margin: 0 0 8px;
+}
+
+.pf-nav-search__icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  pointer-events: none;
+}
+
+.pf-nav-search__input {
+  width: 100%;
+  height: 46px;
+  background: rgba(255, 255, 255, .86);
+  border: 1px solid rgba(180, 210, 240, .84);
+  border-radius: 16px;
+  padding: 0 18px 0 46px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--color-text);
+  outline: none;
+  transition: background var(--ease), border-color var(--ease), box-shadow var(--ease);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 12px 24px rgba(14, 30, 60, .045);
+}
+
+.pf-nav-search__input::placeholder { color: var(--color-muted-text); }
+
+.pf-nav-search__input:focus {
+  background: #ffffff;
+  border-color: rgba(37, 99, 235, .38);
+  box-shadow: 0 0 0 4px rgba(219, 234, 254, .9), 0 14px 28px rgba(14, 30, 60, .075);
+}
+
+/* ── Actions (derecha del top) ────────────────────────────── */
+.pf-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.pf-nav-actions__sep {
+  width: 1px;
+  height: 32px;
+  background: rgba(162, 214, 249, .55);
+  flex-shrink: 0;
+}
+
+.pf-nav-bell {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(239, 246, 255, .88);
+  border: 1px solid rgba(191, 219, 254, .82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: not-allowed;
+  opacity: .7;
+}
+
+.pf-nav-auth {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.pf-nav-auth .pf-btn {
+  min-width: 130px;
+  text-align: center;
+}
+
+/* ── Hamburger toggle (solo mobile) ──────────────────────── */
+.pf-nav__toggle {
+  display: none;
+  background: rgba(239, 246, 255, .88);
+  border: 1px solid rgba(191, 219, 254, .82);
+  border-radius: 14px;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--ease);
+  flex-shrink: 0;
+}
+
+.pf-nav__toggle:hover { background: rgba(162, 214, 249, .30); }
+
+/* ── Bottom menu (links de sección) ──────────────────────── */
+.pf-nav-bottom {
+  border-top: 1px solid rgba(226, 232, 240, .72);
+  background: rgba(248, 251, 255, .72);
+}
+
+.pf-nav-menu {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  gap: 2px;
+}
+
+.pf-nav-menu__item {
+  display: flex;
+  align-items: center;
+}
+
+.pf-nav-menu__link {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 750;
+  color: #334155;
+  padding: 7px 14px;
+  border-radius: 999px;
+  transition: color var(--ease), background var(--ease), transform var(--ease);
+  white-space: nowrap;
+}
+
+.pf-nav-menu__link:hover {
+  color: #0f172a;
+  background: rgba(219, 234, 254, .85);
+  transform: translateY(-1px);
+}
+
+.pf-nav-menu__link--active {
+  color: var(--color-red);
+  font-weight: 850;
+  background: rgba(254, 226, 226, .86);
+}
+
+.pf-nav-menu__link--active:hover {
+  background: rgba(232, 72, 74, .13);
+}
+
+.pf-nav-menu__sep {
+  color: var(--color-muted-text);
+  opacity: .35;
+  flex-shrink: 0;
+}
+
+/* ── Drawer mobile ────────────────────────────────────────── */
+.pf-nav__drawer {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, .97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(162, 214, 249, .25);
+  padding: 16px 20px 20px;
+}
+
+.pf-nav__drawer-link {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-body);
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, .06);
+  transition: color var(--ease);
+}
+
+.pf-nav__drawer-link:hover { color: var(--color-red); }
+
+.pf-nav__drawer-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* ══════════════════════════════════════════════════
+   USER MENU (logueado)
+══════════════════════════════════════════════════ */
+
+.pf-user-menu {
+  position: relative;
+}
+
+/* Trigger — botón que abre el dropdown */
+.pf-user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .78);
+  border: 1px solid rgba(205, 225, 245, .78);
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(14, 30, 60, .045);
+  transition: background var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+
+.pf-user-trigger:hover {
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(14, 30, 60, .075);
+}
+
+/* Avatar */
+.pf-user__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f8cff, #7c5cff);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-xs);
+}
+
+/* Variantes de color del avatar */
+.pf-user__avatar--theme-blue    { background: linear-gradient(135deg, #4f8cff, #7c5cff); }
+.pf-user__avatar--theme-gold    { background: linear-gradient(135deg, #f6c800, #fcbf49); }
+.pf-user__avatar--theme-emerald { background: linear-gradient(135deg, #20c997, #24cfb3); }
+.pf-user__avatar--theme-violet  { background: linear-gradient(135deg, #845ef7, #5f3dc4); }
+
+/* Nombre del usuario en el trigger */
+.pf-user__name {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--color-text);
+  max-width: 112px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dropdown */
+.pf-user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: rgba(255, 255, 255, .97);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(58, 117, 180, .16);
+  border-radius: 16px;
+  overflow: hidden;
+  z-index: 200;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .15), 0 4px 12px rgba(14, 30, 60, .08);
+  animation: dropdown-in .18s cubic-bezier(.4, 0, .2, 1) both;
+}
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-6px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Header del dropdown (nombre + email) */
+.pf-user-dropdown__header {
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid rgba(162, 214, 249, .25);
+  background: rgba(162, 214, 249, .08);
+}
+
+.pf-user-dropdown__header p {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.pf-user-dropdown__header span {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-muted-text);
+}
+
+/* Items del dropdown */
+.pf-user-dropdown__item {
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--ease), color var(--ease);
+}
+
+.pf-user-dropdown__item:hover {
+  background: rgba(162, 214, 249, .14);
+  color: var(--color-blue-mid);
+}
+
+/* Logout */
+.pf-user-dropdown__logout {
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(162, 214, 249, .20);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-red);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--ease);
+}
+
+.pf-user-dropdown__logout:hover {
+  background: rgba(232, 72, 74, .07);
+}
+
+/* Overlay para cerrar el dropdown al click fuera */
+.pf-user-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+/* ── User mobile (dentro del drawer) ─────────────────────── */
+.pf-user__mobile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 12px;
+  border-radius: var(--radius-m);
+  background: rgba(255, 255, 255, .60);
+  border: 1px solid rgba(255, 255, 255, .70);
+}
+
+.pf-user__mobile-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.pf-user__mobile-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pf-user__mobile-email {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-muted-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════ */
+
+/* Tablet — ocultar subtitle institucional */
+@media (max-width: 1024px) {
+  .pf-nav-inst__sub { display: none; }
+}
+
+/* Tablet media — reducir gaps */
+@media (max-width: 960px) {
+  .pf-nav-actions { gap: 8px; }
+  .pf-user__name  { display: none; }
+  .pf-user-trigger { padding: 4px 8px 4px 4px; }
+  .pf-user-dropdown { right: 0; left: auto; min-width: 200px; }
+}
+
+/* Mobile — drawer, toggle, ocultar elementos de desktop */
+@media (max-width: 768px) {
+  /* Ocultar elementos de desktop */
+  .pf-nav-search,
+  .pf-nav-auth,
+  .pf-nav-bell,
+  .pf-nav-actions__sep { display: none; }
+
+  /* Layout top: solo logos + toggle */
+  .pf-nav-top {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+
+  /* Mostrar toggle */
+  .pf-nav__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ocultar menú de secciones */
+  .pf-nav-bottom { display: none; }
+
+  /* Dropdown del usuario en mobile: centrado en el drawer */
+  .pf-user-dropdown {
+    position: static;
+    width: 100%;
+    min-width: unset;
+    max-width: 100%;
+    margin-top: 8px;
+    box-shadow: 0 8px 24px rgba(14, 30, 60, .12);
+  }
+}
+
+/* Mobile pequeño */
+@media (max-width: 400px) {
+  .pf-nav-inst { display: none; }
+  .pf-nav-logos__sep { display: none; }
+}
+
+/* Rediseño compacto del navbar de plataforma */
+.pf-nav {
+  background: rgba(255, 255, 255, .94);
+  border-bottom: none;
+  box-shadow: 0 10px 30px rgba(14, 30, 60, .07);
+}
+
+.pf-nav::after {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(15, 42, 77, .08), rgba(36, 104, 184, .32), rgba(239, 68, 68, .42), rgba(15, 42, 77, .08));
+}
+
+.pf-nav-top {
+  min-height: 74px;
+  grid-template-columns: auto minmax(280px, 1fr) auto;
+}
+
+.pf-nav-logos {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.pf-nav-inst,
+.pf-logo {
+  border: none;
+  background: transparent;
+}
+
+.pf-nav-inst {
+  cursor: pointer;
+}
+
+.pf-logo {
+  font-size: 25px;
+}
+
+.pf-logo__text {
+  line-height: 1;
+}
+
+.pf-product-nav {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(241, 247, 253, .82);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82);
+}
+
+.pf-product-nav__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #334155;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background var(--ease), color var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+
+.pf-product-nav__item:hover {
+  background: #fff;
+  color: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(14, 30, 60, .06);
+}
+
+.pf-product-nav__item.is-active {
+  background: #fff;
+  color: #ef4444;
+  box-shadow: 0 8px 18px rgba(14, 30, 60, .07);
+}
+
+.pf-product-nav__item:hover svg,
+.pf-product-nav__item.is-active svg {
+  fill: currentColor;
+  stroke-width: 2.25;
+}
+
+.pf-nav-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #2048a8;
+  background: rgba(239, 246, 255, .78);
+  border-radius: 999px;
+  padding: 8px 11px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.pf-nav-signal svg {
+  fill: currentColor;
+}
+
+.pf-lang {
+  position: relative;
+}
+
+.pf-lang__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(248, 250, 252, .9);
+  color: #0f172a;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pf-lang__flag {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #2048a8;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.pf-lang__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 188px;
+  padding: 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .98);
+  box-shadow: 0 18px 42px rgba(14, 30, 60, .14);
+  z-index: 220;
+}
+
+.pf-lang__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  padding: 9px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pf-lang__option:hover,
+.pf-lang__option.is-active {
+  background: rgba(239, 246, 255, .9);
+}
+
+.pf-lang__option strong,
+.pf-lang__option small {
+  display: block;
+  font-family: var(--font-ui);
+}
+
+.pf-lang__option strong {
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.pf-lang__option small {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.pf-nav-bell {
+  border: none;
+  background: rgba(248, 250, 252, .92);
+}
+
+.pf-user-trigger,
+.pf-user-dropdown {
+  border: none;
+}
+
+.pf-user__avatar {
+  overflow: hidden;
+}
+
+.pf-user__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pf-nav__drawer {
+  gap: 12px;
+}
+
+.pf-nav__drawer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  border-radius: 999px;
+  background: rgba(239, 246, 255, .9);
+  color: #2048a8;
+  padding: 8px 12px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.pf-nav__drawer-links {
+  display: grid;
+  gap: 8px;
+}
+
+.pf-nav__drawer-links .pf-product-nav__item {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.pf-nav__drawer-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 1180px) {
+  .pf-nav-signal { display: none; }
+}
+
+@media (max-width: 980px) {
+  .pf-product-nav { display: none; }
+  .pf-nav-top {
+    grid-template-columns: auto 1fr auto;
+  }
+}
+
+/* Limpieza visual final: navbar de producto, menos ruido y mejor menu */
+.pf-nav {
+  background:
+    linear-gradient(90deg, rgba(13, 31, 60, .055), rgba(239, 246, 255, .78) 36%, rgba(255, 255, 255, .96) 66%),
+    linear-gradient(180deg, rgba(247, 251, 255, .98), rgba(238, 247, 255, .94));
+  box-shadow: 0 14px 38px rgba(14, 30, 60, .075);
+}
+
+.pf-nav--scrolled {
+  background:
+    linear-gradient(90deg, rgba(13, 31, 60, .04), rgba(239, 246, 255, .72) 36%, rgba(255, 255, 255, .96) 66%),
+    rgba(247, 251, 255, .96);
+  box-shadow: 0 18px 46px rgba(14, 30, 60, .11);
+}
+
+.pf-nav::after {
+  opacity: .62;
+}
+
+.pf-nav-top {
+  min-height: 70px;
+  grid-template-columns: auto minmax(180px, 1fr) auto;
+}
+
+.pf-nav-logos {
+  gap: 8px;
+}
+
+.pf-nav-inst {
+  padding: 4px 8px 4px 4px;
+}
+
+.pf-nav-inst:hover,
+.pf-logo:hover {
+  background: rgba(255, 255, 255, .68);
+}
+
+.pf-nav-inst__logo {
+  width: 31px;
+  height: 31px;
+}
+
+.pf-logo {
+  padding: 6px 8px;
+  font-size: 24px;
+}
+
+.pf-logo__img {
+  width: 28px;
+  height: 28px;
+}
+
+.pf-product-nav {
+  gap: 2px;
+  padding: 4px;
+  background: rgba(239, 246, 255, .62);
+}
+
+.pf-product-nav__item {
+  min-height: 36px;
+  padding: 0 18px;
+  font-size: 13px;
+}
+
+.pf-product-nav__item:hover,
+.pf-product-nav__item.is-active {
+  box-shadow: none;
+}
+
+.pf-product-nav__item.is-active {
+  color: #0f172a;
+  background: #fff;
+}
+
+.pf-nav-actions {
+  gap: 8px;
+}
+
+.pf-lang__trigger,
+.pf-user-trigger {
+  background: rgba(255, 255, 255, .7);
+  box-shadow: none;
+}
+
+.pf-lang__trigger {
+  min-height: 36px;
+  padding: 0 10px;
+}
+
+.pf-lang__flag {
+  min-width: 22px;
+  height: 22px;
+}
+
+.pf-user-trigger {
+  padding: 4px 10px 4px 4px;
+}
+
+.pf-user-trigger:hover {
+  box-shadow: 0 10px 24px rgba(14, 30, 60, .06);
+}
+
+.pf-user__avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.pf-user-dropdown {
+  top: calc(100% + 12px);
+  min-width: 260px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,251,255,.96));
+  box-shadow: 0 24px 60px rgba(14, 30, 60, .16);
+}
+
+.pf-user-dropdown__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: none;
+  background:
+    radial-gradient(circle at top left, rgba(219, 234, 254, .9), transparent 50%),
+    rgba(255, 255, 255, .45);
+}
+
+.pf-user-dropdown__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+
+.pf-user-dropdown__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pf-user-dropdown__header p {
+  font-size: 14px;
+  font-weight: 900;
+  margin: 0 0 3px;
+}
+
+.pf-user-dropdown__header span {
+  display: block;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pf-user-dropdown__item,
+.pf-user-dropdown__logout {
+  margin: 0 8px;
+  width: calc(100% - 16px);
+  border-radius: 12px;
+  padding: 11px 12px;
+}
+
+.pf-user-dropdown__item:hover {
+  background: rgba(239, 246, 255, .9);
+}
+
+.pf-user-dropdown__logout {
+  margin-bottom: 8px;
+  border-top: none;
+}
+
+.pf-nav__drawer-status {
+  background: transparent;
+  color: #64748b;
+  padding: 0;
+}
+
+@media (max-width: 1120px) {
+  .pf-nav-inst__sub {
+    display: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .pf-nav-top {
+    grid-template-columns: 1fr auto;
+  }
+
+  .pf-product-nav,
+  .pf-lang,
+  .pf-nav-actions__sep,
+  .pf-nav-auth {
+    display: none;
+  }
+
+  .pf-nav__toggle {
+    display: flex;
+  }
+
+  .pf-nav__drawer .pf-product-nav__item,
+  .pf-nav__drawer .pf-lang {
+    display: inline-flex;
+  }
+}

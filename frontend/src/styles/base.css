@@ -1,0 +1,50 @@
+.app-shell-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--body, #2e3d55);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.65), transparent 42%),
+    linear-gradient(180deg, rgba(204, 233, 251, 0.95) 0%, rgba(162, 214, 249, 0.92) 100%);
+}
+
+.app-shell-spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 3px solid rgba(255, 255, 255, 0.45);
+  border-top-color: var(--red, #e8484a);
+  animation: app-shell-spin 0.8s linear infinite;
+  box-shadow: 0 10px 30px rgba(14, 30, 60, 0.08);
+}
+
+@keyframes app-shell-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-brand__logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.auth-brand__accent {
+  color: #ff6b6b;
+}
+
+.auth-card__header--center {
+  margin-top: 8px;
+  margin-bottom: 0;
+  text-align: center;
+}

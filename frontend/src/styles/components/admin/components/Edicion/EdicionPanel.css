@@ -1,0 +1,279 @@
+/* ============================================================
+   src/styles/components/admin/components/Edicion/EdicionPanel.css
+   Panel de edición de usuario — burbjas de secciones.
+   ============================================================ */
+
+/* ── Wrapper completo del panel ── */
+.edicion-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: edicion-panel-in 0.22s ease both;
+}
+
+@keyframes edicion-panel-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header: Volver + info de usuario ── */
+.edicion-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-card-border, #e6eaf2);
+}
+
+/* Botón Volver */
+.edicion-panel__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1.5px solid var(--color-border, #d0d9e8);
+  background: var(--color-white, #fff);
+  color: var(--text-primary, #1a3a6b);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color var(--ease, 0.15s), color var(--ease, 0.15s),
+              background var(--ease, 0.15s);
+  box-shadow: var(--shadow-sm);
+}
+
+.edicion-panel__back:hover {
+  border-color: var(--color-red, #c62525);
+  color: var(--color-red, #c62525);
+  background: rgba(198, 37, 37, 0.04);
+}
+
+/* Info del usuario seleccionado */
+.edicion-panel__user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.edicion-panel__user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.edicion-panel__user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edicion-panel__user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1a3a6b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.edicion-panel__user-role {
+  font-size: 11.5px;
+  color: var(--text-muted, #6b7f99);
+  margin-top: 1px;
+  white-space: nowrap;
+}
+
+/* Separador visual */
+.edicion-panel__divider {
+  width: 1px;
+  height: 32px;
+  background: var(--color-card-border, #e6eaf2);
+  flex-shrink: 0;
+}
+
+/* ── Título de la sección de burbujas ── */
+.edicion-panel__section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted, #6b7f99);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: -6px;
+}
+
+/* ── Grid de burbujas ── */
+.edicion-panel__bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Burbuja individual */
+.edicion-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1.5px solid var(--color-border, #d0d9e8);
+  background: var(--color-white, #fff);
+  color: var(--text-primary, #1a3a6b);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color var(--ease, 0.15s), color var(--ease, 0.15s),
+              background var(--ease, 0.15s), box-shadow var(--ease, 0.15s),
+              transform var(--ease, 0.15s);
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+}
+
+.edicion-bubble:hover {
+  border-color: rgba(198, 37, 37, 0.4);
+  color: var(--color-red, #c62525);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.edicion-bubble--active {
+  background: var(--color-red, #c62525);
+  border-color: var(--color-red, #c62525);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(198, 37, 37, 0.28);
+  transform: translateY(-1px);
+}
+
+.edicion-bubble--active:hover {
+  color: #fff;
+  opacity: 0.92;
+}
+
+.edicion-bubble__icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Footer de sección activa ── */
+.edicion-panel__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-m, 10px);
+  background: rgba(198, 37, 37, 0.05);
+  border: 1.5px solid rgba(198, 37, 37, 0.18);
+  animation: edicion-footer-in 0.18s ease both;
+}
+
+@keyframes edicion-footer-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.edicion-panel__footer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-red, #c62525);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.edicion-panel__footer-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.edicion-panel__footer-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-red, #c62525);
+}
+
+.edicion-panel__footer-desc {
+  font-size: 12px;
+  color: var(--text-muted, #6b7f99);
+  margin-top: 1px;
+}
+
+.edicion-panel__footer-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill, 9999px);
+  border: none;
+  background: var(--color-red, #c62525);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity var(--ease, 0.15s);
+  flex-shrink: 0;
+}
+
+.edicion-panel__footer-action:hover {
+  opacity: 0.88;
+}
+
+/* ── Placeholder del formulario ── */
+.edicion-panel__form-placeholder {
+  background: var(--color-white, #fff);
+  border: 1px solid var(--color-card-border, #e6eaf2);
+  border-radius: var(--radius-l, 12px);
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--text-muted, #6b7f99);
+  font-size: 13.5px;
+  box-shadow: var(--shadow-sm);
+  animation: edicion-panel-in 0.2s ease both;
+}
+
+.edicion-panel__form-placeholder p {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .edicion-panel__header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .edicion-panel__divider {
+    display: none;
+  }
+
+  .edicion-bubble {
+    font-size: 12px;
+    padding: 7px 13px;
+  }
+
+  .edicion-panel__footer {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .edicion-panel__footer-action {
+    width: 100%;
+    justify-content: center;
+  }
+}

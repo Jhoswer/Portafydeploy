@@ -1,0 +1,58 @@
+.dashboard-rail-card {
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.dashboard-rail-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(14, 30, 60, .08) !important;
+}
+
+.dashboard-nav-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-nav-item::before {
+  content: "";
+  position: absolute;
+  inset: 8px auto 8px 0;
+  width: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleY(.45);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.dashboard-nav-item:hover {
+  transform: translateX(2px);
+}
+
+.dashboard-nav-item:hover::before,
+.dashboard-nav-item.is-active::before {
+  opacity: .9;
+  transform: scaleY(1);
+}
+
+.dashboard-nav-icon,
+.dashboard-nav-icon svg {
+  transition: background .18s ease, color .18s ease, transform .18s ease, fill .18s ease, stroke-width .18s ease;
+}
+
+.dashboard-nav-item:hover .dashboard-nav-icon,
+.dashboard-nav-item.is-active .dashboard-nav-icon {
+  transform: scale(1.04);
+}
+
+.dashboard-nav-item:hover .dashboard-nav-icon svg,
+.dashboard-nav-item.is-active .dashboard-nav-icon svg {
+  stroke-width: 2.3;
+}
+
+.dashboard-status-pill {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .74);
+}
+
+.dashboard-status-dot {
+  box-shadow: 0 0 0 4px rgba(36, 86, 191, .08);
+}

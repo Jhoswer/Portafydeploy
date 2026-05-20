@@ -1,0 +1,324 @@
+/* ============================================================
+   src/styles/components/landing/AuthTopbar.css
+   ============================================================ */
+
+.auth-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 100;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border-bottom: 1px solid var(--topbar-border);
+  box-shadow: var(--topbar-shadow);
+  transition: background var(--ease), border-color var(--ease), box-shadow var(--ease);
+}
+
+/* ── FILA 1 ───────────────────────────────────────────────── */
+.auth-topbar__row-top {
+  border-bottom: 1px solid var(--topbar-row-border);
+}
+
+.auth-topbar__row-top-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  height: 64px;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.auth-topbar__logos {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+/* Botón limpiar búsqueda */
+.auth-topbar__search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted-text);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color var(--ease);
+}
+.auth-topbar__search-clear:hover { color: var(--color-text); }
+
+/* ── FILA 2: desktop — solo iconos ───────────────────────── */
+.auth-topbar__row-nav {
+  border-top: 1px solid var(--topbar-nav-border);
+  background: var(--topbar-nav-bg);
+  width: 100%;
+  display: block;
+}
+
+.auth-topbar__nav-inner {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+
+
+.auth-topbar__nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-body);
+  background: none;
+  border: none;
+  padding: 6px 13px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: color var(--ease), background var(--ease);
+  white-space: nowrap;
+}
+
+.auth-topbar__nav-btn:hover {
+  color: var(--color-text);
+  background: var(--topbar-hover-bg);
+}
+
+.auth-topbar__nav-btn--active {
+  color: var(--color-red);
+  font-weight: 700;
+  background: var(--topbar-active-bg);
+}
+
+.auth-topbar__nav-btn--active:hover {
+  background: var(--topbar-active-bg-hover);
+}
+
+/* ── DESKTOP ── */
+@media (min-width: 769px) {
+  /* Ocultar iconos */
+  .auth-topbar__nav-btn svg {
+    display: none;
+  }
+
+  /* Mostrar texto */
+  .auth-topbar__nav-label {
+    display: inline;
+  }
+}
+
+
+/* ── Toggle hamburguesa — oculto en desktop ───────────────── */
+.auth-topbar__toggle {
+  display: none;
+  background: var(--topbar-toggle-bg);
+  border: 1.5px solid var(--topbar-toggle-border);
+  border-radius: var(--radius-s);
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--ease);
+  flex-shrink: 0;
+}
+.auth-topbar__toggle:hover { background: var(--topbar-hover-bg-strong); }
+
+/* ── Drawer mobile ────────────────────────────────────────── */
+.auth-topbar__drawer {
+  display: flex;
+  flex-direction: column;
+  background: var(--topbar-drawer-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--topbar-drawer-border);
+  padding: 16px 20px 20px;
+  gap: 4px;
+}
+
+.auth-topbar__drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 4px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--topbar-divider);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-body);
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--ease);
+}
+.auth-topbar__drawer-item:hover { color: var(--color-text); }
+.auth-topbar__drawer-item--active {
+  color: var(--color-red);
+  font-weight: 700;
+}
+
+.auth-topbar__drawer-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* ── BARRA MOBILE INFERIOR tipo Facebook ──────────────────── */
+.auth-topbar__mobile-nav {
+  display: none;
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .auth-topbar__row-top-inner .pf-nav-inst__sub { display: none; }
+}
+
+@media (max-width: 960px) {
+  .auth-topbar__row-top-inner .pf-nav-actions { gap: 8px; }
+  .auth-topbar__row-top-inner .pf-user__name  { display: none; }
+  .auth-topbar__row-top-inner .pf-user-trigger { padding: 4px 8px 4px 4px; }
+}
+
+@media (max-width: 768px) {
+
+  /* Fila 1 siempre visible */
+  .auth-topbar__row-top {
+    display: block !important;
+    padding: 0;
+  }
+  .pf-logo__text {
+    display: inline !important;
+    font-size: 16px; /* ajusta si quieres */
+  }
+  .pf-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0; /* 🔥 CLAVE */
+}
+
+.auth-topbar__logos {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.pf-nav-inst__logo {
+    width: 24px; /* o 20px */
+  }
+
+
+  .auth-topbar__row-top-inner {
+    grid-template-columns: auto 1fr auto !important;
+    justify-content: space-between !important;
+    height: 52px !important;
+    padding: 0 16px !important;
+    gap: 8px !important;
+  }
+
+  /* Logos siempre visibles */
+  .auth-topbar__logos {
+    display: flex !important;
+  }
+
+  /* Ocultar buscador, separador, bell y user */
+  .auth-topbar__search-desktop        { display: none !important; }
+  .auth-topbar__sep-desktop           { display: none !important; }
+  .auth-topbar__user-desktop          { display: none !important; }
+  .auth-topbar__row-top-inner .pf-nav-bell         { display: none !important; }
+  .auth-topbar__row-top-inner .pf-nav-actions__sep { display: none !important; }
+
+  /* Mostrar hamburguesa */
+  .auth-topbar__toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ocultar fila 2 en mobile */
+  /* Ocultar fila 2 en mobile */
+.auth-topbar__row-nav {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+  /* ── Barra inferior tipo Facebook ── */
+  .auth-topbar__mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: var(--topbar-mobile-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--topbar-mobile-border);
+    box-shadow: var(--topbar-mobile-shadow);
+    z-index: 200;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+    height: 56px;
+    max-height: 56px;
+    overflow: hidden;
+  }
+
+  .auth-topbar__mobile-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-muted-text);
+    transition: color var(--ease);
+    position: relative;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .auth-topbar__mobile-nav-btn:hover { color: var(--color-text); }
+  .auth-topbar__mobile-nav-btn--active { color: var(--color-red); }
+
+  .auth-topbar__mobile-nav-btn--active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background: var(--color-red);
+    border-radius: 0 0 3px 3px;
+  }
+}
+
+@media (max-width: 400px) {
+  .auth-topbar__logos .pf-nav-inst       { display: none; }
+  .auth-topbar__logos .pf-nav-logos__sep { display: none; }
+}

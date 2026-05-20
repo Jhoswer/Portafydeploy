@@ -1,0 +1,105 @@
+/* ───────────── SECCIÓN BASE ───────────── */
+.pf-cta {
+  position: relative;
+  padding: 90px 0;
+  overflow: hidden;
+}
+
+/* Fondo principal con gradiente */
+.pf-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #072AC8, #1E96FC);
+  z-index: 0;
+}
+
+/* Glow decorativo */
+.pf-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15), transparent 40%),
+              radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1), transparent 40%);
+  z-index: 0;
+}
+
+/* ───────────── CONTENIDO ───────────── */
+.pf-cta__inner {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+
+  padding: 50px 60px;
+  border-radius: 28px;
+
+  /* Glass effect */
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+/* ───────────── TEXTO ───────────── */
+.pf-cta__content {
+  max-width: 520px;
+}
+
+.pf-cta__title {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.pf-cta__sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+}
+
+/* ───────────── BOTONES ───────────── */
+.pf-cta__actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Botón rojo (principal) */
+.pf-btn--xl {
+  padding: 14px 22px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+
+/* Ajuste botón glass en fondo oscuro */
+.pf-btn--glass {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.pf-btn--glass:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ───────────── RESPONSIVE ───────────── */
+@media (max-width: 900px) {
+  .pf-cta__inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 30px;
+  }
+
+  .pf-cta__title {
+    font-size: 26px;
+  }
+
+  .pf-cta__actions {
+    justify-content: center;
+  }
+}

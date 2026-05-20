@@ -1,0 +1,107 @@
+services:
+
+  # ─── BACKEND: Laravel API ───────────────────────────────────────────────────
+  - type: web
+    name: portafy-backend
+    env: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: APP_NAME
+        value: Portafy
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        sync: false          # lo pones manualmente en Render al hacer deploy
+
+      # Base de datos — Neon.tech PostgreSQL
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        sync: false          # ejemplo: ep-xxx.us-east-2.aws.neon.tech
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_SSLMODE
+        value: require
+
+      # Sesión y caché (sin Redis en free tier)
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: sync
+
+      # Frontend URL (para CORS — poner la URL de Render del frontend)
+      - key: FRONTEND_URL
+        sync: false
+
+      # Cloudinary
+      - key: CLOUDINARY_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_UPLOAD_PRESET
+        value: ml_default
+
+      # OAuth — actualizar redirect URIs a las URLs de producción
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_REDIRECT_URI
+        sync: false
+
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
+
+      - key: LINKEDIN_CLIENT_ID
+        sync: false
+      - key: LINKEDIN_CLIENT_SECRET
+        sync: false
+      - key: LINKEDIN_REDIRECT_URI
+        sync: false
+
+      # Groq (si se usa)
+      - key: GROQ_API_KEY
+        sync: false
+
+  # ─── FRONTEND: React + Vite (Static Site) ───────────────────────────────────
+  - type: web
+    name: portafy-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false          # URL del backend en Render + /api  ej: https://portafy-backend.onrender.com/api
+      - key: VITE_BACKEND_URL
+        sync: false          # URL del backend en Render          ej: https://portafy-backend.onrender.com
+      - key: VITE_GITHUB_CLIENT_ID
+        sync: false
+      - key: VITE_GITHUB_REDIRECT_URI
+        sync: false
+      - key: VITE_RECAPTCHA_SITE_KEY
+        sync: false

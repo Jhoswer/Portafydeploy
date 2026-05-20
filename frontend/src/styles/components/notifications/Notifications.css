@@ -1,0 +1,331 @@
+.pf-notif {
+  position: relative;
+  display: inline-flex;
+}
+
+.pf-notif__trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .78);
+  color: #0f172a;
+  cursor: pointer;
+  transition: background var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+
+.pf-notif__trigger:hover {
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(14, 30, 60, .08);
+}
+
+.pf-notif__badge,
+.pf-notif-mobile__badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.pf-notif__badge {
+  position: absolute;
+  top: -2px;
+  right: -3px;
+  border: 2px solid #fff;
+}
+
+.pf-notif__dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: min(380px, calc(100vw - 24px));
+  overflow: hidden;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .99), rgba(248, 251, 255, .97));
+  box-shadow: 0 24px 60px rgba(14, 30, 60, .18);
+  z-index: 240;
+}
+
+.pf-notif__dropdown-header,
+.pf-notif__dropdown-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.pf-notif__dropdown-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0f172a;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.pf-notif__dropdown-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, .12);
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.pf-notif__mark-all,
+.pf-notif__ver-todas {
+  border: none;
+  background: transparent;
+  color: #2048a8;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.pf-notif__dropdown-list {
+  max-height: 520px;
+  overflow-y: auto;
+  padding: 4px 8px;
+}
+
+.pf-notif__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr 8px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 68px;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pf-notif__item:hover,
+.pf-notif__item--unread {
+  background: rgba(239, 246, 255, .9);
+}
+
+.pf-notif__item-avatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #0f172a;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  font-weight: 900;
+}
+
+.pf-notif__item-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.pf-notif__item-type-icon {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+}
+
+.pf-notif__item-body {
+  min-width: 0;
+}
+
+.pf-notif__item-text {
+  margin: 0 0 4px;
+  color: #0f172a;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 760;
+  line-height: 1.3;
+}
+
+.pf-notif__item-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .05);
+  color: #0f172a;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: capitalize;
+  margin-bottom: 4px;
+}
+
+.pf-notif__item-time,
+.pf-notif__empty-sub,
+.pf-notif-page__loading {
+  color: #64748b;
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+.pf-notif__item-status {
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: 999px;
+  background: #cbd5e1;
+  cursor: default;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .75);
+  transition: background var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+
+.pf-notif__item-status--unread {
+  background: #ef4444;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, .12);
+}
+
+.pf-notif__item-status--unread:hover {
+  background: #dc2626;
+  transform: scale(1.08);
+}
+
+.pf-notif__skeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 8px;
+}
+
+.pf-notif__skeleton-avatar,
+.pf-notif__skeleton-line {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e2e8f0, #f8fafc, #e2e8f0);
+  background-size: 180% 100%;
+  animation: pf-notif-pulse 1.2s infinite linear;
+}
+
+.pf-notif__skeleton-avatar {
+  width: 40px;
+  height: 40px;
+}
+
+.pf-notif__skeleton-lines {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+}
+
+.pf-notif__skeleton-line {
+  height: 10px;
+}
+
+.pf-notif__skeleton-line--lg {
+  width: 88%;
+}
+
+.pf-notif__skeleton-line--sm {
+  width: 42%;
+}
+
+.pf-notif__empty {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  padding: 32px 18px;
+  text-align: center;
+}
+
+.pf-notif__empty-icon {
+  color: #94a3b8;
+}
+
+.pf-notif__empty-title {
+  margin: 0;
+  color: #0f172a;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.pf-notif__empty-sub {
+  margin: 0;
+}
+
+.pf-notif-page {
+  width: min(820px, calc(100% - 32px));
+  margin: 96px auto 48px;
+}
+
+.pf-notif-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.pf-notif-page__title {
+  margin: 0;
+  color: #0f172a;
+  font-family: var(--font-title);
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.pf-notif-page__list {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 18px 46px rgba(14, 30, 60, .08);
+  padding: 8px;
+}
+
+@keyframes pf-notif-pulse {
+  to {
+    background-position: -180% 0;
+  }
+}
+
+@media (max-width: 980px) {
+  .pf-nav-actions > .pf-notif {
+    display: none;
+  }
+
+  .pf-notif--mobile {
+    width: 100%;
+  }
+
+  .pf-notif--mobile .pf-notif__dropdown {
+    position: static;
+    width: 100%;
+    margin-top: 10px;
+  }
+}

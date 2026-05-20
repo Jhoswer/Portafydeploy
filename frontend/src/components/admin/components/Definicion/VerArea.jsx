@@ -1,0 +1,43 @@
+import { useState } from "react";
+import { Search } from "lucide-react";
+import useDefinitionRecords from "./useDefinitionRecords";
+
+export default function VerArea() {
+  const [search, setSearch] = useState("");
+  const { records, isLoading, error } = useDefinitionRecords("areas");
+
+  const filtered = records.filter((r) =>
+    (r.name ?? "").toLowerCase().includes(search.toLowerCase()) ||
+    (r.description ?? "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="def-ver">
+      <div className="def-ver__toolbar">
+        <div className="def-ver__search-wrap">
+          <Search size={14} className="def-ver__search-icon" />
+          <input className="def-ver__search" placeholder="Buscar por nombre o descripcion..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+        <span className="def-ver__count">{filtered.length} registro{filtered.length !== 1 ? "s" : ""}</span>
+      </div>
+      <div className="def-ver__table-wrap">
+        <table className="def-ver__table">
+          <thead><tr><th>ID</th><th>Nombre</th><th>Descripcion</th><th>Creado</th><th>Actualizado</th></tr></thead>
+          <tbody>
+            {isLoading || error || filtered.length === 0 ? (
+              <tr><td colSpan={5} className="def-ver__empty">{isLoading ? "Cargando registros..." : error || `Sin resultados para "${search}"`}</td></tr>
+            ) : filtered.map((r) => (
+              <tr key={r.id_area}>
+                <td className="def-ver__id">#{r.id_area}</td>
+                <td className="def-ver__name">{r.name}</td>
+                <td className="def-ver__desc">{r.description ?? <span className="def-ver__null">-</span>}</td>
+                <td className="def-ver__date">{r.created_at ?? <span className="def-ver__null">-</span>}</td>
+                <td className="def-ver__date">{r.updated_at ?? <span className="def-ver__null">-</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

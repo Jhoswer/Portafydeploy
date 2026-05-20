@@ -1,0 +1,528 @@
+CV
+Table name
+
+public
+Schema
+Row Level Security
+
+Columns
+Add column
+id_cv
+BIGINT
+PRIMARY KEY
+GENERATED ALWAYS AS IDENTITY
+name_cv
+VARCHAR(255)
+template
+VARCHAR(255)
+font
+VARCHAR(255)
+state
+BOOLEAN
+visible
+BOOLEAN
+archive_pdf
+VARCHAR(255)
+
+description
+VARCHAR(255)
+created_at
+TIMESTAMP
+updated_at
+TIMESTAMP
+cv_url
+VARCHAR(255)
+id_profile
+BIGINT
+Constraints
+Add constraint
+CONSTRAINT
+CV_id_profile_fkey
+FOREIGN KEY
+(id_profile)
+REFERENCES
+public.PROFILE
+(id_profile)
+CONSTRAINT
+CV_pkey
+PRIMARY KEY
+(id_cv)
+Indexes
+Add index
+UNIQUE
+INDEX
+CV_pkey
+…
+USING
+BTREE
+(id_cv)
+Policies
+Add policy
+
+EXPERIENCE
+Table name
+
+public
+Schema
+Row Level Security
+
+Columns
+Add column
+id_experience
+BIGINT
+PRIMARY KEY
+GENERATED ALWAYS AS IDENTITY
+type
+VARCHAR(50)
+company
+VARCHAR(255)
+title
+VARCHAR(255)
+description
+TEXT
+start_date
+DATE
+end_date
+DATE
+created_at
+TIMESTAMP
+updated_at
+TIMESTAMP
+state
+VARCHAR(50)
+id_profile
+BIGINT
+Constraints
+Add constraint
+CONSTRAINT
+experience_dates_chk
+CHECK
+(((end_date IS NULL) OR (start_date IS NULL) OR (end_date >= start_date)))
+CONSTRAINT
+EXPERIENCE_state_check
+CHECK
+(((state)::text = ANY ((ARRAY['public'::character varying, 'private'::character varying])::text[])))
+CONSTRAINT
+EXPERIENCE_type_check
+CHECK
+(((type)::text = ANY ((ARRAY['labor'::character varying, 'academic'::character varying])::text[])))
+CONSTRAINT
+EXPERIENCE_id_profile_fkey
+FOREIGN KEY
+(id_profile)
+REFERENCES
+public.PROFILE
+(id_profile)
+CONSTRAINT
+EXPERIENCE_pkey
+PRIMARY KEY
+(id_experience)
+Indexes
+Add index
+UNIQUE
+INDEX
+EXPERIENCE_pkey
+…
+USING
+BTREE
+(id_experience)
+Policies
+Add policy
+
+SKILL_PROFILE
+Table name
+
+public
+Schema
+Row Level Security
+
+Columns
+Add column
+id_skill_profile
+BIGINT
+PRIMARY KEY
+GENERATED ALWAYS AS IDENTITY
+id_skill
+BIGINT
+id_profile
+BIGINT
+level
+VARCHAR(50)
+
+visibility
+BOOLEAN
+created_at
+TIMESTAMP
+updated_at
+TIMESTAMP
+Constraints
+Add constraint
+CONSTRAINT
+SKILL_PROFILE_level_check
+CHECK
+(((level)::text = ANY ((ARRAY['junior'::character varying, 'mid'::character varying, 'senior'::character varying])::text[])))
+CONSTRAINT
+SKILL_PROFILE_id_profile_fkey
+FOREIGN KEY
+(id_profile)
+REFERENCES
+public.PROFILE
+(id_profile)
+CONSTRAINT
+SKILL_PROFILE_id_skill_fkey
+FOREIGN KEY
+(id_skill)
+REFERENCES
+public.SKILL
+(id_skill)
+CONSTRAINT
+SKILL_PROFILE_pkey
+PRIMARY KEY
+(id_skill_profile)
+Indexes
+Add index
+UNIQUE
+INDEX
+SKILL_PROFILE_index_0
+…
+USING
+BTREE
+(id_profile, id_skill)
+UNIQUE
+INDEX
+SKILL_PROFILE_pkey
+…
+USING
+BTREE
+(id_skill_profile)
+Policies
+Add policy
+
+OFFER
+Table name
+
+public
+Schema
+Row Level Security
+
+Columns
+Add column
+id_offer
+BIGINT
+PRIMARY KEY
+GENERATED ALWAYS AS IDENTITY
+title
+VARCHAR(255)
+NOT NULL
+description
+VARCHAR(255)
+created_at
+TIMESTAMP
+updated_at
+TIMESTAMP
+closed_at
+DATE
+
+quota_quantity
+INTEGER
+state
+VARCHAR(50)
+id_profile
+BIGINT
+type
+VARCHAR(50)
+modalidad
+VARCHAR(50)
+ubicacion
+VARCHAR(255)
+salary_min
+INTEGER
+salary_max
+INTEGER
+currency
+VARCHAR(10)
+DEFAULT'USD'
+nivel
+VARCHAR(50)
+banner_url
+VARCHAR(255)
+area
+VARCHAR(255)
+show_salary
+BOOLEAN
+DEFAULTtrue
+id_audience_type
+INTEGER
+DEFAULT1
+Constraints
+Add constraint
+CONSTRAINT
+OFFER_state_check
+CHECK
+(((state)::text = ANY ((ARRAY['open'::character varying, 'visible'::character varying, 'closed'::character varying, 'removed'::character varying, 'private'::character varying])::text[])))
+CONSTRAINT
+fk_offer_audience_type
+FOREIGN KEY
+(id_audience_type)
+REFERENCES
+public.AUDIENCE_TYPE
+(id_audience_type)
+CONSTRAINT
+OFFER_id_profile_fkey
+FOREIGN KEY
+(id_profile)
+REFERENCES
+public.PROFILE
+(id_profile)
+CONSTRAINT
+OFFER_pkey
+PRIMARY KEY
+(id_offer)
+Indexes
+Add index
+INDEX
+idx_offer_profile_state_closed
+…
+USING
+BTREE
+(id_profile, state, closed_at)
+UNIQUE
+INDEX
+OFFER_pkey
+…
+USING
+BTREE
+(id_offer)
+Policies
+Add policy
+
+POSTULATION
+Table name
+
+public
+Schema
+Row Level Security
+
+Columns
+Add column
+id_postulation
+BIGINT
+PRIMARY KEY
+GENERATED ALWAYS AS IDENTITY
+
+id_offer
+BIGINT
+id_postulant
+BIGINT
+id_cv
+BIGINT
+reason
+VARCHAR(255)
+created_at
+TIMESTAMP
+updated_at
+TIMESTAMP
+state
+VARCHAR(50)
+Constraints
+Add constraint
+CONSTRAINT
+POSTULATION_state_check
+CHECK
+(((state)::text = ANY ((ARRAY['in_verification'::character varying, 'refused'::character varying, 'accepted'::character varying])::text[])))
+CONSTRAINT
+POSTULATION_id_cv_fkey
+FOREIGN KEY
+(id_cv)
+REFERENCES
+public.CV
+(id_cv)
+CONSTRAINT
+POSTULATION_id_offer_fkey
+FOREIGN KEY
+(id_offer)
+REFERENCES
+public.OFFER
+(id_offer)
+CONSTRAINT
+POSTULATION_id_postulant_fkey
+FOREIGN KEY
+(id_postulant)
+REFERENCES
+public.PROFILE
+(id_profile)
+CONSTRAINT
+POSTULATION_pkey
+PRIMARY KEY
+(id_postulation)
+Indexes
+Add index
+INDEX
+idx_postulation_offer
+…
+USING
+BTREE
+(id_offer)
+UNIQUE
+INDEX
+POSTULATION_index_0
+…
+USING
+BTREE
+(id_offer, id_postulant)
+UNIQUE
+INDEX
+POSTULATION_pkey
+…
+USING
+BTREE
+(id_postulation)
+Policies
+Add policy
+
+PROJECT
+Table name
+
+public
+Schema
+Row Level Security
+
+Columns
+Add column
+id_project
+BIGINT
+PRIMARY KEY
+GENERATED ALWAYS AS IDENTITY
+title
+VARCHAR(255)
+NOT NULL
+description
+TEXT
+repository_url
+VARCHAR(255)
+url_demo
+VARCHAR(255)
+image
+VARCHAR(255)
+
+state
+VARCHAR(50)
+created_at
+TIMESTAMP
+updated_at
+TIMESTAMP
+url_photo_main
+VARCHAR(255)
+id_profile
+BIGINT
+visibility
+BOOLEAN
+Constraints
+Add constraint
+CONSTRAINT
+PROJECT_state_check
+CHECK
+(((state)::text = ANY ((ARRAY['in_progress'::character varying, 'removed'::character varying, 'completed'::character varying])::text[])))
+CONSTRAINT
+PROJECT_id_profile_fkey
+FOREIGN KEY
+(id_profile)
+REFERENCES
+public.PROFILE
+(id_profile)
+CONSTRAINT
+PROJECT_pkey
+PRIMARY KEY
+(id_project)
+Indexes
+Add index
+INDEX
+idx_project_profile_state_created
+…
+USING
+BTREE
+(id_profile, state, created_at)
+UNIQUE
+INDEX
+PROJECT_pkey
+…
+USING
+BTREE
+(id_project)
+Policies
+Add policy
+
+PUBLICATION
+Table name
+
+public
+Schema
+Row Level Security
+
+Columns
+Add column
+id_publication
+BIGINT
+PRIMARY KEY
+GENERATED ALWAYS AS IDENTITY
+description
+VARCHAR(255)
+outstanding
+BOOLEAN
+visibility
+BOOLEAN
+state
+VARCHAR(50)
+created_at
+TIMESTAMP
+updated_at
+TIMESTAMP
+id_profile
+BIGINT
+Constraints
+Add constraint
+CONSTRAINT
+PUBLICATION_state_check
+CHECK
+(((state)::text = ANY ((ARRAY['incomplete'::character varying, 'published'::character varying, 'removed'::character varying])::text[])))
+CONSTRAINT
+PUBLICATION_id_profile_fkey
+FOREIGN KEY
+(id_profile)
+REFERENCES
+public.PROFILE
+(id_profile)
+CONSTRAINT
+PUBLICATION_pkey
+PRIMARY KEY
+(id_publication)
+Indexes
+Add index
+INDEX
+idx_publication_profile_created
+…
+USING
+BTREE
+(id_profile, created_at)
+INDEX
+idx_publication_profile_state_created
+…
+USING
+BTREE
+(id_profile, state, created_at)
+INDEX
+idx_publication_state_created
+…
+USING
+BTREE
+(state, created_at)
+UNIQUE
+INDEX
+PUBLICATION_pkey
+…
+USING
+BTREE
+(id_publication)
+Policies
+Add policy
+

@@ -1,0 +1,523 @@
+{
+  "nav": {
+    "home": "Home",
+    "howItWorks": "How it works",
+    "features": "Features",
+    "explore": "Explore",
+    "contact": "Contact",
+    "search": "Search",
+    "searchMobile": "Search",
+    "register": "Sign up",
+    "login": "Log in",
+    "myProfile": "My profile",
+    "settings": "Settings",
+    "logout": "Log out",
+
+    "dashboard": "Dashboard",
+    "saved": "Saved"
+  },
+  "hero": {
+    "badge": "Professional platform",
+    "title": "Your work deserves to be discovered",
+    "subtitle": "Create your professional portfolio, design your CV and connect with companies looking for your talent. All in one place.",
+    "cta": {
+      "start": "Get started for free",
+      "explore": "Explore projects"
+    },
+    "proof": {
+      "count": "+5,000 creatives",
+      "text": "are already sharing their work"
+    },
+    "card": {
+      "role": "Product Designer · Freelance",
+      "pro": "Pro",
+      "projects": "projects",
+      "views": "views",
+      "followers": "followers"
+    },
+    "miniCard": {
+      "title": "Portfolio views",
+      "sub": "2,543 this month"
+    },
+    "notif": {
+      "title": "New opportunity",
+      "sub": "A company contacted you"
+    }
+  },
+  "features": {
+    "tag": "Features",
+    "title": "Everything you need to shine",
+    "subtitle": "Tools designed to make your talent stand out and connect with real opportunities.",
+    "items": [
+      {
+        "title": "Stunning templates",
+        "desc": "Choose from professionally designed templates that showcase your work at its best."
+      },
+      {
+        "title": "Full customization",
+        "desc": "Adjust every detail of your portfolio to reflect your personal brand and unique style."
+      },
+      {
+        "title": "Detailed analytics",
+        "desc": "Monitor who visits your portfolio and which projects generate the most interest."
+      },
+      {
+        "title": "Mobile responsive",
+        "desc": "Your portfolio adapts perfectly to any device."
+      },
+      {
+        "title": "Easy sharing",
+        "desc": "Share your profile with a custom URL on any platform."
+      },
+      {
+        "title": "Verified profile",
+        "desc": "Boost your credibility with a verified profile and stand out from others."
+      }
+    ]
+  },
+  "howItWorks": {
+    "tag": "How it works",
+    "title": "From zero to discovered in three steps",
+    "subtitle": "Start today. No technical experience needed, just your talent.",
+    "steps": [
+      {
+        "title": "Create your profile",
+        "desc": "Sign up in seconds. Add your specialty, skills and a professional bio."
+      },
+      {
+        "title": "Upload your projects",
+        "desc": "Share your work with images, videos or PDFs and let them speak for you."
+      },
+      {
+        "title": "Connect and grow",
+        "desc": "Receive opportunities from companies and recruiters interested in your talent."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready to show your work to the world?",
+    "subtitle": "Join thousands of creatives already building their career with PortaFy. It's free, always.",
+    "createPortfolio": "Create my portfolio",
+    "viewDemo": "View a demo"
+  },
+  "footer": {
+    "tagline": "Academic project — Universidad Mayor de San Simón",
+    "desc": "Professional platform for creatives. Share your work and connect with real opportunities.",
+    "columns": {
+      "Product": {
+        "heading": "Product",
+        "links": [
+          "How it works",
+          "Features",
+          "CV Builder",
+          "For companies",
+          "Pricing"
+        ]
+      },
+      "Community": {
+        "heading": "Community",
+        "links": [
+          "Explore projects",
+          "Featured creatives",
+          "Categories",
+          "Blog",
+          "Newsletter"
+        ]
+      },
+      "Company": {
+        "heading": "Company",
+        "links": [
+          "About",
+          "Careers",
+          "Press",
+          "Contact",
+          "Privacy",
+          "Terms"
+        ]
+      }
+    },
+    "rights": "All rights reserved",
+    "bottom": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "cookies": "Cookies"
+    }
+  },
+  "login": {
+    "back": "Back to home",
+    "title": "Log in",
+    "welcome": "Welcome back to PortaFy",
+    "continueGoogle": "Continue with Google",
+    "continueLinkedIn": "Continue with LinkedIn",
+    "continueGitHub": "Continue with GitHub",
+    "orWith": "or with your email",
+    "email": "Email address",
+    "emailPlaceholder": "you@email.com",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Log in",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Sign up for free",
+    "errors": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "passwordRequired": "Password is required",
+      "passwordShort": "Incorrect password",
+      "connection": "Connection error"
+    }
+  },
+  "register": {
+    "back": "Back to home",
+    "title": "Create account",
+    "subtitle": "Build your professional portfolio today",
+    "continueGoogle": "Continue with Google",
+    "continueLinkedIn": "Continue with LinkedIn",
+    "continueGitHub": "Continue with GitHub",
+    "orWith": "or with your email",
+    "name": "First name",
+    "namePlaceholder": "Ana",
+    "lastName": "Last name",
+    "lastNamePlaceholder": "García",
+    "email": "Email address",
+    "emailPlaceholder": "you@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Minimum 8 characters",
+    "passwordLetter": "Password must contain at least one letter",
+    "passwordSymbol": "Password must contain at least one symbol",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "terms": "I accept the",
+    "termsLink": "terms and conditions",
+    "and": "and the",
+    "privacyLink": "privacy policy",
+    "submit": "Create account",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Log in",
+    "success": "Account created!",
+    "redirecting": "Redirecting to login...",
+    "strength": {
+      "weak": "Weak",
+      "moderate": "Moderate",
+      "strong": "Strong"
+    },
+    "errors": {
+      "nameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "passwordRequired": "Password is required",
+      "passwordShort": "Minimum 8 characters",
+      "confirmRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "termsRequired": "You must accept the terms to continue",
+      "captchaRequired": "Complete the captcha to continue",
+      "passwordLetter": "Password must contain at least one letter",
+      "passwordSymbol": "Password must contain at least one symbol"
+      }
+  },
+  "resetPassword": {
+    "back": "Back to login",
+    "title": "New password",
+    "subtitle": "Enter your new password to restore your access.",
+    "password": "New password",
+    "passwordPlaceholder": "Minimum 8 characters",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "submit": "Reset password",
+    "success": "Password updated!",
+    "redirecting": "Redirecting to login...",
+    "strength": {
+      "weak": "Weak password",
+      "moderate": "Moderate password",
+      "strong": "Strong password"
+    },
+    "errors": {
+      "passwordRequired": "Password is required",
+      "passwordShort": "Minimum 8 characters",
+      "confirmRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "default": "Error resetting password"
+    }
+  },
+  "forgotPassword": {
+    "back": "Back to login",
+    "title": "Forgot your password?",
+    "subtitle": "Enter your email and we'll send you a link to reset it.",
+    "email": "Email address",
+    "emailPlaceholder": "you@email.com",
+    "submit": "Send link",
+    "successTitle": "Email sent!",
+    "successMsg": "Check your inbox and follow the instructions to reset your password.",
+    "backToLogin": "Back to login",
+    "rememberPassword": "Remember your password?",
+    "loginLink": "Log in",
+    "errors": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "default": "Error sending email"
+    }
+  },
+  "portfolio": {
+    "breadcrumb": "Portfolio",
+    "myItems": "My",
+    "manage": "Manage",
+    "helper": "Fill only this section without a heavy flow."
+  },
+  "common": {
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "view": "View",
+    "list": "List",
+    "record": "record",
+    "records": "records",
+    "newRecord": "New record",
+    "saveChanges": "Save changes"
+  },
+  "sidebar": {
+    "panel": "Panel",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "explore": "Explore",
+    "filters": {
+      "all": "All",
+      "talent": "Talent",
+      "job": "Jobs",
+      "portfolio": "Portfolio"
+    },
+    "trending": "Trending"
+  },
+  "rightSidebar": {
+    "suggestedTalent": "Suggested talent",
+    "suggestedCompanies": "Companies to follow",
+    "mutual": "{{count}} mutual connections",
+    "openRoles": "{{count}} open positions",
+    "ctaTitle": "Looking for talent?",
+    "ctaDesc": "Post your job and reach thousands of professionals in LATAM",
+    "ctaButton": "Post job"
+  },
+  "commonx": {
+    "viewMore": "View more"
+  },
+  "postCard": {
+    "type": {
+      "talent": "TALENT",
+      "job": "JOB",
+      "portfolio": "PORTFOLIO"
+    },
+    "viewComments": "View {{count}} comments",
+    "hideComments": "Hide comments",
+    "writeComment": "Write a comment..."
+  },
+  "workspace": {
+    "portfolio": "Portfolio",
+    "my": "My",
+    "list": "List",
+    "record": "record",
+    "records": "records",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes",
+    "editing": "Editing",
+    "newRecord": "New record",
+    "description": "Description",
+    "technologies": "Technologies",
+    "demoUrl": "Demo URL",
+    "cover": "Cover",
+    "dates": "Dates",
+    "current": "Present",
+    "undefined": "Undefined",
+    "level": "Level",
+    "visual": "Visual",
+    "cvUrl": "CV URL",
+    "file": "PDF File",
+    "link": "Link",
+    "currentlyWorking": "I currently work here",
+    "selectOption": "Select an option"
+  },
+  "dashboard": {
+    "panel": "Panel",
+    "home": "Inicio",
+    "dashboard": "Dashboard",
+    "main": "Principal",
+    "profile": "Mi perfil",
+    "portfolio": "Portafolio",
+    "status": "Estado",
+    "ready": "Tu dashboard ya está listo",
+    "description": "Desde aquí puedes construir cada sección sin afectar el feed principal."
+  },
+  "portfoliox": {
+    "overview": {
+      "eyebrow": "Portfolio",
+      "title": "Portfolio Modules",
+      "description": "Each block works independently so users can add information without feeling a heavy workflow. Choose a card and manage that section in a dedicated view.",
+      "items": "items",
+      "manage": "Click to manage"
+    }
+  },
+  "dashboardx": {
+    "title": "Dashboard",
+    "mainPanel": "Main Panel",
+    "description": "Here you can centralize your profile, track your progress, and gradually build the full user experience without affecting the main feed.",
+    "growthSpace": "Space ready to grow",
+    "summary": {
+      "profile": "Profile",
+      "completed": "Completed",
+      "projects": "Projects",
+      "published": "Published",
+      "activity": "Activity",
+      "weekChanges": "Changes this week"
+    },
+    "steps": {
+      "presentation": "Complete professional presentation",
+      "cover": "Upload cover and profile photo",
+      "projects": "Add featured projects",
+      "social": "Connect social links"
+    },
+    "nextStep": "Next step",
+    "buildRoute": "Build roadmap",
+    "calendar": "Calendar",
+    "agenda": "Interactive agenda",
+    "calendarHint": "Click a day to view or plan activity",
+    "freeDay": "Free day",
+    "noEvents": "No events scheduled",
+    "freeDayDesc": "You can use this date to plan profile updates, upload projects, or review links."
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "weekdays": {
+    "mon": "M",
+    "tue": "T",
+    "wed": "W",
+    "thu": "T",
+    "fri": "F",
+    "sat": "S",
+    "sun": "S"
+  },
+  "explore": {
+    "viewProfile": "View profile",
+    "noBio": "No description available.",
+    "noResultsFor": "No results for",
+    "tryAnother": "Try another name, last name or skill.",
+    "resultsFor": "results for",
+    "initialTitle": "Explore professional profiles",
+    "initialSubtitle": "Type in the search bar and press Enter.",
+    "connectionError": "Could not connect to the server."
+  },
+  "forms": {
+    "step1": {
+      "title": "Add a photo",
+      "sub": "A photo helps others recognize you in your portfolio",
+      "tap": "Tap to upload photo",
+      "tapChange": "Tap to change"
+    },
+    "step2": {
+      "title": "Tell us about yourself",
+      "sub": "A short bio gives personality to your portfolio",
+      "placeholder": "E.g.: Passionate developer creating innovative solutions..."
+    },
+    "step3": {
+      "title": "Your academic background",
+      "sub": "Add your university and degree — you can add more than one",
+      "tipoLabel": "Type of education",
+      "tipoPlaceholder": "Select an option",
+      "tipos": {
+        "universitaria": "University",
+        "tecnica": "Technical",
+        "posgrado": "Postgraduate",
+        "maestria": "Master's",
+        "doctorado": "Doctorate",
+        "curso": "Course",
+        "certificacion": "Certification"
+      },
+      "institucionLabel": "Institution",
+      "institucionPlaceholder": "E.g.: University of California",
+      "carreraLabel": "Degree",
+      "carreraPlaceholder": "E.g.: Computer Science",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "agregar": "Add",
+      "cancelar": "Cancel",
+      "btnAgregar": "Add academic background"
+    },
+    "step4": {
+      "title": "Where are you located?",
+      "sub": "Your location helps you connect with nearby opportunities",
+      "placeholder": "E.g.: New York, USA"
+    },
+    "success": {
+      "title": "Profile completed! ",
+      "sub": "Your professional portfolio is ready. You can edit it whenever you want.",
+      "btn": "Go to my portfolio"
+    },
+    "actions": {
+      "next": "Next",
+      "back": "Back",
+      "skip": "Skip this step",
+      "skipFinish": "Skip and finish",
+      "finish": "Finish profile"
+    },
+    "steps": {
+      "photo": "Profile photo",
+      "bio": "Biography",
+      "formation": "Education",
+      "location": "Location"
+    }
+  },
+  "category": {
+    "usuario": "User",
+    "proyecto": "Project",
+    "habilidad": "Skill",
+    "experiencia": "Experience",
+    "profesional": "Professional"
+  },
+  "filter": {
+    "usuario": {
+      "nombre": "Full Name",
+      "bio": "Biography",
+      "ubicacion": "Location"
+    },
+    "proyecto": {
+      "nombre": "Name",
+      "tecnologia": "Technology",
+      "descripcion": "Description"
+    },
+    "habilidad": {
+      "nombre": "Name",
+      "tecnica": "Technical",
+      "blanda": "Soft"
+    },
+    "experiencia": {
+      "empresa": "Company",
+      "laboral": "Work",
+      "academica": "Academic"
+    },
+    "profesional": {
+      "universidad": "University",
+      "carrera": "Career",
+      "nivel": "Level"
+    }
+  },
+  "pagination": {
+    "firstPage": "First page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page"
+  }
+}

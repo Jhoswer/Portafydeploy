@@ -1,0 +1,33 @@
+/* ============================================================
+   src/styles/Utilities.css
+   Clases de utilidad globales PortaFy.
+   ============================================================ */
+
+@layer utilities {
+
+  /* ── Glow effects ─────────────────────────────────────── */
+  .glow-primary {
+    box-shadow: 0 0 40px -10px rgba(232, 72, 74, .35);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 40px -10px rgba(26, 111, 189, .35);
+  }
+
+  /* ── Glass panel ──────────────────────────────────────── */
+  .glass-panel {
+    @apply backdrop-blur-xl border border-white/40 shadow-2xl;
+    background: rgba(255, 255, 255, .70);
+  }
+
+  /* ── Text gradients ───────────────────────────────────── */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #0c1426 0%, #2e3d55 100%);
+  }
+
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, var(--color-red) 10%, #ff8a80 90%);
+  }
+}

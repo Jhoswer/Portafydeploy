@@ -1,0 +1,352 @@
+/* ============================================================
+   src/styles/components/recruiter/MisConvocatorias.css
+   Importar en el archivo donde uses MisConvocatorias, o en
+   el CSS entry point (app.css / index.css).
+   ============================================================ */
+
+/* ── Wrapper ──────────────────────────────────────────────── */
+.mc-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Header card ──────────────────────────────────────────── */
+.mc-header {
+  background: var(--color-white);
+  border: 0.5px solid rgba(205, 225, 245, 0.6);
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.mc-header__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ── Títulos ──────────────────────────────────────────────── */
+.mc-title {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+  font-family: var(--font-title);
+  transition: color var(--ease);
+}
+
+.mc-subtitle {
+  font-size: 13px;
+  color: var(--color-muted-text);
+  margin-top: 4px;
+  font-family: var(--font-body);
+  transition: color var(--ease);
+}
+
+/* ── Tab bar ──────────────────────────────────────────────── */
+.mc-tabs {
+  display: inline-flex;
+  gap: 4px;
+  background: var(--color-bg-section-alt);
+  border-radius: 10px;
+  padding: 4px;
+  border: 0.5px solid rgba(205, 225, 245, 0.5);
+  align-self: flex-start;
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.mc-tab {
+  padding: 7px 20px;
+  font-size: 13px;
+  font-weight: 400;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-muted-text);
+  font-family: var(--font-ui);
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.mc-tab--active {
+  font-weight: 500;
+  background: var(--color-white);
+  color: var(--color-text);
+  box-shadow: 0 0.5px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Grid de cards ────────────────────────────────────────── */
+.mc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── Estado vacío ─────────────────────────────────────────── */
+.mc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  background: var(--color-white);
+  border-radius: 16px;
+  border: 0.5px dashed rgba(162, 214, 249, 0.6);
+  text-align: center;
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.mc-empty__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-bg-section-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--color-muted-text);
+  transition: background var(--ease), color var(--ease);
+}
+
+.mc-empty__title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0 0 6px;
+  font-family: var(--font-title);
+  transition: color var(--ease);
+}
+
+.mc-empty__text {
+  font-size: 13px;
+  color: var(--color-muted-text);
+  max-width: 360px;
+  margin: 0 0 20px;
+  line-height: 1.6;
+  font-family: var(--font-body);
+  transition: color var(--ease);
+}
+
+.mc-empty__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 0.5px solid var(--color-blue-mid);
+  background: var(--color-blue-mid);
+  color: var(--color-blue-soft);
+  font-family: var(--font-ui);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.mc-empty__btn:hover {
+  background: var(--color-blue-light);
+  border-color: var(--color-blue-light);
+  color: var(--color-text);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .mc-header {
+    padding: 16px;
+  }
+
+  .mc-title {
+    font-size: 18px;
+  }
+
+  .mc-tab {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .mc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mc-empty {
+    padding: 40px 16px;
+  }
+}
+
+/* ── Dark mode ────────────────────────────────────────────── */
+
+/* .mc-header, .mc-empty, .mc-tab--active y .mc-empty__icon
+   usan var(--color-white) que en .dark ya vale hsl(218 30% 12%).
+   Solo necesitamos ajustar los bordes y sombras con rgba(). */
+
+.dark .mc-header {
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .mc-tab--active {
+  box-shadow: 0 0.5px 2px rgba(0, 0, 0, 0.3);
+}
+
+.dark .mc-empty {
+  border-color: rgba(162, 214, 249, 0.10);
+}
+
+.dark .mc-empty__btn {
+  color: hsl(205 75% 72%);
+}
+
+.dark .mc-empty__btn:hover {
+  color: var(--color-text);
+}
+
+
+/* ── Meta row ─────────────────────────────────────────────── */
+.job-card__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-muted-text);
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+/* ── Skills ───────────────────────────────────────────────── */
+.job-card__skills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.job-card__skill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--color-bg-section-alt);
+  border: 0.5px solid rgba(205, 225, 245, 0.4);
+  font-size: 12px;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+}
+
+.job-card__skill--more {
+  color: var(--color-muted-text);
+}
+
+/* ── Divider ──────────────────────────────────────────────── */
+.job-card__divider {
+  border: none;
+  border-top: 0.5px solid rgba(205, 225, 245, 0.3);
+  margin: 0 0 14px;
+}
+
+/* ── Métricas ─────────────────────────────────────────────── */
+.job-card__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.job-card__metric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-bg-section-alt);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.job-card__metric-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.job-card__metric-icon--eye    { background: rgba(56,189,248,0.1); color: #38bdf8; }
+.job-card__metric-icon--users  { background: rgba(99,102,241,0.1); color: #818cf8; }
+.job-card__metric-icon--clock  { background: rgba(232,121,249,0.1); color: #e879f9; }
+.job-card__metric-icon--folder { background: rgba(251,191,36,0.1);  color: #fbbf24; }
+
+.job-card__metric-value {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.job-card__metric-label {
+  font-size: 11px;
+  color: var(--color-muted-text);
+  margin: 0;
+}
+
+/* ── Pipeline ─────────────────────────────────────────────── */
+.job-card__pipeline {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.job-card__pipe-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--color-muted-text);
+}
+
+.job-card__pipe-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.job-card__pipe-count {
+  font-weight: 500;
+  color: var(--color-text);
+  margin-left: 2px;
+}
+
+/* ── Botones de acción en footer ──────────────────────────── */
+.job-card__action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 8px;
+  border: 0.5px solid rgba(205, 225, 245, 0.35);
+  background: var(--color-bg-section-alt);
+  color: var(--color-text);
+  font-size: 13px;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.job-card__action-btn:hover {
+  background: var(--color-bg-section);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .job-card__metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

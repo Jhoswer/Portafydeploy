@@ -1,0 +1,103 @@
+/* ============================================================
+   src/styles/components/recruiter/EmpresaPerfil.css
+   ============================================================ */
+
+/* ── Grid principal ───────────────────────────────────────── */
+.empresa-perfil__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .empresa-perfil__grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.empresa-perfil__full {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.empresa-perfil__feed {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.empresa-perfil__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Card convocatorias ───────────────────────────────────── */
+.convocatorias-card {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--ease), background var(--ease);
+}
+
+.convocatorias-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.convocatorias-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(205, 225, 245, 0.4);
+}
+
+.convocatorias-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-title);
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+.convocatorias-card__link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-red);
+  font-family: var(--font-ui);
+  transition: opacity var(--ease);
+}
+
+.convocatorias-card__link:hover {
+  opacity: 0.75;
+}
+
+.convocatorias-card__body {
+  padding: 18px 20px 20px;
+}
+
+.convocatorias-card__empty {
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+  padding: 12px 0;
+}
+
+.convocatorias-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Dark mode ────────────────────────────────────────────── */
+.dark .convocatorias-card {
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .convocatorias-card__header {
+  border-bottom-color: rgba(162, 214, 249, 0.08);
+}

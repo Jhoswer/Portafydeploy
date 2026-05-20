@@ -1,0 +1,69 @@
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:focus-visible {
+  outline: 2px solid var(--color-blue-mid);
+  outline-offset: 2px;
+}
+
+/* ── Track (la "pista" del switch) ───────────────────────── */
+.theme-toggle-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(162, 214, 249, 0.35);
+  border: 1.5px solid rgba(162, 214, 249, 0.50);
+  transition: background 0.25s ease, border-color 0.25s ease;
+  padding: 2px;
+}
+
+.theme-toggle-btn:hover .theme-toggle-track {
+  background: rgba(162, 214, 249, 0.55);
+  border-color: rgba(162, 214, 249, 0.75);
+}
+
+/* ── Thumb (la bolita que se mueve) ──────────────────────── */
+.theme-toggle-thumb {
+  position: absolute;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-white);
+  box-shadow: 0 1px 4px rgba(14, 30, 60, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f59e0b;
+  transition: transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1), background 0.25s ease, color 0.25s ease;
+}
+
+/* ── Estado dark ──────────────────────────────────────────── */
+.dark .theme-toggle-track {
+  background: hsl(220 40% 22%);
+  border-color: rgba(162, 214, 249, 0.15);
+}
+
+.dark .theme-toggle-btn:hover .theme-toggle-track {
+  background: hsl(220 40% 26%);
+  border-color: rgba(162, 214, 249, 0.25);
+}
+
+/* Mueve el thumb a la derecha en modo oscuro */
+.dark .theme-toggle-thumb {
+  transform: translateX(20px);
+  background: hsl(218 30% 24%);
+  color: #818cf8; /* índigo para la luna */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}

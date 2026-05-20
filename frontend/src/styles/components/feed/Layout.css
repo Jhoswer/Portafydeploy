@@ -1,0 +1,154 @@
+/* ============================================================
+   src/styles/Layout.css
+   Layout de 3 columnas: sidebar-left | feed | sidebar-right
+   ============================================================ */
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.page-wrapper {
+  min-height: 100vh;
+}
+
+/* ── Layout principal 3 columnas ──────────────────────────── */
+.layout {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Feed central — scrollea con la página ────────────────── */
+.feed {
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Sidebars — se quedan fijos ───────────────────────────── */
+.sidebar-left,
+.sidebar-right {
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sidebar-left  { width: 260px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+.sidebar-right { width: 248px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+
+.sidebar-left::-webkit-scrollbar,
+.sidebar-right::-webkit-scrollbar { display: none; }
+
+/* ── Card base compartida ─────────────────────────────────── */
+.card {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-l);
+  box-shadow: 0 6px 20px rgba(14, 30, 60, .05);
+  overflow: hidden;
+  transition: box-shadow var(--ease), transform var(--ease), border-color var(--ease);
+}
+
+.card:hover {
+  box-shadow: 0 10px 28px rgba(14, 30, 60, .07);
+  border-color: rgba(162, 214, 249, 0.74);
+}
+
+.feed-side-card:hover {
+  transform: translateY(-2px);
+}
+
+.feed > .card:hover {
+  box-shadow: 0 6px 20px rgba(14, 30, 60, .05);
+  border-color: rgba(205, 225, 245, 0.6);
+}
+
+.card-body {
+  padding: 18px;
+}
+
+/* ── Card title compartido ────────────────────────────────── */
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 14px;
+  letter-spacing: -0.2px;
+  font-family: var(--font-title);
+}
+
+.section-divider {
+  height: 1px;
+  background: rgba(162, 214, 249, 0.25);
+  margin: 14px 0;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .sidebar-right { display: none; }
+  .feed { max-width: 100%; }
+  .layout {
+    max-width: 1120px;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-left { display: none; }
+  .layout {
+    padding: 16px 12px;
+    gap: 14px;
+  }
+  .feed {
+    max-width: 100%;
+  }
+}
+
+
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  font-size: 12px;
+  margin-right: 6px;
+}
+
+.feed--search {
+  max-width: 1200px;
+}
+
+.page-search .layout {
+  padding-top: 24px;
+}
+
+.page-feed .layout,
+.page-search .layout {
+  background: transparent;
+  border-radius: 0;
+}
+
+.search-header {
+  padding: 104px;
+}

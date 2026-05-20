@@ -1,0 +1,563 @@
+import { useState } from "react";
+import {
+  BriefcaseBusiness,
+  Building2,
+  Camera,
+  Download,
+  Flag,
+  FolderKanban,
+  ImagePlus,
+  Mail,
+  MapPin,
+  MoreHorizontal,
+  PencilLine,
+  Save,
+  Share2,
+  ShieldCheck,
+  Sparkles,
+  UserCheck,
+  UserPlus,
+  X,
+} from "lucide-react";
+
+import { MessageBox, MetaItem, StatCard } from "./ProfileSections";
+import { profileUi as ui } from "../../../styles/components/dashboard/profileStyles";
+
+export default function ProfileHero({
+  avatarRef,
+  beginEdit,
+  canEdit,
+  cancelEdit,
+  coverPhoto,
+  coverRef,
+  cv,
+  draft,
+  editing,
+  formError,
+  fullName,
+  headline,
+  isMobile,
+  onImageChange,
+  profilePhoto,
+  saveMessage,
+  saveProfile,
+  saving,
+  setDraft,
+  shareMessage,
+  shareProfile,
+  showContact,
+  shownProfile,
+  stats,
+  canReport = false,
+  canFollow = false,
+  followBusy = false,
+  isFollowing = false,
+  onToggleFollow,
+  onAnalyticsEvent,
+  onReportProfile,
+  onStatClick,
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const contactEmail = shownProfile.email && showContact ? shownProfile.email : "";
+  const initials = `${shownProfile.nombre?.[0] ?? "P"}${shownProfile.apellido?.[0] ?? "F"}`;
+  const verified = shownProfile.verification?.is_verified;
+  const primaryStats = stats.filter((stat) => stat.action === "followers" || stat.action === "following");
+  const secondaryStats = stats.filter((stat) => stat.action !== "followers" && stat.action !== "following");
+
+  return (
+    <section style={heroShell}>
+      <div
+        style={{
+          ...coverStyle,
+          ...(coverPhoto
+            ? {
+                backgroundImage: `linear-gradient(90deg, rgba(8,20,44,.56), rgba(37,99,235,.20)), url(${coverPhoto})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : {}),
+        }}
+      >
+        <div style={coverTexture} />
+        {canEdit && editing ? (
+          <button
+            type="button"
+            onClick={() => coverRef.current?.click()}
+            style={coverButtonStyle}
+          >
+            <ImagePlus size={14} />
+            Portada
+          </button>
+        ) : null}
+        <input
+          ref={coverRef}
+          type="file"
+          accept="image/*"
+          onChange={(event) => onImageChange("cover", event)}
+          style={{ display: "none" }}
+        />
+      </div>
+
+      <div style={{ padding: isMobile ? "0 18px 20px" : "0 24px 24px" }}>
+        <div style={{ ...identityGrid, gridTemplateColumns: isMobile ? "1fr" : "auto minmax(0, 1fr) auto" }}>
+          <div style={{ ...avatarWrap, justifySelf: isMobile ? "center" : "start" }}>
+            {profilePhoto ? (
+              <img src={profilePhoto} alt={fullName} style={avatarStyle(isMobile)} />
+            ) : (
+              <div style={avatarFallbackStyle(isMobile)}>{initials}</div>
+            )}
+
+            {canEdit && editing ? (
+              <>
+                <button type="button" onClick={() => avatarRef.current?.click()} style={ui.avatarAction}>
+                  <Camera size={14} />
+                </button>
+                <input
+                  ref={avatarRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => onImageChange("avatar", event)}
+                  style={{ display: "none" }}
+                />
+              </>
+            ) : null}
+          </div>
+
+          <div style={{ minWidth: 0, paddingTop: isMobile ? 0 : 22, textAlign: isMobile ? "center" : "left" }}>
+            {canEdit && editing ? (
+              <EditNameFields draft={draft} setDraft={setDraft} isMobile={isMobile} />
+            ) : (
+              <>
+                <div style={{ display: "flex", alignItems: "center", gap: 9, justifyContent: isMobile ? "center" : "flex-start", flexWrap: "wrap" }}>
+                  <h1 style={nameStyle}>{fullName}</h1>
+                  {verified ? <ShieldCheck size={24} color="#2563eb" /> : null}
+                </div>
+
+                {headline ? <div style={headlineStyle}>{headline}</div> : null}
+                {verified ? (
+                  <div style={verifiedPillStyle}>
+                    <ShieldCheck size={14} />
+                    Profesional verificado por PortaFy
+                  </div>
+                ) : null}
+              </>
+            )}
+
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 10, justifyContent: isMobile ? "center" : "flex-start" }}>
+              {editing ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 220 }}>
+                  <MapPin size={14} style={{ color: "var(--muted)", flexShrink: 0 }} />
+                  <input
+                    value={draft.ubicacion ?? ""}
+                    onChange={(event) => setDraft((prev) => ({ ...prev, ubicacion: event.target.value }))}
+                    placeholder="Tu ciudad o pais"
+                    style={{ ...ui.input, margin: 0, minWidth: 180 }}
+                  />
+                </div>
+              ) : (
+                <MetaItem icon={<MapPin size={14} />} text={shownProfile.ubicacion || "Ubicacion no especificada"} />
+              )}
+              {contactEmail ? <MetaItem icon={<Mail size={14} />} text={contactEmail} /> : null}
+            </div>
+          </div>
+
+          <div style={{ ...actionWrap, justifyContent: isMobile ? "center" : "flex-end", paddingTop: isMobile ? 0 : 18 }}>
+            {canEdit && editing ? (
+              <>
+                <button type="button" onClick={cancelEdit} style={ui.secondary}>
+                  <X size={14} />
+                  Cancelar
+                </button>
+                <button type="button" onClick={saveProfile} style={ui.primary}>
+                  <Save size={14} />
+                  {saving ? "Guardando..." : "Guardar"}
+                </button>
+              </>
+            ) : (
+              <>
+                {canFollow ? (
+                  <button
+                    type="button"
+                    onClick={onToggleFollow}
+                    disabled={followBusy}
+                    style={isFollowing ? followingButtonStyle : followButtonStyle}
+                  >
+                    {isFollowing ? <UserCheck size={15} /> : <UserPlus size={15} />}
+                    {isFollowing ? "Siguiendo" : followBusy ? "Procesando..." : "Seguir"}
+                  </button>
+                ) : null}
+
+                {canEdit ? (
+                  <button type="button" onClick={beginEdit} style={editButtonStyle}>
+                    <PencilLine size={15} />
+                    Editar perfil
+                  </button>
+                ) : null}
+
+                <div style={{ position: "relative" }}>
+                  <button type="button" onClick={() => setMenuOpen((value) => !value)} style={menuButtonStyle} aria-label="Mas opciones">
+                    <MoreHorizontal size={17} />
+                  </button>
+                  {menuOpen ? (
+                    <div style={menuStyle}>
+                      {!canEdit && contactEmail ? (
+                        <button type="button" onClick={() => { setMenuOpen(false); onAnalyticsEvent?.("contact_click"); window.location.href = `mailto:${contactEmail}`; }} style={menuItem}>
+                          <Mail size={14} /> Contactar
+                        </button>
+                      ) : null}
+                      <button type="button" onClick={() => { setMenuOpen(false); onAnalyticsEvent?.("cv_click"); if (cv.cvUrl) window.open(cv.cvUrl, "_blank"); else window.dispatchEvent(new CustomEvent("dashboard:navigate", { detail: "cv" })); }} style={menuItem}>
+                        <Download size={14} /> {cv.cvUrl ? "Ver CV" : "Gestion de CV"}
+                      </button>
+                      <button type="button" onClick={() => { setMenuOpen(false); shareProfile(); }} style={menuItem}>
+                        <Share2 size={14} /> Compartir perfil
+                      </button>
+                      {canReport ? (
+                        <button type="button" onClick={() => { setMenuOpen(false); onReportProfile?.(); }} style={{ ...menuItem, color: "#dc2626" }}>
+                          <Flag size={14} /> Reportar perfil
+                        </button>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {formError ? <MessageBox color="red" text={formError} /> : null}
+        {saveMessage ? <MessageBox color="green" text={saveMessage} /> : null}
+
+        <div style={{ ...primaryStatsGridStyle, gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "repeat(2, minmax(220px, 1fr))" }}>
+          {primaryStats.map((stat) => (
+            <StatCard
+              key={stat.label}
+              label={stat.label}
+              value={stat.value}
+              onClick={stat.action ? () => onStatClick?.(stat.action) : null}
+            />
+          ))}
+        </div>
+
+        {secondaryStats.length ? (
+          <div style={secondaryStatsStyle}>
+            {secondaryStats.map((stat) => {
+              const metric = compactMetricMeta(stat.label);
+
+              return (
+                <button
+                  key={stat.label}
+                  type="button"
+                  onClick={stat.action ? () => onStatClick?.(stat.action) : undefined}
+                  style={compactMetricStyle(Boolean(stat.action), metric)}
+                >
+                  <span style={compactMetricIconStyle(metric)}>
+                    <metric.icon size={14} />
+                  </span>
+                  <span style={{ display: "grid", gap: 2, minWidth: 0 }}>
+                    <strong style={compactMetricValueStyle}>{stat.value}</strong>
+                    <span style={compactMetricLabelStyle}>{stat.label}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+
+        {shareMessage ? <MessageBox color="blue" text={shareMessage} fit /> : null}
+      </div>
+    </section>
+  );
+}
+
+function EditNameFields({ draft, setDraft, isMobile }) {
+  return (
+    <div style={{ display: "grid", gap: 10, marginBottom: 8 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: 10 }}>
+        <input value={draft.nombre} onChange={(event) => setDraft((prev) => ({ ...prev, nombre: event.target.value }))} placeholder="Nombre" style={ui.input} />
+        <input value={draft.apellido} onChange={(event) => setDraft((prev) => ({ ...prev, apellido: event.target.value }))} placeholder="Apellido" style={ui.input} />
+      </div>
+    </div>
+  );
+}
+
+const heroShell = {
+  ...ui.shell,
+  overflow: "hidden",
+  borderRadius: 26,
+  background: "#fff",
+  boxShadow: "0 22px 55px rgba(14,30,60,.12)",
+};
+
+const coverStyle = {
+  minHeight: 116,
+  position: "relative",
+  overflow: "hidden",
+  background: "linear-gradient(135deg, #132848 0%, #234d86 58%, #8bd3f7 100%)",
+};
+
+const coverTexture = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(255,255,255,.05), transparent 38%), repeating-linear-gradient(45deg, rgba(255,255,255,.08) 0 1px, transparent 1px 15px)",
+};
+
+const coverButtonStyle = {
+  position: "absolute",
+  right: 18,
+  top: 16,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8,
+  border: "1px solid rgba(255,255,255,.34)",
+  borderRadius: 14,
+  padding: "9px 12px",
+  background: "rgba(255,255,255,.16)",
+  color: "#fff",
+  fontWeight: 850,
+  cursor: "pointer",
+  backdropFilter: "blur(8px)",
+};
+
+const identityGrid = {
+  display: "grid",
+  gap: 18,
+  alignItems: "start",
+};
+
+const avatarWrap = {
+  position: "relative",
+  marginTop: -58,
+  width: 120,
+};
+
+const avatarStyle = (isMobile) => ({
+  width: isMobile ? 108 : 120,
+  height: isMobile ? 108 : 120,
+  borderRadius: "50%",
+  objectFit: "cover",
+  border: "5px solid #fff",
+  boxShadow: "0 22px 40px rgba(14,30,60,.22)",
+  background: "#fff",
+});
+
+const avatarFallbackStyle = (isMobile) => ({
+  ...avatarStyle(isMobile),
+  display: "grid",
+  placeItems: "center",
+  background: "linear-gradient(135deg, #244fbd 0%, #7fc6f3 56%, #fb4050 100%)",
+  color: "#fff",
+  fontFamily: "var(--f-title)",
+  fontSize: isMobile ? "1.65rem" : "1.9rem",
+  fontWeight: 950,
+});
+
+const nameStyle = {
+  margin: 0,
+  fontFamily: "var(--f-title)",
+  fontSize: "clamp(1.65rem, 2.7vw, 2.28rem)",
+  lineHeight: 1.05,
+  fontWeight: 950,
+  color: "#0f172a",
+};
+
+const headlineStyle = {
+  marginTop: 7,
+  fontFamily: "var(--f-ui)",
+  color: "#334155",
+  fontSize: ".96rem",
+  fontWeight: 850,
+};
+
+const verifiedPillStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 7,
+  marginTop: 10,
+  padding: "8px 12px",
+  borderRadius: 999,
+  color: "#1d4ed8",
+  background: "rgba(37,99,235,.08)",
+  border: "1px solid rgba(37,99,235,.18)",
+  fontFamily: "var(--f-ui)",
+  fontSize: ".78rem",
+  fontWeight: 900,
+};
+
+const actionWrap = {
+  display: "flex",
+  gap: 10,
+  flexWrap: "wrap",
+};
+
+const menuButtonStyle = {
+  ...ui.icon,
+  width: 44,
+  height: 44,
+  borderRadius: 14,
+  boxShadow: "0 10px 24px rgba(14,30,60,.08)",
+};
+
+const editButtonStyle = {
+  ...ui.primary,
+  minHeight: 44,
+  padding: "0 18px",
+  borderRadius: 14,
+  boxShadow: "0 16px 30px rgba(232,72,74,.20)",
+};
+
+const followButtonStyle = {
+  ...ui.primary,
+  minHeight: 44,
+  padding: "0 18px",
+  borderRadius: 14,
+  background: "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+  boxShadow: "0 16px 30px rgba(37,99,235,.18)",
+};
+
+const followingButtonStyle = {
+  ...ui.secondary,
+  minHeight: 44,
+  padding: "0 18px",
+  borderRadius: 14,
+  color: "#2563eb",
+  background: "rgba(37,99,235,.08)",
+  border: "1px solid rgba(37,99,235,.20)",
+};
+
+const menuStyle = {
+  position: "absolute",
+  right: 0,
+  top: "calc(100% + 8px)",
+  zIndex: 20,
+  width: 220,
+  display: "grid",
+  gap: 4,
+  padding: 8,
+  borderRadius: 16,
+  background: "#fff",
+  border: "1px solid rgba(205,225,245,.78)",
+  boxShadow: "0 18px 40px rgba(14,30,60,.16)",
+};
+
+const menuItem = {
+  display: "flex",
+  alignItems: "center",
+  gap: 9,
+  border: 0,
+  background: "transparent",
+  padding: "10px 10px",
+  borderRadius: 12,
+  color: "var(--text)",
+  fontFamily: "var(--f-ui)",
+  fontSize: ".84rem",
+  fontWeight: 850,
+  cursor: "pointer",
+  textAlign: "left",
+};
+
+const primaryStatsGridStyle = {
+  display: "grid",
+  gap: 16,
+  marginTop: 26,
+  maxWidth: 600,
+};
+
+const secondaryStatsStyle = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 12,
+  marginTop: 16,
+};
+
+const compactMetricStyle = (clickable, metric) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 10,
+  minHeight: 50,
+  minWidth: 132,
+  padding: "9px 13px 9px 10px",
+  borderRadius: 16,
+  border: `1px solid ${metric.border}`,
+  background: `linear-gradient(135deg, rgba(255,255,255,.98) 0%, ${metric.soft} 100%)`,
+  color: "#334155",
+  cursor: clickable ? "pointer" : "default",
+  fontFamily: "var(--f-ui)",
+  textAlign: "left",
+  boxShadow: `0 12px 24px ${metric.shadow}`,
+  transition: "transform .16s ease, box-shadow .16s ease, border-color .16s ease",
+});
+
+const compactMetricIconStyle = (metric) => ({
+  width: 32,
+  height: 32,
+  borderRadius: 12,
+  display: "grid",
+  placeItems: "center",
+  color: metric.color,
+  background: metric.iconBg,
+  border: `1px solid ${metric.border}`,
+  flexShrink: 0,
+});
+
+const compactMetricValueStyle = {
+  fontFamily: "var(--f-title)",
+  fontSize: "1.05rem",
+  lineHeight: 1,
+  fontWeight: 950,
+  color: "#0f172a",
+};
+
+const compactMetricLabelStyle = {
+  fontSize: ".72rem",
+  lineHeight: 1.1,
+  fontWeight: 850,
+  color: "#64748b",
+  whiteSpace: "nowrap",
+};
+
+function compactMetricMeta(label) {
+  const key = String(label || "").toLowerCase();
+
+  if (key.includes("proyecto")) {
+    return {
+      icon: FolderKanban,
+      color: "#2563eb",
+      soft: "rgba(239,246,255,.96)",
+      iconBg: "rgba(37,99,235,.10)",
+      border: "rgba(37,99,235,.20)",
+      shadow: "rgba(37,99,235,.07)",
+    };
+  }
+
+  if (key.includes("exp")) {
+    return {
+      icon: BriefcaseBusiness,
+      color: "#0f766e",
+      soft: "rgba(240,253,250,.96)",
+      iconBg: "rgba(15,118,110,.10)",
+      border: "rgba(15,118,110,.20)",
+      shadow: "rgba(15,118,110,.07)",
+    };
+  }
+
+  if (key.includes("empresa")) {
+    return {
+      icon: Building2,
+      color: "#7c3aed",
+      soft: "rgba(245,243,255,.96)",
+      iconBg: "rgba(124,58,237,.10)",
+      border: "rgba(124,58,237,.20)",
+      shadow: "rgba(124,58,237,.07)",
+    };
+  }
+
+  return {
+    icon: Sparkles,
+    color: "#e11d48",
+    soft: "rgba(255,241,242,.96)",
+    iconBg: "rgba(225,29,72,.09)",
+    border: "rgba(225,29,72,.18)",
+    shadow: "rgba(225,29,72,.06)",
+  };
+}

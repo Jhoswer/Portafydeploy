@@ -1,0 +1,214 @@
+/* ============================================================
+   src/styles/components/recruiter/CompanyAboutCard.css
+   ============================================================ */
+
+/* ── Card ─────────────────────────────────────────────────── */
+.about-card {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--ease), background var(--ease);
+}
+
+.about-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.about-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid rgba(205, 225, 245, 0.4);
+}
+
+.about-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-title);
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+/* ── Botones de header ────────────────────────────────────── */
+.about-card__edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  color: var(--color-muted-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--ease);
+  padding: 0;
+}
+
+.about-card__edit-btn:hover {
+  color: var(--color-text);
+}
+
+.about-card__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.about-card__cancel-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  color: var(--color-muted-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--ease);
+  padding: 0;
+}
+
+.about-card__cancel-btn:hover {
+  color: var(--color-text);
+}
+
+.about-card__cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Body ─────────────────────────────────────────────────── */
+.about-card__body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Error ────────────────────────────────────────────────── */
+.about-card__error {
+  font-size: 12px;
+  color: var(--color-red);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ── Descripción ──────────────────────────────────────────── */
+.about-card__desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ── Grid misión / visión ─────────────────────────────────── */
+.about-card__mv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .about-card__mv-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.about-card__mv-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  margin: 0 0 6px;
+}
+
+.about-card__mv-text {
+  font-size: 13.5px;
+  color: var(--color-body);
+  font-family: var(--font-body);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Textarea ─────────────────────────────────────────────── */
+.about-card__textarea {
+  width: 100%;
+  border-radius: var(--radius-m);
+  border: 1.5px solid rgba(162, 214, 249, 0.55);
+  background: transparent;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  outline: none;
+  resize: none;
+  transition: border-color var(--ease), box-shadow var(--ease);
+  line-height: 1.6;
+}
+
+.about-card__textarea::placeholder {
+  color: var(--color-muted-text);
+  opacity: 0.6;
+}
+
+.about-card__textarea:focus {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px var(--color-red-soft);
+}
+
+.about-card__char-count {
+  font-size: 11px;
+  color: var(--color-muted-text);
+  font-family: var(--font-ui);
+  text-align: right;
+  margin: 4px 0 0;
+}
+
+/* ── Tags ─────────────────────────────────────────────────── */
+.about-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.about-card__tag {
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-section-alt);
+  color: var(--color-body);
+  border: 1px solid rgba(162, 214, 249, 0.30);
+}
+
+/* ── Dark mode ────────────────────────────────────────────── */
+.dark .about-card {
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .about-card__header {
+  border-bottom-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .about-card__textarea {
+  border-color: rgba(162, 214, 249, 0.15);
+}
+
+.dark .about-card__textarea:focus {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(232, 72, 74, .15);
+}
+
+.dark .about-card__tag {
+  border-color: rgba(162, 214, 249, 0.08);
+}

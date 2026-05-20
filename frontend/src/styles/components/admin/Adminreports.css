@@ -1,0 +1,142 @@
+/* ============================================================
+   src/styles/components/admin/adminReports.css
+   Layout general de la vista Reportes dentro de AdminFeed.
+   ============================================================ */
+
+.adm-reports {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+.adm-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  color: var(--text-muted, #6b7f99);
+  margin-bottom: 8px;
+}
+
+.adm-breadcrumb__active-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adm-breadcrumb__active {
+  color: var(--text-primary, #1a3a6b);
+  font-weight: 600;
+  cursor: help;
+}
+
+.adm-breadcrumb__tooltip {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  min-width: 220px;
+  max-width: 320px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12px;
+  line-height: 1.45;
+  border: 1px solid rgba(26, 58, 107, 0.12);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+  z-index: 3;
+}
+
+.adm-breadcrumb__tooltip::after {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 7px 6px 0;
+  border-style: solid;
+  border-color: transparent #ffffff transparent transparent;
+}
+
+.adm-breadcrumb__active-wrapper:hover .adm-breadcrumb__tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+.adm-reports__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary, #0c2140);
+  margin: 0 0 18px;
+  letter-spacing: -0.4px;
+}
+
+.adm-module-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.adm-reports__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.adm-reports__empty {
+  text-align: center;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.adm-reports__empty-icon {
+  font-size: 2.8rem;
+}
+
+.adm-reports__empty p {
+  font-size: 14px;
+  color: var(--text-muted, #6b7f99);
+  margin: 0;
+}
+
+.adm-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.adm-placeholder__icon {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #e9f1ff;
+  color: #1a3a6b;
+}
+
+.adm-placeholder__label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-muted, #6b7f99);
+  margin: 0;
+}

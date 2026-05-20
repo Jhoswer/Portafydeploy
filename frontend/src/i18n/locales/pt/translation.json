@@ -1,0 +1,503 @@
+{
+  "nav": {
+    "home": "Início",
+    "howItWorks": "Como funciona",
+    "features": "Recursos",
+    "explore": "Explorar",
+    "contact": "Contato",
+    "search": "Buscar",
+    "searchMobile": "Buscar",
+    "register": "Registrar-se",
+    "login": "Entrar",
+    "myProfile": "Meu perfil",
+    "settings": "Configurações",
+    "logout": "Sair",
+
+    "dashboard": "Painel",
+    "saved": "Salvos"
+  },
+  "hero": {
+    "badge": "Plataforma profissional",
+    "title": "Seu trabalho merece ser descoberto",
+    "subtitle": "Crie seu portfólio profissional, monte seu currículo e conecte-se com empresas que buscam seu talento. Tudo em um só lugar.",
+    "cta": {
+      "start": "Começar gratuitamente",
+      "explore": "Explorar projetos"
+    },
+    "proof": {
+      "count": "+5.000 criativos",
+      "text": "já estão compartilhando seu trabalho"
+    },
+    "card": {
+      "role": "Designer de Produto · Freelance",
+      "pro": "Pro",
+      "projects": "projetos",
+      "views": "visualizações",
+      "followers": "seguidores"
+    },
+    "miniCard": {
+      "title": "Visualizações do portfólio",
+      "sub": "2.543 este mês"
+    },
+    "notif": {
+      "title": "Nova oportunidade",
+      "sub": "Uma empresa entrou em contato"
+    }
+  },
+  "features": {
+    "tag": "Recursos",
+    "title": "Tudo que você precisa para se destacar",
+    "subtitle": "Ferramentas criadas para valorizar seu talento e conectá-lo a oportunidades reais.",
+    "items": [
+      {
+        "title": "Templates incríveis",
+        "desc": "Escolha entre templates criados por profissionais para exibir seu trabalho da melhor forma."
+      },
+      {
+        "title": "Personalização total",
+        "desc": "Ajuste cada detalhe do seu portfólio para refletir sua marca pessoal e estilo único."
+      },
+      {
+        "title": "Análises detalhadas",
+        "desc": "Acompanhe quem visita seu portfólio e quais projetos geram mais interesse."
+      },
+      {
+        "title": "Responsivo para mobile",
+        "desc": "Seu portfólio se adapta perfeitamente a qualquer dispositivo."
+      },
+      {
+        "title": "Compartilhamento fácil",
+        "desc": "Compartilhe seu perfil com uma URL personalizada em qualquer plataforma."
+      },
+      {
+        "title": "Perfil verificado",
+        "desc": "Aumente sua credibilidade com um perfil verificado e destaque-se dos demais."
+      }
+    ]
+  },
+  "howItWorks": {
+    "tag": "Como funciona",
+    "title": "Do zero ao descoberto em três passos",
+    "subtitle": "Comece hoje. Sem experiência técnica, apenas seu talento.",
+    "steps": [
+      {
+        "title": "Crie seu perfil",
+        "desc": "Cadastre-se em segundos. Adicione sua especialidade, habilidades e uma bio profissional."
+      },
+      {
+        "title": "Envie seus projetos",
+        "desc": "Compartilhe seu trabalho com imagens, vídeos ou PDFs e deixe-os falar por você."
+      },
+      {
+        "title": "Conecte-se e cresça",
+        "desc": "Receba oportunidades de empresas e recrutadores interessados no seu talento."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Pronto para mostrar seu trabalho ao mundo?",
+    "subtitle": "Junte-se a milhares de criativos que já estão construindo sua carreira com PortaFy. É gratuito, sempre.",
+    "createPortfolio": "Criar meu portfólio",
+    "viewDemo": "Ver uma demo"
+  },
+  "footer": {
+    "tagline": "Projeto acadêmico — Universidad Mayor de San Simón",
+    "desc": "Plataforma profissional para criativos. Compartilhe seu trabalho e conecte-se a oportunidades reais.",
+    "columns": {
+      "Product": {
+        "heading": "Produto",
+        "links": [
+          "Como funciona",
+          "Recursos",
+          "Criador de CV",
+          "Para empresas",
+          "Preços"
+        ]
+      },
+      "Community": {
+        "heading": "Comunidade",
+        "links": [
+          "Explorar projetos",
+          "Criativos em destaque",
+          "Categorias",
+          "Blog",
+          "Newsletter"
+        ]
+      },
+      "Company": {
+        "heading": "Empresa",
+        "links": [
+          "Sobre",
+          "Carreiras",
+          "Imprensa",
+          "Contato",
+          "Privacidade",
+          "Termos"
+        ]
+      }
+    },
+    "rights": "Todos os direitos reservados",
+    "bottom": {
+      "privacy": "Privacidade",
+      "terms": "Termos",
+      "cookies": "Cookies"
+    }
+  },
+  "login": {
+    "back": "Voltar ao início",
+    "title": "Entrar",
+    "welcome": "Bem-vindo de volta ao PortaFy",
+    "continueGoogle": "Continuar com o Google",
+    "continueLinkedIn": "Continuar com o LinkedIn",
+    "continueGitHub": "Continuar com o GitHub",
+    "orWith": "ou com seu e-mail",
+    "email": "Endereço de e-mail",
+    "emailPlaceholder": "voce@email.com",
+    "password": "Senha",
+    "forgotPassword": "Esqueceu sua senha?",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Entrar",
+    "noAccount": "Não tem uma conta?",
+    "registerLink": "Cadastre-se gratuitamente",
+    "errors": {
+      "emailRequired": "O e-mail é obrigatório",
+      "emailInvalid": "E-mail inválido",
+      "passwordRequired": "A senha é obrigatória",
+      "passwordShort": "Senha incorreta",
+      "connection": "Erro de conexão"
+    }
+  },
+  "register": {
+    "back": "Voltar ao início",
+    "title": "Criar conta",
+    "subtitle": "Construa seu portfólio profissional hoje mesmo",
+    "continueGoogle": "Cadastrar-se com o Google",
+    "continueLinkedIn": "Cadastrar-se com o LinkedIn",
+    "continueGitHub": "Cadastrar-se com o GitHub",
+    "orWith": "ou com seu e-mail",
+    "name": "Nome",
+    "namePlaceholder": "Ana",
+    "lastName": "Sobrenome",
+    "lastNamePlaceholder": "García",
+    "email": "Endereço de e-mail",
+    "emailPlaceholder": "voce@email.com",
+    "password": "Senha",
+    "passwordPlaceholder": "Mínimo 8 caracteres",
+    "confirmPassword": "Confirmar senha",
+    "confirmPasswordPlaceholder": "Repita sua senha",
+    "terms": "Aceito os",
+    "termsLink": "termos e condições",
+    "and": "e a",
+    "privacyLink": "política de privacidade",
+    "submit": "Criar conta",
+    "hasAccount": "Já tem uma conta?",
+    "loginLink": "Entrar",
+    "success": "Conta criada!",
+    "redirecting": "Redirecionando para o login...",
+    "strength": {
+      "weak": "Fraca",
+      "moderate": "Moderada",
+      "strong": "Forte"
+    },
+    "errors": {
+      "nameRequired": "O nome é obrigatório",
+      "lastNameRequired": "O sobrenome é obrigatório",
+      "emailRequired": "O e-mail é obrigatório",
+      "emailInvalid": "E-mail inválido",
+      "passwordRequired": "A senha é obrigatória",
+      "passwordShort": "Mínimo 8 caracteres",
+      "confirmRequired": "Confirme sua senha",
+      "passwordMismatch": "As senhas não coincidem",
+      "termsRequired": "Você deve aceitar os termos para continuar",
+      "captchaRequired": "Complete o captcha para continuar",
+      "passwordLetter_pt": "A senha deve conter pelo menos uma letra",
+  "passwordSymbol_pt": "A senha deve conter pelo menos um símbolo"
+    }
+  },
+  "resetPassword": {
+    "back": "Voltar ao login",
+    "title": "Nova senha",
+    "subtitle": "Digite sua nova senha para restaurar seu acesso.",
+    "password": "Nova senha",
+    "passwordPlaceholder": "Mínimo 8 caracteres",
+    "confirmPassword": "Confirmar senha",
+    "confirmPasswordPlaceholder": "Repita sua senha",
+    "submit": "Redefinir senha",
+    "success": "Senha atualizada!",
+    "redirecting": "Redirecionando para o login...",
+    "strength": {
+      "weak": "Senha fraca",
+      "moderate": "Senha moderada",
+      "strong": "Senha forte"
+    },
+    "errors": {
+      "passwordRequired": "A senha é obrigatória",
+      "passwordShort": "Mínimo 8 caracteres",
+      "confirmRequired": "Confirme sua senha",
+      "passwordMismatch": "As senhas não coincidem",
+      "default": "Erro ao redefinir a senha"
+    }
+  },
+  "forgotPassword": {
+    "back": "Voltar ao login",
+    "title": "Esqueceu sua senha?",
+    "subtitle": "Digite seu e-mail e enviaremos um link para redefini-la.",
+    "email": "Endereço de e-mail",
+    "emailPlaceholder": "voce@email.com",
+    "submit": "Enviar link",
+    "successTitle": "E-mail enviado!",
+    "successMsg": "Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.",
+    "backToLogin": "Voltar ao login",
+    "rememberPassword": "Lembrou sua senha?",
+    "loginLink": "Entrar",
+    "errors": {
+      "emailRequired": "O e-mail é obrigatório",
+      "emailInvalid": "E-mail inválido",
+      "default": "Erro ao enviar o e-mail"
+    }
+  },
+  "sidebar": {
+    "panel": "Painel",
+    "home": "Início",
+    "dashboard": "Painel",
+    "explore": "Explorar",
+    "filters": {
+      "all": "Todos",
+      "talent": "Talento",
+      "job": "Empregos",
+      "portfolio": "Portfólio"
+    },
+    "trending": "Tendências"
+  },
+  "rightSidebar": {
+    "suggestedTalent": "Talentos sugeridos",
+    "suggestedCompanies": "Empresas para seguir",
+    "mutual": "{{count}} conexões em comum",
+    "openRoles": "{{count}} vagas abertas",
+    "ctaTitle": "Procurando talento?",
+    "ctaDesc": "Publique sua vaga e alcance milhares de profissionais na LATAM",
+    "ctaButton": "Publicar vaga"
+  },
+  "commonx": {
+    "viewMore": "Ver mais"
+  },
+  "postCard": {
+    "type": {
+      "talent": "TALENTO",
+      "job": "EMPREGO",
+      "portfolio": "PORTFÓLIO"
+    },
+    "viewComments": "Ver {{count}} comentários",
+    "hideComments": "Ocultar comentários",
+    "writeComment": "Escreva um comentário..."
+  },
+  "workspace": {
+    "portfolio": "Portfólio",
+    "my": "Meus",
+    "list": "Lista",
+    "record": "registro",
+    "records": "registros",
+    "add": "Adicionar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "cancel": "Cancelar",
+    "saveChanges": "Salvar alterações",
+    "editing": "Edição",
+    "newRecord": "Novo registro",
+    "description": "Descrição",
+    "technologies": "Tecnologias",
+    "demoUrl": "URL Demo",
+    "cover": "Capa",
+    "dates": "Datas",
+    "current": "Atual",
+    "undefined": "Não definido",
+    "level": "Nível",
+    "visual": "Visual",
+    "cvUrl": "URL do CV",
+    "file": "Arquivo PDF",
+    "link": "Link",
+    "currentlyWorking": "Atualmente trabalho aqui",
+    "selectOption": "Selecione uma opção"
+  },
+  "dashboard": {
+    "panel": "Panel",
+    "home": "Inicio",
+    "dashboard": "Dashboard",
+    "main": "Principal",
+    "profile": "Mi perfil",
+    "portfolio": "Portafolio",
+    "status": "Estado",
+    "ready": "Tu dashboard ya está listo",
+    "description": "Desde aquí puedes construir cada sección sin afectar el feed principal."
+  },
+  "portfoliox": {
+    "overview": {
+      "eyebrow": "Portfólio",
+      "title": "Módulos do portfólio",
+      "description": "Cada bloco funciona de forma independente para que o usuário adicione informações sem sentir um fluxo pesado. Escolha um cartão e gerencie essa seção em uma visualização dedicada.",
+      "items": "itens",
+      "manage": "Clique para gerenciar"
+    }
+  },
+  "dashboardx": {
+    "title": "Dashboard",
+    "mainPanel": "Painel principal",
+    "description": "Aqui você pode centralizar seu perfil, acompanhar seu progresso e construir gradualmente toda a experiência sem alterar o feed principal.",
+    "growthSpace": "Espaço pronto para crescer",
+    "summary": {
+      "profile": "Perfil",
+      "completed": "Concluído",
+      "projects": "Projetos",
+      "published": "Publicados",
+      "activity": "Atividade",
+      "weekChanges": "Mudanças esta semana"
+    },
+    "steps": {
+      "presentation": "Completar apresentação profissional",
+      "cover": "Enviar capa e foto de perfil",
+      "projects": "Adicionar projetos em destaque",
+      "social": "Conectar links sociais"
+    },
+    "nextStep": "Próximo passo",
+    "buildRoute": "Rota de construção",
+    "calendar": "Calendário",
+    "agenda": "Agenda interativa",
+    "calendarHint": "Clique em um dia para ver ou planejar atividades",
+    "freeDay": "Dia disponível",
+    "noEvents": "Sem eventos agendados",
+    "freeDayDesc": "Você pode usar esta data para planejar atualizações no perfil, publicar projetos ou revisar links."
+  },
+  "months": {
+    "january": "Janeiro",
+    "february": "Fevereiro",
+    "march": "Março",
+    "april": "Abril",
+    "may": "Maio",
+    "june": "Junho",
+    "july": "Julho",
+    "august": "Agosto",
+    "september": "Setembro",
+    "october": "Outubro",
+    "november": "Novembro",
+    "december": "Dezembro"
+  },
+  "weekdays": {
+    "mon": "S",
+    "tue": "T",
+    "wed": "Q",
+    "thu": "Q",
+    "fri": "S",
+    "sat": "S",
+    "sun": "D"
+  },
+  "explore": {
+    "viewProfile": "Ver perfil",
+    "noBio": "Sem descrição disponível.",
+    "noResultsFor": "Nenhum resultado para",
+    "tryAnother": "Tente outro nome, sobrenome ou habilidade.",
+    "resultsFor": "resultados para",
+    "initialTitle": "Explore perfis profissionais",
+    "initialSubtitle": "Digite na barra de busca e pressione Enter.",
+    "connectionError": "Nao foi possivel conectar ao servidor."
+  },
+  "forms": {
+    "step1": {
+      "title": "Adicione uma foto",
+      "sub": "Uma foto ajuda outros a reconhecê-lo no seu portfólio",
+      "tap": "Toque para enviar foto",
+      "tapChange": "Toque para alterar"
+    },
+    "step2": {
+      "title": "Conte-nos sobre você",
+      "sub": "Uma biografia curta dá personalidade ao seu portfólio",
+      "placeholder": "Ex: Desenvolvedor apaixonado por criar soluções inovadoras..."
+    },
+    "step3": {
+      "title": "Sua formação acadêmica",
+      "sub": "Adicione sua universidade e curso — você pode adicionar mais de um",
+      "tipoLabel": "Tipo de formação",
+      "tipoPlaceholder": "Selecione uma opção",
+      "tipos": {
+        "universitaria": "Universitária",
+        "tecnica": "Técnica",
+        "posgrado": "Pós-graduação",
+        "maestria": "Mestrado",
+        "doctorado": "Doutorado",
+        "curso": "Curso",
+        "certificacion": "Certificação"
+      },
+      "institucionLabel": "Instituição",
+      "institucionPlaceholder": "Ex: Universidade de São Paulo",
+      "carreraLabel": "Curso",
+      "carreraPlaceholder": "Ex: Engenharia de Computação",
+      "fechaInicio": "Data de início",
+      "fechaFin": "Data de fim",
+      "agregar": "Adicionar",
+      "cancelar": "Cancelar",
+      "btnAgregar": "Adicionar formação acadêmica"
+    },
+    "step4": {
+      "title": "Onde você está localizado?",
+      "sub": "Sua localização ajuda a conectá-lo com oportunidades próximas",
+      "placeholder": "Ex: São Paulo, Brasil"
+    },
+    "success": {
+      "title": "Perfil concluído! ",
+      "sub": "Seu portfólio profissional está pronto. Você pode editá-lo quando quiser.",
+      "btn": "Ir ao meu portfólio"
+    },
+    "actions": {
+      "next": "Próximo",
+      "back": "Voltar",
+      "skip": "Pular esta etapa",
+      "skipFinish": "Pular e finalizar",
+      "finish": "Finalizar perfil "
+    },
+    "steps": {
+      "photo": "Foto de perfil",
+      "bio": "Biografia",
+      "formation": "Formação",
+      "location": "Localização"
+    }
+  },
+  "category": {
+    "usuario": "Usuário",
+    "proyecto": "Projeto",
+    "habilidad": "Habilidade",
+    "experiencia": "Experiência",
+    "profesional": "Profissional"
+  },
+  "filter": {
+    "usuario": {
+      "nombre": "Nome completo",
+      "bio": "Biografia",
+      "ubicacion": "Localização"
+    },
+    "proyecto": {
+      "nombre": "Nome",
+      "tecnologia": "Tecnologia",
+      "descripcion": "Descrição"
+    },
+    "habilidad": {
+      "nombre": "Nome",
+      "tecnica": "Técnica",
+      "blanda": "Interpessoal"
+    },
+    "experiencia": {
+      "empresa": "Empresa",
+      "laboral": "Trabalho",
+      "academica": "Acadêmica"
+    },
+    "profesional": {
+      "universidad": "Universidade",
+      "carrera": "Curso",
+      "nivel": "Nível"
+    }
+  },
+  "pagination": {
+    "firstPage": "Primeira pagina",
+    "previousPage": "Pagina anterior",
+    "nextPage": "Pagina seguinte",
+    "lastPage": "Ultima pagina"
+  }
+}

@@ -1,0 +1,139 @@
+/* ══════════════════════════════════════════════════
+   HOW IT WORKS
+══════════════════════════════════════════════════ */
+
+.pf-how {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Fondo — igual al hero ────────────────────────
+   Mismo esquema de dots + blobs azules/blancos     */
+.pf-how__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  /* dots idénticos al hero */
+  background-image: radial-gradient(circle, rgba(162,214,249,.25) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.5;
+}
+
+/* blobs decorativos igual que el hero */
+.pf-how::before,
+.pf-how::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pf-how::before {
+  top: -100px;
+  right: -120px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(232,72,74,.06) 0%, transparent 70%);
+}
+
+.pf-how::after {
+  bottom: -80px;
+  left: -140px;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(162,214,249,.20) 0%, transparent 70%);
+}
+
+/* asegura que el contenido quede sobre el fondo */
+.pf-how .pf-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Grid ─────────────────────────────────────── */
+.pf-how__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  position: relative;
+}
+
+/* ── Card ─────────────────────────────────────── */
+.pf-step {
+  position: relative;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 24px;
+  padding: 110px 28px 34px;
+  border: 1px solid rgba(162, 214, 249, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.07);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  overflow: hidden;
+}
+
+.pf-step:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.11);
+}
+
+/* ── Ícono ────────────────────────────────────── */
+.pf-step__icon-wrap {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* rojo pastel vibrante — coherente con el botón CTA */
+  background: linear-gradient(135deg, #e84848, #f87171);
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(232, 72, 74, 0.30);
+  z-index: 2;
+}
+
+.pf-step__icon {
+  stroke-width: 2;
+}
+
+/* ── Número de fondo ──────────────────────────── */
+.pf-step__number {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -3px;
+  /* más visible pero sin competir */
+  color: rgba(0, 0, 0, 0.07);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Texto ────────────────────────────────────── */
+.pf-step__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text, #0d1f3c);
+  margin-bottom: 10px;
+}
+
+.pf-step__desc {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--color-muted-text, #8896a7);
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 900px) {
+  .pf-how__grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

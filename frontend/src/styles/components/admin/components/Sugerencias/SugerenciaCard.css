@@ -1,0 +1,197 @@
+/* ============================================================
+   src/styles/components/admin/components/Sugerencias/SugerenciaCard.css
+   ============================================================ */
+
+/* ── Tarjeta ── */
+.sug-card {
+  background: var(--color-white, #fff);
+  border: 1px solid var(--color-card-border, #e6eaf2);
+  border-radius: var(--radius-l, 14px);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  transition: box-shadow var(--ease, 0.2s), transform var(--ease, 0.2s);
+}
+
+.sug-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* ════════════════════════════════════════
+   AVATAR  (base)
+════════════════════════════════════════ */
+.sug-card__avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: #fff;
+  /* Fallback neutro por si no llega ninguna clase de tipo */
+  background: #94a3b8;
+}
+
+/* ── Fallback por tipo de sugerencia ──
+   Nombres alineados con TYPE_META en sugerenciaService.js:
+   "sugerencia-avatar--<tipo>"
+────────────────────────────────────── */
+
+/* Agregar / Nueva funcionalidad → azul índigo */
+.sugerencia-avatar--agregar {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.30);
+}
+
+/* Idea → violeta */
+.sugerencia-avatar--idea {
+  background: linear-gradient(135deg, #6d28d9 0%, #a78bfa 100%);
+  box-shadow: 0 2px 8px rgba(109, 40, 217, 0.28);
+}
+
+/* Mejora → teal */
+.sugerencia-avatar--mejora {
+  background: linear-gradient(135deg, #0d9488 0%, #2dd4bf 100%);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.28);
+}
+
+/* Eliminar / Eliminar funcionalidad → rojo */
+.sugerencia-avatar--eliminar {
+  background: linear-gradient(135deg, #b91c1c 0%, #f87171 100%);
+  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.28);
+}
+
+/* ── Avatar con foto de perfil real ── */
+.sug-card__avatar--photo {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sug-card__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+/* ════════════════════════════════════════
+   CUERPO
+════════════════════════════════════════ */
+.sug-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Cabecera: nombre + badge ── */
+.sug-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sug-card__name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary, #0c2140);
+}
+
+/* ── Meta (fecha) ── */
+.sug-card__meta {
+  font-size: 12px;
+  color: var(--text-muted, #6b7f99);
+  margin: 0;
+}
+
+/* ── Descripción ── */
+.sug-card__desc {
+  font-size: 13px;
+  color: var(--text-secondary, #374151);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════
+   BADGES  (propios de sugerencias)
+════════════════════════════════════════ */
+.badge--blue   { background: #dbeafe; color: #1d4ed8; }
+.badge--purple { background: #ede9fe; color: #6d28d9; }
+/* badge--abierto y badge--critico ya definidos en reportCard.css */
+
+/* ════════════════════════════════════════
+   ACCIONES
+════════════════════════════════════════ */
+.sug-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.sug-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-m, 8px);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition:
+    background var(--ease, 0.15s),
+    border-color var(--ease, 0.15s),
+    color var(--ease, 0.15s);
+}
+
+.sug-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sug-btn--detail {
+  color: #1a3a6b;
+  border-color: #d0d9e8;
+  background: transparent;
+}
+.sug-btn--detail:hover:not(:disabled) {
+  background: #eff6ff;
+  border-color: #1d4ed8;
+  color: #1d4ed8;
+}
+
+.sug-btn--accept {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+.sug-btn--accept:hover:not(:disabled) {
+  background: #15803d;
+  border-color: #15803d;
+}
+
+.sug-btn--reject {
+  color: #c62525;
+  border-color: #fca5a5;
+  background: transparent;
+}
+.sug-btn--reject:hover:not(:disabled) {
+  background: #fff0f0;
+  border-color: #c62525;
+}

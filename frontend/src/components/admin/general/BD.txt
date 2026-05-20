@@ -1,0 +1,941 @@
+CREATE TABLE IF NOT EXISTS `USER` (
+	`id_user` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`last_name` VARCHAR(255),
+	`email` INTEGER,
+	`email_verified_at` TIMESTAMP,
+	`remember_token` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_user`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `ROLE` (
+	`id_role` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`description` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_role`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PERMISSION` (
+	`id_permission` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`active` BOOLEAN,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_permission`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PERMISSION_USER_ROL` (
+	`id_permission_user_rol` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_user_rol` INTEGER,
+	`id_permission` INTEGER,
+	`active` BOOLEAN,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`deadline` DATE,
+	PRIMARY KEY(`id_permission_user_rol`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `LOG` (
+	`id_log` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_user_rol` INTEGER,
+	`modified_table` VARCHAR(255),
+	`modified_field` VARCHAR(255),
+	`previous_value` TEXT(65535),
+	`new_value` TEXT(65535),
+	`created_at` TIMESTAMP,
+	`type` ENUM('create', 'delete', 'update'),
+	PRIMARY KEY(`id_log`)
+);
+
+CREATE TABLE IF NOT EXISTS `USER_ROLE` (
+	`id_user_rol` INTEGER,
+	`id_user` INTEGER,
+	`id_role` INTEGER,
+	PRIMARY KEY(`id_user_rol`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PROFILE` (
+	`id_profile` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255) NOT NULL,
+	`last_name` VARCHAR(255) NOT NULL,
+	`biography` VARCHAR(255),
+	`birthdate` DATE,
+	`id_state_country` BIGINT,
+	`profile_photo` VARCHAR(255),
+	`cover_photo` VARCHAR(255),
+	`completed_profile` TINYINT,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`number` INTEGER,
+	`id_job_title` BIGINT,
+	`id_user_rol` BIGINT NOT NULL,
+	PRIMARY KEY(`id_profile`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `SESSION` (
+	`id_session` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`ip_address` VARCHAR(45),
+	`user_agent` TEXT(65535),
+	`payload` LONGTEXT(65535),
+	`last_activity` INTEGER,
+	`id_profile` BIGINT,
+	PRIMARY KEY(`id_session`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `CREDENTIAL` (
+	`id_credentials` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_profile` INTEGER,
+	`password` VARCHAR(255),
+	`old_password` VARCHAR(255),
+	`key` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_credentials`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PREFERENCE` (
+	`id_preference` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`description` VARCHAR(255),
+	`type` ENUM('privacy', 'personalization'),
+	`visibility` BOOLEAN,
+	`color` ENUM('red', 'yellow', 'green', 'purple', 'sky blue', 'pink', 'cyan', 'black', 'orange', 'coffee', 'default', 'blue'),
+	`id_profile` BIGINT,
+	PRIMARY KEY(`id_preference`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `UNIVERSITY` (
+	`id_university` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`description` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`state` ENUM('activate', 'deactivate'),
+	PRIMARY KEY(`id_university`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `CAREER` (
+	`id_career` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`description` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`state` ENUM('activate', 'deactivate'),
+	PRIMARY KEY(`id_career`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `UNIVERSITY_CAREER` (
+	`id_university_career` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`training_type` VARCHAR(255),
+	`start_date` DATE,
+	`end_date` DATE,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`visibility` BOOLEAN,
+	`id_university` BIGINT,
+	`id_career` BIGINT,
+	`id_profile` BIGINT,
+	PRIMARY KEY(`id_university_career`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `SOCIAL_NETWORK` (
+	`id_social_networks` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_profile` BIGINT,
+	`id_platform` BIGINT,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`public` BOOLEAN,
+	PRIMARY KEY(`id_social_networks`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PLATFORM` (
+	`id_platform` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`url_platform` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_platform`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PORTFOLIO` (
+	`id_portfolio` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_profile` INTEGER,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`public` BOOLEAN,
+	`id_preference` BIGINT,
+	PRIMARY KEY(`id_portfolio`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PORTFOLIO_DETAIL` (
+	`id_portfolio_detail` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_skill_profile` INTEGER,
+	`id_portfolio` INTEGER,
+	`id_social_network` INTEGER,
+	`id_university_career` INTEGER,
+	`id_certificate` INTEGER,
+	`id_experience` INTEGER,
+	PRIMARY KEY(`id_portfolio_detail`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `SKILL` (
+	`id_skill` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`state` ENUM('deactivate', 'activate'),
+	`type` ENUM('soft', 'hard'),
+	`quantitative_level` VARCHAR(255),
+	`qualitative_level` INTEGER,
+	`description` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`id_area` BIGINT,
+	PRIMARY KEY(`id_skill`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `SKILL_PROFILE` (
+	`id_skill_profile` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_skill` BIGINT,
+	`id_profile` BIGINT,
+	`level` ENUM('junior', 'mid', 'senior'),
+	`visibility` BOOLEAN,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_skill_profile`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `EMOJI` (
+	`id_emoji` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`state` ENUM('activate', 'deactivate'),
+	PRIMARY KEY(`id_emoji`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `COMMENT` (
+	`id_comment` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_publication` BIGINT,
+	`id_commentator` BIGINT,
+	`comment` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`removed_at` TIMESTAMP,
+	PRIMARY KEY(`id_comment`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PUBLICATION` (
+	`id_publication` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`description` VARCHAR(255),
+	`outstading` BOOLEAN,
+	`visibility` BOOLEAN,
+	`state` ENUM('incomplete', 'published', 'removed'),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`id_profile` BIGINT,
+	PRIMARY KEY(`id_publication`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `REACTION` (
+	`id_reaction` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_reactor` INTEGER,
+	`id_emoji` INTEGER,
+	`id_publication` INTEGER,
+	`creates_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_reaction`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `RESPONSE` (
+	`id_response` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_responder` INTEGER,
+	`id_emoji` INTEGER,
+	`id_comment` INTEGER,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_response`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `CERTIFICATE` (
+	`id_certificate` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_profile` BIGINT,
+	`created_at` BIGINT,
+	`updated_at` BIGINT,
+	`description` VARCHAR(255),
+	`public` BOOLEAN,
+	`state` ENUM('activate', 'deactivate'),
+	PRIMARY KEY(`id_certificate`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `EXPERIENCE` (
+	`id_experience` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`type` ENUM('labor', 'academic'),
+	`company` VARCHAR(255),
+	`title` VARCHAR(255),
+	`description` TEXT(65535),
+	`start_date` DATE,
+	`end_date` DATE,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`state` ENUM(' public', 'private'),
+	`id_profile` BIGINT,
+	PRIMARY KEY(`id_experience`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `EXPERIENCE_DETAIL` (
+	`id_experience_detail` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`id_experience` BIGINT,
+	`id_skill` BIGINT,
+	PRIMARY KEY(`id_experience_detail`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `VOUCHER` (
+	`id_voucher` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_certificate` BIGINT,
+	`id_experience` BIGINT,
+	`id_university_career` BIGINT,
+	`id_project` BIGINT,
+	`url` VARCHAR(255),
+	`description` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_voucher`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `CALENDAR` (
+	`id_calendar` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_profile` INTEGER,
+	PRIMARY KEY(`id_calendar`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `CALENDAR_DETAIL` (
+	`id_calendar_detail` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_calendar` INTEGER,
+	`description` VARCHAR(255),
+	`saved_date` DATE,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`cross_out` BOOLEAN,
+	PRIMARY KEY(`id_calendar_detail`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PROJECT` (
+	`id_project` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`title` VARCHAR(255),
+	`description` TEXT(65535),
+	`repository_url` VARCHAR(255),
+	`url_demo` VARCHAR(255),
+	`image` VARCHAR(255),
+	`state` ENUM('in_progress', 'removed', 'completed'),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`url_photo_main` VARCHAR(255),
+	`id_profile` BIGINT,
+	`visibility` BIGINT,
+	PRIMARY KEY(`id_project`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PROJECT_SKILL` (
+	`id_project_skill` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`id_project` BIGINT,
+	`id_skill` BIGINT,
+	PRIMARY KEY(`id_project_skill`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PROJECT_PARTICIPANT` (
+	`id_project_participant` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_project` BIGINT,
+	`state` ENUM('accepted', 'on request', 'refused'),
+	`level_participation` ENUM('low', 'mediun', 'high'),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`id_job_title` BIGINT,
+	`id_integrant` BIGINT,
+	PRIMARY KEY(`id_project_participant`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `OFFER` (
+	`id_offer` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`title` VARCHAR(255),
+	`description` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`closed_at` DATE,
+	`quota_quantity` INTEGER,
+	`state` ENUM('open', 'visible', 'closed', 'removed', 'private'),
+	`id_profile` BIGINT,
+	PRIMARY KEY(`id_offer`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `OFFER_DETAIL` (
+	`id_offer_detail` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_skill` BIGINT,
+	`id_offer` BIGINT,
+	`id_job_title` BIGINT,
+	PRIMARY KEY(`id_offer_detail`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `POSTULATION` (
+	`id_postulation` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_offer` BIGINT,
+	`id_postulant` BIGINT,
+	`id_cv` BIGINT,
+	`reason` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`state` ENUM('in_verification', 'refused', 'accepted'),
+	PRIMARY KEY(`id_postulation`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PUBLICATION_DETAIL` (
+	`id_publication_detail` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_publicized` BIGINT,
+	`id_offer` BIGINT,
+	`id_project` BIGINT,
+	`id_publication` BIGINT,
+	`id_cv` BIGINT,
+	PRIMARY KEY(`id_publication_detail`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `CHAT` (
+	`id_chat` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_beginner_user` INTEGER,
+	`id_user_started` INTEGER,
+	PRIMARY KEY(`id_chat`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `GROUP_DETAIL` (
+	`id_chat_detail` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_menber` INTEGER,
+	`id_group` INTEGER,
+	PRIMARY KEY(`id_chat_detail`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `MESSAGE` (
+	`id_messaje` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_chat` INTEGER,
+	`id_profile` INTEGER,
+	`id_group` INTEGER,
+	PRIMARY KEY(`id_messaje`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `GROUP` (
+	`id_group` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_creator_user` INTEGER,
+	PRIMARY KEY(`id_group`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `RELATION` (
+	`id_relation` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_profile1` BIGINT,
+	`id_profile2` BIGINT,
+	`last_status_date` TIMESTAMP,
+	`state_relation` ENUM(' in_progress', 'friends', 'blocked', 'rejected'),
+	`state_profile1` ENUM('I accept', 'I think', 'rejection', 'blockade'),
+	`state_profile2` ENUM('I accept', 'I think', 'rejection', 'blockade'),
+	PRIMARY KEY(`id_relation`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `SUGGESTION` (
+	`id_suggestion` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_profile` BIGINT,
+	`description` VARCHAR(255),
+	`type` ENUM(' add', 'idea', 'improvement', 'remove'),
+	PRIMARY KEY(`id_suggestion`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `REPORT` (
+	`id_report` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_comment` BIGINT,
+	`id_response` BIGINT,
+	`id_profile` BIGINT,
+	`id_publication` BIGINT,
+	`id_project` BIGINT,
+	`id_message` BIGINT,
+	`id_group` BIGINT,
+	`id_reported_user` BIGINT,
+	`id_portfolio` BIGINT,
+	`description` VARCHAR(255),
+	`tests_url` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`motivo` ENUM('Incitacion al odio', 'Violencia', 'Suplantacion', 'Comtenido Prohibido', 'Terrorismo'),
+	PRIMARY KEY(`id_report`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `ATTENDED` (
+	`id_attended` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_suggestion` INTEGER,
+	`id_report` INTEGER,
+	`id_administrator` INTEGER,
+	`id_preference` INTEGER,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`action_taken` VARCHAR(255),
+	`test_url` VARCHAR(255),
+	`state` ENUM(' ignored', 'accepted', 'rejected', 'deleted', 'in_discussion', 'higher'),
+	PRIMARY KEY(`id_attended`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PROVIDER` (
+	`id_provider` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`provider` ENUM(''email'', ''google'', ''github'', 'linkedin'),
+	`id_profile` BIGINT,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`active` BOOLEAN,
+	PRIMARY KEY(`id_provider`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `CV` (
+	`id_cv` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name_cv` VARCHAR(255),
+	`template` VARCHAR(255),
+	`fountain` VARCHAR(255),
+	`state` BOOLEAN,
+	`visible` BOOLEAN,
+	`archive_pdf` VARCHAR(255),
+	`description` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`cv_url` VARCHAR(255),
+	`id_profile` BIGINT,
+	PRIMARY KEY(`id_cv`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `CV_DETAIL` (
+	`id_cv_detail` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_cv` BIGINT,
+	`id_project` BIGINT,
+	`id_experience` BIGINT,
+	`id_certificate` BIGINT,
+	`id_university_career` BIGINT,
+	`id_social_network` BIGINT,
+	`id_skill_profile` BIGINT,
+	PRIMARY KEY(`id_cv_detail`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `SAVED` (
+	`id_sabed` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_publication` BIGINT,
+	`id_profile` BIGINT,
+	`id_project` BIGINT,
+	`created_at` TIMESTAMP,
+	PRIMARY KEY(`id_sabed`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `AREA` (
+	`id_area` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_area`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `JOB_TITLE` (
+	`id_job_title` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`id_area` BIGINT,
+	PRIMARY KEY(`id_job_title`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `COUNTRY` (
+	`id_country` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`state` ENUM('activate', 'deactivate'),
+	PRIMARY KEY(`id_country`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `STATE_COUNTRY` (
+	`id_state_country` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`id_country` BIGINT,
+	`name` VARCHAR(255),
+	`state` ENUM('activate', 'deactivate'),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id_state_country`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `PROFILE_STATE` (
+	`id_profile_state` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`state_profile` ENUM('activate', 'banned', 'suspended'),
+	`last_connection` TIMESTAMP,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`start_date` TIMESTAMP,
+	`end_date` TIMESTAMP,
+	`id_profile` BIGINT,
+	PRIMARY KEY(`id_profile_state`)
+);
+
+
+ALTER TABLE `ATTENDED`
+ADD FOREIGN KEY(`id_preference`) REFERENCES `PREFERENCE`(`id_preference`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PREFERENCE`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PORTFOLIO_DETAIL`
+ADD FOREIGN KEY(`id_portfolio`) REFERENCES `PORTFOLIO`(`id_portfolio`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROFILE`
+ADD FOREIGN KEY(`id_user_rol`) REFERENCES `USER_ROLE`(`id_user_rol`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `LOG`
+ADD FOREIGN KEY(`id_user_rol`) REFERENCES `USER_ROLE`(`id_user_rol`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `USER_ROLE`
+ADD FOREIGN KEY(`id_role`) REFERENCES `ROLE`(`id_role`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `USER_ROLE`
+ADD FOREIGN KEY(`id_user`) REFERENCES `USER`(`id_user`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PERMISSION_USER_ROL`
+ADD FOREIGN KEY(`id_permission`) REFERENCES `PERMISSION`(`id_permission`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PERMISSION_USER_ROL`
+ADD FOREIGN KEY(`id_user_rol`) REFERENCES `USER_ROLE`(`id_user_rol`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SESSION`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CREDENTIAL`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `UNIVERSITY_CAREER`
+ADD FOREIGN KEY(`id_career`) REFERENCES `CAREER`(`id_career`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `UNIVERSITY_CAREER`
+ADD FOREIGN KEY(`id_university`) REFERENCES `UNIVERSITY`(`id_university`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `UNIVERSITY_CAREER`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SOCIAL_NETWORK`
+ADD FOREIGN KEY(`id_platform`) REFERENCES `PLATFORM`(`id_platform`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SOCIAL_NETWORK`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PORTFOLIO`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SKILL_PROFILE`
+ADD FOREIGN KEY(`id_skill`) REFERENCES `SKILL`(`id_skill`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SKILL_PROFILE`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REACTION`
+ADD FOREIGN KEY(`id_emoji`) REFERENCES `EMOJI`(`id_emoji`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REACTION`
+ADD FOREIGN KEY(`id_publication`) REFERENCES `PUBLICATION`(`id_publication`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PUBLICATION`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REACTION`
+ADD FOREIGN KEY(`id_reactor`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `COMMENT`
+ADD FOREIGN KEY(`id_publication`) REFERENCES `PUBLICATION`(`id_publication`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `COMMENT`
+ADD FOREIGN KEY(`id_commentator`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `RESPONSE`
+ADD FOREIGN KEY(`id_emoji`) REFERENCES `EMOJI`(`id_emoji`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `COMMENT`
+ADD FOREIGN KEY(`id_commentator`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `RESPONSE`
+ADD FOREIGN KEY(`id_responder`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `RESPONSE`
+ADD FOREIGN KEY(`id_comment`) REFERENCES `COMMENT`(`id_comment`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `VOUCHER`
+ADD FOREIGN KEY(`id_experience`) REFERENCES `EXPERIENCE`(`id_experience`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `VOUCHER`
+ADD FOREIGN KEY(`id_university_career`) REFERENCES `UNIVERSITY_CAREER`(`id_university_career`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `VOUCHER`
+ADD FOREIGN KEY(`id_certificate`) REFERENCES `CERTIFICATE`(`id_certificate`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CALENDAR_DETAIL`
+ADD FOREIGN KEY(`id_calendar`) REFERENCES `CALENDAR`(`id_calendar`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CALENDAR`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROJECT`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROJECT_PARTICIPANT`
+ADD FOREIGN KEY(`id_project`) REFERENCES `PROJECT`(`id_project`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROJECT_PARTICIPANT`
+ADD FOREIGN KEY(`id_integrant`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `OFFER`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `OFFER_DETAIL`
+ADD FOREIGN KEY(`id_skill`) REFERENCES `SKILL`(`id_skill`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `OFFER_DETAIL`
+ADD FOREIGN KEY(`id_offer`) REFERENCES `OFFER`(`id_offer`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `POSTULATION`
+ADD FOREIGN KEY(`id_offer`) REFERENCES `OFFER`(`id_offer`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `POSTULATION`
+ADD FOREIGN KEY(`id_postulant`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PUBLICATION_DETAIL`
+ADD FOREIGN KEY(`id_offer`) REFERENCES `OFFER`(`id_offer`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PUBLICATION_DETAIL`
+ADD FOREIGN KEY(`id_publication`) REFERENCES `PUBLICATION`(`id_publication`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PUBLICATION_DETAIL`
+ADD FOREIGN KEY(`id_project`) REFERENCES `PROJECT`(`id_project`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PUBLICATION_DETAIL`
+ADD FOREIGN KEY(`id_publicized`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CHAT`
+ADD FOREIGN KEY(`id_beginner_user`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `MESSAGE`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `MESSAGE`
+ADD FOREIGN KEY(`id_chat`) REFERENCES `CHAT`(`id_chat`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `GROUP_DETAIL`
+ADD FOREIGN KEY(`id_menber`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CHAT`
+ADD FOREIGN KEY(`id_user_started`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `GROUP`
+ADD FOREIGN KEY(`id_creator_user`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `GROUP_DETAIL`
+ADD FOREIGN KEY(`id_group`) REFERENCES `GROUP`(`id_group`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `MESSAGE`
+ADD FOREIGN KEY(`id_group`) REFERENCES `GROUP`(`id_group`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `RELATION`
+ADD FOREIGN KEY(`id_profile1`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `ATTENDED`
+ADD FOREIGN KEY(`id_suggestion`) REFERENCES `SUGGESTION`(`id_suggestion`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `ATTENDED`
+ADD FOREIGN KEY(`id_report`) REFERENCES `REPORT`(`id_report`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `ATTENDED`
+ADD FOREIGN KEY(`id_administrator`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_message`) REFERENCES `MESSAGE`(`id_messaje`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_group`) REFERENCES `GROUP`(`id_group`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_publication`) REFERENCES `PUBLICATION`(`id_publication`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SUGGESTION`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_comment`) REFERENCES `COMMENT`(`id_comment`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_response`) REFERENCES `RESPONSE`(`id_response`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_project`) REFERENCES `PROJECT`(`id_project`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_reported_user`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `REPORT`
+ADD FOREIGN KEY(`id_portfolio`) REFERENCES `PORTFOLIO`(`id_portfolio`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PORTFOLIO_DETAIL`
+ADD FOREIGN KEY(`id_skill_profile`) REFERENCES `SKILL_PROFILE`(`id_skill_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PORTFOLIO_DETAIL`
+ADD FOREIGN KEY(`id_social_network`) REFERENCES `SOCIAL_NETWORK`(`id_social_networks`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PORTFOLIO_DETAIL`
+ADD FOREIGN KEY(`id_university_career`) REFERENCES `UNIVERSITY_CAREER`(`id_university_career`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PORTFOLIO_DETAIL`
+ADD FOREIGN KEY(`id_certificate`) REFERENCES `CERTIFICATE`(`id_certificate`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PORTFOLIO_DETAIL`
+ADD FOREIGN KEY(`id_experience`) REFERENCES `EXPERIENCE`(`id_experience`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `EXPERIENCE`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROVIDER`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PUBLICATION_DETAIL`
+ADD FOREIGN KEY(`id_cv`) REFERENCES `CV`(`id_cv`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CV`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `POSTULATION`
+ADD FOREIGN KEY(`id_cv`) REFERENCES `CV`(`id_cv`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CV_DETAIL`
+ADD FOREIGN KEY(`id_cv`) REFERENCES `CV`(`id_cv`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CV_DETAIL`
+ADD FOREIGN KEY(`id_project`) REFERENCES `PROJECT`(`id_project`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CV_DETAIL`
+ADD FOREIGN KEY(`id_experience`) REFERENCES `EXPERIENCE`(`id_experience`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `RELATION`
+ADD FOREIGN KEY(`id_profile2`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CV_DETAIL`
+ADD FOREIGN KEY(`id_certificate`) REFERENCES `CERTIFICATE`(`id_certificate`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CV_DETAIL`
+ADD FOREIGN KEY(`id_university_career`) REFERENCES `UNIVERSITY_CAREER`(`id_university_career`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CV_DETAIL`
+ADD FOREIGN KEY(`id_social_network`) REFERENCES `SOCIAL_NETWORK`(`id_social_networks`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `CV_DETAIL`
+ADD FOREIGN KEY(`id_skill_profile`) REFERENCES `SKILL_PROFILE`(`id_skill_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SAVED`
+ADD FOREIGN KEY(`id_publication`) REFERENCES `PUBLICATION`(`id_publication`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SAVED`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SKILL`
+ADD FOREIGN KEY(`id_area`) REFERENCES `AREA`(`id_area`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `EXPERIENCE_DETAIL`
+ADD FOREIGN KEY(`id_experience`) REFERENCES `EXPERIENCE`(`id_experience`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `EXPERIENCE_DETAIL`
+ADD FOREIGN KEY(`id_skill`) REFERENCES `SKILL`(`id_skill`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROJECT_SKILL`
+ADD FOREIGN KEY(`id_project`) REFERENCES `PROJECT`(`id_project`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROJECT_SKILL`
+ADD FOREIGN KEY(`id_skill`) REFERENCES `SKILL`(`id_skill`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROJECT_PARTICIPANT`
+ADD FOREIGN KEY(`id_job_title`) REFERENCES `JOB_TITLE`(`id_job_title`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `JOB_TITLE`
+ADD FOREIGN KEY(`id_area`) REFERENCES `AREA`(`id_area`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROFILE`
+ADD FOREIGN KEY(`id_job_title`) REFERENCES `JOB_TITLE`(`id_job_title`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `STATE_COUNTRY`
+ADD FOREIGN KEY(`id_country`) REFERENCES `COUNTRY`(`id_country`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROFILE`
+ADD FOREIGN KEY(`id_state_country`) REFERENCES `STATE_COUNTRY`(`id_state_country`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PROFILE_STATE`
+ADD FOREIGN KEY(`id_profile`) REFERENCES `PROFILE`(`id_profile`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `VOUCHER`
+ADD FOREIGN KEY(`id_project`) REFERENCES `PROJECT`(`id_project`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `SAVED`
+ADD FOREIGN KEY(`id_project`) REFERENCES `PROJECT`(`id_project`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `OFFER_DETAIL`
+ADD FOREIGN KEY(`id_job_title`) REFERENCES `JOB_TITLE`(`id_job_title`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `PORTFOLIO`
+ADD FOREIGN KEY(`id_preference`) REFERENCES `PREFERENCE`(`id_preference`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
