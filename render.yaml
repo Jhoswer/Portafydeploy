@@ -1,5 +1,4 @@
 services:
-
   # ─── BACKEND: Laravel API ───────────────────────────────────────────────────
   - type: web
     name: portafy-backend
@@ -17,13 +16,13 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_URL
-        sync: false          # lo pones manualmente en Render al hacer deploy
+        sync: false # lo pones manualmente en Render al hacer deploy
 
       # Base de datos — Neon.tech PostgreSQL
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        sync: false          # ejemplo: ep-xxx.us-east-2.aws.neon.tech
+        sync: false # ejemplo: ep-xxx.us-east-2.aws.neon.tech
       - key: DB_PORT
         value: 5432
       - key: DB_DATABASE
@@ -94,11 +93,15 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: VITE_API_URL
-        sync: false          # URL del backend en Render + /api  ej: https://portafy-backend.onrender.com/api
+        sync: false # URL del backend en Render + /api  ej: https://portafy-backend.onrender.com/api
       - key: VITE_BACKEND_URL
-        sync: false          # URL del backend en Render          ej: https://portafy-backend.onrender.com
+        sync: false # URL del backend en Render          ej: https://portafy-backend.onrender.com
       - key: VITE_GITHUB_CLIENT_ID
         sync: false
       - key: VITE_GITHUB_REDIRECT_URI
