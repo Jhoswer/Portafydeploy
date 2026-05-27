@@ -8,7 +8,7 @@ import { STEPS }            from "./constants";
 import { ProgressBar, StepLabels } from "./Formui";
 import { useAuth } from "../../../context/useAuth";
 
-import StepIdentidad from "./StepIdentidad";
+import StepIdentidad from "./Stepidentidad";
 import StepBranding  from "./StepBranding";
 import StepEmpresa   from "./StepEmpresa";
 import StepContacto  from "./StepContacto";
