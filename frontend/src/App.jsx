@@ -6,7 +6,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 
 const Home = lazy(() => import("./pages/landing/Home"));
 const Login = lazy(() => import("./pages/auth/Login2"));
-const Register = lazy(() => import("./pages/auth/Register"));
+const Register = lazy(() => import("./pages/auth/Register2"));
 const OAuthPopupCallback = lazy(() => import("./pages/auth/OAuthPopupCallback"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
@@ -24,7 +24,6 @@ const EmpresaPage = lazy(() => import("./pages/reclutador/CompanyPage"));
 const RecruiterForms = lazy(() => import("./pages/reclutador/Form"));
 const DashboardCompartido = lazy(() => import("./pages/sharedDashboard/Dashboard"));
 const DashboardLegacy = lazy(() => import("./pages/dashboard/Dashboard"));
-const Admin = lazy(() => import("./pages/admin/Admin"));
 const NotificationsPage = lazy(() => import("./pages/notificaciones/NotificationsPage"));
 
 function RouteLoader() {
@@ -59,7 +58,6 @@ function App() {
             <Route path="/dashboard-clasico" element={<DashboardLegacy />} />
             <Route path="/explorar" element={<Explore />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/reclutador" element={<Recruiter />} />
             <Route path="/reclutadorform" element={<RecruiterForms />} />
             <Route path="/reclutador/forms" element={<RecruiterForms />} />
             <Route path="/feed" element={<FeedPage />} />
@@ -69,8 +67,6 @@ function App() {
             <Route path="/empresa/:slug" element={<EmpresaPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/notificaciones" element={<NotificationsPage />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/*" element={<Admin />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

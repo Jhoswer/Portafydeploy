@@ -9,7 +9,6 @@ import {
 import { useAuth } from "../../context/useAuth";
 import { completarPerfil, fetchProfile, guardarFormacion } from "../../services/authService";
 import { LATIN_AMERICA_LOCATIONS, getCitiesForCountry } from "../../data/locations/latinAmericaLocations";
-
 void motion;
 
 
@@ -30,17 +29,7 @@ function StepWrapper({ children, stepKey }) {
 
 function IconCircle({ children }) {
   return (
-    <div style={{
-      width: 56,
-      height: 56,
-      borderRadius: 16,
-      background: "#ff6b6b", 
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      boxShadow: "0 8px 20px rgba(255, 107, 107, 0.25)",
-      marginBottom: 20,
-    }}>
+    <div className="forms-icon-circle">
       {children}
     </div>
   );
@@ -48,20 +37,12 @@ function IconCircle({ children }) {
 
 function Actions({ onNext, nextLabel, onBack, backLabel, onSkip, skipLabel, loading }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 28, width: "100%" }}>
+    <div className="forms-actions">
       {onBack && (
         <button
           type="button"
           onClick={onBack}
-          style={{
-            display: "flex", alignItems: "center", gap: 6,
-            background: "none", border: "none", cursor: "pointer",
-            fontFamily: "var(--f-ui)", fontSize: 13, fontWeight: 600,
-            color: "var(--muted)", marginBottom: 4, padding: 0,
-            transition: "color .2s",
-          }}
-          onMouseOver={e => e.currentTarget.style.color = "var(--body)"}
-          onMouseOut={e => e.currentTarget.style.color = "var(--muted)"}
+          className="forms-back-btn"
         >
           <ArrowLeft size={13} /> {backLabel}
         </button>
@@ -70,8 +51,7 @@ function Actions({ onNext, nextLabel, onBack, backLabel, onSkip, skipLabel, load
         whileTap={{ scale: 0.98 }}
         onClick={onNext}
         disabled={loading}
-        className="auth-submit"
-        style={{ marginTop: 0 }}
+        className="forms-submit"
       >
         {loading ? (
           <motion.div
@@ -85,13 +65,7 @@ function Actions({ onNext, nextLabel, onBack, backLabel, onSkip, skipLabel, load
         <button
           type="button"
           onClick={onSkip}
-          style={{
-            background: "none", border: "none", cursor: "pointer",
-            fontFamily: "var(--f-body)", fontSize: 13, color: "var(--muted)",
-            padding: "8px 0", transition: "color .2s",
-          }}
-          onMouseOver={e => e.currentTarget.style.color = "var(--body)"}
-          onMouseOut={e => e.currentTarget.style.color = "var(--muted)"}
+          className="forms-skip-btn"
         >
           {skipLabel}
         </button>
@@ -106,14 +80,15 @@ export default function Forms() {
   const { t } = useTranslation();
   const { markProfileCompleted, updateUser } = useAuth();
   const fileInputRef = useRef(null);
-useEffect(() => {
-  const previousPadding = document.body.style.paddingTop;
-  document.body.style.paddingTop = "0px";
 
-  return () => {
-    document.body.style.paddingTop = previousPadding;
-  };
-}, []);
+  useEffect(() => {
+    const previousPadding = document.body.style.paddingTop;
+    document.body.style.paddingTop = "0px";
+    return () => {
+      document.body.style.paddingTop = previousPadding;
+    };
+  }, []);
+
   const [step, setStep] = useState(0);
   const [foto, setFoto] = useState(null);
   const [fotoPreview, setFotoPreview] = useState(null);
@@ -133,30 +108,24 @@ useEffect(() => {
     fecha_fin: "",
   });
   const [nombre, setNombre] = useState("");
-const [apellido, setApellido] = useState("");
-useEffect(() => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [apellido, setApellido] = useState("");
 
-  if (user) {
-    setNombre(user.nombre || user.name || "");
-    setApellido(user.apellido || user.lastName || "");
-
-    if (user.foto_perfil) {
-      setFotoPreview(user.foto_perfil);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setNombre(user.nombre || user.name || "");
+      setApellido(user.apellido || user.lastName || "");
+      if (user.foto_perfil) setFotoPreview(user.foto_perfil);
     }
-  }
-}, []);
+  }, []);
 
   useEffect(() => {
     if (!pais) {
       setCiudad("");
       return;
     }
-
     const ciudadesPermitidas = getCitiesForCountry(pais);
-    if (ciudad && !ciudadesPermitidas.includes(ciudad)) {
-      setCiudad("");
-    }
+    if (ciudad && !ciudadesPermitidas.includes(ciudad)) setCiudad("");
   }, [pais, ciudad]);
 
   const STEPS = [
@@ -169,7 +138,6 @@ useEffect(() => {
   const handleFoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     if (file.size > MAX_PROFILE_PHOTO_BYTES) {
       setFoto(null);
       setFotoPreview(null);
@@ -177,7 +145,6 @@ useEffect(() => {
       e.target.value = "";
       return;
     }
-
     setError("");
     setFoto(file);
     setFotoPreview(URL.createObjectURL(file));
@@ -195,14 +162,14 @@ useEffect(() => {
     setError("");
     try {
       const formData = new FormData();
-      if (nombre) formData.append("nombre", nombre);
+      if (nombre)   formData.append("nombre", nombre);
       if (apellido) formData.append("apellido", apellido);
-      if (foto) formData.append("foto_perfil", foto);
+      if (foto)     formData.append("foto_perfil", foto);
       if (biografia) formData.append("biografia", biografia);
       const ubicacion = [ciudad, pais].filter(Boolean).join(", ");
       if (ubicacion) formData.append("ubicacion", ubicacion);
-      if (ciudad) formData.append("ciudad", ciudad);
-      if (pais) formData.append("pais", pais);
+      if (ciudad)   formData.append("ciudad", ciudad);
+      if (pais)     formData.append("pais", pais);
       await completarPerfil(formData);
 
       for (const f of formaciones) {
@@ -230,20 +197,24 @@ useEffect(() => {
   };
 
   const ProgressBar = () => (
-    <div style={{ display: "flex", gap: 6, marginBottom: 32, width: "100%" }}>
+    <div className="forms-progress">
       {STEPS.map((_, i) => (
-        <div key={i} style={{
-          flex: 1, height: 4, borderRadius: 99,
-          background: i < step ? "#27ae60" : i === step ? "var(--red)" : "rgba(162,214,249,.35)",
-          transition: "background .3s",
-        }} />
+        <div
+          key={i}
+          className={[
+            "forms-progress__segment",
+            i < step  ? "forms-progress__segment--done"
+            : i === step ? "forms-progress__segment--active"
+            : "forms-progress__segment--pending",
+          ].join(" ")}
+        />
       ))}
     </div>
   );
 
   return (
-    <div className="auth-page">
-      <div className="auth-bg" />
+    <div className="forms-page">
+      <div className="forms-bg" />
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
@@ -251,7 +222,7 @@ useEffect(() => {
         transition={{ duration: 0.4, ease: "easeOut" }}
         style={{ width: "100%", maxWidth: 480, position: "relative", zIndex: 1 }}
       >
-        <div className="auth-card" style={{ padding: "40px 40px 36px" }}>
+        <div className="forms-card" style={{ padding: "40px 40px 36px" }}>
 
           {step < 4 && <ProgressBar />}
 
@@ -259,113 +230,106 @@ useEffect(() => {
 
             {/* PASO 1 — Foto */}
             {step === 0 && (
-  <StepWrapper stepKey="paso-foto">
-    <IconCircle><Camera size={24} color="white" /></IconCircle>
+              <StepWrapper stepKey="paso-foto">
+                <IconCircle><Camera size={24} color="white" /></IconCircle>
 
-    <h2 className="auth-card__title" style={{ textAlign: "center" }}>
-      {t("forms.step1.title")}
-    </h2>
+                <h2 className="forms-card__title" style={{ textAlign: "center" }}>
+                  {t("forms.step1.title")}
+                </h2>
+                <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
+                  {t("forms.step1.sub")}
+                </p>
 
-    <p className="auth-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
-      {t("forms.step1.sub")}
-    </p>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current.click()}
+                  className="forms-avatar-btn"
+                >
+                  {fotoPreview
+                    ? <img src={fotoPreview} alt="preview" />
+                    : <Camera size={28} color="var(--color-muted-text)" />
+                  }
+                </button>
 
-    {/* FOTO */}
-    <button
-      type="button"
-      onClick={() => fileInputRef.current.click()}
-      style={{
-        width: 96, height: 96, borderRadius: "50%",
-        border: "2px dashed rgba(162,214,249,.50)",
-        background: "rgba(162,214,249,.08)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        overflow: "hidden", cursor: "pointer", transition: "border-color .2s",
-      }}
-      onMouseOver={e => e.currentTarget.style.borderColor = "var(--red)"}
-      onMouseOut={e => e.currentTarget.style.borderColor = "rgba(162,214,249,.50)"}
-    >
-      {fotoPreview
-        ? <img src={fotoPreview} alt="preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        : <Camera size={28} color="var(--muted)" />
-      }
-    </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFoto}
+                  style={{ display: "none" }}
+                />
 
-    <input
-      ref={fileInputRef}
-      type="file"
-      accept="image/*"
-      onChange={handleFoto}
-      style={{ display: "none" }}
-    />
+                <p className="forms-avatar-hint">
+                  {fotoPreview ? t("forms.step1.tapChange") : t("forms.step1.tap")}
+                </p>
 
-    <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 8 }}>
-      {fotoPreview ? t("forms.step1.tapChange") : t("forms.step1.tap")}
-    </p>
+                <div className="forms-field" style={{ marginTop: 20 }}>
+                  <label className="forms-label">Nombre</label>
+                  <div className="forms-input-wrap">
+                    <input
+                      type="text"
+                      value={nombre}
+                      onChange={(e) => setNombre(e.target.value)}
+                      placeholder="Nombre"
+                      className="forms-input forms-input--no-icon"
+                    />
+                  </div>
+                </div>
 
-    {/* 👇 NUEVO: NOMBRE */}
-    <div className="auth-field" style={{ width: "100%", marginTop: 20 }}>
-      <label className="auth-label">Nombre</label>
-      <input
-        type="text"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-        placeholder="Nombre"
-        className="auth-input"
-      />
-    </div>
+                <div className="forms-field" style={{ marginTop: 10 }}>
+                  <label className="forms-label">Apellido</label>
+                  <div className="forms-input-wrap">
+                    <input
+                      type="text"
+                      value={apellido}
+                      onChange={(e) => setApellido(e.target.value)}
+                      placeholder="Apellido"
+                      className="forms-input forms-input--no-icon"
+                    />
+                  </div>
+                </div>
 
-    {/* 👇 NUEVO: APELLIDO */}
-    <div className="auth-field" style={{ width: "100%", marginTop: 10 }}>
-      <label className="auth-label">Apellido</label>
-      <input
-        type="text"
-        value={apellido}
-        onChange={(e) => setApellido(e.target.value)}
-        placeholder="Apellido"
-        className="auth-input"
-      />
-    </div>
+                {error && (
+                  <div className="forms-alert" style={{ marginTop: 12 }}>
+                    {error}
+                  </div>
+                )}
 
-    {error && (
-      <div className="auth-alert" style={{ marginTop: 12, width: "100%" }}>
-        {error}
-      </div>
-    )}
-
-    <Actions
-      onNext={() => setStep(1)}
-      nextLabel={t("forms.actions.next")}
-      onSkip={() => setStep(1)}
-      skipLabel={t("forms.actions.skip")}
-    />
-  </StepWrapper>
-)}
+                <Actions
+                  onNext={() => setStep(1)}
+                  nextLabel={t("forms.actions.next")}
+                  onSkip={() => setStep(1)}
+                  skipLabel={t("forms.actions.skip")}
+                />
+              </StepWrapper>
+            )}
 
             {/* PASO 2 — Biografía */}
             {step === 1 && (
               <StepWrapper stepKey="paso-bio">
                 <IconCircle><FileText size={24} color="white" /></IconCircle>
-                <h2 className="auth-card__title" style={{ textAlign: "center" }}>{t("forms.step2.title")}</h2>
-                <p className="auth-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
+                <h2 className="forms-card__title" style={{ textAlign: "center" }}>
+                  {t("forms.step2.title")}
+                </h2>
+                <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
                   {t("forms.step2.sub")}
                 </p>
-                <div className="auth-field" style={{ width: "100%" }}>
-                  <div className="auth-input-wrap">
-                    <FileText size={15} className="auth-input-icon" />
+
+                <div className="forms-field">
+                  <div className="forms-input-wrap forms-input-wrap--textarea">
+                    <FileText size={15} className="forms-input-icon" />
                     <textarea
                       value={biografia}
                       onChange={(e) => setBiografia(e.target.value)}
                       placeholder={t("forms.step2.placeholder")}
                       maxLength={150}
                       rows={4}
-                      className="auth-input"
-                      style={{ paddingTop: 10, paddingBottom: 10, resize: "none", height: "auto" }}
+                      className="forms-input"
                     />
                   </div>
-                  <p style={{ fontFamily: "var(--f-body)", fontSize: 12, color: "var(--muted)", textAlign: "right", marginTop: 4 }}>
-                    {biografia.length} / 150
-                  </p>
+                  <p className="forms-char-count">{biografia.length} / 150</p>
                 </div>
+
                 <Actions
                   onNext={() => setStep(2)}
                   nextLabel={t("forms.actions.next")}
@@ -381,30 +345,27 @@ useEffect(() => {
             {step === 2 && (
               <StepWrapper stepKey="paso-formacion">
                 <IconCircle><GraduationCap size={24} color="white" /></IconCircle>
-                <h2 className="auth-card__title" style={{ textAlign: "center" }}>{t("forms.step3.title")}</h2>
-                <p className="auth-card__sub" style={{ textAlign: "center", marginBottom: 16 }}>
+                <h2 className="forms-card__title" style={{ textAlign: "center" }}>
+                  {t("forms.step3.title")}
+                </h2>
+                <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 16 }}>
                   {t("forms.step3.sub")}
                 </p>
 
                 {formaciones.length > 0 && (
                   <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
                     {formaciones.map((f, i) => (
-                      <div key={i} style={{
-                        display: "flex", alignItems: "center", justifyContent: "space-between",
-                        padding: "10px 14px", borderRadius: 12,
-                        border: "1.5px solid rgba(162,214,249,.35)",
-                        background: "rgba(162,214,249,.08)",
-                      }}>
+                      <div key={i} className="forms-formacion-item">
                         <div>
-                          <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", fontFamily: "var(--f-ui)" }}>{f.institucion}</p>
-                          <p style={{ fontSize: 11, color: "var(--muted)", fontFamily: "var(--f-body)" }}>
+                          <p className="forms-formacion-item__name">{f.institucion}</p>
+                          <p className="forms-formacion-item__sub">
                             {f.nombre_carrera}{f.tipo_formacion && ` — ${t(`forms.step3.tipos.${f.tipo_formacion}`)}`}
                           </p>
                         </div>
                         <button
                           type="button"
                           onClick={() => setFormaciones(formaciones.filter((_, idx) => idx !== i))}
-                          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", padding: 4 }}
+                          className="forms-formacion-item__remove"
                         >
                           <X size={15} />
                         </button>
@@ -414,21 +375,16 @@ useEffect(() => {
                 )}
 
                 {mostrarFormFormacion && (
-                  <div style={{
-                    width: "100%", padding: 16, borderRadius: 14, marginBottom: 12,
-                    border: "1.5px solid rgba(162,214,249,.35)",
-                    background: "rgba(162,214,249,.06)",
-                    display: "flex", flexDirection: "column", gap: 12,
-                  }}>
-                    <div className="auth-field">
-                      <label className="auth-label">{t("forms.step3.tipoLabel")}</label>
-                      <div className="auth-input-wrap">
-                        <BookOpen size={15} className="auth-input-icon" />
+                  <div className="forms-formacion-form" style={{ marginBottom: 12 }}>
+
+                    <div className="forms-field">
+                      <label className="forms-label">{t("forms.step3.tipoLabel")}</label>
+                      <div className="forms-input-wrap">
+                        <BookOpen size={15} className="forms-input-icon" />
                         <select
                           value={formacionActual.tipo_formacion}
                           onChange={(e) => setFormacionActual({ ...formacionActual, tipo_formacion: e.target.value })}
-                          className="auth-input"
-                          style={{ appearance: "none" }}
+                          className="forms-input"
                         >
                           <option value="">{t("forms.step3.tipoPlaceholder")}</option>
                           {["universitaria","tecnica","posgrado","maestria","doctorado","curso","certificacion"].map(tipo => (
@@ -438,76 +394,68 @@ useEffect(() => {
                       </div>
                     </div>
 
-                    <div className="auth-field">
-                      <label className="auth-label">{t("forms.step3.institucionLabel")}</label>
-                      <div className="auth-input-wrap">
-                        <GraduationCap size={15} className="auth-input-icon" />
+                    <div className="forms-field">
+                      <label className="forms-label">{t("forms.step3.institucionLabel")}</label>
+                      <div className="forms-input-wrap">
+                        <GraduationCap size={15} className="forms-input-icon" />
                         <input
                           type="text"
                           value={formacionActual.institucion}
                           onChange={(e) => setFormacionActual({ ...formacionActual, institucion: e.target.value })}
                           placeholder={t("forms.step3.institucionPlaceholder")}
-                          className="auth-input"
+                          className="forms-input"
                         />
                       </div>
                     </div>
 
-                    <div className="auth-field">
-                      <label className="auth-label">{t("forms.step3.carreraLabel")}</label>
-                      <div className="auth-input-wrap">
-                        <Briefcase size={15} className="auth-input-icon" />
+                    <div className="forms-field">
+                      <label className="forms-label">{t("forms.step3.carreraLabel")}</label>
+                      <div className="forms-input-wrap">
+                        <Briefcase size={15} className="forms-input-icon" />
                         <input
                           type="text"
                           value={formacionActual.nombre_carrera}
                           onChange={(e) => setFormacionActual({ ...formacionActual, nombre_carrera: e.target.value })}
                           placeholder={t("forms.step3.carreraPlaceholder")}
-                          className="auth-input"
+                          className="forms-input"
                         />
                       </div>
                     </div>
 
-                    <div className="auth-row">
-                      <div className="auth-field">
-                        <label className="auth-label">{t("forms.step3.fechaInicio")}</label>
+                    <div className="forms-row">
+                      <div className="forms-field">
+                        <label className="forms-label">{t("forms.step3.fechaInicio")}</label>
                         <input
                           type="date"
                           value={formacionActual.fecha_inicio}
                           onChange={(e) => setFormacionActual({ ...formacionActual, fecha_inicio: e.target.value })}
-                          className="auth-input"
-                          style={{ paddingLeft: 14 }}
+                          className="forms-input forms-input--no-icon"
                         />
                       </div>
-                      <div className="auth-field">
-                        <label className="auth-label">{t("forms.step3.fechaFin")}</label>
+                      <div className="forms-field">
+                        <label className="forms-label">{t("forms.step3.fechaFin")}</label>
                         <input
                           type="date"
                           value={formacionActual.fecha_fin}
                           onChange={(e) => setFormacionActual({ ...formacionActual, fecha_fin: e.target.value })}
-                          className="auth-input"
-                          style={{ paddingLeft: 14 }}
+                          className="forms-input forms-input--no-icon"
                         />
                       </div>
                     </div>
 
-                    <div style={{ display: "flex", gap: 8 }}>
+                    <div className="forms-formacion-form__actions">
                       <button
                         type="button"
                         onClick={agregarFormacion}
-                        className="auth-submit"
-                        style={{ flex: 1, marginTop: 0, padding: "10px 16px", fontSize: 13 }}
+                        className="forms-submit"
+                        style={{ flex: 1, fontSize: 13 }}
                       >
                         {t("forms.step3.agregar")}
                       </button>
                       <button
                         type="button"
                         onClick={() => setMostrarFormFormacion(false)}
-                        style={{
-                          flex: 1, padding: "10px 16px", borderRadius: 12, fontSize: 13,
-                          border: "1.5px solid rgba(162,214,249,.40)",
-                          background: "transparent", color: "var(--body)",
-                          cursor: "pointer", fontFamily: "var(--f-ui)", fontWeight: 600,
-                          transition: "border-color .2s",
-                        }}
+                        className="forms-formacion-form__cancel"
                       >
                         {t("forms.step3.cancelar")}
                       </button>
@@ -519,17 +467,7 @@ useEffect(() => {
                   <button
                     type="button"
                     onClick={() => setMostrarFormFormacion(true)}
-                    style={{
-                      width: "100%", height: 44, borderRadius: 12,
-                      border: "1.5px dashed rgba(162,214,249,.50)",
-                      background: "transparent", color: "var(--muted)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      gap: 6, fontSize: 13, cursor: "pointer",
-                      fontFamily: "var(--f-ui)", fontWeight: 600,
-                      transition: "border-color .2s, color .2s",
-                    }}
-                    onMouseOver={e => { e.currentTarget.style.borderColor = "var(--red)"; e.currentTarget.style.color = "var(--red)"; }}
-                    onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(162,214,249,.50)"; e.currentTarget.style.color = "var(--muted)"; }}
+                    className="forms-add-btn"
                   >
                     <Plus size={15} /> {t("forms.step3.btnAgregar")}
                   </button>
@@ -550,21 +488,23 @@ useEffect(() => {
             {step === 3 && (
               <StepWrapper stepKey="paso-ubicacion">
                 <IconCircle><MapPin size={24} color="white" /></IconCircle>
-                <h2 className="auth-card__title" style={{ textAlign: "center" }}>{t("forms.step4.title")}</h2>
-                <p className="auth-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
+                <h2 className="forms-card__title" style={{ textAlign: "center" }}>
+                  {t("forms.step4.title")}
+                </h2>
+                <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
                   {t("forms.step4.sub")}
                 </p>
-                <div className="auth-field" style={{ width: "100%" }}>
-                  <label className="auth-label">País</label>
-                  <div className="auth-input-wrap" style={{ marginBottom: 12 }}>
-                    <MapPin size={15} className="auth-input-icon" />
+
+                <div className="forms-field">
+                  <label className="forms-label">País</label>
+                  <div className="forms-input-wrap" style={{ marginBottom: 12 }}>
+                    <MapPin size={15} className="forms-input-icon" />
                     <select
                       value={pais}
                       onChange={(e) => setPais(e.target.value)}
-                      className="auth-input"
-                      style={{ appearance: "none" }}
+                      className="forms-input"
                     >
-                      <option value="">Selecciona un pais</option>
+                      <option value="">Selecciona un país</option>
                       {LATIN_AMERICA_LOCATIONS.map((item) => (
                         <option key={item.country} value={item.country}>
                           {item.country}
@@ -573,33 +513,30 @@ useEffect(() => {
                     </select>
                   </div>
 
-                  <label className="auth-label">Ciudad</label>
-                  <div className="auth-input-wrap">
-                    <MapPin size={15} className="auth-input-icon" />
+                  <label className="forms-label">Ciudad</label>
+                  <div className="forms-input-wrap">
+                    <MapPin size={15} className="forms-input-icon" />
                     <select
                       value={ciudad}
                       onChange={(e) => setCiudad(e.target.value)}
-                      className="auth-input"
-                      style={{ appearance: "none" }}
+                      className="forms-input"
                       disabled={!pais}
                     >
                       <option value="">
                         {!pais ? "Primero selecciona un país" : "Selecciona una ciudad"}
                       </option>
                       {getCitiesForCountry(pais).map((city) => (
-                        <option key={city} value={city}>
-                          {city}
-                        </option>
+                        <option key={city} value={city}>{city}</option>
                       ))}
                     </select>
                   </div>
                 </div>
 
                 {error && (
-                  <div className="auth-alert" style={{ marginTop: 12 }}>{error}</div>
+                  <div className="forms-alert" style={{ marginTop: 12 }}>{error}</div>
                 )}
 
-                  <Actions
+                <Actions
                   onNext={handleFinish}
                   nextLabel={t("forms.actions.finish")}
                   onBack={() => setStep(2)}
@@ -614,18 +551,19 @@ useEffect(() => {
             {/* ÉXITO */}
             {step === 4 && (
               <StepWrapper stepKey="paso-exito">
-                <div className="auth-success-icon" style={{ width: 72, height: 72 }}>
+                <div className="forms-success-icon">
                   <CheckCircle2 size={32} />
                 </div>
-                <h2 className="auth-card__title" style={{ textAlign: "center" }}>{t("forms.success.title")}</h2>
-                <p className="auth-card__sub" style={{ textAlign: "center", marginBottom: 28 }}>
+                <h2 className="forms-card__title" style={{ textAlign: "center" }}>
+                  {t("forms.success.title")}
+                </h2>
+                <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 28 }}>
                   {t("forms.success.sub")}
                 </p>
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate("/feed")}
-                  className="auth-submit"
-                  style={{ marginTop: 0 }}
+                  className="forms-submit"
                 >
                   {t("forms.success.btn")}
                 </motion.button>

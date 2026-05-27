@@ -56,6 +56,11 @@ class Report extends Model
         return $this->belongsTo(Publication::class, 'id_publication', 'id_publication');
     }
 
+    public function comment()
+    {
+        return $this->belongsTo(PublicationComment::class, 'id_comment', 'id_comment');
+    }
+
     public function attendeds()
     {
         return $this->hasMany(Attended::class, 'id_report', 'id_report');

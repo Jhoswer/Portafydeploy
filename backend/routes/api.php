@@ -31,6 +31,7 @@ use App\Http\Controllers\AdminCredentialController;
 use App\Http\Controllers\SuspensionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AdminProfileTableController;
+use App\Http\Controllers\AdminCreacionController;
 use App\Http\Controllers\AdminProfileEliminacionTableController;
 use App\Http\Controllers\BackupController;
 
@@ -42,7 +43,6 @@ Route::get('/user/search', [ProfileController::class, 'search']);
 Route::post('/user/search/filters', [ProfileController::class, 'searchWithFilters']);
 Route::get('/perfil/public/{usuario}/overview', [ProfileController::class, 'publicOverview']);
 
-// ── Feed público (sin autenticación ve solo tipo 1, autenticado ve según audiencia) ──
 Route::get('/feed/posts', [FeedController::class, 'index'])->middleware('auth:sanctum')->withoutMiddleware(['auth']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -69,9 +69,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/feed/me', [FeedController::class, 'mine']);
     Route::get('/feed/saved', [FeedController::class, 'saved']);
     Route::get('/feed/posts/{id}', [FeedController::class, 'show']);
+    Route::get('/feed/posts/{id}/comments', [FeedController::class, 'comments']);
     Route::get('/reports', [ReportController::class, 'index']);
     Route::get('/reports/motivos', [ReportController::class, 'motivos']);
     Route::post('/reports/publications/{publication}', [ReportController::class, 'storePublication']);
+    Route::post('/reports/comments/{comment}', [ReportController::class, 'storeComment']);
     Route::post('/reports/profiles/{usuario}', [ReportController::class, 'storeProfile']);
     Route::post('/reports/{report}/attend', [ReportController::class, 'attend']);
     Route::post('/reports/{report}/reject', [ReportController::class, 'reject']);
@@ -166,7 +168,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('profile/{profile}/skill/{skill}', [AdminProfileTableController::class, 'updateSkill']);
         Route::get('profile/{profile}/experience/{experience}', [AdminProfileTableController::class, 'showExperience']);
         Route::put('profile/{profile}/experience/{experience}', [AdminProfileTableController::class, 'updateExperience']);
-        // NUEVO: rutas de oferta
         Route::get('profile/{profile}/offer/{offer}', [AdminProfileTableController::class, 'showOffer']);
         Route::put('profile/{profile}/offer/{offer}', [AdminProfileTableController::class, 'updateOffer']);
         Route::get('profile/{profile}/postulation/{postulation}', [AdminProfileTableController::class, 'showPostulation']);
@@ -184,6 +185,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('profile/{profile}/socials',         [AdminProfileTableController::class, 'storeSocial']);
         Route::put('profile/{profile}/social/{social}',  [AdminProfileTableController::class, 'updateSocial']);
         Route::delete('profile/{profile}/social/{social}', [AdminProfileTableController::class, 'destroySocial']);
+        Route::post('profile/{profile}/cvs',          [AdminCreacionController::class, 'storeCv']);
+        Route::post('profile/{profile}/experiences',  [AdminCreacionController::class, 'storeExperience']);
+        Route::post('profile/{profile}/skills',       [AdminCreacionController::class, 'storeSkill']);
+        Route::post('profile/{profile}/offers',       [AdminCreacionController::class, 'storeOffer']);
+        Route::get('offers/available', [AdminCreacionController::class, 'availableOffers']);
+        Route::post('profile/{profile}/postulations', [AdminCreacionController::class, 'storePostulation']);
+        Route::post('profile/{profile}/projects',     [AdminCreacionController::class, 'storeProject']);
+        Route::post('profile/{profile}/publications', [AdminCreacionController::class, 'storePublication']);
         Route::get('historial/usuarios', [HistorialController::class, 'buscarUsuarios']);
         Route::get('historial/usuarios/{id}', [HistorialController::class, 'datosUsuario']);
         Route::get('historial/usuarios/{id}/logs', [HistorialController::class, 'logsUsuario']);
@@ -195,6 +204,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('backups', [BackupController::class, 'index']);
         Route::post('backups', [BackupController::class, 'store']);
         Route::get('backups/{filename}/download', [BackupController::class, 'download'])->where('filename', '[^/]+');
+        Route::post('backups/{filename}/restore', [BackupController::class, 'restore'])->where('filename', '[^/]+');
         Route::delete('backups/{filename}', [BackupController::class, 'destroy'])->where('filename', '[^/]+');
         Route::get('definition/areas', [DefinitionCatalogController::class, 'areas']);
         Route::get('definition/countries', [DefinitionCatalogController::class, 'countries']);

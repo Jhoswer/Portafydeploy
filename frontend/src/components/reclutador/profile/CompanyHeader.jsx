@@ -25,7 +25,7 @@ const TABS = [
 export function CompanyHeader({
   editing, setEditing,
   description, setDescription,
-  activeTab, setActiveTab,      // 👈 recibe el tab activo desde EmpresaPerfil
+  activeTab, setActiveTab,    
   companyData    = null,
   isOwner        = true,
   companyMetrics = {},

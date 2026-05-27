@@ -129,6 +129,7 @@ export async function listarBackups() {
 export async function generarBackup() {
   return apiClient.post("admin/backups", {}, {
     fallbackMessage: "No se pudo generar el backup.",
+    timeoutMs: 900000,
   });
 }
 
@@ -202,5 +203,37 @@ export async function descargarBackup(filename) {
 export async function eliminarBackup(filename) {
   return apiClient.delete(`admin/backups/${encodeURIComponent(String(filename ?? "").trim())}`, {
     fallbackMessage: "No se pudo eliminar el backup.",
+  });
+}
+
+export async function listarSolicitudesVerificacion({ status = "pending" } = {}, options = {}) {
+  const params = new URLSearchParams();
+  if (status && status !== "todos") params.set("status", status);
+
+  const payload = await apiClient.get(`admin/verifications?${params.toString()}`, {
+    signal: options.signal,
+    fallbackMessage: "No se pudieron cargar las solicitudes de verificacion.",
+  });
+
+  return {
+    items: Array.isArray(payload?.items) ? payload.items : [],
+  };
+}
+
+export async function aprobarSolicitudVerificacion(id) {
+  return apiClient.post(`admin/verifications/${id}/approve`, {}, {
+    fallbackMessage: "No se pudo aprobar la solicitud.",
+  });
+}
+
+export async function rechazarSolicitudVerificacion(id, reason) {
+  return apiClient.post(`admin/verifications/${id}/reject`, { reason }, {
+    fallbackMessage: "No se pudo rechazar la solicitud.",
+  });
+}
+export async function restaurarBackup(filename) {
+  return apiClient.post(`admin/backups/${encodeURIComponent(String(filename ?? "").trim())}/restore`, {}, {
+    fallbackMessage: "No se pudo restaurar el backup.",
+    timeoutMs: 1800000,
   });
 }

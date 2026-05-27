@@ -1,0 +1,372 @@
+
+
+/* ── Page wrapper ───────────────────────────────────────── */
+.rf-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  overflow: hidden;
+}
+
+/* ── Background decorativo ──────────────────────────────── */
+.rf-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 720px 480px at 65% -8%,
+      rgba(162, 214, 249, 0.30) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 500px 380px at -5% 85%,
+      rgba(232, 72, 74, 0.07) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 360px 260px at 95% 95%,
+      rgba(162, 214, 249, 0.12) 0%,
+      transparent 68%
+    );
+}
+
+.dark .rf-bg {
+  background:
+    radial-gradient(
+      ellipse 720px 480px at 65% -8%,
+      rgba(162, 214, 249, 0.05) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 500px 380px at -5% 85%,
+      rgba(232, 72, 74, 0.03) 0%,
+      transparent 70%
+    );
+}
+
+/* ── Card principal ─────────────────────────────────────── */
+.rf-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: var(--space-8) var(--space-8) var(--space-6);
+  background: var(--color-surface);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 0.5px solid var(--color-glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  transition:
+    background var(--ease),
+    border-color var(--ease),
+    box-shadow var(--ease);
+}
+
+.dark .rf-card {
+  background: rgba(18, 24, 38, 0.90);
+  border-color: rgba(162, 214, 249, 0.08);
+  box-shadow: var(--shadow-float);
+}
+
+/* Línea decorativa superior */
+.rf-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1.5px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(162, 214, 249, 0.60) 40%,
+    rgba(232, 72, 74, 0.50) 60%,
+    transparent
+  );
+  border-radius: var(--radius-pill);
+}
+
+/* ── Títulos dentro de la card ──────────────────────────── */
+.rf-card__title {
+  font-family: var(--font-title);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 var(--space-2);
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  transition: color var(--ease);
+}
+
+.rf-card__sub {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-muted-text);
+  margin: 0;
+  transition: color var(--ease);
+}
+
+/* ── Campo de formulario ────────────────────────────────── */
+.rf-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ── Label ──────────────────────────────────────────────── */
+.rf-label {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-body);
+  margin-bottom: var(--space-1);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: color var(--ease);
+}
+
+/* ── Input wrapper con ícono ────────────────────────────── */
+.rf-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rf-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-muted-text);
+  pointer-events: none;
+  flex-shrink: 0;
+  transition: color var(--ease);
+}
+
+/* Textarea: ícono arriba */
+.rf-input-wrap--textarea .rf-input-icon {
+  top: 12px;
+  transform: none;
+}
+
+/* ── Input / textarea / select base ────────────────────── */
+.rf-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 14px 0 36px;
+  border-radius: var(--radius-m);
+  border: 1.5px solid rgba(162, 214, 249, 0.45);
+  background: var(--color-white);
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: var(--font-ui);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow   0.15s ease,
+    background   var(--ease),
+    color        var(--ease);
+}
+
+.rf-input::placeholder {
+  color: var(--color-muted-text);
+  font-weight: 400;
+}
+
+.rf-input:focus {
+  border-color: var(--color-blue-mid);
+  box-shadow: 0 0 0 3px var(--color-blue-soft);
+}
+
+.rf-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Sin ícono izquierdo */
+.rf-input--no-icon {
+  padding-left: 14px;
+}
+
+/* Textarea */
+textarea.rf-input {
+  height: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  resize: none;
+  line-height: 1.55;
+}
+
+/* Select */
+select.rf-input {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+/* Dark */
+.dark .rf-input {
+  background: rgba(162, 214, 249, 0.04);
+  border-color: rgba(162, 214, 249, 0.12);
+  color: var(--color-text);
+}
+
+.dark .rf-input:focus {
+  border-color: var(--color-blue-mid);
+  box-shadow: 0 0 0 3px rgba(162, 214, 249, 0.10);
+}
+
+/* Autofill */
+.rf-input:-webkit-autofill,
+.rf-input:-webkit-autofill:hover,
+.rf-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #f8fafc inset !important;
+  -webkit-text-fill-color: var(--color-text) !important;
+  caret-color: var(--color-text);
+  border-color: rgba(162, 214, 249, 0.35) !important;
+}
+
+.dark .rf-input:-webkit-autofill,
+.dark .rf-input:-webkit-autofill:hover,
+.dark .rf-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px hsl(218 30% 14%) inset !important;
+  -webkit-text-fill-color: hsl(210 40% 90%) !important;
+  caret-color: hsl(210 40% 90%);
+  border-color: rgba(162, 214, 249, 0.12) !important;
+}
+
+/* ── Botón submit / siguiente ───────────────────────────── */
+.rf-submit {
+  width: 100%;
+  height: 44px;
+  border-radius: var(--radius-m);
+  border: none;
+  background: var(--color-red);
+  color: #ffffff;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  box-shadow: var(--shadow-red);
+  letter-spacing: 0.01em;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform  0.10s ease,
+    opacity    0.15s ease;
+}
+
+.rf-submit:hover {
+  background: var(--color-red-hover);
+  box-shadow: 0 8px 32px var(--color-red-glow);
+}
+
+.rf-submit:active  { transform: scale(0.98); }
+
+.rf-submit:disabled {
+  opacity: 0.50;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── Alert / error banner ───────────────────────────────── */
+.rf-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: 10px 14px;
+  border-radius: var(--radius-m);
+  border: 1px solid rgba(232, 72, 74, 0.25);
+  background: var(--color-red-soft);
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-red);
+  line-height: 1.5;
+  width: 100%;
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.dark .rf-alert {
+  background: rgba(232, 72, 74, 0.10);
+  border-color: rgba(232, 72, 74, 0.20);
+}
+
+/* ── Ícono de éxito ─────────────────────────────────────── */
+.rf-success-icon {
+  border-radius: 50%;
+  background: var(--color-success-soft);
+  border: 1.5px solid rgba(39, 174, 96, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-success);
+  margin-bottom: var(--space-5);
+  flex-shrink: 0;
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.dark .rf-success-icon {
+  background: rgba(39, 174, 96, 0.10);
+  border-color: rgba(39, 174, 96, 0.20);
+}
+
+/* ── Dropzone logo ──────────────────────────────────────── */
+.rf-dropzone {
+  width: 100%;
+  border-radius: 14px;
+  border: 1.5px dashed rgba(162, 214, 249, 0.50);
+  background: rgba(162, 214, 249, 0.05);
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background   0.2s ease;
+}
+
+.rf-dropzone:hover,
+.rf-dropzone--active {
+  border-color: var(--color-red);
+  background: var(--color-red-soft);
+}
+
+.dark .rf-dropzone {
+  border-color: rgba(162, 214, 249, 0.18);
+  background: rgba(162, 214, 249, 0.03);
+}
+
+.dark .rf-dropzone:hover,
+.dark .rf-dropzone--active {
+  border-color: var(--color-red);
+  background: rgba(232, 72, 74, 0.08);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .rf-page {
+    padding: var(--space-4) var(--space-3);
+    align-items: flex-start;
+  }
+
+  .rf-card {
+    border-radius: var(--radius-l);
+    padding: var(--space-6) var(--space-5) var(--space-5);
+  }
+
+  .rf-card__title { font-size: 18px; }
+}

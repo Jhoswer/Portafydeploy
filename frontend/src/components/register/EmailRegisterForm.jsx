@@ -4,36 +4,20 @@ import { Eye, EyeOff, Mail, Lock, User, Building2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { useRegisterForm } from "../../hooks/useRegisterForm";
-
 import Input from "./Input";
 import PasswordStrength from "./PasswordStrength";
 import FieldError from "./FieldError";
 
 export default function EmailRegisterForm({ role, setErrors, captchaToken }) {
   const { t } = useTranslation();
-
-  const {
-    fields,
-    errors,
-    loading,
-    acceptTerms,
-    setField,
-    setAcceptTerms,
-    handleSubmit,
-  }  = useRegisterForm(role, setErrors, captchaToken);
-
+  const { fields, errors, loading, acceptTerms, setField, setAcceptTerms, handleSubmit } =
+    useRegisterForm(role, setErrors, captchaToken);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirm,  setShowConfirm]  = useState(false);
 
   const strengthColors = ["#ef4444", "#f97316", "#eab308", "#22c55e"];
-  const strengthLabels = [
-    "",
-    t("register.strength.weak"),
-    t("register.strength.moderate"),
-    t("register.strength.moderate"),
-    t("register.strength.strong"),
-  ];
+  const strengthLabels = ["", t("register.strength.weak"), t("register.strength.moderate"), t("register.strength.moderate"), t("register.strength.strong")];
 
   return (
     <motion.form
@@ -47,42 +31,17 @@ export default function EmailRegisterForm({ role, setErrors, captchaToken }) {
       <AnimatePresence mode="wait">
         {role === "PROFESIONAL" ? (
           <motion.div key="prof" className="grid grid-cols-2 gap-2">
-            <Input
-              label={t("register.name")}
-              value={fields.name}
-              onChange={setField("name")}
-              placeholder={t("register.namePlaceholder")}
-              icon={User}
-              error={errors.name}
-            />
-            <Input
-              label={t("register.lastName")}
-              value={fields.lastName}
-              onChange={setField("lastName")}
-              placeholder={t("register.lastNamePlaceholder")}
-              icon={User}
-              error={errors.lastName}
-            />
+            <Input label={t("register.name")}     value={fields.name}     onChange={setField("name")}     placeholder={t("register.namePlaceholder")}     icon={User}  error={errors.name} />
+            <Input label={t("register.lastName")} value={fields.lastName} onChange={setField("lastName")} placeholder={t("register.lastNamePlaceholder")} icon={User}  error={errors.lastName} />
           </motion.div>
         ) : (
-          <Input
-            label={t("register.company")}
-            value={fields.company}
-            onChange={setField("company")}
-            placeholder={t("register.companyPlaceholder")}
-            icon={Building2}
-            error={errors.company}
-          />
+          <Input label={t("register.company")} value={fields.company} onChange={setField("company")} placeholder={t("register.companyPlaceholder")} icon={Building2} error={errors.company} />
         )}
       </AnimatePresence>
 
       {/* Email */}
       <Input
-        label={
-          role === "RECLUTADOR"
-            ? t("register.corporateEmail")
-            : t("register.email")
-        }
+        label={role === "RECLUTADOR" ? t("register.corporateEmail") : t("register.email")}
         type="email"
         value={fields.email}
         onChange={setField("email")}
@@ -108,12 +67,7 @@ export default function EmailRegisterForm({ role, setErrors, captchaToken }) {
               </button>
             }
           />
-
-          <PasswordStrength
-            password={fields.password}
-            labels={strengthLabels}
-            colors={strengthColors}
-          />
+          <PasswordStrength password={fields.password} labels={strengthLabels} colors={strengthColors} />
         </div>
 
         <Input
@@ -133,34 +87,30 @@ export default function EmailRegisterForm({ role, setErrors, captchaToken }) {
       </div>
 
       {/* Términos */}
-<div>
-  <label className="flex gap-2 text-xs items-start">
-    <input
-      type="checkbox"
-      checked={acceptTerms}
-      onChange={(e) => setAcceptTerms(e.target.checked)}
-      className="mt-0.5"
-    />
-    <span className="text-gray-500">
-      {t("register.terms")}{" "}
-      <a href="/terms" className="text-blue-500 hover:text-blue-600 font-medium transition-colors">
-        {t("register.termsLink")}
-      </a>
-      {" "}{t("register.and")}{" "}
-      <a href="/privacy" className="text-blue-500 hover:text-blue-600 font-medium transition-colors">
-        {t("register.privacyLink")}
-      </a>
-    </span>
-  </label>
-  <FieldError message={errors.terms} />
-</div>
+      <div>
+        <label className="flex gap-2 text-xs items-start">
+          <input
+            type="checkbox"
+            checked={acceptTerms}
+            onChange={(e) => setAcceptTerms(e.target.checked)}
+            className="mt-0.5 accent-blue-500"
+          />
+          <span className="text-gray-500 dark:text-slate-400">
+            {t("register.terms")}{" "}
+            <a href="/terms" className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium transition-colors">
+              {t("register.termsLink")}
+            </a>
+            {" "}{t("register.and")}{" "}
+            <a href="/privacy" className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium transition-colors">
+              {t("register.privacyLink")}
+            </a>
+          </span>
+        </label>
+        <FieldError message={errors.terms} />
+      </div>
 
       {/* Submit */}
-      <motion.button
-        type="submit"
-        disabled={loading}
-        className="auth-submit"
-      >
+      <motion.button type="submit" disabled={loading} className="auth-submit">
         {loading ? "..." : t("register.submit")}
       </motion.button>
     </motion.form>

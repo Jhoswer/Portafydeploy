@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   PencilLine,
@@ -51,6 +52,10 @@ import {
 } from "./profile/ProfileSections";
 import ProfileHero from "./profile/ProfileHero";
 import ProfilePublicationCard from "./profile/ProfilePublicationCard";
+import { PostCommentsModal } from "../feed2/FeedPostCard";
+import { ReportPublicationModal } from "../feed2/ReportPublicationModal";
+import { normalizeFeedPost } from "../../features/feed/feedMappers";
+import { createCommentReport } from "../../services/reportService";
 import { ConfirmModal } from "../../features/dashboard-portfolio/portfolioWorkspaceControls";
 import { profileUi as ui } from "../../styles/components/dashboard/profileStyles";
 import { dashboardShell } from "../../styles/components/dashboardShell";
@@ -102,6 +107,7 @@ function isDashboardProfileCacheFresh() {
 }
 
 export default function DashboardProfile({ userId = null, readOnly = false }) {
+  const navigate = useNavigate();
   const { updateUser, user } = useAuth();
   const width = useViewport();
   const isTablet = width < 1100;
@@ -168,6 +174,11 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
   const [commentDrafts, setCommentDrafts] = useState({});
   const [commentErrors, setCommentErrors] = useState({});
   const [commentingPublicationId, setCommentingPublicationId] = useState(null);
+  const [commentsModalPost, setCommentsModalPost] = useState(null);
+  const [commentsModalLoadingId, setCommentsModalLoadingId] = useState(null);
+  const [pendingReportComment, setPendingReportComment] = useState(null);
+  const [commentReportBusyId, setCommentReportBusyId] = useState(null);
+  const [commentReportError, setCommentReportError] = useState("");
   const [loadingPublicationCommentsId, setLoadingPublicationCommentsId] =
     useState(null);
   const [sectionLoading, setSectionLoading] = useState({});
@@ -315,6 +326,31 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     [expandedPublicationId, mergeProfilePost],
   );
 
+  const openProfileFromPublication = useCallback((targetUserId) => {
+    if (!targetUserId) return;
+    navigate(`/perfil-profesional?usuario=${targetUserId}`);
+  }, [navigate]);
+
+  const openAllPublicationComments = useCallback(async (post) => {
+    if (!post?.publicationId) return;
+
+    setCommentsModalPost(normalizeFeedPost(post));
+
+    const loadedCount = Array.isArray(post.comments) ? post.comments.length : 0;
+    if (loadedCount >= Number(post.commentsCount || 0)) return;
+
+    setCommentsModalLoadingId(post.publicationId);
+    try {
+      const nextPost = await fetchFeedPost(post.publicationId);
+      if (nextPost) {
+        mergeProfilePost(nextPost);
+        setCommentsModalPost(normalizeFeedPost(nextPost));
+      }
+    } finally {
+      setCommentsModalLoadingId(null);
+    }
+  }, [mergeProfilePost]);
+
   const updateCommentDraft = useCallback((publicationId, value) => {
     const sanitized = sanitizeCommentInput(value);
 
@@ -364,6 +400,23 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     },
     [commentDrafts, commentingPublicationId, mergeProfilePost],
   );
+
+  const reportPublicationComment = useCallback(async (payload) => {
+    if (!pendingReportComment?.id || commentReportBusyId) return;
+
+    setCommentReportBusyId(pendingReportComment.id);
+    setCommentReportError("");
+
+    try {
+      await createCommentReport(pendingReportComment.id, payload);
+      setPendingReportComment(null);
+      setShareMessage("Reporte enviado al equipo de administracion");
+    } catch (err) {
+      setCommentReportError(err.message || "No se pudo enviar el reporte de comentario.");
+    } finally {
+      setCommentReportBusyId(null);
+    }
+  }, [commentReportBusyId, pendingReportComment]);
 
   /* function tryParseCache(key) {
     try {
@@ -1392,7 +1445,20 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
                       isCommenting={
                         commentingPublicationId === post.publicationId
                       }
+                      isLoadingAllComments={
+                        commentsModalLoadingId === post.publicationId
+                      }
                       unsharing={unsharingPublicationId === post.publicationId}
+                      onOpenProfile={openProfileFromPublication}
+                      onViewAllComments={() => openAllPublicationComments(post)}
+                      currentUserId={user?.id ?? null}
+                      onFollowAuthor={!canEdit && userId ? toggleFollowProfile : null}
+                      isFollowingAuthor={Boolean(followState.isFollowing)}
+                      isFollowAuthorBusy={Boolean(followState.busy)}
+                      onReportComment={(comment) => {
+                        setCommentReportError("");
+                        setPendingReportComment({ ...comment, post: normalizeFeedPost(post) });
+                      }}
                       onCommentDraftChange={(value) =>
                         updateCommentDraft(post.publicationId, value)
                       }
@@ -1509,6 +1575,38 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
           loading={profileViewsLoading}
           onClose={() => setProfileViewsOpen(false)}
           onOpenProfile={openProfileFromModal}
+        />
+      ) : null}
+
+      {commentsModalPost ? (
+        <PostCommentsModal
+          post={commentsModalPost}
+          isLoading={commentsModalLoadingId === commentsModalPost.publicationId}
+          onClose={() => setCommentsModalPost(null)}
+          onOpenProfile={openProfileFromPublication}
+          currentUserId={user?.id ?? null}
+          onReportComment={(comment) => {
+            setCommentReportError("");
+            setPendingReportComment({ ...comment, post: commentsModalPost });
+          }}
+        />
+      ) : null}
+
+      {pendingReportComment ? (
+        <ReportPublicationModal
+          key={`profile-comment-${pendingReportComment.id}`}
+          post={pendingReportComment.post}
+          comment={pendingReportComment}
+          reportKind="comment"
+          isOpen
+          isBusy={commentReportBusyId === pendingReportComment.id}
+          error={commentReportError}
+          onClose={() => {
+            if (commentReportBusyId) return;
+            setPendingReportComment(null);
+            setCommentReportError("");
+          }}
+          onSubmit={reportPublicationComment}
         />
       ) : null}
 

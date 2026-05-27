@@ -92,6 +92,14 @@ export default function ProfilePublicationCard({
   onSubmitComment,
   onUnshare,
   unsharing = false,
+  onOpenProfile = null,
+  onViewAllComments = null,
+  isLoadingAllComments = false,
+  currentUserId = null,
+  onFollowAuthor = null,
+  isFollowingAuthor = false,
+  isFollowAuthorBusy = false,
+  onReportComment = null,
 }) {
   const normalizedPost = normalizeFeedPost(post);
 
@@ -106,6 +114,14 @@ export default function ProfilePublicationCard({
       isSaving={false}
       isCommenting={isCommenting}
       isLoadingComments={loadingComments}
+      isLoadingAllComments={isLoadingAllComments}
+      onOpenProfile={onOpenProfile}
+      onViewAllComments={onViewAllComments}
+      currentUserId={currentUserId}
+      onFollowAuthor={onFollowAuthor}
+      isFollowingAuthor={isFollowingAuthor}
+      isFollowAuthorBusy={isFollowAuthorBusy}
+      onReportComment={onReportComment}
       moreMenu={
         <PostOptionsMenu owner={owner} onUnshare={onUnshare} busy={unsharing} />
       }

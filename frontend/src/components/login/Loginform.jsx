@@ -81,10 +81,10 @@ export default function LoginForm() {
 
       {/* Header */}
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-black">
+        <h1 className="text-2xl font-bold text-(--color-text)">
           {t("login.title")}
         </h1>
-        <p className="text-muted-foreground text-sm mt-1">
+        <p className="text-sm mt-1 text-(--color-muted-text)">
           {t("login.welcome")}
         </p>
       </div>

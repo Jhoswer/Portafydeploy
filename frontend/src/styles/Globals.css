@@ -164,3 +164,186 @@ html, body {
 .page-recruiter::before {
   background: transparent;
 }
+/* ── Notifications Page ───────────────────────────────────── */
+.pf-notif-page {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  display: grid;
+  gap: 18px;
+}
+
+.pf-notif-page__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pf-notif-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid rgba(205, 225, 245, .78);
+  border-radius: 99px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background .18s, border-color .18s;
+}
+.pf-notif-page__back:hover {
+  background: rgba(49, 87, 213, .08);
+  border-color: rgba(49, 87, 213, .24);
+}
+
+.pf-notif-page__title {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 850;
+  color: var(--color-text);
+  margin: 0;
+  flex: 1;
+}
+
+.pf-notif-page__list {
+  display: grid;
+  gap: 8px;
+}
+
+.pf-notif-page__loading {
+  font-family: var(--font-body);
+  color: var(--color-muted);
+  font-size: .88rem;
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* ── Filtros ──────────────────────────────────────────────── */
+.pf-notif-page__filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Switch segmentado */
+.pf-notif-page__filter-group {
+  display: inline-flex;
+  border: 1px solid rgba(205, 225, 245, .86);
+  border-radius: 99px;
+  overflow: hidden;
+  background: #f4f7fb;
+}
+
+.pf-notif-page__filter-btn {
+  padding: 7px 16px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: .82rem;
+  font-weight: 700;
+  color: #000000;
+  cursor: pointer;
+  transition: background .18s, color .18s;
+}
+
+.pf-notif-page__filter-btn--active {
+  background: #ef5759;
+  color: #fff;
+  border-radius: 99px;
+}
+
+.pf-notif-page__filter-btn:hover:not(.pf-notif-page__filter-btn--active) {
+  background: rgba(232, 72, 74, .08);
+  color: #ef5759;
+}
+
+/* Select de tipo */
+.pf-notif-page__type-select {
+  height: 36px;
+  border-radius: 99px;
+  border: 1px solid rgba(205, 225, 245, .86);
+  background: #f4f7fb;
+  font-family: var(--font-ui);
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--color-text);
+  padding: 0 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ── Paginación ───────────────────────────────────────────── */
+.pf-notif-page__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.pf-notif-page__page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--color-text);
+  background: #fff;
+  border: 1px solid rgba(205, 225, 245, .86);
+  border-radius: 99px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background .18s, border-color .18s;
+}
+.pf-notif-page__page-btn:hover:not(:disabled) {
+  background: rgba(49, 87, 213, .08);
+  border-color: rgba(49, 87, 213, .24);
+}
+.pf-notif-page__page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pf-notif-page__page-info {
+  font-family: var(--font-ui);
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+.pf-notif-page__type-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pf-notif-page__type-btn {
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1px solid rgba(205, 225, 245, .86);
+  background: #fff;
+  font-family: var(--font-ui);
+  font-size: .78rem;
+  font-weight: 700;
+  color: #000000;
+  cursor: pointer;
+  transition: box-shadow .18s, background .18s, color .18s, border-color .18s;
+}
+
+.pf-notif-page__type-btn:hover:not(.pf-notif-page__type-btn--active) {
+  border-color: rgba(232, 72, 74, .30);
+  color: #ef5759;
+  box-shadow: 0 4px 14px rgba(232, 72, 74, .18);
+}
+
+.pf-notif-page__type-btn--active {
+  background: rgba(232, 72, 74, .08);
+  border-color: rgba(232, 72, 74, .30);
+  color: #ef5759;
+  box-shadow: 0 4px 14px rgba(232, 72, 74, .18);
+}

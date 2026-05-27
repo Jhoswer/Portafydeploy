@@ -448,7 +448,7 @@ export default function Permisos() {
             type="button"
             onClick={() => fetchUsers(query)}
             disabled={loading}
-            style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "0 18px", background: loading ? "rgba(124,58,237,.55)" : "linear-gradient(135deg, #ef5759 0%, #dc2626 100%)", border: "none", borderRadius: 14, cursor: loading ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 700, color: "#fff", fontFamily: "inherit", boxShadow: "0 4px 16px rgba(124,58,237,.26)" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "0 18px", background: loading ? "rgb(212, 116, 116)" : "linear-gradient(135deg, #ef5759 0%, #dc2626 100%)", border: "none", borderRadius: 14, cursor: loading ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 700, color: "#fff", fontFamily: "inherit", boxShadow: "0 4px 16px rgba(124,58,237,.26)" }}
           >
             <Search size={14} />
             Buscar

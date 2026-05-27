@@ -32,14 +32,14 @@ export const ADMIN_MODULE_GROUPS = {
         { page: "historial", icon: Clock, label: "Historial", color: "res-teal" },
       ],
     },
-    /*{
+    {
       key: "soporte",
       title: "Soporte",
       items: [
-        { page: "mensajes", icon: MessageCircle, label: "Mensajes", color: "res-blue" },
+        /*{ page: "mensajes", icon: MessageCircle, label: "Mensajes", color: "res-blue" }, */
         { page: "solicitudes", icon: ClipboardList, label: "Solicitudes", color: "res-teal" },
       ],
-    },*/
+    },
     {
       key: "gestion",
       title: "Gestion",

@@ -196,6 +196,22 @@ export async function createPublicationReport(publicationId, payload = {}) {
   );
 }
 
+export async function createCommentReport(commentId, payload = {}) {
+  const motivo = REPORT_REASON_PAYLOAD[payload.motivo] || payload.motivo;
+
+  return apiClient.post(
+    `reports/comments/${commentId}`,
+    {
+      motivo,
+      description: payload.description || "",
+      tests_url: payload.tests_url || "",
+    },
+    {
+      fallbackMessage: "No se pudo enviar el reporte de comentario.",
+    }
+  );
+}
+
 function resolveAdministratorProfileId() {
   const user = getStoredUser();
 

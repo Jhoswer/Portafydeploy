@@ -13,7 +13,6 @@ export default function StepBranding({
   const [cropOpen, setCropOpen] = useState(false);
 
   const handleCrop = (dataUrl) => {
-    // Convierte dataUrl → File para mantener compatibilidad con el form
     fetch(dataUrl)
       .then((r) => r.blob())
       .then((blob) => {
@@ -36,13 +35,13 @@ export default function StepBranding({
   return (
     <StepWrapper stepKey="paso-branding">
       <IconCircle>
-        <ImageUp size={24} color="#FF6B6B" />
+        <ImageUp size={24} color="#fff" />
       </IconCircle>
 
-      <h2 className="auth-card__title" style={{ textAlign: "center" }}>
+      <h2 className="forms-card__title" style={{ textAlign: "center" }}>
         Branding
       </h2>
-      <p className="auth-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
+      <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
         Sube el logo para que los candidatos reconozcan tu empresa.
         <OptionalBadge />
       </p>
@@ -54,14 +53,16 @@ export default function StepBranding({
             src={logoPreview}
             alt="Logo preview"
             style={{
-              width: 100, height: 100, objectFit: "cover",
-              borderRadius: 16, border: "1.5px solid rgba(162,214,249,.35)",
-              display: "block", margin: "0 auto 10px",
+              width: 100,
+              height: 100,
+              objectFit: "cover",
+              borderRadius: 16,
+              border: "1.5px solid rgba(162,214,249,.35)",
+              display: "block",
+              margin: "0 auto 10px",
             }}
           />
-          <p style={{ fontSize: 12, color: "var(--muted)", fontFamily: "var(--f-body)", marginBottom: 8 }}>
-            {logoName}
-          </p>
+          <p className="forms-avatar-hint">{logoName}</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 14 }}>
             <button
               type="button"
@@ -69,8 +70,8 @@ export default function StepBranding({
               style={{
                 display: "inline-flex", alignItems: "center", gap: 4,
                 background: "none", border: "none", cursor: "pointer",
-                fontSize: 12, color: "var(--muted)",
-                fontFamily: "var(--f-ui)", fontWeight: 600,
+                fontSize: 12, color: "var(--color-muted-text)",
+                fontFamily: "var(--font-ui)", fontWeight: 600,
               }}
             >
               <ImageUp size={12} /> Cambiar
@@ -82,7 +83,7 @@ export default function StepBranding({
                 display: "inline-flex", alignItems: "center", gap: 4,
                 background: "none", border: "none", cursor: "pointer",
                 fontSize: 12, color: "#e24b4a",
-                fontFamily: "var(--f-ui)", fontWeight: 600,
+                fontFamily: "var(--font-ui)", fontWeight: 600,
               }}
             >
               <X size={12} /> Quitar
@@ -90,14 +91,18 @@ export default function StepBranding({
           </div>
         </div>
       ) : (
-        /* ── Drop zone (trigger del modal) ── */
+        /* ── Drop zone ── */
         <div
           onClick={() => setCropOpen(true)}
           style={{
-            width: "100%", borderRadius: 14, marginBottom: 12,
+            width: "100%",
+            borderRadius: 14,
+            marginBottom: 12,
             border: "1.5px dashed rgba(162,214,249,.50)",
             background: "rgba(162,214,249,.05)",
-            padding: "32px 20px", textAlign: "center", cursor: "pointer",
+            padding: "32px 20px",
+            textAlign: "center",
+            cursor: "pointer",
             transition: "border-color .2s, background .2s",
           }}
         >
@@ -107,12 +112,15 @@ export default function StepBranding({
             display: "flex", alignItems: "center", justifyContent: "center",
             margin: "0 auto 12px",
           }}>
-            <ImageUp size={22} color="var(--muted)" />
+            <ImageUp size={22} color="var(--color-muted-text)" />
           </div>
-          <p style={{ fontSize: 13, color: "var(--body)", fontFamily: "var(--f-ui)", fontWeight: 600, marginBottom: 4 }}>
+          <p style={{
+            fontSize: 13, color: "var(--color-text)",
+            fontFamily: "var(--font-ui)", fontWeight: 600, marginBottom: 4,
+          }}>
             Sube tu logo
           </p>
-          <p style={{ fontSize: 12, color: "var(--muted)", fontFamily: "var(--f-body)" }}>
+          <p style={{ fontSize: 12, color: "var(--color-muted-text)", fontFamily: "var(--font-body)" }}>
             PNG, JPG · Máximo 5 MB
           </p>
         </div>
@@ -120,7 +128,6 @@ export default function StepBranding({
 
       {logoError && <FieldError msg={logoError} />}
 
-      {/* ── Modal crop (renderiza fuera del DOM del step via portal) ── */}
       <ImageCropPicker
         open={cropOpen}
         onClose={() => setCropOpen(false)}

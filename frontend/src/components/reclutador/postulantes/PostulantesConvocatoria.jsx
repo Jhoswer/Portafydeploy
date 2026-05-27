@@ -26,6 +26,17 @@ function getInitials(name = "") {
   return name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase() || "?";
 }
 
+function formatDate(dateStr) {
+  if (!dateStr) return null;
+  const date = new Date(dateStr);
+  if (isNaN(date)) return null;
+  return date.toLocaleDateString("es-BO", {
+    day:   "2-digit",
+    month: "short",
+    year:  "numeric",
+  });
+}
+
 function resolvePostulant(raw) {
   if (raw.id_postulation && raw.name) {
     return {
@@ -113,7 +124,8 @@ function StateBadge({ state }) {
 }
 
 function PostulantRow({ postulant, onClick }) {
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
+  const dateLabel = formatDate(postulant.createdAt);
 
   return (
     <motion.div className="post-row" onClick={() => onClick(postulant)}
@@ -149,6 +161,7 @@ function PostulantRow({ postulant, onClick }) {
           {postulant.career   && <span><Briefcase size={10} /> {postulant.career}</span>}
           {postulant.location && <span><MapPin size={10} /> {postulant.location}</span>}
           {postulant.email    && <span><Mail size={10} /> {postulant.email}</span>}
+          {dateLabel          && <span><Calendar size={10} /> Postuló el {dateLabel}</span>}
         </div>
       </div>
       <StateBadge state={postulant.state} />
@@ -169,6 +182,7 @@ function KanbanCard({ postulant, onDragStart, onClick }) {
         <div style={{ minWidth: 0 }}>
           <p className="kanban-card__name">{postulant.name}</p>
           {postulant.career && <p className="kanban-card__career">{postulant.career}</p>}
+          {postulant.email  && <p className="kanban-card__career" style={{ opacity: 0.6 }}>{postulant.email}</p>}
         </div>
         <GripVertical size={13} className="kanban-card__grip" />
       </div>
@@ -206,7 +220,8 @@ function KanbanColumn({ column, postulants, onDrop, onDragOver, onDragStart, onC
 }
 
 function ProfileModal({ postulant, onClose, onStateChange }) {
-  const navigate = useNavigate();
+  const navigate    = useNavigate();
+  const dateLabel   = formatDate(postulant.createdAt);
   const [selectedState, setSelectedState] = useState(postulant.state);
 
   useEffect(() => {
@@ -230,6 +245,12 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
             <div>
               <h2 className="profile-modal__name">{postulant.name}</h2>
               {postulant.career && <p className="profile-modal__career">{postulant.career}</p>}
+              {postulant.email  && <p className="profile-modal__career" style={{ opacity: 0.6 }}>{postulant.email}</p>}
+              {dateLabel && (
+                <p style={{ margin: "4px 0 0", fontSize: 11, opacity: 0.5, display: "flex", alignItems: "center", gap: 5 }}>
+                  <Calendar size={10} /> Postuló el {dateLabel}
+                </p>
+              )}
               <button
                 className="ver-perfil-btn"
                 style={{ marginTop: 6 }}
@@ -293,41 +314,40 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
             </div>
           )}
 
-          {/* 👇 AQUÍ, después del CV */}
-  {postulant.state === "in_interview" && postulant.interview && (
-    <div className="profile-section">
-      <p className="profile-section__label">Entrevista agendada</p>
-      <div className="profile-cv-btn" style={{ cursor: "default", flexDirection: "column", alignItems: "flex-start", gap: 6 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {postulant.interview.type === "virtual"
-            ? <Video size={14} style={{ color: "#e879f9" }} />
-            : <Building2 size={14} style={{ color: "#e879f9" }} />
-          }
-          <span style={{ fontWeight: 500, fontSize: 13 }}>
-            {postulant.interview.type === "virtual" ? "Virtual" : "Presencial"}
-          </span>
-        </div>
-        {postulant.interview.interview_date && (
-          <div style={{ fontSize: 12, opacity: 0.7, display: "flex", gap: 6 }}>
-            <Calendar size={11} />
-            {postulant.interview.interview_date}
-            {postulant.interview.interview_time && ` — ${postulant.interview.interview_time}`}
-          </div>
-        )}
-        {postulant.interview.type === "virtual" && postulant.interview.link && (
-          <a href={postulant.interview.link} target="_blank" rel="noreferrer"
-            style={{ fontSize: 12, color: "#6366f1", wordBreak: "break-all" }}>
-            {postulant.interview.link}
-          </a>
-        )}
-        {postulant.interview.type === "presencial" && postulant.interview.address && (
-          <div style={{ fontSize: 12, opacity: 0.7, display: "flex", gap: 6 }}>
-            <MapPin size={11} /> {postulant.interview.address}
-          </div>
-        )}
-      </div>
-    </div>
-  )}
+          {postulant.state === "in_interview" && postulant.interview && (
+            <div className="profile-section">
+              <p className="profile-section__label">Entrevista agendada</p>
+              <div className="profile-cv-btn" style={{ cursor: "default", flexDirection: "column", alignItems: "flex-start", gap: 6 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {postulant.interview.type === "virtual"
+                    ? <Video size={14} style={{ color: "#e879f9" }} />
+                    : <Building2 size={14} style={{ color: "#e879f9" }} />
+                  }
+                  <span style={{ fontWeight: 500, fontSize: 13 }}>
+                    {postulant.interview.type === "virtual" ? "Virtual" : "Presencial"}
+                  </span>
+                </div>
+                {postulant.interview.interview_date && (
+                  <div style={{ fontSize: 12, opacity: 0.7, display: "flex", gap: 6 }}>
+                    <Calendar size={11} />
+                    {postulant.interview.interview_date}
+                    {postulant.interview.interview_time && ` — ${postulant.interview.interview_time}`}
+                  </div>
+                )}
+                {postulant.interview.type === "virtual" && postulant.interview.link && (
+                  <a href={postulant.interview.link} target="_blank" rel="noreferrer"
+                    style={{ fontSize: 12, color: "#6366f1", wordBreak: "break-all" }}>
+                    {postulant.interview.link}
+                  </a>
+                )}
+                {postulant.interview.type === "presencial" && postulant.interview.address && (
+                  <div style={{ fontSize: 12, opacity: 0.7, display: "flex", gap: 6 }}>
+                    <MapPin size={11} /> {postulant.interview.address}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="profile-section">
             <p className="profile-section__label">Estado de la postulación</p>
@@ -431,7 +451,6 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
 
   // ── Cambiar estado: optimista + API + sync contexto ────
   const handleStateChange = async (id, newState, skipInterviewCheck = false) => {
-    // Si va a "en entrevista", abrir el modal de entrevista primero
     if (newState === "in_interview" && !skipInterviewCheck) {
       const postulant = postulants.find((p) => p.id === id);
       setInterviewPending({ id, postulant });
@@ -440,22 +459,17 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
 
     let prevPostulants;
 
-    // 1. Actualización optimista local
     setPostulants((prev) => {
       prevPostulants = prev;
       return prev.map((p) => p.id === id ? { ...p, state: newState } : p);
     });
 
-    // 2. Actualizar el modal si está abierto
     if (selected?.id === id) {
       setSelected((prev) => prev ? { ...prev, state: newState } : prev);
     }
 
     try {
-      // 3. Llamada a la API
       await actualizarEstadoPostulacion(id, newState);
-
-      // 4. Sincronizar el contexto global
       updatePostulanteState(jobId, id, newState);
 
       toast.success(
@@ -467,7 +481,6 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
         "Estado actualizado"
       );
     } catch {
-      // 5. Revertir si falla
       setPostulants(prevPostulants);
       if (selected?.id === id) {
         const prev = prevPostulants?.find((p) => p.id === id);

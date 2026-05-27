@@ -175,6 +175,10 @@ class DefinitionCatalogController extends Controller
                 )
                 ->orderBy('COMPANY.name')
                 ->get(),
+            'audience_types' => DB::table('AUDIENCE_TYPE')
+                ->select('id_audience_type', 'code', 'name', 'description', 'created_at', 'updated_at')
+                ->orderBy('name')
+                 ->get(),
             default => null,
         };
 

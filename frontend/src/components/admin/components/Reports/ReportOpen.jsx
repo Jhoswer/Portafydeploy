@@ -99,6 +99,8 @@ export default function ReportOpen({
   const [context,           setContext]           = useState(null);
   const [contextLoading,    setContextLoading]    = useState(true);
   const [contextError,      setContextError]      = useState("");
+  const [reporterImageFailed, setReporterImageFailed] = useState(false);
+  const [reportedImageFailed, setReportedImageFailed] = useState(false);
 
   useEffect(() => {
     if (!report) return;
@@ -138,6 +140,11 @@ export default function ReportOpen({
     id,
     tests_url,
   } = report;
+
+  const reporterPhoto = typeof reporter_user?.photo === "string" ? reporter_user.photo.trim() : "";
+  const reportedPhoto = typeof reported_user?.photo === "string" ? reported_user.photo.trim() : "";
+  const showReporterPhoto = Boolean(reporterPhoto) && !reporterImageFailed;
+  const showReportedPhoto = Boolean(reportedPhoto) && !reportedImageFailed;
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleIgnore = async () => {
@@ -202,11 +209,20 @@ export default function ReportOpen({
         <div className="ro-header">
           <div className="ro-header__left">
             <div className={`ro-header__avatar ${meta.avatarClass}`}>
-              {reported_user.initials}
+              {showReporterPhoto ? (
+                <img
+                  src={reporterPhoto}
+                  alt={reporter_user.name || "Usuario reportante"}
+                  className="ro-card__avatar-img"
+                  onError={() => setReporterImageFailed(true)}
+                />
+              ) : (
+                reporter_user.initials
+              )}
             </div>
             <div>
               <h2 className="ro-header__title">
-                Reporte hecho por {reported_user.name}
+                Reporte hecho por {reporter_user.name}
               </h2>
               <p className="ro-header__subtitle">
                 {meta.label} · Reporte #{id}
@@ -228,14 +244,23 @@ export default function ReportOpen({
               </div>
               <div className="ro-user-card">
                 <div className={`ro-user-card__avatar ${meta.avatarClass}`}>
-                  {reporter_user.initials}
+                  {showReportedPhoto ? (
+                    <img
+                      src={reportedPhoto}
+                      alt={reported_user.name || "Usuario reportado"}
+                      className="ro-card__avatar-img"
+                      onError={() => setReportedImageFailed(true)}
+                    />
+                  ) : (
+                    reported_user.initials
+                  )}
                 </div>
                 <div className="ro-user-card__info">
-                  <span className="ro-user-card__name">{reporter_user.name}</span>
-                  <span className="ro-user-card__id">ID de usuario: {report.id_profile}</span>
+                  <span className="ro-user-card__name">{reported_user.name}</span>
+                  <span className="ro-user-card__id">ID de perfil: {report.id_reported_user}</span>
                 </div>
                 <a
-                  href={`/profile/${report.id_profile}`}
+                  href={`/profile/${report.id_reported_user}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="ro-profile-link"
@@ -251,11 +276,20 @@ export default function ReportOpen({
               </div>
               <div className="ro-user-card ro-user-card--reporter">
                 <div className="ro-user-card__avatar ro-user-card__avatar--reporter">
-                  {reported_user.initials}
+                  {showReporterPhoto ? (
+                    <img
+                      src={reporterPhoto}
+                      alt={reporter_user.name || "Usuario reportante"}
+                      className="ro-card__avatar-img"
+                      onError={() => setReporterImageFailed(true)}
+                    />
+                  ) : (
+                    reporter_user.initials
+                  )}
                 </div>
                 <div className="ro-user-card__info">
-                  <span className="ro-user-card__name">{reported_user.name}</span>
-                  <span className="ro-user-card__id">ID de perfil: {report.id_reported_user}</span>
+                  <span className="ro-user-card__name">{reporter_user.name}</span>
+                  <span className="ro-user-card__id">ID de perfil: {report.id_profile}</span>
                 </div>
               </div>
             </section>
@@ -318,14 +352,14 @@ export default function ReportOpen({
             </div>
 
             <ProfileStats
-              label={`Historial de ${reporter_user.name}`}
+              label={`Historial de ${reported_user.name}`}
               stats={context?.reporter_stats}
               loading={contextLoading}
               error={contextError}
             />
 
             <ProfileStats
-              label={`Historial de ${reported_user.name}`}
+              label={`Historial de ${reporter_user.name}`}
               stats={context?.reported_stats}
               loading={contextLoading}
               error={contextError}

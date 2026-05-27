@@ -34,6 +34,8 @@ export default function ReportActionModal({
     "Administrador";
 
   const [accionTomada, setAccionTomada] = useState("");
+  const [reportedImageFailed, setReportedImageFailed] = useState(false);
+  const [reporterImageFailed, setReporterImageFailed] = useState(false);
   const [pruebasEnviadas, setPruebasEnviadas] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
@@ -53,6 +55,11 @@ export default function ReportActionModal({
       document.body.style.overflow = "";
     };
   }, []);
+
+  const reportedPhoto = typeof reported_user?.photo === "string" ? reported_user.photo.trim() : "";
+  const reporterPhoto = typeof reporter_user?.photo === "string" ? reporter_user.photo.trim() : "";
+  const showReportedPhoto = Boolean(reportedPhoto) && !reportedImageFailed;
+  const showReporterPhoto = Boolean(reporterPhoto) && !reporterImageFailed;
 
   function handleAceptar() {
     if (!accionTomada.trim()) {
@@ -137,22 +144,38 @@ export default function ReportActionModal({
 
               <div className="ram-meta__card">
                 <div className={`ram-meta__avatar ${meta?.avatarClass ?? ""}`}>
-                  {reporter_user?.initials ?? "??"}
+                  {showReportedPhoto ? (
+                    <img
+                      src={reportedPhoto}
+                      alt={reported_user?.name || "Usuario reportado"}
+                      className="ram-meta__avatar-img"
+                      onError={() => setReportedImageFailed(true)}
+                    />
+                  ) : (
+                    reported_user?.initials ?? "??"
+                  )}
                 </div>
                 <div className="ram-meta__card-info">
                   <span className="ram-meta__card-role">Reportado</span>
-                  <span className="ram-meta__card-name">{reporter_user?.name ?? "-"}</span>
                 </div>
                 <User size={13} className="ram-meta__card-icon" />
               </div>
 
               <div className="ram-meta__card ram-meta__card--reporter">
                 <div className="ram-meta__avatar ram-meta__avatar--reporter">
-                  {reported_user?.initials ?? "??"}
+                  {showReporterPhoto ? (
+                    <img
+                      src={reporterPhoto}
+                      alt={reporter_user?.name || "Usuario reportante"}
+                      className="ram-meta__avatar-img"
+                      onError={() => setReporterImageFailed(true)}
+                    />
+                  ) : (
+                    reporter_user?.initials ?? "??"
+                  )}
                 </div>
                 <div className="ram-meta__card-info">
                   <span className="ram-meta__card-role">Reportante</span>
-                  <span className="ram-meta__card-name">{reported_user?.name ?? "-"}</span>
                 </div>
                 <AlertTriangle size={13} className="ram-meta__card-icon" />
               </div>

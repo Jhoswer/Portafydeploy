@@ -17,7 +17,9 @@ export default function LoginLayout({ children }) {
         initial={{ opacity: 0, y: 14, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-5xl bg-card/70 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl shadow-black/50 overflow-hidden grid lg:grid-cols-[42%_1fr]"
+        className="auth-card-wrapper w-full max-w-5xl backdrop-blur-xl border border-white/5
+          rounded-3xl shadow-2xl shadow-black/50 overflow-hidden
+          grid lg:grid-cols-[42%_1fr]"
       >
         {/* Panel izquierdo — compartido con Register */}
         <div className="hidden lg:block">
@@ -25,7 +27,8 @@ export default function LoginLayout({ children }) {
         </div>
 
         {/* Panel derecho — formulario de login */}
-        <div className="relative p-6 sm:p-8 lg:p-9 flex flex-col justify-center">
+        <div className="relative p-6 sm:p-8 lg:p-9 flex flex-col justify-center
+  bg-white/80 dark:bg-[hsl(222,25%,12%)]">
           {children}
         </div>
       </motion.div>

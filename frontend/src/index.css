@@ -20,6 +20,8 @@
 
 @import "./styles/components/auth/Auth.css";
 @import "./styles/components/auth/Login.css";
+@import "./styles/components/auth/Register.css";
+@import "./styles/components/auth/Forms.css";
 
 @import "./styles/components/dashboard/DashboardShell.css";
 
@@ -60,6 +62,7 @@
 @import "./styles/components/recruiter/NewConvocatory.css";
 @import "./styles/components/recruiter/convocatory/AudienceModal.css";
 @import "./styles/components/recruiter/Postulantesconvocatoria.css";
+@import "./styles/components/recruiter/RecluiterForms.css";
 
 @import "./styles/components/recruiter/ProfileTabs.css";
 @import "./styles/components/recruiter/CompanyProfile.css";

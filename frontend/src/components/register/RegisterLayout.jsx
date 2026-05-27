@@ -3,9 +3,8 @@ import BrandPanel from "./BrandPanel";
 
 export default function RegisterLayout({ children }) {
   return (
-    <div
-      className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-x-hidden"
-    >
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-x-hidden">
+
       {/* Background blobs */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/3 left-1/4 w-125 h-125 bg-blue-600/10 rounded-full blur-[140px]" />
@@ -17,15 +16,19 @@ export default function RegisterLayout({ children }) {
         initial={{ opacity: 0, y: 14, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-5xl bg-card/70 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl shadow-black/50 overflow-hidden grid lg:grid-cols-[42%_1fr]"
+        className="w-full max-w-5xl rounded-3xl shadow-2xl shadow-black/50 overflow-hidden grid lg:grid-cols-[42%_1fr]
+          border border-white/10 dark:border-white/5
+          bg-white/70 dark:bg-[hsl(222,28%,10%)]/80
+          backdrop-blur-xl"
       >
         {/* Left */}
         <div className="hidden lg:block">
-          <BrandPanel variant="regiter"/>
+          <BrandPanel variant="register"/>
         </div>
 
         {/* Right */}
-        <div className="relative p-6 sm:p-8 lg:p-9 min-h-160 flex flex-col">
+        <div className="relative p-6 sm:p-8 lg:p-9 min-h-160 flex flex-col
+          bg-white/80 dark:bg-[hsl(222,25%,12%)]">
           {children}
         </div>
       </motion.div>

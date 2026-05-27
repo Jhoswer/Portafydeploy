@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BriefcaseBusiness,
   Building2,
@@ -12,6 +12,11 @@ import {
   MoreHorizontal,
   PauseCircle,
   Send,
+  ShieldCheck,
+  UserCheck,
+  UserPlus,
+  UsersRound,
+  X,
 } from "lucide-react";
 import { FeedPublicationMedia } from "./FeedPublicationMedia";
 
@@ -33,6 +38,98 @@ function PortfolioKindIcon({ type }) {
   }
 
   return <svg viewBox="0 0 24 24"><path d="M4 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 13h8"/><path d="M8 16h5"/></svg>;
+}
+
+function formatCompactCount(value) {
+  const number = Number(value || 0);
+  if (number >= 1000) return `${(number / 1000).toFixed(number >= 10000 ? 0 : 1)}k`;
+  return String(number);
+}
+
+function VerifiedMark({ size = 15 }) {
+  return (
+    <span className="post-verified-mark" title="Cuenta verificada" aria-label="Cuenta verificada">
+      <ShieldCheck size={size} />
+    </span>
+  );
+}
+
+function useCloseOnOutside(open, onClose) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        onClose?.();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [open, onClose]);
+
+  return ref;
+}
+
+function ProfileHoverCard({ post }) {
+  const title = post.authorTitle && post.authorTitle !== "Profesional"
+    ? post.authorTitle
+    : "Profesional Portafy";
+
+  return (
+    <div className="post-author-hover" role="status">
+      <div className="post-author-hover__head">
+        {post.avatar ? (
+          <img src={post.avatar} alt="" />
+        ) : (
+          <span>{post.author?.[0] || "P"}</span>
+        )}
+        <div>
+          <strong>
+            {post.author || "Usuario Portafy"}
+            {post.authorIsVerified ? <VerifiedMark size={14} /> : null}
+          </strong>
+          <small>{title}</small>
+        </div>
+      </div>
+      <div className="post-author-hover__stats">
+        <span><UsersRound size={14} /> {formatCompactCount(post.authorFollowers)} seguidores</span>
+        <span>{formatCompactCount(post.authorFollowing)} seguidos</span>
+      </div>
+    </div>
+  );
+}
+
+function AuthorIdentity({ post, onOpenProfile }) {
+  const canOpen = Boolean(post.authorId && onOpenProfile);
+
+  const handleOpen = () => {
+    if (canOpen) onOpenProfile(post.authorId);
+  };
+
+  return (
+    <div className="post-author-shell">
+      <button
+        type="button"
+        className="post-author-trigger"
+        onClick={handleOpen}
+        disabled={!canOpen}
+        aria-label={canOpen ? `Ver perfil de ${post.author}` : undefined}
+      >
+        {post.avatar ? <img className="post-avatar" src={post.avatar} alt={post.author} /> : <span className="post-avatar">{post.author?.[0] || "A"}</span>}
+        <div className="post-meta">
+          <div className="post-author">
+            {post.author}
+            {post.authorIsVerified ? <VerifiedMark /> : null}
+          </div>
+          <PostMeta post={post} />
+        </div>
+      </button>
+      {canOpen ? <ProfileHoverCard post={post} /> : null}
+    </div>
+  );
 }
 
 function normalizeProjectStatus(status) {
@@ -135,6 +232,7 @@ const postMenuItemStyle = {
 
 function DefaultPostOptionsMenu({ owner = false, onUnshare = null, onReport = null, isUnsharing = false }) {
   const [open, setOpen] = useState(false);
+  const menuRef = useCloseOnOutside(open, () => setOpen(false));
 
   if (owner && !onUnshare) {
     return null;
@@ -145,7 +243,7 @@ function DefaultPostOptionsMenu({ owner = false, onUnshare = null, onReport = nu
   }
 
   return (
-    <div className="post-options">
+    <div className="post-options" ref={menuRef}>
       <button
         className="post-more"
         type="button"
@@ -293,17 +391,122 @@ function CommentAvatar({ comment }) {
   return <span className="post-comment__avatar">{initial}</span>;
 }
 
-function CommentItem({ comment, showDate = true }) {
+function CommentOptionsMenu({ comment, canReport = false, onReportComment }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useCloseOnOutside(open, () => setOpen(false));
+
+  if (!canReport || !onReportComment) return null;
+
+  return (
+    <div className="post-comment-menu" ref={menuRef}>
+      <button
+        type="button"
+        className="post-comment-menu__trigger"
+        aria-label="Opciones del comentario"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <MoreHorizontal size={15} />
+      </button>
+      {open ? (
+        <div className="post-comment-menu__panel">
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              onReportComment(comment);
+            }}
+          >
+            <Flag size={14} />
+            Reportar comentario
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function CommentItem({ comment, showDate = true, onOpenProfile, currentUserId = null, onReportComment }) {
+  const canOpen = Boolean(comment.authorId && onOpenProfile);
+  const canReport = Boolean(comment.id && comment.authorId && currentUserId && String(comment.authorId) !== String(currentUserId));
+  const openProfile = () => {
+    if (canOpen) onOpenProfile(comment.authorId);
+  };
+
   return (
     <div className="post-comment">
-      <CommentAvatar comment={comment} />
+      <button
+        type="button"
+        className="post-comment-profile-btn"
+        onClick={openProfile}
+        disabled={!canOpen}
+        aria-label={canOpen ? `Ver perfil de ${comment.author}` : undefined}
+      >
+        <CommentAvatar comment={comment} />
+      </button>
       <div className="post-comment__body">
         <div className="post-comment__meta">
-          <strong>{comment.author}</strong>
+          <button
+            type="button"
+            className="post-comment-author"
+            onClick={openProfile}
+            disabled={!canOpen}
+          >
+            {comment.author}
+            {comment.authorIsVerified ? <VerifiedMark size={13} /> : null}
+          </button>
           {showDate && comment.posted ? <small>{comment.posted}</small> : null}
         </div>
         <span>{comment.text}</span>
       </div>
+      <CommentOptionsMenu comment={comment} canReport={canReport} onReportComment={onReportComment} />
+    </div>
+  );
+}
+
+export function PostCommentsModal({ post, isLoading = false, onClose, onOpenProfile, currentUserId = null, onReportComment }) {
+  if (!post) return null;
+
+  const comments = Array.isArray(post.commentsList) ? post.commentsList : [];
+
+  return (
+    <div className="post-comments-modal__backdrop" role="presentation" onMouseDown={onClose}>
+      <section
+        className="post-comments-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="post-comments-modal-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <header className="post-comments-modal__header">
+          <div>
+            <span>Comentarios</span>
+            <h3 id="post-comments-modal-title">{post.project?.title || post.experience?.title || "Publicacion"}</h3>
+          </div>
+          <button type="button" onClick={onClose} aria-label="Cerrar comentarios">
+            <X size={18} />
+          </button>
+        </header>
+        <div className="post-comments-modal__summary">
+          <AuthorIdentity post={post} onOpenProfile={onOpenProfile} />
+          {post.description ? <p>{post.description}</p> : null}
+        </div>
+        <div className="post-comments-modal__list">
+          {isLoading ? <div className="post-comment post-comment--muted">Cargando comentarios...</div> : null}
+          {!isLoading && comments.length ? comments.map((comment) => (
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              onOpenProfile={onOpenProfile}
+              currentUserId={currentUserId}
+              onReportComment={onReportComment}
+            />
+          )) : null}
+          {!isLoading && !comments.length ? (
+            <div className="post-comment post-comment--muted">Todavia no hay comentarios visibles.</div>
+          ) : null}
+        </div>
+      </section>
     </div>
   );
 }
@@ -329,19 +532,45 @@ export function FeedPostCard({
   onUnshare = null,
   onReport = null,
   isUnsharing = false,
+  onOpenProfile = null,
+  onViewAllComments = null,
+  isLoadingAllComments = false,
+  currentUserId = null,
+  onFollowAuthor = null,
+  isFollowingAuthor = null,
+  isFollowAuthorBusy = false,
+  onReportComment = null,
 }) {
   const isExperiencePost = post.sourceType === "experience";
   const kindLabel = isExperiencePost ? "Experiencia profesional" : "Proyecto de portafolio";
   const showIntro = shouldShowIntro(post);
+  const shownComments = Array.isArray(post.commentsList) ? post.commentsList.slice(0, 3) : [];
+  const hiddenComments = Math.max(0, Number(post.comments || 0) - shownComments.length);
+  const canViewMoreComments = Boolean(onViewAllComments && (hiddenComments > 0 || (post.commentsList?.length || 0) > shownComments.length));
+  const canFollowAuthor = Boolean(onFollowAuthor && post.authorId && currentUserId && String(post.authorId) !== String(currentUserId));
+  const authorIsFollowing = Boolean(isFollowingAuthor ?? post.authorIsFollowing);
 
   return (
     <article className="card">
       <div className="post-header">
-        {post.avatar ? <img className="post-avatar" src={post.avatar} alt={post.author} /> : <div className="post-avatar">{post.author?.[0] || "A"}</div>}
-        <div className="post-meta">
-          <div className="post-author">{post.author}</div>
-          <PostMeta post={post} />
-        </div>
+        <AuthorIdentity post={post} onOpenProfile={onOpenProfile} />
+        {canFollowAuthor ? (
+          <button
+            type="button"
+            className={`post-follow-author${authorIsFollowing ? " following" : ""}${isFollowAuthorBusy ? " pending" : ""}`}
+            onClick={onFollowAuthor}
+            aria-pressed={authorIsFollowing}
+            aria-busy={isFollowAuthorBusy}
+            title={authorIsFollowing ? "Siguiendo" : "Seguir"}
+          >
+            {authorIsFollowing ? (
+              <UserCheck size={15} />
+            ) : (
+              <UserPlus size={15} />
+            )}
+            <span>{authorIsFollowing ? "Siguiendo" : "Seguir"}</span>
+          </button>
+        ) : null}
         {moreMenu ? moreMenu : <DefaultPostOptionsMenu owner={post.ownedByMe} onUnshare={onUnshare} onReport={onReport} isUnsharing={isUnsharing} />}
       </div>
 
@@ -363,17 +592,40 @@ export function FeedPostCard({
       {isCommentingOpen ? (
         <div className="post-comments">
           {isLoadingComments ? <div className="post-comment post-comment--muted">Cargando comentarios...</div> : null}
-          {!isLoadingComments && post.commentsList?.length ? post.commentsList.slice(0, 3).map((comment) => (
-            <CommentItem key={comment.id} comment={comment} />
+          {!isLoadingComments && shownComments.length ? shownComments.map((comment) => (
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              onOpenProfile={onOpenProfile}
+              currentUserId={currentUserId}
+              onReportComment={onReportComment}
+            />
           )) : null}
+          {!isLoadingComments && canViewMoreComments ? (
+            <button className="post-comments-more" type="button" onClick={onViewAllComments} disabled={isLoadingAllComments}>
+              {isLoadingAllComments ? "Cargando..." : `Ver mas comentarios${hiddenComments > 0 ? ` (${hiddenComments})` : ""}`}
+            </button>
+          ) : null}
           {!isLoadingComments && !post.commentsList?.length && post.comments > 0 ? <div className="post-comment post-comment--muted">No se pudieron mostrar los comentarios todavia.</div> : null}
           {!isLoadingComments && post.comments === 0 ? <div className="post-comment post-comment--muted">Se el primero en comentar.</div> : null}
         </div>
       ) : post.commentsList?.length ? (
         <div className="post-comments post-comments--preview">
           {post.commentsList.slice(0, 1).map((comment) => (
-            <CommentItem key={comment.id} comment={comment} showDate={false} />
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              showDate={false}
+              onOpenProfile={onOpenProfile}
+              currentUserId={currentUserId}
+              onReportComment={onReportComment}
+            />
           ))}
+          {canViewMoreComments ? (
+            <button className="post-comments-more" type="button" onClick={onViewAllComments} disabled={isLoadingAllComments}>
+              {isLoadingAllComments ? "Cargando..." : "Ver mas comentarios"}
+            </button>
+          ) : null}
         </div>
       ) : null}
 

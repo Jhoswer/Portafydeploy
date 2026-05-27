@@ -6,21 +6,22 @@ export default function StepIdentidad({ empresa, setEmpresa, descripcion, setDes
 
   return (
     <StepWrapper stepKey="paso-identidad">
-      <IconCircle><Building2 size={24} color="#FF6B6B" /></IconCircle>
-      <h2 className="auth-card__title" style={{ textAlign: "center" }}>
+      <IconCircle><Building2 size={24} color="#fff" /></IconCircle>
+
+      <h2 className="forms-card__title" style={{ textAlign: "center" }}>
         Identidad básica
       </h2>
-      <p className="auth-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
+      <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
         Cuéntanos sobre la empresa que representas.
       </p>
 
       {/* Nombre */}
-      <div className="auth-field" style={{ width: "100%" }}>
-        <label className="auth-label">Nombre de la empresa</label>
+      <div className="forms-field">
+        <label className="forms-label">Nombre de la empresa</label>
         <InputWrap icon={<Building2 size={15} />}>
           <input
             type="text"
-            className="auth-input"
+            className="forms-input"
             value={empresa}
             onChange={e => setEmpresa(e.target.value)}
             placeholder="Ej. Acme Corp"
@@ -34,28 +35,21 @@ export default function StepIdentidad({ empresa, setEmpresa, descripcion, setDes
       </div>
 
       {/* Descripción */}
-      <div className="auth-field" style={{ width: "100%", marginTop: 12 }}>
-        <label className="auth-label">Descripción</label>
-        <InputWrap icon={<FileText size={15} />}>
+      <div className="forms-field" style={{ marginTop: 12 }}>
+        <label className="forms-label">Descripción</label>
+        <InputWrap icon={<FileText size={15} />} textarea>
           <textarea
-            className="auth-input"
+            className="forms-input"
             value={descripcion}
             onChange={e => setDescripcion(e.target.value)}
             placeholder="Describe brevemente a qué se dedica la empresa, su misión y cultura de trabajo..."
             maxLength={300}
             rows={4}
-            style={{
-              paddingTop: 10, paddingBottom: 10,
-              resize: "none", height: "auto",
-              ...inputStyle(errors.descripcion),
-            }}
+            style={inputStyle(errors.descripcion)}
           />
         </InputWrap>
         {errors.descripcion && <FieldError msg={errors.descripcion} />}
-        <p style={{
-          fontFamily: "var(--f-body)", fontSize: 12,
-          color: "var(--muted)", textAlign: "right", marginTop: 4,
-        }}>
+        <p className="forms-char-count">
           {descripcion.length} / 300
         </p>
       </div>

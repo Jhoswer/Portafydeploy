@@ -367,20 +367,6 @@ export default function ModalPublicacion({
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
-                    {badge && (
-                      <span
-                        className="edicion-tabla__badge"
-                        style={{
-                          background: badge.bg,
-                          color:      badge.color,
-                          border:     `1px solid ${badge.border}`,
-                          marginTop:  4,
-                          alignSelf:  "flex-start",
-                        }}
-                      >
-                        {badge.label}
-                      </span>
-                    )}
                   </div>
 
                   {/* ── Tipo de audiencia ── */}

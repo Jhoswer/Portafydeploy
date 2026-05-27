@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Activity,
   BarChart3,
@@ -11,7 +12,8 @@ import {
   UserRound,
 } from "lucide-react";
 
-import { fetchProfileAnalytics } from "../../services/profileTrustService";
+import { fetchProfileAnalytics, fetchProfileViews } from "../../services/profileTrustService";
+import { ProfileViewsModal } from "./profile/ProfileTrustModals";
 import { profileUi as ui } from "../../styles/components/dashboard/profileStyles";
 
 const SUMMARY_CARDS = [
@@ -24,7 +26,10 @@ const SUMMARY_CARDS = [
 ];
 
 export default function DashboardAnalytics() {
+  const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
+  const [profileViews, setProfileViews] = useState([]);
+  const [showProfileViews, setShowProfileViews] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
@@ -32,10 +37,20 @@ export default function DashboardAnalytics() {
   useEffect(() => {
     let cancelled = false;
 
-    fetchProfileAnalytics()
-      .then((response) => {
+    Promise.allSettled([fetchProfileAnalytics(), fetchProfileViews()])
+      .then(([analyticsResult, viewsResult]) => {
         if (cancelled) return;
-        setAnalytics(response);
+
+        if (analyticsResult.status === "rejected") {
+          throw analyticsResult.reason;
+        }
+
+        setAnalytics(analyticsResult.value);
+        setProfileViews(
+          viewsResult.status === "fulfilled" && Array.isArray(viewsResult.value?.items)
+            ? viewsResult.value.items
+            : [],
+        );
       })
       .catch((err) => {
         if (cancelled) return;
@@ -106,11 +121,23 @@ export default function DashboardAnalytics() {
       <section style={gridStyle}>
         {SUMMARY_CARDS.map((card) => {
           const Icon = card.icon;
+          const isProfileViews = card.key === "profile_views";
           return (
             <article key={card.key} style={metricCardStyle}>
-              <div style={{ ...iconBoxStyle, color: card.color, background: `${card.color}12` }}>
+              <button
+                type="button"
+                style={{
+                  ...iconBoxStyle,
+                  ...(isProfileViews ? iconButtonStyle : null),
+                  color: card.color,
+                  background: `${card.color}12`,
+                  cursor: isProfileViews ? "pointer" : "default",
+                }}
+                onClick={isProfileViews ? () => setShowProfileViews(true) : undefined}
+                aria-label={isProfileViews ? "Ver usuarios que visitaron mi perfil" : undefined}
+              >
                 <Icon size={18} />
-              </div>
+              </button>
               <div>
                 <div style={metricValueStyle}>{Number(summary[card.key] || 0)}</div>
                 <div style={metricLabelStyle}>{card.label}</div>
@@ -158,6 +185,19 @@ export default function DashboardAnalytics() {
           )}
         </div>
       </section>
+
+      {showProfileViews ? (
+        <ProfileViewsModal
+          views={profileViews}
+          loading={false}
+          onClose={() => setShowProfileViews(false)}
+          onOpenProfile={(person) => {
+            const targetUserId = person?.user_id;
+            if (!targetUserId) return;
+            navigate(`/perfil-profesional?usuario=${targetUserId}`);
+          }}
+        />
+      ) : null}
     </div>
   );
 }
@@ -218,6 +258,13 @@ const iconBoxStyle = {
   borderRadius: 12,
   display: "grid",
   placeItems: "center",
+};
+
+const iconButtonStyle = {
+  border: 0,
+  padding: 0,
+  transition: "transform .16s ease, box-shadow .16s ease",
+  boxShadow: "0 10px 24px rgba(37,99,235,.10)",
 };
 
 const metricValueStyle = {

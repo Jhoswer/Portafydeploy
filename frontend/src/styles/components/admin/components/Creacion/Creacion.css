@@ -1,0 +1,251 @@
+/* ============================================================
+   Creacion Module — Styles
+   Folder: src/components/admin/components/Creacion/
+   ============================================================ */
+
+/* ── Tabs ─────────────────────────────────────────────── */
+.cre-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  width: fit-content;
+}
+
+.cre-tabs__btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.cre-tabs__btn:hover {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.cre-tabs__btn--active {
+  background: #ffffff;
+  color: #1e293b;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Placeholder forms ────────────────────────────────── */
+.cre-form-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 60px 24px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #94a3b8;
+  font-size: 14px;
+  text-align: center;
+}
+
+.cre-form-placeholder__icon {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+/* ── Info Panel (slide-in) ────────────────────────────── */
+.cre-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  z-index: 200;
+  display: flex;
+  justify-content: flex-end;
+  animation: cre-fade-in 0.18s ease;
+}
+
+@keyframes cre-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.cre-panel {
+  width: 480px;
+  max-width: 95vw;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 32px rgba(0, 0, 0, 0.12);
+  animation: cre-slide-in 0.22s ease;
+}
+
+@keyframes cre-slide-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ── Panel header ── */
+.cre-panel__header {
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cre-panel__header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cre-panel__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cre-panel__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.cre-panel__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cre-panel__user-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.cre-panel__user-role {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.cre-panel__close {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.cre-panel__close:hover {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+/* ── Panel section tabs ── */
+.cre-panel__sections {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cre-panel__sections::-webkit-scrollbar { display: none; }
+
+.cre-panel__section-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.cre-panel__section-btn:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.cre-panel__section-btn--active {
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* ── Panel body ── */
+.cre-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 22px;
+}
+
+.cre-panel__section-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 16px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 10px;
+  color: #94a3b8;
+  font-size: 13.5px;
+  text-align: center;
+}
+
+.cre-panel__section-placeholder svg {
+  opacity: 0.45;
+  margin-bottom: 4px;
+}
+
+/* ── Nueva Info wrapper ────────────────────────────────── */
+.cre-nueva-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Ajuste de ancho para tablas inline dentro del panel ── */
+.cre-panel {
+  width: 780px; /* más ancho que antes (480px) para las tablas */
+}
+
+/* El body ya tiene overflow-y: auto, pero también necesita
+   overflow-x para tablas anchas */
+.cre-panel__body {
+  overflow-x: auto;
+}

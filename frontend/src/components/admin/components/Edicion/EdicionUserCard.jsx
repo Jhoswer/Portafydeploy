@@ -1,6 +1,11 @@
 // src/components/admin/components/Edicion/EdicionUserCard.jsx
+//
+// CAMBIO respecto a la versión anterior:
+//   · Soporte para module="creacion":
+//       - Botón primario muestra ícono PlusCircle + texto "Creación"
+//       - onEdit(user) dispara el panel CreacionInfoPanel (gestionado por el padre)
 
-import { Edit2, Eye, MapPin, Mail, Briefcase, Users, Trash2 } from "lucide-react";
+import { Edit2, Eye, MapPin, Mail, Briefcase, Users, Trash2, PlusCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -19,6 +24,12 @@ function avatarColor(name = "") {
   return AVATAR_PALETTE[name.charCodeAt(0) % AVATAR_PALETTE.length];
 }
 
+/**
+ * Props:
+ *   user    — objeto de usuario
+ *   onEdit  — callback(user) al pulsar el botón primario
+ *   module  — "edicion" (default) | "eliminacion" | "creacion"
+ */
 export default function EdicionUserCard({ user, onEdit, module = "edicion" }) {
   const navigate = useNavigate();
   const [imageFailed, setImageFailed] = useState(false);
@@ -35,6 +46,18 @@ export default function EdicionUserCard({ user, onEdit, module = "edicion" }) {
   const isReclutador   = user.role === "reclutador";
   const profilePhoto   = typeof user.profile_photo === "string" ? user.profile_photo.trim() : "";
   const showProfilePhoto = profilePhoto && !imageFailed;
+
+  /* ── Etiqueta e ícono del botón primario según módulo ── */
+  const primaryBtnContent = (() => {
+    switch (module) {
+      case "eliminacion":
+        return <><Trash2 size={13} /> Eliminar</>;
+      case "creacion":
+        return <><PlusCircle size={13} /> Creación</>;
+      default:
+        return <><Edit2 size={13} /> Editar</>;
+    }
+  })();
 
   return (
     <article className="edicion-card">
@@ -116,11 +139,7 @@ export default function EdicionUserCard({ user, onEdit, module = "edicion" }) {
               onEdit?.(user);
             }}
           >
-            {module === "eliminacion" ? (
-              <><Trash2 size={13} /> Eliminar</>
-            ) : (
-              <><Edit2 size={13} /> Editar</>
-            )}
+            {primaryBtnContent}
           </button>
 
           <button

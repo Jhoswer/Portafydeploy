@@ -39,7 +39,7 @@ export default function ReportAceptModal({
 
         <p className="adm-report-modal__text">
           Estas a punto de aprobar este reporte y aceptar las acciones aplicadas sobre el usuario:{" "}
-          <strong>{report.reporter_user?.name || "este usuario"}</strong>.
+          <strong>{report.reported_user?.name || "este usuario"}</strong>.
         </p>
 
         <p className="adm-report-modal__text adm-report-modal__text--secondary">

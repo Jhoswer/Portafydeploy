@@ -4,6 +4,8 @@ import { getPublicationReportReasons } from "../../services/reportService";
 
 export function ReportPublicationModal({
   post,
+  comment = null,
+  reportKind = "publication",
   isOpen,
   isBusy = false,
   error = "",
@@ -16,8 +18,15 @@ export function ReportPublicationModal({
 
   if (!isOpen || !post) return null;
 
-  const typeLabel = post.sourceType === "experience" ? "Experiencia" : "Proyecto";
-  const title = post.project?.title || post.experience?.title || "Publicacion";
+  const isCommentReport = reportKind === "comment";
+  const typeLabel = isCommentReport
+    ? "Comentario"
+    : post.sourceType === "experience"
+      ? "Experiencia"
+      : "Proyecto";
+  const title = isCommentReport
+    ? (comment?.text || "Comentario reportado")
+    : (post.project?.title || post.experience?.title || "Publicacion");
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -44,7 +53,7 @@ export function ReportPublicationModal({
           <Flag size={20} />
         </span>
 
-        <h3>Reportar publicacion</h3>
+        <h3>{isCommentReport ? "Reportar comentario" : "Reportar publicacion"}</h3>
         <p>
           El reporte sera enviado al panel de administracion con el motivo seleccionado.
         </p>
@@ -69,7 +78,7 @@ export function ReportPublicationModal({
           <textarea
             value={description}
             onChange={(event) => setDescription(event.target.value.slice(0, 255))}
-            placeholder="Describe brevemente que ocurre con esta publicacion..."
+            placeholder={`Describe brevemente que ocurre con ${isCommentReport ? "este comentario" : "esta publicacion"}...`}
             rows={4}
             disabled={isBusy}
           />

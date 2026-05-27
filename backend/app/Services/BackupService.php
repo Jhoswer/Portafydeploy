@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Usuario;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Throwable;
@@ -55,6 +57,180 @@ class BackupService
         return $this->generateSqlDumpBackup($disk, $timestamp);
     }
 
+    public function restoreBackup(Usuario $actor, string $filename): array
+    {
+        $this->assertCanManageBackups($actor);
+        @set_time_limit(0);
+        @ini_set('max_execution_time', '0');
+
+        $path = $this->resolveBackupPath($filename);
+        $disk = Storage::disk('local');
+
+        if (! $disk->exists($path)) {
+            throw new RuntimeException('El archivo de backup no existe.');
+        }
+
+        $driver = DB::connection()->getDriverName();
+        $backupExtension = pathinfo($path, PATHINFO_EXTENSION);
+
+        if ($driver === 'sqlite' && $backupExtension !== 'sqlite') {
+            throw new RuntimeException('El backup seleccionado no corresponde a una base de datos SQLite.');
+        }
+
+        if (in_array($driver, ['mysql', 'mariadb', 'pgsql'], true) && $backupExtension !== 'sql') {
+            throw new RuntimeException('El backup seleccionado no corresponde al motor de base de datos actual.');
+        }
+
+        try {
+            $startedAt = microtime(true);
+            Log::info('backup.restore.phase', [
+                'phase' => 'start',
+                'filename' => $filename,
+                'driver' => $driver,
+            ]);
+
+            $debugBefore = config('app.debug') ? $this->buildRestoreDebugSnapshot($driver) : null;
+
+            $safetyStartedAt = microtime(true);
+            $safetyBackup = $this->generateRestoreSafetyBackup($actor);
+            Log::info('backup.restore.phase', [
+                'phase' => 'safety_backup_created',
+                'filename' => $filename,
+                'driver' => $driver,
+                'elapsed_ms' => (int) round((microtime(true) - $safetyStartedAt) * 1000),
+                'safety_backup' => $safetyBackup['filename'] ?? null,
+            ]);
+
+            $restoreStartedAt = microtime(true);
+            if ($driver === 'sqlite') {
+                $this->restoreSqliteBackup($disk->path($path));
+            } elseif ($driver === 'pgsql') {
+                $this->restorePostgresDump($disk->path($path));
+            } elseif (in_array($driver, ['mysql', 'mariadb'], true)) {
+                $this->restoreSqlDump($disk->path($path), $driver);
+            } else {
+                throw new RuntimeException('Driver de base de datos no soportado para restauracion.');
+            }
+            Log::info('backup.restore.phase', [
+                'phase' => 'backup_applied',
+                'filename' => $filename,
+                'driver' => $driver,
+                'elapsed_ms' => (int) round((microtime(true) - $restoreStartedAt) * 1000),
+            ]);
+
+            $cleanupStartedAt = microtime(true);
+            $this->postRestoreCleanup();
+            Log::info('backup.restore.phase', [
+                'phase' => 'cleanup_finished',
+                'filename' => $filename,
+                'driver' => $driver,
+                'elapsed_ms' => (int) round((microtime(true) - $cleanupStartedAt) * 1000),
+            ]);
+
+            $debugAfter = config('app.debug') ? $this->buildRestoreDebugSnapshot($driver) : null;
+
+            $result = [
+                'restored_backup' => $this->backupMetadata($path),
+                'safety_backup' => $safetyBackup,
+            ];
+
+            if ($debugBefore !== null || $debugAfter !== null) {
+                $result['debug'] = [
+                    'driver' => $driver,
+                    'database' => DB::connection()->getDatabaseName(),
+                    'before' => $debugBefore,
+                    'after' => $debugAfter,
+                ];
+            }
+
+            Log::info('backup.restore.phase', [
+                'phase' => 'success',
+                'filename' => $filename,
+                'driver' => $driver,
+                'elapsed_ms' => (int) round((microtime(true) - $startedAt) * 1000),
+            ]);
+
+            return $result;
+        } catch (Throwable $e) {
+            Log::error('backup.restore.phase', [
+                'phase' => 'failed',
+                'filename' => $filename,
+                'driver' => $driver,
+                'message' => $e->getMessage(),
+                'exception' => $e::class,
+            ]);
+
+            throw $e;
+        } finally {
+            try {
+                DB::disconnect();
+                DB::purge();
+            } catch (Throwable) {
+                // La siguiente request reabrira la conexion si hace falta.
+            }
+        }
+    }
+
+    private function postRestoreCleanup(): void
+    {
+        try {
+            Cache::flush();
+        } catch (Throwable) {
+            // Si el cache store no responde, no bloqueamos la restauracion.
+        }
+
+        try {
+            DB::disconnect();
+            DB::purge();
+            DB::reconnect();
+        } catch (Throwable) {
+            // La siguiente request abrira una nueva conexion si es necesario.
+        }
+    }
+
+    private function buildRestoreDebugSnapshot(string $driver): array
+    {
+        if ($driver !== 'pgsql') {
+            return [
+                'table_count' => count($this->listDatabaseTables($driver)),
+            ];
+        }
+
+        $tables = [
+            'USER',
+            'PROFILE',
+            'PUBLICATION',
+            'PROJECT',
+            'OFFER',
+            'ATTENDED',
+            'REPORT',
+            'LOG',
+        ];
+
+        $existingTables = collect($this->listDatabaseTables('pgsql'))
+            ->map(fn (string $table) => strtoupper($table))
+            ->all();
+
+        $counts = [];
+
+        foreach ($tables as $table) {
+            if (! in_array($table, $existingTables, true)) {
+                continue;
+            }
+
+            try {
+                $counts[$table] = DB::table($table)->count();
+            } catch (Throwable) {
+                $counts[$table] = null;
+            }
+        }
+
+        return [
+            'table_count' => count($existingTables),
+            'counts' => $counts,
+        ];
+    }
+
     public function deleteBackup(Usuario $actor, string $filename): void
     {
         $this->assertCanDeleteBackups($actor);
@@ -86,7 +262,7 @@ class BackupService
         return $this->isSuperAdmin($actor);
     }
 
-    private function generateSqliteBackup($disk, string $timestamp): array
+    private function generateSqliteBackup($disk, string $timestamp, string $prefix = 'backup-db'): array
     {
         $connection = DB::connection();
         $sourcePath = (string) $connection->getDatabaseName();
@@ -96,7 +272,7 @@ class BackupService
         }
 
         $suffix = bin2hex(random_bytes(3));
-        $filename = "backup-db-{$timestamp}-{$suffix}.sqlite";
+        $filename = $this->buildBackupFilename($prefix, $timestamp, $suffix, 'sqlite');
         $relativePath = self::BACKUP_DIR . '/' . $filename;
         $absolutePath = $disk->path($relativePath);
 
@@ -107,10 +283,10 @@ class BackupService
         return $this->backupMetadata($relativePath);
     }
 
-    private function generateSqlDumpBackup($disk, string $timestamp): array
+    private function generateSqlDumpBackup($disk, string $timestamp, string $prefix = 'backup-db'): array
     {
         $suffix = bin2hex(random_bytes(3));
-        $filename = "backup-db-{$timestamp}-{$suffix}.sql";
+        $filename = $this->buildBackupFilename($prefix, $timestamp, $suffix, 'sql');
         $relativePath = self::BACKUP_DIR . '/' . $filename;
         $absolutePath = $disk->path($relativePath);
         $handle = @fopen($absolutePath, 'wb');
@@ -132,10 +308,10 @@ class BackupService
         return $this->backupMetadata($relativePath);
     }
 
-    private function generatePostgresBackup($disk, string $timestamp): array
+    private function generatePostgresBackup($disk, string $timestamp, string $prefix = 'backup-db'): array
     {
         $suffix = bin2hex(random_bytes(3));
-        $filename = "backup-db-{$timestamp}-{$suffix}.sql";
+        $filename = $this->buildBackupFilename($prefix, $timestamp, $suffix, 'sql');
         $relativePath = self::BACKUP_DIR . '/' . $filename;
         $absolutePath = $disk->path($relativePath);
         $handle = @fopen($absolutePath, 'wb');
@@ -155,6 +331,344 @@ class BackupService
         fclose($handle);
 
         return $this->backupMetadata($relativePath);
+    }
+
+    private function generateRestoreSafetyBackup(Usuario $actor): array
+    {
+        $this->assertCanManageBackups($actor);
+
+        $disk = Storage::disk('local');
+        $disk->makeDirectory(self::BACKUP_DIR);
+
+        $driver = DB::connection()->getDriverName();
+        $timestamp = now()->format('Ymd_His');
+        $prefix = 'backup_before_restore_db';
+
+        if ($driver === 'sqlite') {
+            return $this->generateSqliteBackup($disk, $timestamp, $prefix);
+        }
+
+        if ($driver === 'pgsql') {
+            return $this->generatePostgresBackup($disk, $timestamp, $prefix);
+        }
+
+        if (! in_array($driver, ['mysql', 'mariadb'], true)) {
+            throw new RuntimeException('El respaldo automatico solo esta soportado para MySQL, MariaDB, PostgreSQL o SQLite.');
+        }
+
+        return $this->generateSqlDumpBackup($disk, $timestamp, $prefix);
+    }
+
+    private function restoreSqliteBackup(string $backupPath): void
+    {
+        $connection = DB::connection();
+        $sourcePath = (string) $connection->getDatabaseName();
+
+        if ($sourcePath === '') {
+            throw new RuntimeException('No se encontro la ruta de la base de datos SQLite.');
+        }
+
+        DB::disconnect();
+
+        try {
+            $sourceDirectory = dirname($sourcePath);
+            if (! is_dir($sourceDirectory)) {
+                throw new RuntimeException('No se encontro el directorio de la base de datos SQLite.');
+            }
+
+            if (! @copy($backupPath, $sourcePath)) {
+                throw new RuntimeException('No se pudo restaurar la base de datos SQLite.');
+            }
+        } finally {
+            clearstatcache(true, $sourcePath);
+            DB::purge();
+            DB::reconnect();
+        }
+    }
+
+    private function restoreSqlDump(string $backupPath, string $driver): void
+    {
+        $sql = @file_get_contents($backupPath);
+
+        if ($sql === false || trim($sql) === '') {
+            throw new RuntimeException('No se pudo leer el archivo de backup.');
+        }
+
+        $restoreEngine = in_array($driver, ['mysql', 'mariadb'], true);
+
+        try {
+            foreach ($this->splitSqlStatements($sql) as $statement) {
+                $normalized = trim($statement);
+
+                if ($normalized === '') {
+                    continue;
+                }
+
+                DB::unprepared($normalized);
+            }
+        } catch (Throwable $e) {
+            if ($driver === 'pgsql') {
+                try {
+                    DB::statement('ROLLBACK');
+                } catch (Throwable) {
+                    // Si el rollback falla, conservamos el error original.
+                }
+            }
+
+            throw $e;
+        } finally {
+            if ($restoreEngine) {
+                DB::statement('SET FOREIGN_KEY_CHECKS=1');
+            }
+        }
+    }
+
+    private function restorePostgresDump(string $backupPath): void
+    {
+        $sql = @file_get_contents($backupPath);
+
+        if ($sql === false || trim($sql) === '') {
+            throw new RuntimeException('No se pudo leer el archivo de backup.');
+        }
+
+        $statements = $this->splitSqlStatements($sql);
+        $backupTables = $this->extractPostgresBackupTables($sql);
+        $backupSequences = $this->extractPostgresBackupSequences($sql);
+        $currentTables = $this->listDatabaseTables('pgsql');
+        $currentSequences = $this->listDatabaseSequences();
+        $dropTableStatements = [];
+        $sequenceStatements = [];
+        $otherStatements = [];
+
+        foreach ($statements as $statement) {
+            $normalized = trim($statement);
+
+            if ($normalized === '') {
+                continue;
+            }
+
+            $upper = strtoupper($normalized);
+            if ($upper === 'BEGIN' || $upper === 'BEGIN TRANSACTION' || $upper === 'COMMIT') {
+                continue;
+            }
+
+            if (preg_match('/^DROP\s+TABLE\s+IF\s+EXISTS\s+/i', $normalized) === 1) {
+                $dropTableStatements[] = $normalized;
+                continue;
+            }
+
+            if (preg_match('/^CREATE\s+SEQUENCE\s+IF\s+NOT\s+EXISTS\s+/i', $normalized) === 1) {
+                $sequenceStatements[] = $normalized;
+                continue;
+            }
+
+            $otherStatements[] = $normalized;
+        }
+
+        DB::beginTransaction();
+
+        try {
+            DB::statement('SET search_path TO public');
+
+            foreach ($dropTableStatements as $statement) {
+                DB::unprepared($statement);
+            }
+
+            foreach (array_diff($currentTables, $backupTables) as $table) {
+                DB::statement('DROP TABLE IF EXISTS ' . $this->postgresQualifiedIdentifier('public.' . $table) . ' CASCADE');
+            }
+
+            foreach (array_diff($currentSequences, $backupSequences) as $sequence) {
+                DB::statement('DROP SEQUENCE IF EXISTS ' . $this->postgresQualifiedIdentifier('public.' . $sequence) . ' CASCADE');
+            }
+
+            foreach ($sequenceStatements as $statement) {
+                DB::unprepared($statement);
+            }
+
+            foreach ($otherStatements as $statement) {
+                DB::unprepared($statement);
+            }
+
+            $this->reseedPostgresSequences();
+
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    private function extractPostgresBackupTables(string $sql): array
+    {
+        preg_match_all('/^-- Table "public"\."([^"]+)"/m', $sql, $matches);
+
+        return collect($matches[1] ?? [])
+            ->map(fn ($table) => (string) $table)
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function extractPostgresBackupSequences(string $sql): array
+    {
+        preg_match_all('/^CREATE SEQUENCE IF NOT EXISTS "public"\."([^"]+)"/m', $sql, $matches);
+
+        return collect($matches[1] ?? [])
+            ->map(fn ($sequence) => (string) $sequence)
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function listDatabaseSequences(): array
+    {
+        $schema = $this->postgresSchema();
+
+        return collect(DB::select(
+            'select sequence_name
+             from information_schema.sequences
+             where sequence_schema = ?
+             order by sequence_name',
+            [$schema]
+        ))
+            ->map(fn ($row) => (string) ($row->sequence_name ?? ''))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function reseedPostgresSequences(): void
+    {
+        $schema = $this->postgresSchema();
+        $tables = $this->listDatabaseTables('pgsql');
+
+        foreach ($tables as $table) {
+            foreach ($this->postgresSerialColumns($schema, $table) as $columnInfo) {
+                $sequenceName = $columnInfo['sequence_name'] ?? null;
+                $columnName = $columnInfo['column_name'] ?? null;
+
+                if (! is_string($sequenceName) || $sequenceName === '' || ! is_string($columnName) || $columnName === '') {
+                    continue;
+                }
+
+                $qualifiedTable = $this->postgresQualifiedIdentifier($schema . '.' . $table);
+                $quotedColumn = $this->postgresQuoteIdentifier($columnName);
+
+                DB::statement(
+                    'SELECT setval(?, COALESCE((SELECT MAX(' . $quotedColumn . ") FROM {$qualifiedTable}), 1), EXISTS(SELECT 1 FROM {$qualifiedTable}))",
+                    [$sequenceName]
+                );
+            }
+        }
+    }
+
+    private function splitSqlStatements(string $sql): array
+    {
+        $statements = [];
+        $buffer = '';
+        $length = strlen($sql);
+        $inSingle = false;
+        $inDouble = false;
+        $inBacktick = false;
+        $inLineComment = false;
+        $inBlockComment = false;
+        $atLineStart = true;
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $sql[$i];
+            $next = $i + 1 < $length ? $sql[$i + 1] : null;
+
+            if ($inLineComment) {
+                if ($char === "\n") {
+                    $inLineComment = false;
+                }
+
+                continue;
+            }
+
+            if ($inBlockComment) {
+                if ($char === '*' && $next === '/') {
+                    $inBlockComment = false;
+                    $i++;
+                }
+
+                continue;
+            }
+
+            if (! $inSingle && ! $inDouble && ! $inBacktick) {
+                if ($char === '-' && $next === '-' && $atLineStart) {
+                    $inLineComment = true;
+                    $i++;
+                    continue;
+                }
+
+                if ($char === '#') {
+                    $inLineComment = true;
+                    continue;
+                }
+
+                if ($char === '/' && $next === '*') {
+                    $inBlockComment = true;
+                    $i++;
+                    continue;
+                }
+            }
+
+            $buffer .= $char;
+
+            if ($char === "\n") {
+                $atLineStart = true;
+                continue;
+            }
+
+            if ($char === ';' && ! $inSingle && ! $inDouble && ! $inBacktick) {
+                $statement = trim(substr($buffer, 0, -1));
+                if ($statement !== '') {
+                    $statements[] = $statement;
+                }
+                $buffer = '';
+                $atLineStart = true;
+                continue;
+            }
+
+            if ($char === "'" && ! $inDouble && ! $inBacktick) {
+                if ($inSingle && $next === "'") {
+                    $buffer .= $next;
+                    $i++;
+                    continue;
+                }
+
+                $inSingle = ! $inSingle;
+                continue;
+            }
+
+            if ($char === '"' && ! $inSingle && ! $inBacktick) {
+                $inDouble = ! $inDouble;
+                continue;
+            }
+
+            if ($char === '`' && ! $inSingle && ! $inDouble) {
+                $inBacktick = ! $inBacktick;
+                continue;
+            }
+
+            if (! ctype_space($char)) {
+                $atLineStart = false;
+            }
+        }
+
+        $tail = trim($buffer);
+        if ($tail !== '') {
+            $statements[] = $tail;
+        }
+
+        return $statements;
+    }
+
+    private function buildBackupFilename(string $prefix, string $timestamp, string $suffix, string $extension): string
+    {
+        return "{$prefix}-{$timestamp}-{$suffix}.{$extension}";
     }
 
     private function writeSqlDump($handle): void
@@ -456,9 +970,10 @@ class BackupService
         $rows = DB::select(
             'select c.column_name,
                     c.column_default,
+                    c.is_identity,
                     pg_get_serial_sequence(quote_ident(c.table_schema) || \'.\' || quote_ident(c.table_name), c.column_name) as sequence_name
              from information_schema.columns c
-             where c.table_schema = ? and c.table_name = ? and c.column_default like \'nextval%\'
+             where c.table_schema = ? and c.table_name = ? and (c.column_default like \'nextval%\' or c.is_identity = \'YES\')
              order by c.ordinal_position',
             [$schema, $table]
         );

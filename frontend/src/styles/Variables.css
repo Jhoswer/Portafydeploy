@@ -211,6 +211,15 @@
 --topbar-mobile-shadow: 0 -2px 12px rgba(14, 30, 60, .08);
 
 --topbar-divider: rgba(0, 0, 0, .06);
+
+/* ── Notifications light ──────────────────────────────── */
+  --notif-bg:           #ffffff;
+  --notif-border:       rgba(205, 225, 245, .86);
+  --notif-hover:        rgba(205, 225, 245, .30);
+  --notif-unread-bg:    rgba(232, 72, 74, .05);
+  --notif-filter-bg:    #f4f7fb;
+  --notif-filter-color: var(--color-text);
+
 }
 
 .dark {
@@ -290,5 +299,14 @@
 --topbar-mobile-shadow: 0 -2px 18px rgba(0, 0, 0, .50);
 
 --topbar-divider: rgba(255, 255, 255, .06);
+
+  /* ── Notifications dark ───────────────────────────────── */
+
+  --notif-bg:           hsl(218 30% 14%);
+  --notif-border:       rgba(255, 255, 255, .06);
+  --notif-hover:        rgba(255, 255, 255, .04);
+  --notif-unread-bg:    rgba(232, 72, 74, .08);
+  --notif-filter-bg:    hsl(218 30% 11%);
+  --notif-filter-color: hsl(210 40% 92%);
 }
  

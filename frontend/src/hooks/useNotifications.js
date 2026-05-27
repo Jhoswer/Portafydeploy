@@ -8,8 +8,8 @@ import {
 } from "../services/notificationService";
 import { getEcho } from "../lib/echo";
 
-const CACHE_KEY = 'portafy_notifications';
-const CACHE_TTL = 60 * 1000; // 1 minuto
+const CACHE_KEY = "portafy_notifications";
+const CACHE_TTL = 60 * 1000;
 
 function getCache() {
   try {
@@ -27,9 +27,7 @@ function getCache() {
 function setCache(data) {
   try {
     sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
-  } catch {
-    // Ignore cache failures in private browsing or storage-limited environments.
-  }
+  } catch { /* ignore */ }
 }
 
 function invalidateCache() {
@@ -37,8 +35,8 @@ function invalidateCache() {
 }
 
 function normalizeNotifications(payload) {
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.data)) return payload.data;
+  if (Array.isArray(payload))              return payload;
+  if (Array.isArray(payload?.data))        return payload.data;
   if (Array.isArray(payload?.notifications)) return payload.notifications;
   return [];
 }
@@ -48,15 +46,10 @@ function uniqueNotifications(notifications) {
   return notifications.filter((item) => {
     const key = String(
       item.id ??
+      item.id_notification ??
       item.data?.id ??
-      item.data?.notification_id ??
-      item.data?.notificationId ??
-      item.data?.notifiable_id ??
-      item.data?.reference_id ??
-      item.data?.comment_id ??
-      item.data?.event_id ??
-      item.data?.offer_id ??
-      "",
+      item.data?.id_notification ??
+      ""
     );
     if (!key) return true;
     if (seen.has(key)) return false;
@@ -67,16 +60,16 @@ function uniqueNotifications(notifications) {
 
 function mapApiNotification(n) {
   const rawData = n.data ?? {};
-  const record = { ...n, ...rawData };
-  const offer = record.offer ?? null;
+  const record  = { ...n, ...rawData };
+  const offer   = record.offer ?? null;
   const referenceType = record.reference_type ?? record.referenceType;
-  const referenceId = record.reference_id ?? record.referenceId;
+  const referenceId   = record.reference_id   ?? record.referenceId;
   const notificationType = String(
     record.type ?? record.notification_type ?? record.notificationType ?? ""
   ).toLowerCase();
   const notificationId =
-    record.id ??
     record.id_notification ??
+    record.id ??
     record.notification_id ??
     record.notificationId ??
     record.notifiable_id ??
@@ -93,54 +86,53 @@ function mapApiNotification(n) {
     ["job_offer", "postulation", "job_application"].includes(notificationType) ||
     referenceType === "offer";
   const createdAt = record.created_at ?? record.createdAt;
-  const isRead = record.read_at ?? record.readAt ?? (record.is_read ?? record.isRead ? createdAt : null);
+  const isRead    = record.read_at ?? record.readAt ??
+    (record.is_read ?? record.isRead ? createdAt : null);
 
   return {
-    id: notificationId != null ? String(notificationId) : undefined,
-    type: notificationType,
+    id:         notificationId != null ? String(notificationId) : undefined,
+    type:       notificationType,
     created_at: createdAt,
-    read_at: isRead,
+    read_at:    isRead,
     data: {
       ...rawData,
-      actor_id: record.actor_id ?? record.sender_id ?? record.id_sender ?? record.idSender,
-      actor_name:
-        record.actor_name ?? record.sender_name ?? record.title ?? record.message ?? null,
+      actor_id:     record.actor_id ?? record.sender_id ?? record.id_sender ?? record.idSender,
+      actor_name:   record.actor_name ?? record.sender_name ?? record.title ?? record.message ?? null,
       actor_avatar: record.actor_avatar ?? record.sender_avatar ?? null,
-      preview: record.preview ?? record.message,
+      preview:      record.preview ?? record.message,
       notifiable_id: record.notifiable_id ?? record.reference_id ?? record.referenceId,
-      post_id: record.post_id ?? (referenceType === "publication" ? referenceId : null),
+      post_id:    record.post_id    ?? (referenceType === "publication" ? referenceId : null),
       comment_id: record.comment_id ?? record.commentId ?? (referenceType === "comment" ? referenceId : null),
-      event_id: record.event_id ?? record.eventId ?? (referenceType === "event" ? referenceId : null),
+      event_id:   record.event_id   ?? record.eventId   ?? (referenceType === "event"   ? referenceId : null),
       offer_id:
         record.offer_id ?? record.id_offer ?? record.offerId ?? offer?.id_offer ??
         (referenceType === "offer" ? referenceId : null),
       offer_title:
-        record.offer_title ?? record.title_offer ?? record.title ?? offer?.title ??
-        record.offerTitle ?? record.title ?? (isOfferRelated ? record.title : undefined),
+        record.offer_title ?? record.title_offer ?? offer?.title ??
+        record.offerTitle  ?? (isOfferRelated ? record.title : undefined),
       company_name: record.company_name ?? record.companyName ?? offer?.company?.name,
     },
   };
 }
 
 function normalizeUnreadCount(payload) {
-  if (typeof payload === "number") return payload;
-  if (typeof payload?.count === "number") return payload.count;
-  if (typeof payload?.unread_count === "number") return payload.unread_count;
-  if (typeof payload?.data?.count === "number") return payload.data.count;
-  if (typeof payload?.data?.unread_count === "number")
-    return payload.data.unread_count;
+  if (typeof payload === "number")                    return payload;
+  if (typeof payload?.count === "number")             return payload.count;
+  if (typeof payload?.unread_count === "number")      return payload.unread_count;
+  if (typeof payload?.data?.count === "number")       return payload.data.count;
+  if (typeof payload?.data?.unread_count === "number") return payload.data.unread_count;
   return 0;
 }
 
 export function useNotifications() {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [unreadCount,   setUnreadCount]   = useState(0);
+  const [loading,       setLoading]       = useState(false);
+  const [page,          setPage]          = useState(1);
+  const [lastPage,      setLastPage]      = useState(1);
 
-  const fetchAll = useCallback(async () => {
-    await Promise.resolve();
-
+  const fetchAll = useCallback(async (pageNumber = 1) => {
     if (!user) {
       setNotifications([]);
       setUnreadCount(0);
@@ -148,63 +140,66 @@ export function useNotifications() {
       return;
     }
 
-    const cached = getCache();
-    if (cached) {
-      setNotifications(uniqueNotifications(cached.notifications));
-      setUnreadCount(cached.unreadCount);
-      return;
+    if (pageNumber === 1) {
+      const cached = getCache();
+      if (cached) {
+        setNotifications(uniqueNotifications(cached.notifications));
+        setUnreadCount(cached.unreadCount);
+        setLastPage(cached.lastPage ?? 1);
+        return;
+      }
     }
 
     setLoading(true);
 
-    // 👇 declaradas AQUÍ, fuera de los if
-    let newNotifs = [];
-    let newCount = 0;
-
     const [notifResult, countResult] = await Promise.allSettled([
-      getNotifications(),
-      getUnreadCount(),
+      getNotifications(pageNumber),
+      pageNumber === 1 ? getUnreadCount() : Promise.resolve(null),
     ]);
 
     if (notifResult.status === "fulfilled") {
-      newNotifs = uniqueNotifications(normalizeNotifications(notifResult.value).map(mapApiNotification));
+      const raw       = notifResult.value;
+      const newNotifs = uniqueNotifications(normalizeNotifications(raw).map(mapApiNotification));
+      const meta      = raw?.meta ?? {};
+
       setNotifications(newNotifs);
+      setPage(meta.current_page ?? pageNumber);
+      setLastPage(meta.last_page ?? 1);
+
+      if (pageNumber === 1) {
+        const newCount = countResult.status === "fulfilled" && countResult.value !== null
+          ? normalizeUnreadCount(countResult.value)
+          : 0;
+        setUnreadCount(newCount);
+        setCache({ notifications: newNotifs, unreadCount: newCount, lastPage: meta.last_page ?? 1 });
+      }
     } else {
       setNotifications([]);
     }
 
-    if (countResult.status === "fulfilled") {
-      newCount = normalizeUnreadCount(countResult.value);
-      setUnreadCount(newCount);
-    } else {
-      setUnreadCount(0);
-    }
-
-    setCache({ notifications: newNotifs, unreadCount: newCount });
     setLoading(false);
   }, [user]);
 
   useEffect(() => {
-    const fetchTimer = globalThis.setTimeout(() => {
-      fetchAll();
-    }, 0);
-
-    if (!user) {
-      return () => globalThis.clearTimeout(fetchTimer);
-    }
+    const t = globalThis.setTimeout(() => fetchAll(1), 0);
+    if (!user) return () => globalThis.clearTimeout(t);
 
     const echo = getEcho();
-    if (!echo) return undefined;
+    if (!echo) return () => globalThis.clearTimeout(t);
 
     const channelName = `App.Models.User.${user.id}`;
-    const channel = echo.private(channelName);
+    const channel     = echo.private(channelName);
 
     channel.notification((notification) => {
-      setNotifications((prev) => uniqueNotifications([mapApiNotification(notification), ...prev]));
+      invalidateCache();
+      setNotifications((prev) =>
+        uniqueNotifications([mapApiNotification(notification), ...prev])
+      );
       setUnreadCount((prev) => prev + 1);
     });
+
     return () => {
-      globalThis.clearTimeout(fetchTimer);
+      globalThis.clearTimeout(t);
       echo.leave(channelName);
     };
   }, [user, fetchAll]);
@@ -214,9 +209,7 @@ export function useNotifications() {
       await markOneAsRead(id);
       invalidateCache();
       setNotifications((prev) =>
-        prev.map((n) =>
-          n.id === id ? { ...n, read_at: new Date().toISOString() } : n,
-        ),
+        prev.map((n) => n.id === id ? { ...n, read_at: new Date().toISOString() } : n)
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (err) {
@@ -229,10 +222,7 @@ export function useNotifications() {
       await markAllRead();
       invalidateCache();
       setNotifications((prev) =>
-        prev.map((n) => ({
-          ...n,
-          read_at: n.read_at ?? new Date().toISOString(),
-        })),
+        prev.map((n) => ({ ...n, read_at: n.read_at ?? new Date().toISOString() }))
       );
       setUnreadCount(0);
     } catch (err) {
@@ -244,8 +234,11 @@ export function useNotifications() {
     notifications,
     unreadCount,
     loading,
+    page,
+    lastPage,
+    goToPage:     fetchAll,
     markAsRead,
     markAllAsRead,
-    refetch: fetchAll,
+    refetch:      () => fetchAll(1),
   };
 }

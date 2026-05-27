@@ -18,32 +18,46 @@ class RegisterRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'nombre' => $this->normalizeText($this->input('nombre')),
+            'nombre'   => $this->normalizeText($this->input('nombre')),
             'apellido' => $this->normalizeText($this->input('apellido')),
-            'email' => is_string($this->input('email')) ? trim(mb_strtolower($this->input('email'))) : $this->input('email'),
+            'email'    => is_string($this->input('email'))
+                ? trim(mb_strtolower($this->input('email')))
+                : $this->input('email'),
         ]);
     }
 
     public function rules(): array
     {
         $rules = [
-            'nombre' => ['required', 'string', 'min:2', 'max:255'],
+            'nombre'   => ['required', 'string', 'min:2', 'max:255'],
             'apellido' => [
-    Rule::requiredIf($this->role === 'PROFESIONAL'),
-    'nullable',
-    'string',
-    'min:2',
-    'max:255',
-],
-            'email' => ['required', 'email', 'max:255', Rule::unique((new Usuario())->getTable(), 'email')],
+                Rule::requiredIf($this->role === 'PROFESIONAL'),
+                'nullable',
+                'string',
+                'min:2',
+                'max:255',
+            ],
+            'email'    => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique((new Usuario())->getTable(), 'email'),
+            ],
             'password' => ['required', 'confirmed', Password::min(8)],
-            'role' => ['required', 'string', 'in:PROFESIONAL,RECLUTADOR'],
+            'role'     => ['required', 'string', 'in:PROFESIONAL,RECLUTADOR'],
         ];
 
-        $recaptchaSecret = (string) config('services.recaptcha.secret_key', '');
+        $recaptchaSecret      = (string) config('services.recaptcha.secret_key', '');
         $shouldVerifyRecaptcha = (bool) config('services.recaptcha.verify', ! app()->isLocal());
 
-        if ($recaptchaSecret !== '') {
+        /*
+         * Si la petición viene con un Bearer token válido, asumimos que
+         * proviene del panel de administración y saltamos la validación
+         * del captcha por completo.
+         */
+        $isAdminRequest = $this->bearerToken() !== null;
+
+        if ($recaptchaSecret !== '' && ! $isAdminRequest) {
             $rules['captcha_token'] = [
                 'required',
                 'string',
@@ -56,7 +70,7 @@ class RegisterRequest extends FormRequest
                         $response = Http::asForm()->timeout(10)->post(
                             'https://www.google.com/recaptcha/api/siteverify',
                             [
-                                'secret' => $recaptchaSecret,
+                                'secret'   => $recaptchaSecret,
                                 'response' => $value,
                                 'remoteip' => request()->ip(),
                             ]
@@ -78,14 +92,14 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nombre.required' => 'El nombre es obligatorio.',
-            'apellido.required' => 'El apellido es obligatorio.',
-            'email.required' => 'El correo es obligatorio.',
-            'email.email' => 'Debes enviar un correo valido.',
-            'email.unique' => 'Ya existe una cuenta registrada con este correo.',
-            'password.required' => 'La contrasena es obligatoria.',
-            'password.confirmed' => 'La confirmacion de la contrasena no coincide.',
-            'captcha_token.required' => 'Debes completar el captcha.',
+            'nombre.required'         => 'El nombre es obligatorio.',
+            'apellido.required'       => 'El apellido es obligatorio.',
+            'email.required'          => 'El correo es obligatorio.',
+            'email.email'             => 'Debes enviar un correo valido.',
+            'email.unique'            => 'Ya existe una cuenta registrada con este correo.',
+            'password.required'       => 'La contrasena es obligatoria.',
+            'password.confirmed'      => 'La confirmacion de la contrasena no coincide.',
+            'captcha_token.required'  => 'Debes completar el captcha.',
         ];
     }
 
@@ -98,5 +112,3 @@ class RegisterRequest extends FormRequest
         return preg_replace('/\s+/', ' ', trim($value));
     }
 }
-
-

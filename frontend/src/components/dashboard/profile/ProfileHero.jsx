@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BriefcaseBusiness,
   Building2,
@@ -22,6 +22,25 @@ import {
 
 import { MessageBox, MetaItem, StatCard } from "./ProfileSections";
 import { profileUi as ui } from "../../../styles/components/dashboard/profileStyles";
+
+function useCloseOnOutside(open, onClose) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        onClose?.();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [open, onClose]);
+
+  return ref;
+}
 
 export default function ProfileHero({
   avatarRef,
@@ -58,6 +77,7 @@ export default function ProfileHero({
   onStatClick,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useCloseOnOutside(menuOpen, () => setMenuOpen(false));
   const contactEmail = shownProfile.email && showContact ? shownProfile.email : "";
   const initials = `${shownProfile.nombre?.[0] ?? "P"}${shownProfile.apellido?.[0] ?? "F"}`;
   const verified = shownProfile.verification?.is_verified;
@@ -194,7 +214,7 @@ export default function ProfileHero({
                   </button>
                 ) : null}
 
-                <div style={{ position: "relative" }}>
+                <div style={{ position: "relative" }} ref={menuRef}>
                   <button type="button" onClick={() => setMenuOpen((value) => !value)} style={menuButtonStyle} aria-label="Mas opciones">
                     <MoreHorizontal size={17} />
                   </button>

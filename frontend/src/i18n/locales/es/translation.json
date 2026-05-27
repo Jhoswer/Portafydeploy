@@ -490,5 +490,105 @@
     "previousPage": "Pagina anterior",
     "nextPage": "Pagina siguiente",
     "lastPage": "Ultima pagina"
+  },
+
+  "companyForms": {
+    "steps": {
+      "identidad": {
+        "label": "Identidad"
+      },
+      "branding": {
+        "label": "Branding"
+      },
+      "empresa": {
+        "label": "Empresa"
+      },
+      "contacto": {
+        "label": "Contacto"
+      }
+    },
+    "stepIdentidad": {
+      "titulo": "Identidad básica",
+      "subtitulo": "Cuéntanos sobre la empresa que representas.",
+      "campos": {
+        "empresa": {
+          "label": "Nombre de la empresa",
+          "placeholder": "Ej. Acme Corp",
+          "hint": "Nombre legal o comercial de la empresa"
+        },
+        "descripcion": {
+          "label": "Descripción",
+          "placeholder": "Describe brevemente a qué se dedica la empresa, su misión y cultura de trabajo...",
+          "contador": "{{actual}} / {{maximo}}"
+        }
+      }
+    },
+    "stepBranding": {
+      "titulo": "Branding",
+      "subtitulo": "Sube el logo para que los candidatos reconozcan tu empresa.",
+      "dropzone": {
+        "titulo": "Sube tu logo",
+        "subtitulo": "PNG, JPG · Máximo 5 MB"
+      },
+      "acciones": {
+        "cambiar": "Cambiar",
+        "quitar": "Quitar"
+      }
+    },
+    "stepEmpresa": {
+      "titulo": "Información de la empresa",
+      "subtitulo": "Ayuda a los candidatos a entender el contexto de tu empresa.",
+      "campos": {
+        "rubro": {
+          "label": "Rubro o industria",
+          "placeholder": "Ej. Tecnología, Salud, Finanzas...",
+          "hint": "Empieza a escribir para ver sugerencias"
+        },
+        "pais": {
+          "label": "País",
+          "placeholder": "Seleccionar país"
+        },
+        "ciudad": {
+          "label": "Ciudad",
+          "placeholder": "Seleccionar ciudad",
+          "placeholderSinPais": "Primero selecciona un país",
+          "hint": "Selecciona un país para ver las ciudades disponibles"
+        }
+      }
+    },
+    "stepContacto": {
+      "titulo": "Información de contacto",
+      "subtitulo": "¿Cómo pueden comunicarse contigo los candidatos?",
+      "campos": {
+        "telefono": {
+          "label": "Teléfono de contacto",
+          "placeholder": "7123 4567",
+          "hint": "Número directo o de la empresa"
+        },
+        "sitio": {
+          "label": "Sitio web",
+          "placeholder": "https://empresa.com",
+          "hint": "URL completa incluyendo https://"
+        }
+      }
+    },
+    "stepExito": {
+      "titulo": "¡Perfil creado exitosamente!",
+      "subtitulo": "Tu empresa {{empresa}} ya está registrada. Ahora puedes publicar ofertas y encontrar candidatos.",
+      "botonPanel": "Ir al panel"
+    },
+    "comun": {
+      "opcional": "opcional",
+      "continuar": "Continuar",
+      "volver": "Volver",
+      "finalizarRegistro": "Finalizar registro",
+      "errores": {
+        "requerido": "Este campo es obligatorio.",
+        "urlInvalida": "Ingresa una URL válida (ej. https://empresa.com).",
+        "telefonoInvalido": "Ingresa un número de teléfono válido.",
+        "longitudMaxima": "Máximo {{max}} caracteres.",
+        "errorServidor": "Ocurrió un error. Intenta nuevamente."
+      }
+    }
   }
 }

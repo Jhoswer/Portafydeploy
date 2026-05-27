@@ -70,7 +70,7 @@ class OfferService
                 'created_at'       => now(),
                 'updated_at'       => now(),
                 'id_profile'       => $profile->id_profile,
-                'id_audience_type' => $idAudienceType,  // ← propagar audiencia
+                'id_audience_type' => $idAudienceType,
             ], 'id_publication');
 
             DB::table('PUBLICATION_DETAIL')->insert([
@@ -129,8 +129,9 @@ class OfferService
             $this->syncSkills($offer, $data['skills']);
         }
 
-        // ── Sincronizar id_audience_type en la PUBLICATION relacionada ───
-        $newAudienceType = $offer->fresh()->id_audience_type;
+        $freshOffer      = $offer->fresh();
+        $newAudienceType = $freshOffer->id_audience_type;
+        $finalState      = $freshOffer->state;
 
         DB::table('PUBLICATION')
             ->whereExists(function ($q) use ($offer) {
@@ -143,7 +144,28 @@ class OfferService
                 'updated_at'       => now(),
             ]);
 
-        // ── Sincronizar filtro de audiencia profesional ──────────────────
+        if (in_array($finalState, ['closed', 'removed', 'private'], true)) {
+            DB::table('PUBLICATION')
+                ->whereExists(function ($q) use ($offer) {
+                    $q->from('PUBLICATION_DETAIL')
+                      ->whereColumn('PUBLICATION_DETAIL.id_publication', 'PUBLICATION.id_publication')
+                      ->where('PUBLICATION_DETAIL.id_offer', $offer->id_offer);
+                })
+                ->update(['visibility' => false, 'updated_at' => now()]);
+        } elseif (in_array($finalState, ['open', 'visible'], true)) {
+            DB::table('PUBLICATION')
+                ->whereExists(function ($q) use ($offer) {
+                    $q->from('PUBLICATION_DETAIL')
+                      ->whereColumn('PUBLICATION_DETAIL.id_publication', 'PUBLICATION.id_publication')
+                      ->where('PUBLICATION_DETAIL.id_offer', $offer->id_offer);
+                })
+                ->update([
+                    'visibility' => true,
+                    'state'      => 'published',
+                    'updated_at' => now(),
+                ]);
+        }
+
         if ((int) $newAudienceType === 4 && !empty($audienceFilters)) {
             $this->syncAudienceProfessional($offer, $audienceFilters);
         } elseif ((int) $newAudienceType !== 4) {
@@ -154,32 +176,55 @@ class OfferService
         return $offer->fresh('skills');
     }
 
-    /**
-     * Soft-delete: marca la oferta como "removed".
-     */
     public function destroy(Offer $offer): void
     {
-        $offer->update(['state' => 'removed']);
+        DB::transaction(function () use ($offer) {
+            $offer->update(['state' => 'removed']);
+
+            $publicationId = DB::table('PUBLICATION_DETAIL')
+                ->where('id_offer', $offer->id_offer)
+                ->value('id_publication');
+
+            if ($publicationId) {
+                DB::table('PUBLICATION')
+                    ->where('id_publication', $publicationId)
+                    ->update([
+                        'visibility' => false,
+                        'state'      => 'unpublished',
+                        'updated_at' => now(),
+                    ]);
+            }
+        });
     }
 
-    /**
-     * Cierra automáticamente las ofertas cuya fecha límite ya pasó.
-     */
     public function closeExpiredOffers(): void
     {
-        Offer::whereIn('state', ['open', 'visible'])
+        $expiredOfferIds = Offer::whereIn('state', ['open', 'visible'])
             ->whereNotNull('closed_at')
             ->whereDate('closed_at', '<', today())
+            ->pluck('id_offer');
+
+        if ($expiredOfferIds->isEmpty()) {
+            return;
+        }
+
+        Offer::whereIn('id_offer', $expiredOfferIds)
             ->update(['state' => 'closed']);
+
+        $publicationIds = DB::table('PUBLICATION_DETAIL')
+            ->whereIn('id_offer', $expiredOfferIds)
+            ->pluck('id_publication');
+
+        if ($publicationIds->isNotEmpty()) {
+            DB::table('PUBLICATION')
+                ->whereIn('id_publication', $publicationIds)
+                ->update([
+                    'visibility' => false,
+                    'updated_at' => now(),
+                ]);
+        }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Métodos privados
-    // ─────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Sincroniza las skills de una oferta (elimina las anteriores y crea las nuevas).
-     */
     private function syncSkills(Offer $offer, array $skillNames): void
     {
         OfferDetail::where('id_offer', $offer->id_offer)->delete();
@@ -197,62 +242,46 @@ class OfferService
         }
     }
 
-    /**
-     * Guarda (o actualiza) el filtro profesional de una oferta.
-     *
-     * Los filtros vienen como:
-     *   [
-     *     'id_professional_area'  => int,       // requerido cuando audiencia = 4
-     *     'career'                => string|null // nombre de la carrera (opcional)
-     *   ]
-     *
-     * Como el frontend envía el nombre de la carrera (no el ID), se busca el
-     * id_professional_career correspondiente en PROFESSIONAL_CAREER por nombre.
-     */
     private function syncAudienceProfessional(Offer $offer, array $filters): void
-{
-    $idArea = $filters['id_professional_area'] ?? null;
+    {
+        $idArea = $filters['id_professional_area'] ?? null;
 
-    if (!$idArea) {
-        return;
-    }
+        if (!$idArea) {
+            return;
+        }
 
-    // Buscar el id de la carrera por nombre dentro del área indicada
-    $idCareer = null;
-    if (!empty($filters['career'])) {
-        $career = DB::table('PROFESSIONAL_CAREER')
-            ->where('id_professional_area', $idArea)
-            ->whereRaw('LOWER(name) = LOWER(?)', [trim($filters['career'])])
-            ->first();
+        $idCareer = null;
+        if (!empty($filters['career'])) {
+            $career = DB::table('PROFESSIONAL_CAREER')
+                ->where('id_professional_area', $idArea)
+                ->whereRaw('LOWER(name) = LOWER(?)', [trim($filters['career'])])
+                ->first();
 
-        $idCareer = $career?->id_professional_career ?? null;
-    }
+            $idCareer = $career?->id_professional_career ?? null;
+        }
 
-    // Reemplazar el registro en OFFER_AUDIENCE_PROFESSIONAL
-    OfferAudienceProfessional::where('id_offer', $offer->id_offer)->delete();
-    OfferAudienceProfessional::create([
-        'id_offer'               => $offer->id_offer,
-        'id_professional_area'   => $idArea,
-        'id_professional_career' => $idCareer,
-    ]);
-
-    // ── Sincronizar también en PUBLICATION_AUDIENCE_PROFESSIONAL ────────
-    // Obtener el id_publication vinculado a esta oferta
-    $publicationId = DB::table('PUBLICATION_DETAIL')
-        ->where('id_offer', $offer->id_offer)
-        ->value('id_publication');
-
-    if ($publicationId) {
-        DB::table('PUBLICATION_AUDIENCE_PROFESSIONAL')
-            ->where('id_publication', $publicationId)
-            ->delete();
-
-        DB::table('PUBLICATION_AUDIENCE_PROFESSIONAL')->insert([
-            'id_publication'         => $publicationId,
+        OfferAudienceProfessional::where('id_offer', $offer->id_offer)->delete();
+        OfferAudienceProfessional::create([
+            'id_offer'               => $offer->id_offer,
             'id_professional_area'   => $idArea,
             'id_professional_career' => $idCareer,
-            'created_at'             => now(),
         ]);
+
+        $publicationId = DB::table('PUBLICATION_DETAIL')
+            ->where('id_offer', $offer->id_offer)
+            ->value('id_publication');
+
+        if ($publicationId) {
+            DB::table('PUBLICATION_AUDIENCE_PROFESSIONAL')
+                ->where('id_publication', $publicationId)
+                ->delete();
+
+            DB::table('PUBLICATION_AUDIENCE_PROFESSIONAL')->insert([
+                'id_publication'         => $publicationId,
+                'id_professional_area'   => $idArea,
+                'id_professional_career' => $idCareer,
+                'created_at'             => now(),
+            ]);
+        }
     }
-}
 }

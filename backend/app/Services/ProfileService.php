@@ -119,11 +119,14 @@ class ProfileService
         return Publication::published()
             ->whereHas('profile.userRole', fn ($query) => $query->where('id_user', $usuario->id))
             ->with([
+                'profile' => fn ($query) => $query->withCount(['followerRelations', 'followingRelations']),
                 'profile.userRole.user',
                 'profile.jobTitle',
+                'profile.verificationRequests',
                 'detail.project.skills',
                 'detail.experience',
                 'latestComment.commentator.userRole.user',
+                'latestComment.commentator.verificationRequests',
             ])
             ->withCount([
                 'comments as comments_count',
@@ -161,6 +164,10 @@ class ProfileService
                 'name' => $authorName,
                 'title' => $profile?->jobTitle?->name ?: 'Profesional Portafy',
                 'avatar' => $this->assetUrlService->fromStoragePath($profile?->profile_photo),
+                'isVerified' => $this->profileIsVerified($profile),
+                'followersCount' => (int) ($profile?->follower_relations_count ?? $profile?->followerRelations()->count() ?? 0),
+                'followingCount' => (int) ($profile?->following_relations_count ?? $profile?->followingRelations()->count() ?? 0),
+                'isFollowing' => false,
             ],
             'content' => $publication->description ?: $this->defaultPostContent($project, $experience),
             'visibility' => (bool) $publication->visibility,
@@ -196,9 +203,31 @@ class ProfileService
                 'text' => $comment->comment,
                 'author' => trim(($comment->commentator?->name ?? '') . ' ' . ($comment->commentator?->last_name ?? '')) ?: 'Usuario Portafy',
                 'authorAvatar' => $this->assetUrlService->fromStoragePath($comment->commentator?->profile_photo),
+                'authorId' => $comment->commentator?->userRole?->user?->id ?? null,
+                'authorIsVerified' => $this->profileIsVerified($comment->commentator),
                 'posted' => $comment->created_at?->diffForHumans() ?? '',
             ])->values(),
         ];
+    }
+
+    private function profileIsVerified(?Profile $profile): bool
+    {
+        if (! $profile) {
+            return false;
+        }
+
+        if ($profile->relationLoaded('verificationRequests')) {
+            $latest = $profile->verificationRequests
+                ->sortByDesc('id_verification_request')
+                ->first();
+
+            return $latest?->status === 'approved';
+        }
+
+        return ProfileVerificationRequest::query()
+            ->where('id_profile', $profile->getKey())
+            ->orderByDesc('id_verification_request')
+            ->value('status') === 'approved';
     }
 
     private function defaultPostContent(?Proyecto $project, ?Experience $experience): string

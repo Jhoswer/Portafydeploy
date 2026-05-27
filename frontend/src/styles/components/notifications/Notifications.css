@@ -295,10 +295,12 @@
 
 .pf-notif-page__title {
   margin: 0;
-  color: #0f172a;
+  flex: 1;
+  color: var(--color-text); 
   font-family: var(--font-title);
   font-size: 30px;
   font-weight: 900;
+  color: hsl(210 40% 92%) !important;
 }
 
 .pf-notif-page__list {

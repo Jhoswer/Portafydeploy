@@ -6,6 +6,7 @@ use App\Models\ProfileVerificationRequest;
 use App\Models\Usuario;
 use App\Support\OfficialSchema;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use RuntimeException;
 
 class ProfileVerificationService
@@ -108,6 +109,7 @@ class ProfileVerificationService
             throw new RuntimeException('Indica el motivo del rechazo.');
         }
 
+        $request->loadMissing('profile.userRole.user');
         $adminProfile = OfficialSchema::ensureProfile($admin);
         $request->update([
             'status' => $status,
@@ -115,6 +117,7 @@ class ProfileVerificationService
             'reviewed_at' => now(),
             'reviewed_by_profile' => $adminProfile->getKey(),
         ]);
+        $this->forgetProfileCache((int) ($request->profile?->userRole?->user?->getKey() ?? 0));
 
         return [
             'message' => $status === 'approved'
@@ -144,5 +147,15 @@ class ProfileVerificationService
             'rejection_reason' => (string) ($request->rejection_reason ?? ''),
             'is_verified' => $request->status === 'approved',
         ];
+    }
+
+    private function forgetProfileCache(int $userId): void
+    {
+        if (! $userId) {
+            return;
+        }
+
+        Cache::forget("profile.{$userId}.show");
+        Cache::forget("profile.{$userId}.overview");
     }
 }

@@ -6,17 +6,30 @@ import {
 
 export const PREF_CATEGORIES = [
   {
-    key:         "social",
+    key:         "activity_notifications",
     label:       "Actividad Social",
-    description: "Comentarios, seguidores y menciones",
+    description: "Likes, comentarios y menciones en tus publicaciones",
   },
   {
-    key:         "portfolio",
-    label:       "Portafolio",
-    description: "Cambios en convocatorias y portafolio",
+    key:         "portfolio_notifications",
+    label:       "Portafolios de usuarios seguidos",
+    description: "Actualizaciones de proyectos y experiencias",
   },
-  //{key:         "security" label:       "Seguridad",description: "Alertas de seguridad de tu cuenta",locked:      true,},
-  //{key:         "admin",label:       "Administración",description: "Notificaciones administrativas",locked:      true,},
+  {
+    key:         "offer_notifications",
+    label:       "Nuevas convocatorias",
+    description: "Ofertas laborales que coincidan con tu perfil",
+  },
+  {
+    key:         "support_notifications",
+    label:       "Mensajes de soporte",
+    description: "Respuestas y actualizaciones de soporte",
+  },
+  {
+    key:         "platform_notifications",
+    label:       "Notificaciones de la plataforma",
+    description: "Anuncios y novedades de Portafy",
+  },
 ];
 
 export function useNotificationPrefs() {

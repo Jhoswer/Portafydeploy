@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use App\Models\Publication;
+use App\Models\PublicationComment;
 use App\Models\Usuario;
 use App\Services\ReportService;
 use Illuminate\Http\JsonResponse;
@@ -82,6 +83,31 @@ class ReportController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'No se pudo enviar el reporte de perfil.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function storeComment(Request $request, PublicationComment $comment): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'motivo' => ['required', 'string', 'max:50'],
+                'description' => ['nullable', 'string', 'max:255'],
+                'tests_url' => ['nullable', 'string', 'max:255'],
+            ]);
+
+            return response()->json(
+                $this->reportService->reportComment($request->user(), $comment, $validated),
+                201
+            );
+        } catch (\RuntimeException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'No se pudo enviar el reporte de comentario.',
                 'error' => $e->getMessage(),
             ], 500);
         }

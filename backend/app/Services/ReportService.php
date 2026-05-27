@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Attended;
 use App\Models\Publication;
+use App\Models\PublicationComment;
 use App\Models\Report;
 use App\Models\Usuario;
 use App\Support\OfficialSchema;
@@ -138,6 +139,64 @@ class ReportService
         ];
     }
 
+    public function reportComment(Usuario $authenticatedUser, PublicationComment $comment, array $payload): array
+    {
+        $reporterProfile = OfficialSchema::ensureProfile($authenticatedUser);
+        $comment->loadMissing('commentator.userRole.user', 'publication.detail.project');
+        $reportedProfile = $comment->commentator;
+
+        if (! $reportedProfile || $comment->removed_at) {
+            throw new \RuntimeException('Este comentario no esta disponible para reportes.');
+        }
+
+        if ((int) $reportedProfile->getKey() === (int) $reporterProfile->getKey()) {
+            throw new \RuntimeException('No puedes reportar tu propio comentario.');
+        }
+
+        $motivo = $this->resolveMotivo((string) ($payload['motivo'] ?? ''));
+        $description = trim((string) ($payload['description'] ?? ''));
+        $testsUrl = trim((string) ($payload['tests_url'] ?? ''));
+
+        $duplicateOpenReport = Report::query()
+            ->where('id_profile', $reporterProfile->getKey())
+            ->where('id_comment', $comment->getKey())
+            ->whereDoesntHave('attendeds')
+            ->exists();
+
+        if ($duplicateOpenReport) {
+            throw new \RuntimeException('Ya enviaste un reporte abierto sobre este comentario.');
+        }
+
+        $report = Report::create([
+            'id_comment' => $comment->getKey(),
+            'id_response' => null,
+            'id_profile' => $reporterProfile->getKey(),
+            'id_publication' => $comment->id_publication,
+            'id_project' => $comment->publication?->detail?->id_project,
+            'id_message' => null,
+            'id_group' => null,
+            'id_reported_user' => $reportedProfile->getKey(),
+            'id_portfolio' => null,
+            'description' => $description !== '' ? mb_substr($description, 0, 255) : 'Reporte de comentario.',
+            'tests_url' => $testsUrl !== '' ? mb_substr($testsUrl, 0, 255) : null,
+            'created_at' => now(),
+            'motivo' => $motivo,
+        ]);
+
+        $report->load([
+            'reporterProfile.userRole.user',
+            'reportedProfile.userRole.user',
+            'project',
+            'publication',
+            'comment',
+        ]);
+
+        return [
+            'message' => 'Reporte de comentario enviado al equipo de administracion.',
+            'report' => $this->mapReport($report),
+        ];
+    }
+
     public function reportMotivos(): array
     {
         return collect(self::MOTIVO_VALUES)
@@ -154,6 +213,7 @@ class ReportService
                 'reportedProfile.userRole.user',
                 'project',
                 'publication',
+                'comment',
             ])
             ->whereDoesntHave('attendeds');
 
@@ -358,16 +418,16 @@ class ReportService
 
     private function resolveRefType(Report $report): string
     {
+        if ($report->id_comment) {
+            return 'Comentario';
+        }
+
         if ($report->id_publication) {
             return 'Publicacion';
         }
 
         if ($report->id_project) {
             return 'Proyecto';
-        }
-
-        if ($report->id_comment) {
-            return 'Comentario';
         }
 
         if ($report->id_message) {
@@ -391,6 +451,10 @@ class ReportService
 
     private function resolveReferenceLabel(Report $report): string
     {
+        if ($report->id_comment && $report->comment) {
+            return (string) mb_substr($report->comment->comment ?? 'Comentario reportado', 0, 90);
+        }
+
         if ($report->id_project && $report->project) {
             return (string) ($report->project->titulo ?: $report->project->getRawOriginal('title'));
         }

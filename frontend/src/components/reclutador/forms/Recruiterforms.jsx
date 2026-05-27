@@ -8,11 +8,11 @@ import { STEPS }            from "./constants";
 import { ProgressBar, StepLabels } from "./Formui";
 import { useAuth } from "../../../context/useAuth";
 
-import StepIdentidad from "./Stepidentidad";
+import StepIdentidad from "./StepIdentidad";
 import StepBranding  from "./StepBranding";
 import StepEmpresa   from "./StepEmpresa";
 import StepContacto  from "./StepContacto";
-import StepExito     from "./Stepexito";
+import StepExito     from "./StepExito";
 
 export default function RecruiterForms() {
   const navigate = useNavigate();
@@ -75,8 +75,8 @@ export default function RecruiterForms() {
 
   /* ── Render ─────────────────────────────────────────────── */
   return (
-    <div className="auth-page">
-      <div className="auth-bg" />
+    <div className="forms-page">
+      <div className="forms-bg" />
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
@@ -84,7 +84,7 @@ export default function RecruiterForms() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         style={{ width: "100%", maxWidth: 480, position: "relative", zIndex: 1 }}
       >
-        <div className="auth-card">
+        <div className="forms-card" style={{ padding: "36px 40px 32px" }}>
 
           {step < STEPS.length && (
             <>
@@ -96,7 +96,7 @@ export default function RecruiterForms() {
           <AnimatePresence mode="wait">
             {step === 0 && (
               <StepIdentidad
-                empresa={empresa}       setEmpresa={setEmpresa}
+                empresa={empresa}         setEmpresa={setEmpresa}
                 descripcion={descripcion} setDescripcion={setDescripcion}
                 errors={errors}
                 onNext={goNext}
@@ -105,11 +105,11 @@ export default function RecruiterForms() {
 
             {step === 1 && (
               <StepBranding
-                logo={logo}             setLogo={setLogo}
+                logo={logo}               setLogo={setLogo}
                 logoPreview={logoPreview} setLogoPreview={setLogoPreview}
-                logoName={logoName}     setLogoName={setLogoName}
-                logoError={logoError}   setLogoError={setLogoError}
-                dragOver={dragOver}     setDragOver={setDragOver}
+                logoName={logoName}       setLogoName={setLogoName}
+                logoError={logoError}     setLogoError={setLogoError}
+                dragOver={dragOver}       setDragOver={setDragOver}
                 onNext={goNext}
                 onBack={goBack}
               />

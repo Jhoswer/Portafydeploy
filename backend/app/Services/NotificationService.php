@@ -153,9 +153,25 @@ class NotificationService
         ?string $device = null,
         ?string $location = null,
     ): ?UserNotification {
-        if (! $this->isEnabled($receiver, 'activity_notifications')) {
+        if (! $this->isEnabled($receiver,  $this->columnForType($type))) {
             return null;
         }
+
+        // Evitar duplicados: buscar notificaciones recientes iguales (mismo receptor, emisor, tipo y referencia)
+        $recent = UserNotification::query()
+            ->where('id_receiver', $receiver->getAuthIdentifier())
+            ->where('id_sender', $sender->getAuthIdentifier())
+            ->where('type', $type)
+            ->when($referenceType !== null, fn($q) => $q->where('reference_type', $referenceType), fn($q) => $q->whereNull('reference_type'))
+            ->when($referenceId !== null, fn($q) => $q->where('reference_id', $referenceId), fn($q) => $q->whereNull('reference_id'))
+            ->where('created_at', '>=', now()->subSeconds(30))
+            ->first();
+
+        if ($recent) {
+            return $recent;
+        }
+        
+        
 
         return UserNotification::create([
             'id_receiver' => $receiver->getAuthIdentifier(),
@@ -177,10 +193,34 @@ class NotificationService
 
     private function settingsFor(Authenticatable $user): NotificationPreference
     {
-        $settings = NotificationPreference::query()->firstOrCreate([
+        $defaults = [
             'id_user' => $user->getAuthIdentifier(),
-        ]);
+            'activity_notifications' => true,
+            'portfolio_notifications' => true,
+            'offer_notifications' => true,
+            'support_notifications' => true,
+            'platform_notifications' => true,
+            'security_notifications' => true,
+        ];
+
+        $settings = NotificationPreference::query()->firstOrCreate(
+            ['id_user' => $user->getAuthIdentifier()],
+            $defaults
+        );
 
         return $settings->wasRecentlyCreated ? $settings->refresh() : $settings;
+    }
+    
+    private function columnForType(string $type): string
+    {
+        return match ($type) {
+            'activity' => 'activity_notifications',
+            'portfolio' => 'portfolio_notifications',
+            'offer' => 'offer_notifications',
+            'support' => 'support_notifications',
+            'platform' => 'platform_notifications',
+            'security' => 'security_notifications',
+            default => 'activity_notifications', // Por defecto, tratar como actividad
+        };
     }
 }

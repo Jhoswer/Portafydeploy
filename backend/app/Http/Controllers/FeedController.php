@@ -9,6 +9,7 @@ use App\Models\Publication;
 use App\Models\PublicationAudienceProfessional;
 use App\Models\PublicationComment;
 use App\Models\PublicationDetail;
+use App\Models\ProfileVerificationRequest;
 use App\Models\Reaction;
 use App\Models\SavedPublication;
 use App\Models\Proyecto;
@@ -253,6 +254,28 @@ class FeedController extends Controller
         ]);
     }
 
+    public function comments(Request $request, int $id): JsonResponse
+    {
+        $profile = OfficialSchema::ensureProfile($request->user());
+
+        $publication = Publication::query()
+            ->where('PUBLICATION.id_publication', $id)
+            ->where(function (Builder $query) use ($profile) {
+                $query->where(function (Builder $publishedQuery) {
+                    $publishedQuery->where('PUBLICATION.state', 'published')
+                        ->where('PUBLICATION.visibility', true);
+                })->orWhere('PUBLICATION.id_profile', $profile->getKey());
+            })
+            ->firstOrFail();
+
+        $post = $this->toPost($this->loadPublication($publication, $profile, includeComments: true), $profile);
+
+        return response()->json([
+            'comments' => $post['comments'] ?? [],
+            'commentsCount' => $post['commentsCount'] ?? count($post['comments'] ?? []),
+        ]);
+    }
+
     /**
      * Publica un proyecto en el feed.
      * Acepta opcionalmente:
@@ -433,7 +456,8 @@ class FeedController extends Controller
 
         $notification = null;
         try {
-            $owner = $publication->profile?->userRole?->first()?->user;
+            $owner = $publication->profile?->userRole?->user;
+
             if ($liked && $owner && $owner->id !== $request->user()->id) {
                 $actorName = trim($request->user()->name . ' ' . $request->user()->last_name);
 
@@ -600,13 +624,16 @@ class FeedController extends Controller
         $query = Publication::query()
             ->from('PUBLICATION')  // ← fuerza el alias de tabla explícito
             ->with([
+                'profile' => fn ( $profileQuery) => $profileQuery->withCount(['followerRelations', 'followingRelations']),
                 'profile.userRole.user',
                 'profile.jobTitle',
+                'profile.verificationRequests',
                 'detail.project.skills',
                 'detail.experience',
                 'detail.offer.skills',
                 'detail.offer.profile.company',
                 'latestComment.commentator.userRole.user',
+                'latestComment.commentator.verificationRequests',
             ])
             ->withCount([
                 'comments as comments_count',
@@ -615,7 +642,10 @@ class FeedController extends Controller
             ]);
 
         if ($includeComments) {
-            $query->with('comments.commentator.userRole.user');
+            $query->with([
+                'comments.commentator.userRole.user',
+                'comments.commentator.verificationRequests',
+            ]);
         }
 
         if ($viewerProfile) {
@@ -695,8 +725,29 @@ class FeedController extends Controller
             ) ?: 'Usuario Portafy',
             'authorAvatar' => $this->assetUrlService->fromStoragePath($comment->commentator?->profile_photo),
             'authorId'     => $comment->commentator?->userRole?->user?->id ?? null,
+            'authorIsVerified' => $this->profileIsVerified($comment->commentator),
             'posted'       => $comment->created_at?->diffForHumans() ?? '',
         ])->values();
+
+        $authorFollowersCount = 0;
+        $authorFollowingCount = 0;
+        $authorIsFollowing = false;
+        if ($profile) {
+            $authorFollowersCount = (int) (
+                $profile->follower_relations_count
+                ?? $profile->followerRelations()->count()
+            );
+            $authorFollowingCount = (int) (
+                $profile->following_relations_count
+                ?? $profile->followingRelations()->count()
+            );
+            $authorIsFollowing = $viewerProfile
+                && (int) $viewerProfile->getKey() !== (int) $profile->getKey()
+                && $profile->followerRelations()
+                    ->where('id_profile1', $viewerProfile->getKey())
+                    ->where('state_relation', 'friends')
+                    ->exists();
+        }
 
         // ── Oferta vinculada a la publicación ─────────────────────────────
         if ($offer) {
@@ -752,10 +803,14 @@ class FeedController extends Controller
             'projectId'     => $project?->id,
             'experienceId'  => $experience?->id,
             'author'        => [
-                'id'     => $user?->id,
-                'name'   => $authorName,
-                'title'  => $profile?->jobTitle?->name ?: 'Profesional Portafy',
-                'avatar' => $this->assetUrlService->fromStoragePath($profile?->profile_photo),
+                'id'             => $user?->id,
+                'name'           => $authorName,
+                'title'          => $profile?->jobTitle?->name ?: 'Profesional Portafy',
+                'avatar'         => $this->assetUrlService->fromStoragePath($profile?->profile_photo),
+                'isVerified'     => $this->profileIsVerified($profile),
+                'followersCount' => $authorFollowersCount,
+                'followingCount' => $authorFollowingCount,
+                'isFollowing'    => $authorIsFollowing,
             ],
             'content'       => $publication->description ?: $this->defaultContent($project, $experience),
             'visibility'    => (bool) $publication->visibility,
@@ -833,5 +888,25 @@ class FeedController extends Controller
         }
 
         return 'Experiencia publicada: ' . ($headline ?: 'Trayectoria profesional') . '. ' . Str::limit($description, 170);
+    }
+
+    private function profileIsVerified(?Profile $profile): bool
+    {
+        if (! $profile) {
+            return false;
+        }
+
+        if ($profile->relationLoaded('verificationRequests')) {
+            $latest = $profile->verificationRequests
+                ->sortByDesc('id_verification_request')
+                ->first();
+
+            return $latest?->status === 'approved';
+        }
+
+        return ProfileVerificationRequest::query()
+            ->where('id_profile', $profile->getKey())
+            ->orderByDesc('id_verification_request')
+            ->value('status') === 'approved';
     }
 }

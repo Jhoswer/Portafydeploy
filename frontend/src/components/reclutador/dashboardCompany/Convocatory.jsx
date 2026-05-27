@@ -2,69 +2,28 @@ import { useEmpresa } from "../../../lib/EmpresaContext";
 import { JobPostCard } from "../shared/JobPostCard";
 import PostulantesConvocatoria from "../postulantes/PostulantesConvocatoria";
 import { Plus, LayoutGrid } from "lucide-react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../../context/useAuth";
 import { toast } from "sonner";
-import { obtenerStatsConvocatorias } from "../../../services/postulationService";
-
-const POLLING_INTERVAL = 60_000;
 
 export default function MisConvocatorias({ onEdit, onNueva }) {
   const { convocatorias, eliminarConvocatoria, cambiarEstadoConvocatoria } = useEmpresa();
-  const [activeTab, setActiveTab]             = useState("publicadas");
-  const [statsMap, setStatsMap]               = useState({});
-  const [loadingStats, setLoadingStats]       = useState(false);
+  const [activeTab, setActiveTab]               = useState("publicadas");
   const [vistaPostulantes, setVistaPostulantes] = useState(null);
-  const statsIntervalRef = useRef(null);
   const { company } = useAuth();
 
   const companyName = company?.name     ?? "Mi empresa";
   const companyLogo = company?.logo_url ?? null;
 
-  const fetchStats = useCallback(async () => {
-    try {
-      const stats = await obtenerStatsConvocatorias();
-      const map = {};
-      stats.forEach((s) => {
-        map[s.id_offer] = {
-          total:           Number(s.total           ?? 0),
-          accepted:        Number(s.accepted        ?? 0),
-          refused:         Number(s.refused         ?? 0),
-          in_verification: Number(s.in_verification ?? 0),
-          nuevo:           Number(s.nuevo           ?? 0),
-          in_interview:    Number(s.in_interview    ?? 0),
-        };
-      });
-      setStatsMap(map);
-    } catch (e) {
-      console.error("Error cargando stats de convocatorias:", e);
-    } finally {
-      setLoadingStats(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!convocatorias?.length) return;
-    setLoadingStats(true);
-    fetchStats();
-    statsIntervalRef.current = setInterval(fetchStats, POLLING_INTERVAL);
-    return () => clearInterval(statsIntervalRef.current);
-  }, [convocatorias, fetchStats]);
-
-  const statsFor = (job) => {
-    if (job.stats) return {
-      total:           Number(job.stats.total           ?? 0),
-      accepted:        Number(job.stats.accepted        ?? 0),
-      refused:         Number(job.stats.refused         ?? 0),
-      in_verification: Number(job.stats.in_verification ?? 0),
-      nuevo:           Number(job.stats.nuevo           ?? 0),
-      in_interview:    Number(job.stats.in_interview    ?? 0),
-    };
-    return statsMap[job.id ?? job.id_offer] ?? {
-      total: 0, accepted: 0, refused: 0, in_verification: 0, nuevo: 0, in_interview: 0,
-    };
-  };
+  const statsFor = (job) => ({
+    total:           Number(job.stats?.total           ?? 0),
+    accepted:        Number(job.stats?.accepted        ?? 0),
+    refused:         Number(job.stats?.refused         ?? 0),
+    in_verification: Number(job.stats?.in_verification ?? 0),
+    nuevo:           Number(job.stats?.nuevo           ?? 0),
+    in_interview:    Number(job.stats?.in_interview    ?? 0),
+  });
 
   const handleToggleStatus = async (id, statusActual) => {
     const nuevoState =
@@ -76,13 +35,11 @@ export default function MisConvocatorias({ onEdit, onNueva }) {
       nuevoState === "closed" ? "Convocatoria cerrada" :
       nuevoState === "open"   ? "Convocatoria abierta" : "Convocatoria publicada"
     );
-    fetchStats();
   };
 
   const handleDelete = async (id) => {
     await eliminarConvocatoria(id);
     toast.success("Convocatoria eliminada");
-    fetchStats();
   };
 
   const resolveState = (c) => c.real_state ?? c.realState ?? c.state;

@@ -561,7 +561,7 @@ textarea.auth-input {
 /* ── Inputs ───────────────────────────────────────────────── */
 .dark .auth-input {
   background: hsl(218 30% 16%);
-  border-color: rgba(162, 214, 249, .12);
+  border-color: rgba(162, 214, 249, 0.12);
   color: hsl(210 40% 90%);
 }
 
@@ -572,7 +572,7 @@ textarea.auth-input {
 .dark .auth-input:focus {
   background: hsl(218 30% 18%);
   border-color: var(--color-blue-mid);
-  box-shadow: 0 0 0 3px rgba(26, 111, 189, .20);
+  box-shadow: 0 0 0 3px rgba(26, 111, 189, 0.20);
 }
 
 /* ── Input icon ───────────────────────────────────────────── */

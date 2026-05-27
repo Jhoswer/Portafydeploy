@@ -1,8 +1,7 @@
-
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 
-
+/* ── Wrapper animado de paso ────────────────────────────── */
 export function StepWrapper({ children, stepKey }) {
   return (
     <motion.div
@@ -21,13 +20,7 @@ export function StepWrapper({ children, stepKey }) {
 /* ── Círculo de ícono ───────────────────────────────────── */
 export function IconCircle({ children }) {
   return (
-    <div style={{
-      width: 56, height: 56, borderRadius: 16,
-      background: "var(--red)",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      boxShadow: "0 8px 20px rgba(255,107,107,.25)",
-      marginBottom: 20,
-    }}>
+    <div className="forms-icon-circle">
       {children}
     </div>
   );
@@ -37,7 +30,7 @@ export function IconCircle({ children }) {
 export function FieldError({ msg }) {
   if (!msg) return null;
   return (
-    <p style={{ fontSize: 11, color: "#e24b4a", marginTop: 4, fontFamily: "var(--f-body)" }}>
+    <p style={{ fontSize: 11, color: "#e24b4a", marginTop: 4, fontFamily: "var(--font-body)" }}>
       {msg}
     </p>
   );
@@ -46,17 +39,17 @@ export function FieldError({ msg }) {
 /* ── Hint de campo ──────────────────────────────────────── */
 export function FieldHint({ msg }) {
   return (
-    <p style={{ fontSize: 11, color: "var(--muted)", marginTop: 4, fontFamily: "var(--f-body)" }}>
+    <p style={{ fontSize: 11, color: "var(--color-muted-text)", marginTop: 4, fontFamily: "var(--font-body)" }}>
       {msg}
     </p>
   );
 }
 
 /* ── Wrapper de input con ícono ─────────────────────────── */
-export function InputWrap({ icon, children }) {
+export function InputWrap({ icon, textarea, children }) {
   return (
-    <div className="auth-input-wrap">
-      {icon && <span className="auth-input-icon">{icon}</span>}
+    <div className={`forms-input-wrap${textarea ? " forms-input-wrap--textarea" : ""}`}>
+      {icon && <span className="forms-input-icon">{icon}</span>}
       {children}
     </div>
   );
@@ -66,9 +59,14 @@ export function InputWrap({ icon, children }) {
 export function OptionalBadge() {
   return (
     <span style={{
-      fontSize: 10, color: "var(--muted)", background: "rgba(162,214,249,.12)",
-      borderRadius: 4, padding: "1px 6px", marginLeft: 6,
-      fontFamily: "var(--f-body)", verticalAlign: "middle",
+      fontSize: 10,
+      color: "var(--color-muted-text)",
+      background: "rgba(162,214,249,.12)",
+      borderRadius: 4,
+      padding: "1px 6px",
+      marginLeft: 6,
+      fontFamily: "var(--font-body)",
+      verticalAlign: "middle",
     }}>
       opcional
     </span>
@@ -78,20 +76,12 @@ export function OptionalBadge() {
 /* ── Botones de acción (siguiente / volver) ─────────────── */
 export function Actions({ onNext, nextLabel, onBack, backLabel, loading }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 28, width: "100%" }}>
+    <div className="forms-actions">
       {onBack && (
         <button
           type="button"
           onClick={onBack}
-          style={{
-            display: "flex", alignItems: "center", gap: 6,
-            background: "none", border: "none", cursor: "pointer",
-            fontFamily: "var(--f-ui)", fontSize: 13, fontWeight: 600,
-            color: "var(--muted)", marginBottom: 4, padding: 0,
-            transition: "color .2s",
-          }}
-          onMouseOver={e => e.currentTarget.style.color = "var(--body)"}
-          onMouseOut={e => e.currentTarget.style.color = "var(--muted)"}
+          className="forms-back-btn"
         >
           <ArrowLeft size={13} /> {backLabel}
         </button>
@@ -100,17 +90,18 @@ export function Actions({ onNext, nextLabel, onBack, backLabel, loading }) {
         whileTap={{ scale: 0.98 }}
         onClick={onNext}
         disabled={loading}
-        className="auth-submit"
-        style={{ marginTop: 0 }}
+        className="forms-submit"
       >
         {loading ? (
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
             style={{
-              width: 16, height: 16,
+              width: 16,
+              height: 16,
               border: "2px solid rgba(255,255,255,.3)",
-              borderTopColor: "#fff", borderRadius: "50%",
+              borderTopColor: "#fff",
+              borderRadius: "50%",
             }}
           />
         ) : nextLabel}
@@ -122,17 +113,18 @@ export function Actions({ onNext, nextLabel, onBack, backLabel, loading }) {
 /* ── Barra de progreso ──────────────────────────────────── */
 export function ProgressBar({ steps, currentStep }) {
   return (
-    <div style={{ display: "flex", gap: 6, marginBottom: 8, width: "100%" }}>
+    <div className="forms-progress">
       {steps.map((_, i) => (
-        <div key={i} style={{
-          flex: 1, height: 4, borderRadius: 99,
-          background: i < currentStep
-            ? "#27ae60"
-            : i === currentStep
-              ? "var(--red)"
-              : "rgba(162,214,249,.25)",
-          transition: "background .3s",
-        }} />
+        <div
+          key={i}
+          className={`forms-progress__segment ${
+            i < currentStep
+              ? "forms-progress__segment--done"
+              : i === currentStep
+                ? "forms-progress__segment--active"
+                : "forms-progress__segment--pending"
+          }`}
+        />
       ))}
     </div>
   );
@@ -145,8 +137,14 @@ export function StepLabels({ steps, currentStep }) {
       {steps.map((s, i) => (
         <div key={i} style={{ flex: 1, textAlign: "center" }}>
           <span style={{
-            fontSize: 10, fontFamily: "var(--f-ui)", fontWeight: 600,
-            color: i === currentStep ? "var(--red)" : i < currentStep ? "#27ae60" : "var(--muted)",
+            fontSize: 10,
+            fontFamily: "var(--font-ui)",
+            fontWeight: 600,
+            color: i === currentStep
+              ? "var(--color-red)"
+              : i < currentStep
+                ? "var(--color-success)"
+                : "var(--color-muted-text)",
             transition: "color .3s",
           }}>
             {i < currentStep ? "✓ " : ""}{s.label}

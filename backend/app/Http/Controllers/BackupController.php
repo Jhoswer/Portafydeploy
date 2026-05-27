@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\BackupService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BackupController extends Controller
@@ -84,6 +85,51 @@ class BackupController extends Controller
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => 'No se pudo eliminar el backup.',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
+    }
+
+    public function restore(Request $request, string $filename): JsonResponse
+    {
+        try {
+            Log::info('backup.restore.request', [
+                'filename' => $filename,
+                'user_id' => optional($request->user())->id ?? null,
+            ]);
+
+            $result = $this->backupService->restoreBackup($request->user(), $filename);
+
+            Log::info('backup.restore.success', [
+                'filename' => $filename,
+                'user_id' => optional($request->user())->id ?? null,
+                'debug' => $result['debug'] ?? null,
+            ]);
+
+            return response()->json([
+                'message' => 'Backup restaurado correctamente. Se genero un backup de seguridad previo.',
+                'data' => $result,
+            ]);
+        } catch (\RuntimeException $e) {
+            Log::warning('backup.restore.runtime_exception', [
+                'filename' => $filename,
+                'user_id' => optional($request->user())->id ?? null,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json(['message' => $e->getMessage()], 422);
+        } catch (\Throwable $e) {
+            $message = config('app.debug') ? $e->getMessage() : 'No se pudo restaurar el backup.';
+
+            Log::error('backup.restore.failed', [
+                'filename' => $filename,
+                'user_id' => optional($request->user())->id ?? null,
+                'error' => $e->getMessage(),
+                'exception' => $e,
+            ]);
+
+            return response()->json([
+                'message' => $message,
                 'error' => config('app.debug') ? $e->getMessage() : null,
             ], 500);
         }

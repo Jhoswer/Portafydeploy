@@ -13,11 +13,12 @@ export default function ReportCard({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [ignoreBusy, setIgnoreBusy] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
 
   const { meta, reported_user, reporter_user, refType, description, formattedDate } = report;
-
-  const avatarContent =
-    report.motivo === "hate_incitement" ? "!" : reported_user.initials;
+  const profilePhoto = typeof reported_user?.photo === "string" ? reported_user.photo.trim() : "";
+  const showProfilePhoto = Boolean(profilePhoto) && !imageFailed && report.motivo !== "hate_incitement";
+  const avatarContent = report.motivo === "hate_incitement" ? "!" : reported_user.initials;
 
   function handleDelete(reportToDelete) {
     onDelete?.(reportToDelete);
@@ -63,7 +64,16 @@ export default function ReportCard({
     <>
       <div className="rp-card">
         <div className={`rp-card__avatar ${meta.avatarClass}`}>
-          {avatarContent}
+          {showProfilePhoto ? (
+            <img
+              src={profilePhoto}
+              alt={reported_user.name || "Usuario reportado"}
+              className="rp-card__avatar-img"
+              onError={() => setImageFailed(true)}
+            />
+          ) : (
+            avatarContent
+          )}
         </div>
 
         <div className="rp-card__body">
@@ -75,7 +85,7 @@ export default function ReportCard({
           </div>
 
           <p className="rp-card__meta">
-            Reportado a {reporter_user.name}&nbsp;·&nbsp;
+            Reportado por {reporter_user.name}&nbsp;·&nbsp;
             {refType}&nbsp;·&nbsp;
             {formattedDate}
           </p>

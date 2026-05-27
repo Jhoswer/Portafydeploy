@@ -6,6 +6,7 @@ import {
   Download,
   Loader2,
   RefreshCw,
+  RotateCcw,
   Trash2,
 } from "lucide-react";
 import AdminModuleLayout from "../components/AdminModuleLayout";
@@ -15,6 +16,7 @@ import {
   eliminarBackup,
   generarBackup,
   listarBackups,
+  restaurarBackup,
 } from "../../../services/adminService";
 
 function getRoleKey(role) {
@@ -70,6 +72,7 @@ export default function Backups() {
   const [successMessage, setSuccessMessage] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingFile, setLoadingFile] = useState("");
+  const [restoringFile, setRestoringFile] = useState("");
   const [deletingFile, setDeletingFile] = useState("");
   const [canDelete, setCanDelete] = useState(isSuperAdmin);
 
@@ -89,7 +92,12 @@ export default function Backups() {
       const response = await listarBackups();
       setBackups(Array.isArray(response.items) ? response.items : []);
       setCanDelete(Boolean(response.meta?.can_delete) || isSuperAdmin);
+      console.info("[Backups] Lista cargada", {
+        total: Array.isArray(response.items) ? response.items.length : 0,
+        files: Array.isArray(response.items) ? response.items.map((item) => item?.filename).filter(Boolean) : [],
+      });
     } catch (error) {
+      console.error("[Backups] Error al cargar lista", error);
       setListError(error?.message || "No se pudo cargar la lista de backups.");
 
       if (!silent) {
@@ -104,11 +112,14 @@ export default function Backups() {
 
   useEffect(() => {
     if (!isAllowed) {
-      setLoading(false);
       return undefined;
     }
 
-    loadBackups();
+    const timer = window.setTimeout(() => {
+      loadBackups();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [isAllowed, loadBackups]);
 
   useEffect(() => {
@@ -135,10 +146,13 @@ export default function Backups() {
     setActionError("");
 
     try {
+      console.info("[Backups] Iniciando generacion de backup manual");
       const response = await generarBackup();
+      console.info("[Backups] Respuesta generate", response);
       setSuccessMessage(response?.message || "Backup generado correctamente.");
       await loadBackups({ silent: true });
     } catch (error) {
+      console.error("[Backups] Error al generar backup", error);
       setGenerateError(error?.message || "No se pudo generar el backup.");
     } finally {
       setIsGenerating(false);
@@ -186,6 +200,50 @@ export default function Backups() {
     }
   }, [loadBackups]);
 
+  const handleRestore = useCallback(async (backup) => {
+    const filename = getFileName(backup);
+    const confirmed = window.confirm(
+      `Restaurar ${filename}? Antes de hacerlo se generara automaticamente un backup de seguridad del estado actual.`
+    );
+
+    if (!confirmed) return;
+
+    setRestoringFile(filename);
+    setActionError("");
+    setSuccessMessage("");
+
+    try {
+      console.info("[Backups] Iniciando restauracion", { filename });
+      const response = await restaurarBackup(filename);
+      console.info("[Backups] Respuesta restore", response);
+      if (response?.data?.debug) {
+        console.info("[Backups] Snapshot backend before/after", response.data.debug);
+        if (response.data.debug.after?.counts) {
+          console.table(response.data.debug.after.counts);
+        }
+      }
+
+      const safetyFilename = response?.data?.safety_backup?.filename;
+      const restoredName = response?.data?.restored_backup?.filename || filename;
+
+      setSuccessMessage(
+        safetyFilename
+          ? `${response?.message || "Backup restaurado correctamente."} Respaldo previo: ${safetyFilename}.`
+          : `${response?.message || "Backup restaurado correctamente."} Backup aplicado: ${restoredName}.`
+      );
+      await loadBackups({ silent: true });
+      window.setTimeout(() => {
+        console.info("[Backups] Recargando interfaz para forzar lectura fresca de la BD");
+        window.location.reload();
+      }, 1200);
+    } catch (error) {
+      console.error("[Backups] Error al restaurar backup", error);
+      setActionError(error?.message || "No se pudo restaurar el backup.");
+    } finally {
+      setRestoringFile("");
+    }
+  }, [loadBackups]);
+
   if (!isAllowed) {
     return (
       <AdminModuleLayout
@@ -219,6 +277,9 @@ export default function Backups() {
             <p style={styles.heroText}>
               Genera y descarga respaldos de los datos.
             </p>
+            <div style={styles.restoreNotice}>
+              Antes de restaurar, el sistema crea automaticamente un backup de seguridad del estado actual.
+            </div>
           </div>
 
           <div style={styles.heroActions}>
@@ -357,6 +418,7 @@ export default function Backups() {
                 ) : backups.map((backup) => {
                   const filename = getFileName(backup);
                   const isDownloading = loadingFile === filename;
+                  const isRestoring = restoringFile === filename;
                   const isDeleting = deletingFile === filename;
 
                   return (
@@ -388,6 +450,20 @@ export default function Backups() {
                           >
                             {isDownloading ? <Loader2 size={15} style={{ animation: "spin .8s linear infinite" }} /> : <Download size={15} />}
                             Descargar
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleRestore(backup)}
+                            disabled={isRestoring}
+                            style={{
+                              ...styles.restoreButton,
+                              ...(isRestoring ? styles.buttonDisabled : null),
+                            }}
+                            title="Restaurar backup"
+                          >
+                            {isRestoring ? <Loader2 size={15} style={{ animation: "spin .8s linear infinite" }} /> : <RotateCcw size={15} />}
+                            {isRestoring ? "Preparando respaldo..." : "Restaurar"}
                           </button>
 
                           {canDelete ? (
@@ -472,6 +548,19 @@ const styles = {
     lineHeight: 1.6,
     maxWidth: 740,
   },
+  restoreNotice: {
+    display: "inline-flex",
+    alignItems: "center",
+    marginTop: 12,
+    padding: "8px 12px",
+    borderRadius: 12,
+    background: "rgba(255,255,255,.7)",
+    border: "1px solid rgba(15,23,42,.08)",
+    color: "#334155",
+    fontSize: 12,
+    fontWeight: 600,
+    lineHeight: 1.4,
+  },
   heroActions: {
     display: "flex",
     flexWrap: "wrap",
@@ -529,6 +618,18 @@ primaryButton: {
     border: "1px solid rgba(15,23,42,.10)",
     background: "#fff",
     color: "#0f172a",
+    fontWeight: 700,
+    cursor: "pointer",
+  },
+  restoreButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "10px 12px",
+    borderRadius: 12,
+    border: "1px solid rgba(16,185,129,.18)",
+    background: "rgba(236,253,245,.95)",
+    color: "#047857",
     fontWeight: 700,
     cursor: "pointer",
   },

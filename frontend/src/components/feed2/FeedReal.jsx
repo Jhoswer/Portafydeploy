@@ -15,13 +15,14 @@ import {
   unshareFeedPost,
   validateCommentText,
 } from "../../services/feedService";
-import { FeedPostCard } from "./FeedPostCard";
+import { FeedPostCard, PostCommentsModal } from "./FeedPostCard";
 import { FeedOfferCard } from "./FeedOfferCard/FeedOfferCard";
 import { ReportPublicationModal } from "./ReportPublicationModal";
 import { normalizeFeedPost } from "../../features/feed/feedMappers";
 import { ConfirmModal } from "../../features/dashboard-portfolio/portfolioWorkspaceControls";
 import { useAuth } from "../../context/useAuth";
-import { createPublicationReport } from "../../services/reportService";
+import { createCommentReport, createPublicationReport } from "../../services/reportService";
+import { followProfile, unfollowProfile } from "../../services/profileTrustService";
 
 const FEED_LIMIT = 20;
 const REFRESH_INTERVAL_MS = 30000;
@@ -39,12 +40,17 @@ export default function FeedReal({ activeFilter }) {
   const [commentErrors, setCommentErrors] = useState({});
   const [busyAction, setBusyAction] = useState("");
   const [loadingCommentsId, setLoadingCommentsId] = useState(null);
+  const [commentsModalPost, setCommentsModalPost] = useState(null);
+  const [commentsModalLoadingId, setCommentsModalLoadingId] = useState(null);
   const [pendingUnsharePost, setPendingUnsharePost] = useState(null);
   const [pendingReportPost, setPendingReportPost] = useState(null);
+  const [pendingReportComment, setPendingReportComment] = useState(null);
   const [authPrompt, setAuthPrompt] = useState(null);
   const [reportError, setReportError] = useState("");
+  const [followingAuthorId, setFollowingAuthorId] = useState(null);
   const [isPending, startTransition] = useTransition();
   const postsLengthRef = useRef(posts.length);
+  const pendingFollowAuthorRef = useRef(null);
 
   useEffect(() => {
     postsLengthRef.current = posts.length;
@@ -223,6 +229,85 @@ export default function FeedReal({ activeFilter }) {
     }
   };
 
+  const openProfile = useCallback((authorId) => {
+    if (!authorId) return;
+    navigate(`/perfil-profesional?usuario=${authorId}`);
+  }, [navigate]);
+
+  const openAllComments = useCallback(async (post) => {
+    if (!post?.publicationId) return;
+
+    setCommentsModalPost(post);
+
+    const loadedCount = post.commentsList?.length || 0;
+    if (loadedCount >= Number(post.comments || 0)) return;
+
+    setCommentsModalLoadingId(post.publicationId);
+    try {
+      const fullPost = await fetchFeedPost(post.publicationId);
+      const normalized = normalizeFeedPost(fullPost);
+      mergePost(fullPost);
+      setCommentsModalPost(normalized);
+    } catch (actionError) {
+      setError(actionError.message || "No se pudieron cargar todos los comentarios.");
+    } finally {
+      setCommentsModalLoadingId(null);
+    }
+  }, [mergePost]);
+
+  const patchAuthorFollowState = useCallback((authorId, summary = {}) => {
+    setPosts((currentPosts) => currentPosts.map((item) => {
+      if (String(item.authorId) !== String(authorId)) return item;
+
+      return {
+        ...item,
+        authorFollowers: Number(summary.followers ?? item.authorFollowers),
+        authorFollowing: Number(summary.following ?? item.authorFollowing),
+        authorIsFollowing: Boolean(summary.is_following),
+      };
+    }));
+
+    setCommentsModalPost((current) => {
+      if (!current || String(current.authorId) !== String(authorId)) return current;
+      return {
+        ...current,
+        authorFollowers: Number(summary.followers ?? current.authorFollowers),
+        authorFollowing: Number(summary.following ?? current.authorFollowing),
+        authorIsFollowing: Boolean(summary.is_following),
+      };
+    });
+  }, []);
+
+  const toggleAuthorFollow = useCallback(async (post) => {
+    if (!requireAuthenticated("seguir")) return;
+    if (!post?.authorId || String(post.authorId) === String(user?.id)) return;
+    if (pendingFollowAuthorRef.current && String(pendingFollowAuthorRef.current) === String(post.authorId)) return;
+
+    const previousPosts = posts;
+    const nextFollowing = !post.authorIsFollowing;
+    pendingFollowAuthorRef.current = post.authorId;
+    setFollowingAuthorId(post.authorId);
+
+    patchAuthorFollowState(post.authorId, {
+      followers: Math.max(0, Number(post.authorFollowers || 0) + (nextFollowing ? 1 : -1)),
+      following: post.authorFollowing,
+      is_following: nextFollowing,
+    });
+
+    try {
+      const payload = nextFollowing
+        ? await followProfile(post.authorId)
+        : await unfollowProfile(post.authorId);
+      patchAuthorFollowState(post.authorId, payload.summary || {});
+    } catch (actionError) {
+      setPosts(previousPosts);
+      setError(actionError.message || "No se pudo actualizar el seguimiento.");
+    } finally {
+      pendingFollowAuthorRef.current = null;
+      setFollowingAuthorId(null);
+    }
+  }, [patchAuthorFollowState, posts, requireAuthenticated, user?.id]);
+
   const submitComment = async (event, post) => {
     event.preventDefault();
     if (!requireAuthenticated("comentar")) return;
@@ -291,6 +376,26 @@ export default function FeedReal({ activeFilter }) {
     }
   };
 
+  const reportComment = async (payload) => {
+    if (!requireAuthenticated("reportar")) return;
+    if (!pendingReportComment?.id) return;
+
+    const actionKey = `report-comment-${pendingReportComment.id}`;
+    if (busyAction === actionKey) return;
+
+    setBusyAction(actionKey);
+    setReportError("");
+
+    try {
+      await createCommentReport(pendingReportComment.id, payload);
+      setPendingReportComment(null);
+    } catch (actionError) {
+      setReportError(actionError.message || "No se pudo enviar el reporte de comentario.");
+    } finally {
+      setBusyAction("");
+    }
+  };
+
   return (
     <>
       <main className="feed">
@@ -340,8 +445,20 @@ export default function FeedReal({ activeFilter }) {
               isCommenting={busyAction === `comment-${post.publicationId}`}
               isUnsharing={busyAction === `unshare-${post.publicationId}`}
               isLoadingComments={loadingCommentsId === post.publicationId}
+              isLoadingAllComments={commentsModalLoadingId === post.publicationId}
               canReact={canReact}
               canComment={canComment}
+              currentUserId={user?.id ?? null}
+              onOpenProfile={openProfile}
+              onViewAllComments={() => openAllComments(displayPost)}
+              onFollowAuthor={() => toggleAuthorFollow(displayPost)}
+              isFollowingAuthor={Boolean(displayPost.authorIsFollowing)}
+              isFollowAuthorBusy={String(followingAuthorId) === String(displayPost.authorId)}
+              onReportComment={(comment) => {
+                if (!requireAuthenticated("reportar")) return;
+                setReportError("");
+                setPendingReportComment({ ...comment, post: displayPost });
+              }}
               onUnshare={ownedByMe ? () => setPendingUnsharePost(displayPost) : null}
               onReport={!ownedByMe ? () => {
                 if (!requireAuthenticated("reportar")) return;
@@ -405,6 +522,39 @@ export default function FeedReal({ activeFilter }) {
         />
       ) : null}
 
+      {commentsModalPost ? (
+        <PostCommentsModal
+          post={commentsModalPost}
+          isLoading={commentsModalLoadingId === commentsModalPost.publicationId}
+          onClose={() => setCommentsModalPost(null)}
+          onOpenProfile={openProfile}
+          currentUserId={user?.id ?? null}
+          onReportComment={(comment) => {
+            if (!requireAuthenticated("reportar")) return;
+            setReportError("");
+            setPendingReportComment({ ...comment, post: commentsModalPost });
+          }}
+        />
+      ) : null}
+
+      {pendingReportComment ? (
+        <ReportPublicationModal
+          key={`comment-${pendingReportComment.id}`}
+          post={pendingReportComment.post}
+          comment={pendingReportComment}
+          reportKind="comment"
+          isOpen
+          isBusy={busyAction === `report-comment-${pendingReportComment.id}`}
+          error={reportError}
+          onClose={() => {
+            if (busyAction.startsWith("report-comment-")) return;
+            setPendingReportComment(null);
+            setReportError("");
+          }}
+          onSubmit={reportComment}
+        />
+      ) : null}
+
       {authPrompt ? (
         <VisitorAuthPrompt
           action={authPrompt}
@@ -434,6 +584,7 @@ function VisitorAuthPrompt({ action, onClose, onLogin, onRegister }) {
     postular: "postularte a ofertas",
     compartir: "compartir contenido",
     guardar: "guardar contenido",
+    seguir: "seguir perfiles",
   };
 
   return (

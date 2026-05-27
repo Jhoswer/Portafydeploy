@@ -1,4 +1,4 @@
-import NavBar from "../../components/landing/Navbar";
+import NavBar from "../../components/landing/NavBar";
 import AuthTopbar from "../../components/landing/AuthTopbar";
 import RecruiterLeftSidebar from "../../components/reclutador/LeftSidebar";
 import { EmpresaProvider } from "../../lib/EmpresaContext";

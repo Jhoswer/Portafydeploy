@@ -1,7 +1,3 @@
-/* ============================================================
-   src/components/recruiter/forms/StepEmpresa.jsx
-   ============================================================ */
-
 import { Building2, MapPin, ChevronDown, Search } from "lucide-react";
 import { StepWrapper, IconCircle, FieldError, FieldHint, InputWrap, Actions } from "./Formui";
 import { RUBROS, PAISES, PAISES_CIUDADES } from "./constants";
@@ -40,21 +36,22 @@ export default function StepEmpresa({
 
   return (
     <StepWrapper stepKey="paso-empresa">
-      <IconCircle><Search size={24} color="#FF6B6B" /></IconCircle>
-      <h2 className="auth-card__title" style={{ textAlign: "center" }}>
+      <IconCircle><Search size={24} color="#fff" /></IconCircle>
+
+      <h2 className="forms-card__title" style={{ textAlign: "center" }}>
         Información de la empresa
       </h2>
-      <p className="auth-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
+      <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
         Ayuda a los candidatos a entender el contexto de tu empresa.
       </p>
 
       {/* Rubro con autocompletado */}
-      <div className="auth-field" style={{ width: "100%", position: "relative" }}>
-        <label className="auth-label">Rubro o industria</label>
+      <div className="forms-field" style={{ position: "relative" }}>
+        <label className="forms-label">Rubro o industria</label>
         <InputWrap icon={<Building2 size={15} />}>
           <input
             type="text"
-            className="auth-input"
+            className="forms-input"
             value={rubro}
             onChange={e => handleRubroChange(e.target.value)}
             placeholder="Ej. Tecnología, Salud, Finanzas..."
@@ -69,7 +66,7 @@ export default function StepEmpresa({
         {rubroSugs.length > 0 && (
           <div style={{
             position: "absolute", top: "100%", left: 0, right: 0,
-            background: "var(--card-bg, #fff)", zIndex: 10,
+            background: "var(--color-surface)", zIndex: 10,
             border: "1.5px solid rgba(162,214,249,.40)",
             borderRadius: 12, overflow: "hidden", marginTop: 4,
           }}>
@@ -81,8 +78,8 @@ export default function StepEmpresa({
                 style={{
                   display: "block", width: "100%", textAlign: "left",
                   padding: "10px 14px", background: "none", border: "none",
-                  cursor: "pointer", fontSize: 13, color: "var(--body)",
-                  fontFamily: "var(--f-body)", transition: "background .15s",
+                  cursor: "pointer", fontSize: 13, color: "var(--color-text)",
+                  fontFamily: "var(--font-body)", transition: "background .15s",
                 }}
                 onMouseOver={e => e.currentTarget.style.background = "rgba(162,214,249,.10)"}
                 onMouseOut={e => e.currentTarget.style.background = "none"}
@@ -94,15 +91,15 @@ export default function StepEmpresa({
         )}
       </div>
 
-      {/* País — va primero */}
-      <div className="auth-field" style={{ width: "100%", marginTop: 12 }}>
-        <label className="auth-label">País</label>
+      {/* País */}
+      <div className="forms-field" style={{ marginTop: 12 }}>
+        <label className="forms-label">País</label>
         <InputWrap icon={<ChevronDown size={15} />}>
           <select
-            className="auth-input"
+            className="forms-input"
             value={pais}
             onChange={e => handlePaisChange(e.target.value)}
-            style={{ appearance: "none", ...inputStyle(errors.pais) }}
+            style={inputStyle(errors.pais)}
           >
             <option value="">Seleccionar país</option>
             {PAISES.map(p => (
@@ -113,12 +110,12 @@ export default function StepEmpresa({
         {errors.pais && <FieldError msg={errors.pais} />}
       </div>
 
-      {/* Ciudad — se activa solo cuando hay país seleccionado */}
-      <div className="auth-field" style={{ width: "100%", marginTop: 12 }}>
-        <label className="auth-label">Ciudad</label>
+      {/* Ciudad */}
+      <div className="forms-field" style={{ marginTop: 12 }}>
+        <label className="forms-label">Ciudad</label>
         <InputWrap icon={<MapPin size={15} />}>
           <select
-            className="auth-input"
+            className="forms-input"
             value={ciudad}
             onChange={e => {
               setCiudad(e.target.value);
@@ -126,7 +123,6 @@ export default function StepEmpresa({
             }}
             disabled={!pais}
             style={{
-              appearance: "none",
               ...inputStyle(errors.ciudad),
               opacity: !pais ? 0.5 : 1,
               cursor: !pais ? "not-allowed" : "pointer",

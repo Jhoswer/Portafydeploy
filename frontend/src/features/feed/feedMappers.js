@@ -29,6 +29,30 @@ function normalizeTags(post) {
   return source.slice(0, 8).map((label, index) => ({ label, cls: tagClass(index) }));
 }
 
+function normalizeComments(comments) {
+  if (!Array.isArray(comments)) return [];
+
+  return comments.map((comment) => ({
+    id: comment.id,
+    text: comment.text || comment.comment || "",
+    author: comment.author || "Usuario Portafy",
+    authorAvatar: comment.authorAvatar || "",
+    authorId: comment.authorId ?? comment.author?.id ?? null,
+    authorIsVerified: Boolean(comment.authorIsVerified ?? comment.author?.isVerified ?? comment.author?.is_verified),
+    posted: comment.posted || "",
+  }));
+}
+
+function isVerifiedAuthor(author = {}, post = {}) {
+  return Boolean(
+    author.isVerified
+    ?? author.is_verified
+    ?? author.verification?.is_verified
+    ?? post.authorIsVerified
+    ?? post.author_is_verified
+  );
+}
+
 export function normalizeFeedPost(post) {
   if (post.sourceType === "offer") {
     return normalizeOffer(post);
@@ -36,6 +60,7 @@ export function normalizeFeedPost(post) {
 
   const authorName  = post.author?.name  || "Usuario Portafy";
   const authorTitle = post.author?.title || "Profesional";
+  const authorIsVerified = isVerifiedAuthor(post.author, post);
   const posted      = post.posted ? ` · ${post.posted}` : "";
 
   return {
@@ -46,6 +71,10 @@ export function normalizeFeedPost(post) {
     author: authorName,
     authorId: post.author?.id ?? post.authorId ?? null,
     authorTitle,
+    authorFollowers: Number(post.author?.followersCount ?? post.authorFollowers ?? 0),
+    authorFollowing: Number(post.author?.followingCount ?? post.authorFollowing ?? 0),
+    authorIsFollowing: Boolean(post.author?.isFollowing ?? post.authorIsFollowing),
+    authorIsVerified,
     avatar: post.author?.avatar || "",
     subtitle: `${authorTitle}${posted} · publico`,
     posted: post.posted || "",
@@ -55,7 +84,7 @@ export function normalizeFeedPost(post) {
     tags: normalizeTags(post),
     likes: Number(post.likes || 0),
     comments: Number(post.commentsCount ?? (Array.isArray(post.comments) ? post.comments.length : 0)),
-    commentsList: Array.isArray(post.comments) ? post.comments : [],
+    commentsList: normalizeComments(post.comments),
     saves: Number(post.saves || 0),
     likedByMe: Boolean(post.likedByMe),
     savedByMe: Boolean(post.savedByMe),
@@ -100,9 +129,7 @@ export function normalizeOffer(post) {
     tags:          (post.tags || []).slice(0, 6).map((label, index) => ({ label, cls: tagClass(index) })),
     likes:        Number(post.likes ?? 0),
     comments:     Number(post.commentsCount ?? 0), 
-    commentsList: Array.isArray(post.comments)       
-                    ? post.comments
-                    : [],
+    commentsList: normalizeComments(post.comments),
     saves:         Number(post.saves ?? 0),
     likedByMe:     Boolean(post.likedByMe),
     savedByMe:     Boolean(post.savedByMe),
