@@ -6,7 +6,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 
 const Home = lazy(() => import("./pages/landing/Home"));
 const Login = lazy(() => import("./pages/auth/Login2"));
-const Register = lazy(() => import("./pages/auth/Register2"));
+const Register = lazy(() => import("./pages/auth/Register"));
 const OAuthPopupCallback = lazy(() => import("./pages/auth/OAuthPopupCallback"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
