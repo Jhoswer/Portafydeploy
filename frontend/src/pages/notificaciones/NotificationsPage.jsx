@@ -4,7 +4,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import NotificationItem from "../../components/notifications/NotificationItem";
 import EmptyNotifications from "../../components/notifications/EmptyNotifications";
 import { useNotifications } from "../../hooks/useNotifications";
-import "../../styles/components/notifications/notifications.css";
+import "../../styles/components/notifications/Notifications.css";
 
 const TYPE_OPTIONS = [
   { value: "all", label: "Todos los tipos" },

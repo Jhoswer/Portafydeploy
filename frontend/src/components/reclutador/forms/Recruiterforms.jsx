@@ -12,7 +12,7 @@ import StepIdentidad from "./StepIdentidad";
 import StepBranding  from "./StepBranding";
 import StepEmpresa   from "./StepEmpresa";
 import StepContacto  from "./StepContacto";
-import StepExito     from "./StepExito";
+import StepExito     from "./Stepexito";
 
 export default function RecruiterForms() {
   const navigate = useNavigate();
