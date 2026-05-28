@@ -743,3 +743,26 @@
     gap: 18px;
   }
 }
+
+.dark .pprof-header-card,
+.dark .pprof-card,
+.dark .pprof-project-card {
+  background: hsl(218 30% 12%);
+  border-color: rgba(255, 255, 255, .08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .32);
+}
+
+.dark .pprof-project-card__media,
+.dark .pprof-stat,
+.dark .pprof-tab-button,
+.dark .pprof-skill-tag {
+  background: hsl(218 30% 10%);
+  border-color: rgba(255, 255, 255, .08);
+}
+
+.dark .pprof-tab-button--active,
+.dark .pprof-skill-tag--expert {
+  background: rgba(37, 99, 235, .28);
+  color: #eff6ff;
+  border-color: rgba(96, 165, 250, .38);
+}

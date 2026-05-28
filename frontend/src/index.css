@@ -24,6 +24,7 @@
 @import "./styles/components/auth/Forms.css";
 
 @import "./styles/components/dashboard/DashboardShell.css";
+@import "./styles/pages/professional-profile.css";
 
 @import "./styles/components/feed/Feed.css";
 @import "./styles/components/feed/LeftSidebar.css";

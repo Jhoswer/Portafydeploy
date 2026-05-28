@@ -73,6 +73,17 @@ rm -f  frontend/.env.local
 rm -rf frontend/dist
 echo -e "${GREEN}  ✓ Frontend sincronizado${NC}"
 
+# ── 3.5 Fixes case-sensitive (Linux vs Windows) ───────────────
+echo -e "${YELLOW}► Aplicando fixes case-sensitive...${NC}"
+sed -i 's|./pages/auth/Register2|./pages/auth/Register|g' frontend/src/App.jsx
+sed -i 's|from "../../components/landing/NavBar"|from "../../components/landing/Navbar"|g' frontend/src/pages/reclutador/Recruiter.jsx
+sed -i 's|notifications/notifications.css|notifications/Notifications.css|g' frontend/src/pages/notificaciones/NotificationsPage.jsx
+node -e "const fs=require('fs');const f='frontend/src/components/reclutador/forms/Recruiterforms.jsx';fs.writeFileSync(f,fs.readFileSync(f,'utf8').replace('./StepIdentidad','./Stepidentidad'),'utf8');"
+sed -i 's|from "./StepExito"|from "./Stepexito"|g' frontend/src/components/reclutador/forms/Recruiterforms.jsx
+# Fix SPA routing
+echo "/* /index.html 200" > frontend/public/_redirects
+echo -e "${GREEN}  ✓ Fixes aplicados${NC}"
+
 # ── 4. Commit y push ──────────────────────────────────────────
 echo -e "${YELLOW}► Subiendo cambios a GitHub...${NC}"
 

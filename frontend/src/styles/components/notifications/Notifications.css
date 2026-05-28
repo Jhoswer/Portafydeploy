@@ -293,15 +293,6 @@
   margin-bottom: 16px;
 }
 
-.pf-notif-page__title {
-  margin: 0;
-  flex: 1;
-  color: var(--color-text); 
-  font-family: var(--font-title);
-  font-size: 30px;
-  font-weight: 900;
-  color: hsl(210 40% 92%) !important;
-}
 
 .pf-notif-page__list {
   border-radius: 20px;
@@ -330,4 +321,29 @@
     width: 100%;
     margin-top: 10px;
   }
+}
+.dark .pf-notif-page__list {
+  background: rgba(12, 18, 30, .98);
+  border: 1px solid rgba(255, 255, 255, .07);
+}
+
+.dark .pf-notif-page__loading {
+  color: hsl(215 20% 48%);
+}
+.pf-notif-page__title {
+  color: var(--color-text);
+}
+
+.pf-notif-page__page-info {
+  color: var(--color-muted-text);
+}
+.dark .pf-notif-page__page-btn {
+  background: rgba(12, 18, 30, .98);
+  border-color: rgba(255, 255, 255, .07);
+  color: hsl(210 40% 92%);
+}
+
+.dark .pf-notif-page__page-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, .06);
+  border-color: rgba(255, 255, 255, .12);
 }

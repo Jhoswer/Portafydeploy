@@ -8,6 +8,7 @@ import {
   FEED_UPDATED_EVENT,
   fetchFeedPost,
   fetchFeedPosts,
+  fetchTrendingFeedPosts,
   getCachedFeedPosts,
   sanitizeCommentInput,
   toggleFeedPostLike,
@@ -30,7 +31,9 @@ const REFRESH_INTERVAL_MS = 30000;
 export default function FeedReal({ activeFilter }) {
   const { user, cvs } = useAuth();
   const navigate = useNavigate();
-  const cachedPosts = useMemo(() => getCachedFeedPosts({ limit: FEED_LIMIT }).map(normalizeFeedPost), []);
+  const cachedPosts = useMemo(() => (
+    activeFilter === "tendencias" ? [] : getCachedFeedPosts({ limit: FEED_LIMIT }).map(normalizeFeedPost)
+  ), [activeFilter]);
   const [posts, setPosts] = useState(cachedPosts);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(cachedPosts.length === 0);
@@ -71,7 +74,8 @@ export default function FeedReal({ activeFilter }) {
     setError("");
 
     try {
-      const items = await fetchFeedPosts({ limit: FEED_LIMIT, signal, force });
+      const fetcher = activeFilter === "tendencias" ? fetchTrendingFeedPosts : fetchFeedPosts;
+      const items = await fetcher({ limit: FEED_LIMIT, signal, force });
       startTransition(() => {
         setPosts(items.map(normalizeFeedPost));
       });
@@ -86,13 +90,14 @@ export default function FeedReal({ activeFilter }) {
 
   useEffect(() => {
     const controller = new AbortController();
+    if (activeFilter === "tendencias") setPosts([]);
     loadPosts({
       signal: controller.signal,
       silent: cachedPosts.length > 0,
       force: true,
     });
     return () => controller.abort();
-  }, [cachedPosts.length, loadPosts]);
+  }, [activeFilter, cachedPosts.length, loadPosts]);
 
   const mergePost = useCallback((nextPost, { prependIfMissing = false } = {}) => {
     if (!nextPost?.publicationId) return;
@@ -168,6 +173,7 @@ export default function FeedReal({ activeFilter }) {
   }, [loadPosts, mergePost, removePost]);
 
   const filteredPosts = useMemo(() => {
+    if (activeFilter === "tendencias") return posts;
     if (activeFilter === "todos") return posts;
     return posts.filter((post) => post.type === activeFilter);
   }, [activeFilter, posts]);
@@ -276,7 +282,7 @@ export default function FeedReal({ activeFilter }) {
         authorIsFollowing: Boolean(summary.is_following),
       };
     });
-  }, []);
+  }, [activeFilter]);
 
   const toggleAuthorFollow = useCallback(async (post) => {
     if (!requireAuthenticated("seguir")) return;
@@ -401,10 +407,14 @@ export default function FeedReal({ activeFilter }) {
       <main className="feed">
         <div className="card" style={{ padding: "16px 18px", display: "flex", justifyContent: "space-between", gap: 14, alignItems: "center" }}>
           <div>
-            <div style={{ fontFamily: "var(--f-title)", fontWeight: 850, color: "var(--text)", marginBottom: 3 }}>Feed profesional</div>
-            <div style={{ fontSize: 13, color: "var(--text-muted)" }}>Contenido real compartido desde portafolios y perfiles.</div>
+            <div style={{ fontFamily: "var(--f-title)", fontWeight: 850, color: "var(--text)", marginBottom: 3 }}>
+              {activeFilter === "tendencias" ? "Tendencias profesionales" : "Feed profesional"}
+            </div>
+            <div style={{ fontSize: 13, color: "var(--text-muted)" }}>
+              {activeFilter === "tendencias" ? "Publicaciones populares ordenadas por actividad de la plataforma." : "Contenido real compartido desde portafolios y perfiles."}
+            </div>
           </div>
-          <button className="composer-btn" type="button" onClick={() => loadPosts({ silent: true, force: true })} disabled={loading || isPending || refreshing} style={{ border: "1px solid var(--border)", background: "#fbfdff" }}>
+          <button className="composer-btn" type="button" onClick={() => loadPosts({ silent: true, force: true })} disabled={loading || isPending || refreshing} style={{ border: "1px solid var(--border-soft)", background: "var(--dashboard-soft-bg, #fbfdff)" }}>
             <RefreshCw size={15} />
             {refreshing || isPending ? "Sincronizando" : "Actualizar"}
           </button>

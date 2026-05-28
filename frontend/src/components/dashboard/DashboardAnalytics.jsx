@@ -8,7 +8,9 @@ import {
   Loader2,
   Mail,
   MousePointerClick,
+  Newspaper,
   RefreshCw,
+  TrendingUp,
   UserRound,
 } from "lucide-react";
 
@@ -17,12 +19,15 @@ import { ProfileViewsModal } from "./profile/ProfileTrustModals";
 import { profileUi as ui } from "../../styles/components/dashboard/profileStyles";
 
 const SUMMARY_CARDS = [
-  { key: "profile_views", label: "Visitas al perfil", icon: Eye, color: "#2563eb" },
-  { key: "profile_views_week", label: "Ultimos 7 dias", icon: Activity, color: "#0d9488" },
-  { key: "project_views", label: "Vistas a proyectos", icon: BriefcaseBusiness, color: "#7c3aed" },
-  { key: "experience_views", label: "Vistas a experiencia", icon: UserRound, color: "#ea580c" },
-  { key: "contact_clicks", label: "Clicks de contacto", icon: Mail, color: "#dc2626" },
-  { key: "cv_clicks", label: "Clicks al CV", icon: MousePointerClick, color: "#0891b2" },
+  { key: "profile_views", label: "Visitas al perfil", icon: Eye, color: "#2563eb", help: "Total de personas que abrieron tu perfil." },
+  { key: "profile_views_week", label: "Ultimos 7 dias", icon: Activity, color: "#0d9488", help: "Visitas recibidas durante la ultima semana." },
+  { key: "project_views", label: "Vistas a proyectos", icon: BriefcaseBusiness, color: "#7c3aed", help: "Veces que otros revisaron tus proyectos." },
+  { key: "experience_views", label: "Vistas a experiencia", icon: UserRound, color: "#ea580c", help: "Interes generado por tus experiencias visibles." },
+  { key: "contact_clicks", label: "Clicks de contacto", icon: Mail, color: "#dc2626", help: "Veces que intentaron contactarte desde tu perfil." },
+  { key: "cv_clicks", label: "Clicks al CV", icon: MousePointerClick, color: "#0891b2", help: "Veces que abrieron o intentaron revisar tu CV." },
+  { key: "portfolio_posts", label: "Contenido compartido", icon: Newspaper, color: "#4f46e5", help: "Publicaciones tuyas visibles en el feed y vitrina." },
+  { key: "portfolio_engagement", label: "Interacciones totales", icon: TrendingUp, color: "#16a34a", help: "Suma de likes, comentarios y guardados de tu contenido." },
+  { key: "engagement_rate", label: "Promedio por publicacion", icon: BarChart3, color: "#9333ea", help: "Interacciones promedio que recibe cada publicacion." },
 ];
 
 export default function DashboardAnalytics() {
@@ -108,8 +113,8 @@ export default function DashboardAnalytics() {
       <section style={{ ...ui.section, padding: 22 }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
           <div>
-            <h1 style={titleStyle}>Analytics</h1>
-            <p style={{ ...ui.muted, margin: "6px 0 0" }}>Alcance y actividad reciente de tu presencia profesional.</p>
+            <h1 style={titleStyle}>Estadisticas profesionales</h1>
+            <p style={{ ...ui.muted, margin: "6px 0 0" }}>Alcance, rendimiento y actividad reciente de tu perfil y portafolio.</p>
           </div>
           <div style={badgeStyle}>
             <BarChart3 size={16} />
@@ -123,7 +128,7 @@ export default function DashboardAnalytics() {
           const Icon = card.icon;
           const isProfileViews = card.key === "profile_views";
           return (
-            <article key={card.key} style={metricCardStyle}>
+            <article key={card.key} className="dashboard-metric-card" style={metricCardStyle}>
               <button
                 type="button"
                 style={{
@@ -142,6 +147,7 @@ export default function DashboardAnalytics() {
                 <div style={metricValueStyle}>{Number(summary[card.key] || 0)}</div>
                 <div style={metricLabelStyle}>{card.label}</div>
               </div>
+              <div className="dashboard-metric-card__hint" role="tooltip">{card.help}</div>
             </article>
           );
         })}
@@ -186,6 +192,29 @@ export default function DashboardAnalytics() {
         </div>
       </section>
 
+      <section style={{ ...ui.section, padding: 22 }}>
+        <div style={{ marginBottom: 16 }}>
+          <h2 style={sectionTitleStyle}>Proyectos mas vistos</h2>
+          <p style={{ ...ui.muted, margin: "4px 0 0" }}>Top 3 segun visitas en perfil y actividad de tus proyectos compartidos.</p>
+        </div>
+        <div style={topProjectsGridStyle}>
+          <TopProjectsList
+            title="En mi perfil"
+            text="Proyectos que otros abrieron desde tu perfil publico."
+            items={analytics?.top_projects_profile || []}
+            valueKey="views"
+            valueLabel="visitas"
+          />
+          <TopProjectsList
+            title="En el feed"
+            text="Proyectos compartidos con mejor respuesta en publicaciones."
+            items={analytics?.top_projects_feed || []}
+            valueKey="score"
+            valueLabel="puntos"
+          />
+        </div>
+      </section>
+
       {showProfileViews ? (
         <ProfileViewsModal
           views={profileViews}
@@ -224,6 +253,34 @@ function eventLabel(type) {
   return labels[type] || type;
 }
 
+function TopProjectsList({ title, text, items, valueKey, valueLabel }) {
+  return (
+    <article style={topProjectPanelStyle}>
+      <div>
+        <h3 style={topProjectTitleStyle}>{title}</h3>
+        <p style={{ ...ui.muted, margin: "4px 0 0" }}>{text}</p>
+      </div>
+      <div style={{ display: "grid", gap: 10 }}>
+        {items.length ? (
+          items.slice(0, 3).map((item, index) => (
+            <div key={`${title}-${item.id || index}`} style={topProjectRowStyle}>
+              <span style={topProjectRankStyle}>{index + 1}</span>
+              <span style={{ minWidth: 0 }}>
+                <strong style={topProjectNameStyle}>{item.title || "Proyecto sin titulo"}</strong>
+                <span style={topProjectMetaStyle}>
+                  {Number(item[valueKey] || 0)} {valueLabel}
+                </span>
+              </span>
+            </div>
+          ))
+        ) : (
+          <State title="Sin datos suficientes" text="Aun no hay visitas registradas para armar este ranking." compact />
+        )}
+      </div>
+    </article>
+  );
+}
+
 const titleStyle = {
   margin: 0,
   fontFamily: "var(--f-title)",
@@ -246,6 +303,7 @@ const gridStyle = {
 
 const metricCardStyle = {
   ...ui.section,
+  position: "relative",
   padding: 18,
   display: "flex",
   alignItems: "center",
@@ -352,8 +410,8 @@ const eventRowStyle = {
   gap: 10,
   padding: "12px 14px",
   borderRadius: 14,
-  background: "rgba(248,251,255,.9)",
-  border: "1px solid rgba(205,225,245,.72)",
+  background: "var(--dashboard-soft-bg)",
+  border: "1px solid var(--dashboard-card-border)",
 };
 
 const eventDotStyle = {
@@ -361,4 +419,67 @@ const eventDotStyle = {
   height: 9,
   borderRadius: "50%",
   background: "#2563eb",
+};
+
+const topProjectsGridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gap: 14,
+};
+
+const topProjectPanelStyle = {
+  padding: 16,
+  borderRadius: 18,
+  background: "var(--dashboard-soft-bg)",
+  border: "1px solid var(--dashboard-card-border)",
+  display: "grid",
+  gap: 14,
+};
+
+const topProjectTitleStyle = {
+  margin: 0,
+  fontFamily: "var(--f-title)",
+  fontSize: "1rem",
+  color: "var(--text)",
+};
+
+const topProjectRowStyle = {
+  display: "grid",
+  gridTemplateColumns: "auto minmax(0, 1fr)",
+  alignItems: "center",
+  gap: 10,
+  padding: "11px 12px",
+  borderRadius: 14,
+  background: "var(--dashboard-card-bg)",
+  border: "1px solid var(--dashboard-card-border)",
+};
+
+const topProjectRankStyle = {
+  width: 28,
+  height: 28,
+  borderRadius: 10,
+  display: "grid",
+  placeItems: "center",
+  color: "#2563eb",
+  background: "rgba(37,99,235,.10)",
+  fontFamily: "var(--f-ui)",
+  fontWeight: 900,
+};
+
+const topProjectNameStyle = {
+  display: "block",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  fontFamily: "var(--f-ui)",
+  fontSize: ".86rem",
+  color: "var(--text)",
+};
+
+const topProjectMetaStyle = {
+  display: "block",
+  marginTop: 2,
+  fontFamily: "var(--f-body)",
+  fontSize: ".76rem",
+  color: "var(--muted)",
 };

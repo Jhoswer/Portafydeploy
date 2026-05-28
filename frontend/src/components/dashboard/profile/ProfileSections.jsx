@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BriefcaseBusiness,
   Building2,
@@ -162,8 +162,8 @@ export function StatCard({ label, value, onClick = null }) {
         gap: 14,
         padding: "18px 20px",
         borderRadius: 20,
-        background: "linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(248,251,255,.96) 100%)",
-        border: "1px solid rgba(255,255,255,.84)",
+        background: "var(--dashboard-card-bg)",
+        border: "1px solid var(--dashboard-card-border)",
         boxShadow: onClick ? `0 16px 34px ${stat.shadow}` : "0 12px 26px rgba(14,30,60,.05)",
         cursor: onClick ? "pointer" : "default",
         textAlign: "left",
@@ -185,10 +185,10 @@ export function StatCard({ label, value, onClick = null }) {
         <stat.icon size={18} />
       </span>
       <span style={{ minWidth: 0 }}>
-        <span style={{ display: "block", marginBottom: 6, fontFamily: "var(--f-ui)", fontSize: ".78rem", fontWeight: 900, color: "#334155" }}>
+        <span style={{ display: "block", marginBottom: 6, fontFamily: "var(--f-ui)", fontSize: ".78rem", fontWeight: 900, color: "var(--body)" }}>
           {label}
         </span>
-        <span style={{ display: "block", fontFamily: "var(--f-title)", fontSize: "1.8rem", lineHeight: 1, fontWeight: 950, color: "#0f1a33" }}>
+        <span style={{ display: "block", fontFamily: "var(--f-title)", fontSize: "1.8rem", lineHeight: 1, fontWeight: 950, color: "var(--text)" }}>
           {value}
         </span>
       </span>
@@ -240,9 +240,9 @@ export function SocialItem({ item }) {
         padding: "11px 12px",
         borderRadius: 14,
         background: hovered
-          ? `linear-gradient(135deg, ${palette.soft} 0%, rgba(255,255,255,.96) 52%, rgba(247,251,255,.94) 100%)`
-          : "linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%)",
-        border: `1px solid ${hovered ? palette.border : "rgba(205,225,245,.76)"}`,
+          ? `linear-gradient(135deg, ${palette.soft} 0%, var(--dashboard-card-bg) 58%)`
+          : "var(--dashboard-card-bg)",
+        border: `1px solid ${hovered ? palette.border : "var(--dashboard-card-border)"}`,
         boxShadow: hovered ? `0 14px 28px ${accent}1f` : "0 8px 18px rgba(14,30,60,.04)",
         transform: hovered ? "translateY(-1px)" : "translateY(0)",
         transition: "transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease",
@@ -268,7 +268,7 @@ export function SocialItem({ item }) {
           display: "grid",
           placeItems: "center",
           color: hovered ? accent : "var(--muted)",
-          background: hovered ? `${accent}12` : "rgba(255,255,255,.62)",
+          background: hovered ? `${accent}12` : "var(--dashboard-icon-bg)",
           transition: "color .16s ease, background .16s ease",
         }}
       >
@@ -332,7 +332,7 @@ export function SkillChip({ skill }) {
             gap: 10,
             padding: 13,
             borderRadius: 16,
-            background: "#ffffff",
+            background: "var(--dashboard-card-bg)",
             border: `1px solid ${palette.accent}44`,
             boxShadow: "0 30px 60px rgba(14,30,60,.34), 0 12px 24px rgba(14,30,60,.18), inset 0 1px 0 rgba(255,255,255,.96)",
             color: "var(--body)",
@@ -351,7 +351,7 @@ export function SkillChip({ skill }) {
               width: 12,
               height: 12,
               transform: "rotate(45deg)",
-              background: "#ffffff",
+              background: "var(--dashboard-card-bg)",
               borderLeft: placement === "bottom" ? `1px solid ${palette.accent}44` : "none",
               borderTop: placement === "bottom" ? `1px solid ${palette.accent}44` : "none",
               borderRight: placement === "top" ? `1px solid ${palette.accent}44` : "none",
@@ -371,7 +371,7 @@ export function SkillChip({ skill }) {
               <Sparkles size={14} />
             </span>
           </span>
-          <span style={{ fontFamily: "var(--f-body)", fontSize: ".8rem", lineHeight: 1.55, color: "#1f2937", fontWeight: 650 }}>
+            <span style={{ fontFamily: "var(--f-body)", fontSize: ".8rem", lineHeight: 1.55, color: "var(--body)", fontWeight: 650 }}>
             {skill.description || "Habilidad registrada en el perfil profesional."}
           </span>
           <span
@@ -382,7 +382,7 @@ export function SkillChip({ skill }) {
               gap: 10,
               padding: "8px 9px",
               borderRadius: 12,
-              background: "rgba(255,255,255,.98)",
+              background: "var(--dashboard-soft-bg)",
               border: `1px solid ${palette.accent}2e`,
               boxShadow: "inset 0 1px 0 rgba(255,255,255,.95)",
               fontFamily: "var(--f-ui)",
@@ -400,7 +400,7 @@ export function SkillChip({ skill }) {
   );
 }
 
-export function ProjectCard({ project, onShare, sharing = false, shared = false }) {
+export function ProjectCard({ project, onShare, sharing = false, shared = false, onViewed = null }) {
   const cover = assetUrl(project.cover);
   const shareLabel = sharing ? (shared ? "Quitando..." : "Compartiendo...") : shared ? "Compartido" : "Compartir";
   const badge = project.status === "Completo"
@@ -408,6 +408,12 @@ export function ProjectCard({ project, onShare, sharing = false, shared = false 
     : project.status === "Pausado"
       ? { color: "#d97706", background: "rgba(251,191,36,.16)", border: "1px solid rgba(251,191,36,.24)" }
       : { color: "#ef4444", background: "rgba(239,68,68,.14)", border: "1px solid rgba(239,68,68,.20)" };
+
+  useEffect(() => {
+    if (!project?.id || !onViewed) return undefined;
+    const timer = window.setTimeout(() => onViewed(project), 450);
+    return () => window.clearTimeout(timer);
+  }, [onViewed, project]);
 
   return (
     <article style={{ ...dashboardShell.surfaceCard, overflow: "hidden", borderRadius: 20 }}>
@@ -489,7 +495,7 @@ export function ExperienceItem({ item, last, onShare, sharing = false, shared = 
                   padding: "8px 11px",
                   borderRadius: 999,
                   border: shared ? "1px solid rgba(36,86,191,.22)" : "1px solid rgba(205,225,245,.82)",
-                  background: shared ? "rgba(36,86,191,.10)" : "rgba(255,255,255,.96)",
+                  background: shared ? "rgba(36,86,191,.10)" : "var(--dashboard-card-bg)",
                   color: "#2048a8",
                   fontFamily: "var(--f-ui)",
                   fontSize: ".76rem",
@@ -523,8 +529,8 @@ export function EducationItem({ item }) {
         gap: 10,
         padding: "12px 13px",
         borderRadius: 16,
-        background: "linear-gradient(135deg, rgba(239,246,255,.96) 0%, rgba(255,255,255,.98) 100%)",
-        border: "1px solid rgba(162,214,249,.34)",
+        background: "var(--dashboard-soft-bg)",
+        border: "1px solid var(--dashboard-card-border)",
         boxShadow: "0 10px 22px rgba(14,30,60,.05)",
       }}
     >

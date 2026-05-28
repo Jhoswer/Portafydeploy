@@ -136,6 +136,30 @@ class FeedController extends Controller
     return response()->json(['data' => $publications]);
 }
 
+    public function trending(Request $request): JsonResponse
+    {
+        $limit = max(1, min((int) $request->integer('limit', 6), 12));
+        $user = auth('sanctum')->user();
+        $viewerProfile = $user ? OfficialSchema::ensureProfile($user) : null;
+
+        $publications = $this->baseFeedQuery($viewerProfile, includeComments: false)
+            ->published()
+            ->where('PUBLICATION.visibility', true)
+            ->orderByDesc('likes_count')
+            ->orderByDesc('comments_count')
+            ->orderByDesc('saves_count')
+            ->orderByDesc('PUBLICATION.created_at')
+            ->limit($limit)
+            ->get()
+            ->map(fn(Publication $publication) => [
+                ...$this->toPost($publication, $viewerProfile),
+                'trendScore' => $this->trendScore($publication),
+            ])
+            ->values();
+
+        return response()->json(['data' => $publications]);
+    }
+
     private function toOfferPost(\App\Models\Offer $offer): array
     {
         $profile = $offer->profile;
@@ -908,5 +932,12 @@ class FeedController extends Controller
             ->where('id_profile', $profile->getKey())
             ->orderByDesc('id_verification_request')
             ->value('status') === 'approved';
+    }
+
+    private function trendScore(Publication $publication): int
+    {
+        return ((int) ($publication->likes_count ?? 0) * 3)
+            + ((int) ($publication->comments_count ?? 0) * 2)
+            + ((int) ($publication->saves_count ?? 0) * 2);
     }
 }

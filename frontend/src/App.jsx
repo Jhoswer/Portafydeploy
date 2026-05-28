@@ -61,6 +61,7 @@ function App() {
             <Route path="/reclutadorform" element={<RecruiterForms />} />
             <Route path="/reclutador/forms" element={<RecruiterForms />} />
             <Route path="/feed" element={<FeedPage />} />
+            <Route path="/tendencias" element={<FeedPage />} />
             <Route path="/guardados" element={<SavedPage />} />
             <Route path="/configuracion" element={<Settings />} />
             <Route path="/dashboard/cv/editor" element={<CvEditor />} />

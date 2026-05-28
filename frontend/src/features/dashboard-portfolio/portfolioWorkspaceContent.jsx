@@ -108,7 +108,7 @@ export function DetailContent({ activeKey, item }) {
           gridTemplateColumns: "auto minmax(0, 1fr) auto",
           alignItems: "center",
           gap: 12,
-          background: "linear-gradient(135deg, rgba(255,255,255,.96), rgba(247,251,255,.92))",
+          background: "var(--dashboard-soft-bg)",
         }}
       >
         <span
@@ -367,9 +367,9 @@ function ProjectCoverBlock({ cover, title }) {
             maxWidth: "100%",
             padding: "8px 11px",
             borderRadius: 999,
-            background: "rgba(255,255,255,.92)",
-            border: "1px solid rgba(255,255,255,.66)",
-            color: coverSrc ? "#10213d" : "#2048a8",
+            background: "var(--dashboard-card-bg)",
+            border: "1px solid var(--dashboard-card-border)",
+            color: coverSrc ? "var(--text)" : "#2048a8",
             fontFamily: "var(--f-ui)",
             fontSize: ".78rem",
             fontWeight: 850,

@@ -2,12 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
+import { fetchTrendingFeedPosts } from "../../services/feedService";
 import { fetchSuggestedUsers } from "../../services/searchService";
-
-const projects = [
-  { icon: "EC", name: "E-Commerce Platform", desc: "React · Node.js · Stripe" },
-  { icon: "AI", name: "AI Analytics Dashboard", desc: "GPT-4 · TypeScript · Docker" },
-];
 
 function initialsFromName(name) {
   return String(name || "P")
@@ -18,11 +14,21 @@ function initialsFromName(name) {
     .join("");
 }
 
+function postTitle(post = {}) {
+  return post.project?.title || post.experience?.title || post.title || "Publicacion destacada";
+}
+
+function postType(post = {}) {
+  return post.type === "experience" ? "Experiencia" : "Proyecto";
+}
+
 export default function RightSidebar() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [suggestions, setSuggestions] = useState([]);
+  const [trendingPosts, setTrendingPosts] = useState([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(true);
+  const [loadingTrending, setLoadingTrending] = useState(true);
   const currentUserId = String(user?.id || user?.id_user || "");
 
   useEffect(() => {
@@ -38,7 +44,7 @@ export default function RightSidebar() {
         setSuggestions(
           users
             .filter((item) => String(item.id) !== currentUserId)
-            .slice(0, 3)
+            .slice(0, 3),
         );
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -55,6 +61,33 @@ export default function RightSidebar() {
 
     return () => controller.abort();
   }, [currentUserId]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadTrending() {
+      setLoadingTrending(true);
+      try {
+        const posts = await fetchTrendingFeedPosts({
+          limit: 5,
+          signal: controller.signal,
+        });
+        setTrendingPosts(posts);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setTrendingPosts([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingTrending(false);
+        }
+      }
+    }
+
+    loadTrending();
+
+    return () => controller.abort();
+  }, []);
 
   const hasSuggestions = suggestions.length > 0;
 
@@ -73,13 +106,13 @@ export default function RightSidebar() {
           ) : null}
 
           {!loadingSuggestions && hasSuggestions
-            ? suggestions.map((user, index) => (
+            ? suggestions.map((suggestedUser, index) => (
                 <SuggestionItem
-                  key={user.id}
-                  user={user}
+                  key={suggestedUser.id}
+                  user={suggestedUser}
                   index={index}
                   onOpen={() =>
-                    navigate(user.profileUrl || `/perfil-profesional?usuario=${user.id}`)
+                    navigate(suggestedUser.profileUrl || `/perfil-profesional?usuario=${suggestedUser.id}`)
                   }
                 />
               ))
@@ -89,21 +122,21 @@ export default function RightSidebar() {
 
       <div className="card feed-side-card">
         <div className="card-body">
-          <div className="card-title">Proyectos destacados</div>
-          {projects.map((project) => (
-            <div key={project.name} className="project-item">
-              <div className="project-icon">{project.icon}</div>
-              <div>
-                <div className="project-name">{project.name}</div>
-                <div className="project-desc">{project.desc}</div>
-              </div>
-            </div>
-          ))}
-          <div style={{ marginTop: 14 }}>
-            <button className="btn-outline btn-full" style={{ fontSize: 12 }}>
-              Ver todos →
-            </button>
-          </div>
+          <div className="card-title">Tendencias</div>
+          {loadingTrending ? <SuggestionSkeleton label="Cargando tendencias..." /> : null}
+          {!loadingTrending && !trendingPosts.length ? (
+            <div className="suggestion-empty">Aun no hay publicaciones con actividad.</div>
+          ) : null}
+          {!loadingTrending && trendingPosts.length
+            ? trendingPosts.map((post, index) => (
+                <TrendingItem
+                  key={post.publicationId || post.id}
+                  post={post}
+                  index={index}
+                  onOpen={() => navigate("/tendencias")}
+                />
+              ))
+            : null}
         </div>
       </div>
     </aside>
@@ -132,11 +165,23 @@ function SuggestionItem({ user, index, onOpen }) {
   );
 }
 
-function SuggestionSkeleton() {
+function TrendingItem({ post, index, onOpen }) {
+  return (
+    <button type="button" className="project-item project-item--button" onClick={onOpen}>
+      <div className="project-icon">{index + 1}</div>
+      <div>
+        <div className="project-name">{postTitle(post)}</div>
+        <div className="project-desc">{post.author?.name || "Portafy"} - {postType(post)}</div>
+      </div>
+    </button>
+  );
+}
+
+function SuggestionSkeleton({ label = "Cargando perfiles..." }) {
   return (
     <div className="suggestion-loading">
       <LoaderCircle size={16} />
-      Cargando perfiles...
+      {label}
     </div>
   );
 }

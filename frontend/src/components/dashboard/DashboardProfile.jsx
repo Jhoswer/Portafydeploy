@@ -115,6 +115,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
   const avatarRef = useRef(null);
   const coverRef = useRef(null);
   const trackedPublicSectionsRef = useRef(new Set());
+  const trackedPublicProjectsRef = useRef(new Set());
   const isPublicProfile = Boolean(userId);
   const canEdit = !readOnly && !isPublicProfile;
   const canPublishFeed = hasPermission(user, PERMISSION_NAMES.FEED_PUBLISH);
@@ -1038,6 +1039,22 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     }).catch(() => {});
   }, [isPublicProfile, shownProfile.profile_id]);
 
+  const trackPublicProjectView = useCallback((project) => {
+    const projectId = project?.id;
+    if (!isPublicProfile || !shownProfile.profile_id || !projectId) return;
+    const key = String(projectId);
+    if (trackedPublicProjectsRef.current.has(key)) return;
+    trackedPublicProjectsRef.current.add(key);
+
+    recordAnalyticsEvent({
+      owner_profile_id: shownProfile.profile_id,
+      event_type: "project_view",
+      target_type: "project",
+      target_id: Number(projectId),
+      metadata: { source: "profile_project_card" },
+    }).catch(() => {});
+  }, [isPublicProfile, shownProfile.profile_id]);
+
   const shareProject = async (project) => {
     if (!project?.id || sharingProjectId) return;
     if (!canPublishFeed) {
@@ -1380,6 +1397,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
                       onShare={canEdit && canPublishFeed ? shareProject : null}
                       sharing={sharingProjectId === String(project.id)}
                       shared={sharedProjectIds.has(String(project.id))}
+                      onViewed={isPublicProfile ? trackPublicProjectView : null}
                     />
                   ))
                 ) : !sectionLoading.projects ? (

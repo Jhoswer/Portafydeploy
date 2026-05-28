@@ -32,9 +32,6 @@ export default function AdminFilterBar({
         <AdminActionButton className="adm-btn--outline" onClick={onRefresh}>
           <RotateCcw size={14} /> Actualizar
         </AdminActionButton>
-        <AdminActionButton className="adm-btn--outline" onClick={onExport}>
-          <Upload size={14} /> Exportar
-        </AdminActionButton>
       </div>
 
       <div className="adm-filterbar__row">

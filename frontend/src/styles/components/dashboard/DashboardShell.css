@@ -56,3 +56,59 @@
 .dashboard-status-dot {
   box-shadow: 0 0 0 4px rgba(36, 86, 191, .08);
 }
+
+.dashboard-metric-card {
+  overflow: visible !important;
+}
+
+.dashboard-metric-card__hint {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: calc(100% + 8px);
+  z-index: 20;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, .94);
+  color: #fff;
+  font-family: var(--f-ui);
+  font-size: .76rem;
+  font-weight: 750;
+  line-height: 1.35;
+  box-shadow: 0 16px 34px rgba(14, 30, 60, .2);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity .16s ease, transform .16s ease;
+}
+
+.dashboard-metric-card:hover .dashboard-metric-card__hint,
+.dashboard-metric-card:focus-within .dashboard-metric-card__hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dark .dashboard-rail-card,
+.dark .dashboard-metric-card {
+  background: hsl(218 30% 12%) !important;
+  border-color: rgba(255, 255, 255, .08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .32) !important;
+}
+
+.dark .dashboard-nav-item {
+  color: var(--color-text) !important;
+}
+
+.dark .dashboard-nav-item.is-active {
+  background: rgba(232, 72, 74, .14) !important;
+}
+
+.dark .dashboard-nav-icon {
+  background: rgba(255, 255, 255, .06) !important;
+  color: hsl(210 40% 92%) !important;
+}
+
+.dark .dashboard-status-pill {
+  background: rgba(37, 99, 235, .14) !important;
+  color: hsl(210 40% 92%) !important;
+}

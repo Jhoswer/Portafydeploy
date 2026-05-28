@@ -14,7 +14,7 @@ export const toolbar = {
   gap: 12,
   flexWrap: "wrap",
   borderRadius: 18,
-  background: "linear-gradient(135deg, #ffffff 0%, #f8fbff 64%, #eef7ff 100%)",
+  background: "linear-gradient(135deg, var(--dashboard-card-bg, #ffffff) 0%, var(--dashboard-soft-bg, #f8fbff) 64%, var(--dashboard-soft-bg, #eef7ff) 100%)",
 };
 
 export const metricGrid = {
@@ -30,8 +30,84 @@ export const metricCard = {
   alignItems: "center",
   gap: 10,
   borderRadius: 16,
-  background: "linear-gradient(135deg, #ffffff 0%, #f7fbff 100%)",
+  background: "linear-gradient(135deg, var(--dashboard-card-bg, #ffffff) 0%, var(--dashboard-soft-bg, #f7fbff) 100%)",
   minWidth: 0,
+};
+
+export const filterBar = {
+  ...dashboardShell.surfaceCard,
+  padding: "12px 14px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 12,
+  flexWrap: "wrap",
+  borderRadius: 18,
+};
+
+export const sortField = {
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
+  flexWrap: "wrap",
+  color: "var(--muted)",
+  fontFamily: "var(--f-ui)",
+  fontSize: ".78rem",
+  fontWeight: 900,
+};
+
+export const sortSelect = {
+  minHeight: 38,
+  padding: "0 34px 0 12px",
+  border: "1px solid rgba(205,225,245,.9)",
+  borderRadius: 12,
+  background: "var(--dashboard-card-bg, #fff)",
+  color: "var(--text)",
+  fontFamily: "var(--f-ui)",
+  fontWeight: 850,
+  outline: "none",
+};
+
+export const pageSummary = {
+  color: "var(--muted)",
+  fontFamily: "var(--f-ui)",
+  fontSize: ".78rem",
+  fontWeight: 850,
+};
+
+export const pagination = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+  padding: "4px 0",
+};
+
+export const pageButton = (disabled = false) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 6,
+  minHeight: 36,
+  padding: "0 12px",
+  border: "1px solid rgba(36,86,191,.16)",
+  borderRadius: 12,
+  background: "var(--dashboard-card-bg, #fff)",
+  color: disabled ? "#94a3b8" : "#2048a8",
+  fontFamily: "var(--f-ui)",
+  fontSize: ".78rem",
+  fontWeight: 900,
+  cursor: disabled ? "not-allowed" : "pointer",
+  opacity: disabled ? 0.68 : 1,
+});
+
+export const pageCounter = {
+  minWidth: 48,
+  textAlign: "center",
+  color: "var(--muted)",
+  fontFamily: "var(--f-ui)",
+  fontSize: ".78rem",
+  fontWeight: 900,
 };
 
 export const workspace = (isCompact) => ({
@@ -61,7 +137,7 @@ export const card = (active) => ({
   color: "var(--text)",
   overflow: "hidden",
   border: active ? "1px solid rgba(36,86,191,.28)" : dashboardShell.surfaceCard.border,
-  background: active ? "linear-gradient(135deg, rgba(36,86,191,.10), rgba(255,255,255,.98) 58%, rgba(127,198,243,.10))" : "linear-gradient(135deg, #ffffff 0%, #fbfdff 100%)",
+  background: active ? "linear-gradient(135deg, rgba(36,86,191,.10), var(--dashboard-card-bg, rgba(255,255,255,.98)) 58%, rgba(127,198,243,.10))" : "linear-gradient(135deg, var(--dashboard-card-bg, #ffffff) 0%, var(--dashboard-soft-bg, #fbfdff) 100%)",
   boxShadow: active ? "0 16px 34px rgba(36,86,191,.11)" : dashboardShell.surfaceCard.boxShadow,
   transition: "transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease",
 });
@@ -105,7 +181,7 @@ export const sidePanel = (isCompact = false) => ({
   position: isCompact ? "static" : "sticky",
   top: 18,
   overflow: "hidden",
-  background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
+  background: "linear-gradient(180deg, var(--dashboard-card-bg, #ffffff) 0%, var(--dashboard-soft-bg, #fbfdff) 100%)",
 });
 
 export const heroImage = {
@@ -128,7 +204,7 @@ export const contentBox = {
   gap: 10,
   padding: "13px 14px",
   borderRadius: 16,
-  background: "linear-gradient(135deg, rgba(36,86,191,.065), rgba(255,255,255,.98) 58%, rgba(127,198,243,.10))",
+  background: "linear-gradient(135deg, rgba(36,86,191,.065), var(--dashboard-card-bg, rgba(255,255,255,.98)) 58%, rgba(127,198,243,.10))",
   border: "1px solid rgba(205,225,245,.78)",
   boxShadow: "inset 3px 0 0 rgba(36,86,191,.42)",
 };
@@ -153,7 +229,7 @@ export const contentLabel = {
 
 export const contentToggle = {
   border: "1px solid rgba(36,86,191,.18)",
-  background: "#ffffff",
+  background: "var(--dashboard-card-bg, #ffffff)",
   color: "#2048a8",
   borderRadius: 999,
   padding: "6px 10px",
@@ -168,7 +244,7 @@ export const contentToggle = {
 export const contentText = (clamped = false) => ({
   ...dashboardShell.body,
   margin: 0,
-  color: "#243044",
+  color: "var(--body, #243044)",
   fontSize: ".92rem",
   lineHeight: 1.72,
   whiteSpace: "pre-line",
@@ -198,7 +274,7 @@ export const commentCard = {
   gap: 10,
   padding: 12,
   borderRadius: 16,
-  background: "linear-gradient(135deg, #ffffff 0%, rgba(248,250,252,.96) 100%)",
+  background: "linear-gradient(135deg, var(--dashboard-card-bg, #ffffff) 0%, var(--dashboard-soft-bg, rgba(248,250,252,.96)) 100%)",
   border: "1px solid rgba(226,232,240,.82)",
   boxShadow: "0 8px 18px rgba(14,30,60,.035)",
 };

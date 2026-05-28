@@ -47,7 +47,7 @@ export const portfolioUniverse = {
   overflow: "hidden",
   isolation: "isolate",
   background:
-    "radial-gradient(circle at 8% 6%, rgba(251,146,60,.045) 0%, transparent 28%), radial-gradient(circle at 92% 10%, rgba(91,124,250,.07) 0%, transparent 30%), linear-gradient(180deg, rgba(251,253,255,.92) 0%, rgba(246,250,255,.78) 100%)",
+    "radial-gradient(circle at 8% 6%, rgba(251,146,60,.045) 0%, transparent 28%), radial-gradient(circle at 92% 10%, rgba(91,124,250,.07) 0%, transparent 30%), var(--dashboard-card-bg)",
   boxShadow: "0 14px 34px rgba(7,17,31,.045)",
 };
 
@@ -72,9 +72,8 @@ export const missionHero = {
   padding: "clamp(22px, 3vw, 34px)",
   borderRadius: 32,
   overflow: "hidden",
-  background:
-    "linear-gradient(145deg, rgba(255,255,255,.86) 0%, rgba(248,252,255,.78) 52%, rgba(239,247,255,.66) 100%)",
-  border: "1px solid rgba(255,255,255,.74)",
+  background: "var(--dashboard-card-bg)",
+  border: "1px solid var(--dashboard-card-border)",
   boxShadow: "inset 0 1px 0 rgba(255,255,255,.82), 0 16px 38px rgba(7,17,31,.07)",
   backdropFilter: "blur(18px)",
 };
@@ -86,14 +85,14 @@ export const missionTitle = {
   lineHeight: 0.94,
   letterSpacing: "-0.075em",
   fontWeight: 900,
-  color: "#07111f",
+  color: "var(--text)",
   maxWidth: 820,
 };
 
 export const missionDescription = {
   ...dashboardShell.body,
   maxWidth: 700,
-  color: "rgba(38,52,75,.74)",
+  color: "var(--body)",
   fontSize: "0.96rem",
 };
 
@@ -145,8 +144,8 @@ export const missionStats = {
 export const missionStat = {
   padding: "13px 14px",
   borderRadius: 20,
-  background: "rgba(255,255,255,.70)",
-  border: "1px solid rgba(162,214,249,.18)",
+  background: "var(--dashboard-soft-bg)",
+  border: "1px solid var(--dashboard-card-border)",
   boxShadow: "0 10px 24px rgba(14,30,60,.045)",
 };
 
@@ -166,13 +165,12 @@ export const portfolioCard = {
   position: "relative",
   minHeight: 264,
   gridColumn: "span 6",
-  border: "1px solid rgba(255,255,255,.68)",
+  border: "1px solid var(--dashboard-card-border)",
   borderRadius: 30,
   padding: "20px",
   overflow: "hidden",
   isolation: "isolate",
-  background:
-    "linear-gradient(145deg, rgba(255,255,255,.94) 0%, rgba(249,252,255,.88) 42%, rgba(239,247,255,.76) 100%)",
+  background: "var(--dashboard-card-bg)",
   boxShadow: "0 18px 42px rgba(14,30,60,.075), inset 0 1px 0 rgba(255,255,255,.92)",
   color: "var(--text)",
   backdropFilter: "blur(18px)",
@@ -210,7 +208,7 @@ export const portfolioIconFrame = {
   borderRadius: 18,
   display: "grid",
   placeItems: "center",
-  background: "rgba(255,255,255,.76)",
+  background: "var(--dashboard-icon-bg)",
   boxShadow: "inset 0 1px 0 rgba(255,255,255,.9), 0 16px 28px rgba(14,30,60,.08)",
 };
 
@@ -274,8 +272,7 @@ export const unifiedCard = {
   padding: "22px 20px",
   position: "relative",
   overflow: "hidden",
-  background:
-    "linear-gradient(155deg, rgba(255,255,255,.96) 0%, rgba(250,253,255,.94) 42%, rgba(241,248,255,.92) 100%)",
+  background: "var(--dashboard-card-bg)",
   boxShadow: "0 20px 48px rgba(14,30,60,.08)",
 };
 
@@ -406,8 +403,8 @@ export const iconAction = {
   width: 32,
   height: 32,
   borderRadius: 9,
-  border: "1px solid rgba(162,214,249,.16)",
-  background: "rgba(255,255,255,.78)",
+  border: "1px solid var(--dashboard-card-border)",
+  background: "var(--dashboard-icon-bg)",
   color: "var(--body)",
   display: "inline-flex",
   alignItems: "center",
@@ -466,8 +463,8 @@ export const statusBadge = {
 export const detailBlock = {
   padding: "16px",
   borderRadius: 18,
-  background: "rgba(248,250,252,.92)",
-  border: "1px solid rgba(162,214,249,.2)",
+  background: "var(--dashboard-soft-bg)",
+  border: "1px solid var(--dashboard-card-border)",
   minWidth: 0,
   overflow: "hidden",
 };
@@ -508,9 +505,9 @@ export const fieldLabel = {
 
 export const input = {
   width: "100%",
-  border: "1.5px solid rgba(162,214,249,.35)",
+  border: "1.5px solid var(--dashboard-card-border)",
   borderRadius: 12,
-  background: "#fff",
+  background: "var(--dashboard-card-bg)",
   color: "var(--text)",
   fontFamily: "var(--f-body)",
   fontSize: "0.9rem",
@@ -572,8 +569,8 @@ export const inlineFieldRow = {
 export const fieldCard = {
   padding: "12px 12px 14px",
   borderRadius: 16,
-  border: "1px solid rgba(205,225,245,.76)",
-  background: "linear-gradient(180deg, #fbfdff 0%, #f7fbff 100%)",
+  border: "1px solid var(--dashboard-card-border)",
+  background: "var(--dashboard-soft-bg)",
   display: "grid",
   gap: 10,
 };
@@ -590,8 +587,8 @@ export const modalOverlay = {
 
 export const modalCard = {
   width: "min(100%, 420px)",
-  background: "#ffffff",
-  border: "1px solid rgba(205,225,245,.76)",
+  background: "var(--dashboard-card-bg)",
+  border: "1px solid var(--dashboard-card-border)",
   borderRadius: 22,
   boxShadow: "0 24px 60px rgba(14,30,60,.16)",
   padding: "22px 20px",
@@ -618,8 +615,8 @@ export const backButton = {
   alignItems: "center",
   gap: 8,
   width: "fit-content",
-  border: "1px solid rgba(162,214,249,.28)",
-  background: "rgba(255,255,255,.88)",
+  border: "1px solid var(--dashboard-card-border)",
+  background: "var(--dashboard-card-bg)",
   color: "var(--text)",
   borderRadius: 999,
   padding: "9px 14px",
@@ -747,5 +744,5 @@ export const breadcrumbCurrent = {
   fontFamily: "var(--f-ui)",
   fontSize: "0.8rem",
   fontWeight: 800,
-  color: "rgba(15,23,42,.66)",
+  color: "var(--body)",
 };

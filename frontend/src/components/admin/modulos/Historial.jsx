@@ -3,11 +3,8 @@ import AdminModuleLayout from "../components/AdminModuleLayout";
 import HistorialUsuarios from "../components/HistorialUsuarios";
 import HistorialDetalle from "../components/Historial/Historial";
 import { useAuth } from "../../../context/AuthContext";
+import { normalizeHistorialUsuario, getUsuarioId } from "../components/Historial/historialUtils";
 import "../../../styles/components/admin/adminHistorial.css";
-
-function getUsuarioId(usuario) {
-  return usuario?.id ?? usuario?.id_user ?? null;
-}
 
 export default function Historial() {
   const { user } = useAuth();
@@ -19,19 +16,7 @@ export default function Historial() {
 
   function handleSelectUsuario(usuario) {
     if (!usuario) return;
-    setUsuarioSeleccionado({
-      ...usuario,
-      id: getUsuarioId(usuario),
-      nombre: usuario.nombre ?? usuario.name ?? "Usuario",
-      apellido: usuario.apellido ?? usuario.last_name ?? "",
-      foto_perfil: usuario.foto_perfil ?? usuario.fotoPerfil ?? "",
-      email: usuario.email ?? usuario.correo ?? "",
-      rol: usuario.rol ?? "usuario",
-      profesion: usuario.profesion ?? usuario.cargo ?? "",
-      ubicacion: usuario.ubicacion ?? usuario.ciudad ?? "",
-      biografia: usuario.biografia ?? usuario.bio ?? "",
-      perfil_completado: usuario.perfil_completado ?? usuario.perfilCompletado ?? false,
-    });
+    setUsuarioSeleccionado(normalizeHistorialUsuario(usuario));
   }
 
   function volverABuscar() {

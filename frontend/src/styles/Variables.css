@@ -93,6 +93,14 @@
   --color-text:       #0c1426;
   --color-body:       #2e3d55;
   --color-muted-text: #6b7fa0;
+  --text:             var(--color-text);
+  --body:             var(--color-body);
+  --muted:            var(--color-muted-text);
+  --text-primary:     var(--color-text);
+  --text-secondary:   var(--color-body);
+  --text-muted:       var(--color-muted-text);
+  --bg:               #f7fbff;
+  --border-soft:      rgba(162, 214, 249, .25);
 
   /* Azules */
   --color-blue-mid:   #1a6fbd;
@@ -218,7 +226,14 @@
   --notif-hover:        rgba(205, 225, 245, .30);
   --notif-unread-bg:    rgba(232, 72, 74, .05);
   --notif-filter-bg:    #f4f7fb;
-  --notif-filter-color: var(--color-text);
+--notif-filter-color: var(--color-text);
+--dashboard-page-start: rgba(246,250,255,.42);
+--dashboard-page-mid: rgba(240,248,255,.58);
+--dashboard-page-end: rgba(234,245,252,.74);
+--dashboard-card-bg: #ffffff;
+--dashboard-card-border: rgba(205,225,245,.68);
+--dashboard-soft-bg: #fbfdff;
+--dashboard-icon-bg: rgba(239,246,255,.82);
 
 }
 
@@ -227,6 +242,14 @@
   --color-text:       hsl(210 40% 92%);
   --color-body:       hsl(210 30% 72%);
   --color-muted-text: hsl(215 20% 48%);
+  --text:             var(--color-text);
+  --body:             var(--color-body);
+  --muted:            var(--color-muted-text);
+  --text-primary:     var(--color-text);
+  --text-secondary:   var(--color-body);
+  --text-muted:       var(--color-muted-text);
+  --bg:               rgba(255, 255, 255, .06);
+  --border-soft:      rgba(255, 255, 255, .08);
  
   /* ── Superficies ──────────────────────────────────────── */
   --color-white:    hsl(218 30% 12%);
@@ -308,5 +331,11 @@
   --notif-unread-bg:    rgba(232, 72, 74, .08);
   --notif-filter-bg:    hsl(218 30% 11%);
   --notif-filter-color: hsl(210 40% 92%);
+  --dashboard-page-start: rgba(255,255,255,.03);
+  --dashboard-page-mid: rgba(255,255,255,.02);
+  --dashboard-page-end: rgba(255,255,255,.015);
+  --dashboard-card-bg: hsl(218 30% 12%);
+  --dashboard-card-border: rgba(255,255,255,.08);
+  --dashboard-soft-bg: hsl(218 30% 10%);
+  --dashboard-icon-bg: rgba(255,255,255,.06);
 }
- 

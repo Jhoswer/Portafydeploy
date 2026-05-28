@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\AnalyticEvent;
 use App\Models\Profile;
 use App\Models\ProfileView;
+use App\Models\Publication;
 use App\Models\Usuario;
 use App\Support\OfficialSchema;
 use Illuminate\Support\Carbon;
@@ -96,6 +97,20 @@ class ProfileAnalyticsService
 
                 $profileViews = ProfileView::where('id_profile_owner', $ownerId);
                 $events = AnalyticEvent::where('id_profile_owner', $ownerId);
+                $publications = Publication::published()
+                    ->where('id_profile', $ownerId)
+                    ->with(['detail.project', 'detail.experience'])
+                    ->withCount([
+                        'comments as comments_count',
+                        'reactions as likes_count',
+                        'saves as saves_count',
+                    ])
+                    ->get();
+
+                $portfolioPosts = $publications->count();
+                $portfolioLikes = (int) $publications->sum('likes_count');
+                $portfolioComments = (int) $publications->sum('comments_count');
+                $portfolioSaves = (int) $publications->sum('saves_count');
 
                 $series = ProfileView::query()
                     ->selectRaw('DATE(viewed_at) as day, COUNT(*) as total')
@@ -122,6 +137,14 @@ class ProfileAnalyticsService
                         'experience_views' => (clone $events)->where('event_type', 'experience_view')->count(),
                         'contact_clicks' => (clone $events)->where('event_type', 'contact_click')->count(),
                         'cv_clicks' => (clone $events)->where('event_type', 'cv_click')->count(),
+                        'portfolio_posts' => $portfolioPosts,
+                        'portfolio_likes' => $portfolioLikes,
+                        'portfolio_comments' => $portfolioComments,
+                        'portfolio_saves' => $portfolioSaves,
+                        'portfolio_engagement' => $portfolioLikes + $portfolioComments + $portfolioSaves,
+                        'engagement_rate' => $portfolioPosts > 0
+                            ? round(($portfolioLikes + $portfolioComments + $portfolioSaves) / $portfolioPosts, 1)
+                            : 0,
                     ],
                     'series' => $days->values(),
                     'top_events' => AnalyticEvent::query()
@@ -133,6 +156,21 @@ class ProfileAnalyticsService
                         ->get()
                         ->map(fn ($item) => ['type' => $item->event_type, 'total' => (int) $item->total])
                         ->values(),
+                    'top_publications' => $publications
+                        ->sortByDesc(fn (Publication $publication) => $this->publicationScore($publication))
+                        ->take(5)
+                        ->map(fn (Publication $publication) => [
+                            'id' => (int) $publication->getKey(),
+                            'title' => $this->publicationTitle($publication),
+                            'type' => $publication->detail?->experience ? 'experience' : 'project',
+                            'likes' => (int) ($publication->likes_count ?? 0),
+                            'comments' => (int) ($publication->comments_count ?? 0),
+                            'saves' => (int) ($publication->saves_count ?? 0),
+                            'score' => $this->publicationScore($publication),
+                        ])
+                        ->values(),
+                    'top_projects_profile' => $this->topProjectsFromProfileViews($ownerId),
+                    'top_projects_feed' => $this->topProjectsFromFeed($publications),
                 ];
             }
         );
@@ -178,5 +216,71 @@ class ProfileAnalyticsService
             'photo' => $this->assetUrlService->fromStoragePath($profile->profile_photo),
             'profile_url' => $user ? '/perfil-profesional?usuario=' . $user->getKey() : '',
         ];
+    }
+
+    private function publicationScore(Publication $publication): int
+    {
+        return ((int) ($publication->likes_count ?? 0) * 3)
+            + ((int) ($publication->comments_count ?? 0) * 2)
+            + ((int) ($publication->saves_count ?? 0) * 2);
+    }
+
+    private function publicationTitle(Publication $publication): string
+    {
+        $projectTitle = trim((string) ($publication->detail?->project?->titulo ?? ''));
+        if ($projectTitle !== '') {
+            return $projectTitle;
+        }
+
+        $experienceTitle = trim((string) ($publication->detail?->experience?->title ?? ''));
+        if ($experienceTitle !== '') {
+            return $experienceTitle;
+        }
+
+        return 'Publicacion del portafolio';
+    }
+
+    private function topProjectsFromProfileViews(int $ownerId): array
+    {
+        return DB::table('PROJECT as p')
+            ->leftJoin('ANALYTIC_EVENT as ae', function ($join) use ($ownerId) {
+                $join->on('ae.target_id', '=', 'p.id_project')
+                    ->where('ae.id_profile_owner', '=', $ownerId)
+                    ->where('ae.event_type', '=', 'project_view')
+                    ->where('ae.target_type', '=', 'project');
+            })
+            ->where('p.id_profile', $ownerId)
+            ->selectRaw('p.id_project as id, p.title as title, COUNT(ae.id_analytic_event) as views')
+            ->groupBy('p.id_project', 'p.title')
+            ->orderByDesc('views')
+            ->orderBy('p.title')
+            ->limit(3)
+            ->get()
+            ->map(fn ($item) => [
+                'id' => (int) $item->id,
+                'title' => $item->title ?: 'Proyecto sin titulo',
+                'views' => (int) $item->views,
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function topProjectsFromFeed($publications): array
+    {
+        return $publications
+            ->filter(fn (Publication $publication) => $publication->detail?->project)
+            ->sortByDesc(fn (Publication $publication) => $this->publicationScore($publication))
+            ->take(3)
+            ->map(fn (Publication $publication) => [
+                'id' => (int) $publication->detail->project->getKey(),
+                'publication_id' => (int) $publication->getKey(),
+                'title' => $this->publicationTitle($publication),
+                'score' => $this->publicationScore($publication),
+                'likes' => (int) ($publication->likes_count ?? 0),
+                'comments' => (int) ($publication->comments_count ?? 0),
+                'saves' => (int) ($publication->saves_count ?? 0),
+            ])
+            ->values()
+            ->all();
     }
 }

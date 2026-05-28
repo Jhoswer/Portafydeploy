@@ -83,7 +83,10 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
       <div
         key={page}
         className={`resource-item${isActive ? " active" : ""}${collapsed ? " collapsed" : ""}`}
-        onClick={() => navigate(route)}
+        onClick={() => {
+          if (page === "tendencias") onFilter?.("tendencias");
+          navigate(route);
+        }}
         title={collapsed ? label : ""}
       >
         <div className={`resource-icon ${color}`}>
@@ -105,7 +108,10 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
       <div
         key={filter}
         className={`resource-item${isActive ? " active" : ""}${collapsed ? " collapsed" : ""}`}
-        onClick={() => onFilter?.(filter)}
+        onClick={() => {
+          if (location.pathname === "/tendencias") navigate("/feed");
+          onFilter?.(filter);
+        }}
         title={collapsed ? label : ""}
       >
         <div className={`resource-icon ${color}`}>

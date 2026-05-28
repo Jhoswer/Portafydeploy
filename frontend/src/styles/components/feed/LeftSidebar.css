@@ -226,6 +226,14 @@
   transition: background var(--ease);
 }
 
+.project-item--button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+}
+
 .project-item:last-child { border-bottom: none; padding-bottom: 0; }
 
 .project-icon {

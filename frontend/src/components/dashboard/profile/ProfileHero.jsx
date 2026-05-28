@@ -304,7 +304,7 @@ const heroShell = {
   ...ui.shell,
   overflow: "hidden",
   borderRadius: 26,
-  background: "#fff",
+  background: "var(--dashboard-card-bg)",
   boxShadow: "0 22px 55px rgba(14,30,60,.12)",
 };
 
@@ -356,9 +356,9 @@ const avatarStyle = (isMobile) => ({
   height: isMobile ? 108 : 120,
   borderRadius: "50%",
   objectFit: "cover",
-  border: "5px solid #fff",
+  border: "5px solid var(--dashboard-card-bg)",
   boxShadow: "0 22px 40px rgba(14,30,60,.22)",
-  background: "#fff",
+  background: "var(--dashboard-card-bg)",
 });
 
 const avatarFallbackStyle = (isMobile) => ({
@@ -378,13 +378,13 @@ const nameStyle = {
   fontSize: "clamp(1.65rem, 2.7vw, 2.28rem)",
   lineHeight: 1.05,
   fontWeight: 950,
-  color: "#0f172a",
+  color: "var(--text)",
 };
 
 const headlineStyle = {
   marginTop: 7,
   fontFamily: "var(--f-ui)",
-  color: "#334155",
+  color: "var(--body)",
   fontSize: ".96rem",
   fontWeight: 850,
 };
@@ -455,8 +455,8 @@ const menuStyle = {
   gap: 4,
   padding: 8,
   borderRadius: 16,
-  background: "#fff",
-  border: "1px solid rgba(205,225,245,.78)",
+  background: "var(--dashboard-card-bg)",
+  border: "1px solid var(--dashboard-card-border)",
   boxShadow: "0 18px 40px rgba(14,30,60,.16)",
 };
 
@@ -499,8 +499,8 @@ const compactMetricStyle = (clickable, metric) => ({
   padding: "9px 13px 9px 10px",
   borderRadius: 16,
   border: `1px solid ${metric.border}`,
-  background: `linear-gradient(135deg, rgba(255,255,255,.98) 0%, ${metric.soft} 100%)`,
-  color: "#334155",
+  background: "var(--dashboard-soft-bg)",
+  color: "var(--body)",
   cursor: clickable ? "pointer" : "default",
   fontFamily: "var(--f-ui)",
   textAlign: "left",
@@ -525,14 +525,14 @@ const compactMetricValueStyle = {
   fontSize: "1.05rem",
   lineHeight: 1,
   fontWeight: 950,
-  color: "#0f172a",
+  color: "var(--text)",
 };
 
 const compactMetricLabelStyle = {
   fontSize: ".72rem",
   lineHeight: 1.1,
   fontWeight: 850,
-  color: "#64748b",
+  color: "var(--muted)",
   whiteSpace: "nowrap",
 };
 

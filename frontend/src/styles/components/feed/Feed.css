@@ -1386,6 +1386,64 @@
   }
 }
 
+.dark .composer,
+.dark .post-actions,
+.dark .post-showcase,
+.dark .post-showcase--project,
+.dark .post-showcase--experience,
+.dark .post-comments-modal,
+.dark .feed-report-modal,
+.dark .feed-auth-modal {
+  background: hsl(218 30% 12%);
+  border-color: rgba(255, 255, 255, .08);
+}
+
+.dark .post-description,
+.dark .post-tech-panel,
+.dark .post-info-tile,
+.dark .post-comments,
+.dark .post-comment-composer,
+.dark .post-comments-modal__summary {
+  background: rgba(255, 255, 255, .045);
+  border-color: rgba(255, 255, 255, .08);
+}
+
+.dark .post-comment,
+.dark .post-options__menu,
+.dark .post-comment-menu__panel,
+.dark .post-comments-modal__list {
+  background: hsl(218 30% 10%);
+  border-color: rgba(255, 255, 255, .08);
+}
+
+.dark .post-showcase__title,
+.dark .post-info-tile strong,
+.dark .feed-report-modal h3,
+.dark .feed-auth-modal h3 {
+  color: hsl(210 40% 92%);
+}
+
+.dark .post-showcase__text,
+.dark .post-description,
+.dark .feed-report-modal p,
+.dark .feed-auth-modal p {
+  color: hsl(210 30% 72%);
+}
+
+.dark .post-comment-composer__input,
+.dark .feed-report-modal__field select,
+.dark .feed-report-modal__field textarea {
+  background: hsl(218 30% 9%);
+  color: hsl(210 40% 92%);
+  border-color: rgba(255, 255, 255, .08);
+  box-shadow: none;
+}
+
+.dark .post-author-hover {
+  background: hsl(218 30% 11%);
+  border-color: rgba(255, 255, 255, .08);
+}
+
 .feed-report-modal__backdrop {
   position: fixed;
   inset: 0;

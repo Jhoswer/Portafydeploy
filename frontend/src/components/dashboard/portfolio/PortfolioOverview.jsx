@@ -56,8 +56,8 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
             gap: 9,
             padding: isMobile ? "12px 14px" : "12px 16px",
             borderRadius: 22,
-            background: "rgba(255,255,255,.78)",
-            border: "1px solid rgba(255,255,255,.76)",
+            background: "var(--dashboard-card-bg)",
+            border: "1px solid var(--dashboard-card-border)",
             boxShadow: "0 10px 24px rgba(7,17,31,.045), inset 0 1px 0 rgba(255,255,255,.88)",
             backdropFilter: "blur(16px)",
           }}
@@ -70,14 +70,14 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
                 fontWeight: 950,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "rgba(15,23,42,.56)",
+                color: "var(--muted)",
               }}
             >
               Portafolio activo
             </span>
-            <span style={{ fontFamily: "var(--f-title)", fontSize: "0.95rem", fontWeight: 950, color: "#07111f" }}>
+            <span style={{ fontFamily: "var(--f-title)", fontSize: "0.95rem", fontWeight: 950, color: "var(--text)" }}>
               {progress.percent}% completado
-              <span style={{ color: "rgba(15,23,42,.42)", fontWeight: 800 }}> / {totalItems} registros</span>
+              <span style={{ color: "var(--muted)", fontWeight: 800 }}> / {totalItems} registros</span>
             </span>
           </div>
           <div style={{ height: 8, borderRadius: 999, background: "rgba(15,23,42,.07)", overflow: "hidden" }}>
@@ -167,7 +167,7 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
                     fontWeight: 900,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
-                    color: "rgba(15,23,42,.42)",
+                    color: "var(--muted)",
                     marginBottom: 5,
                   }}
                 >
@@ -179,7 +179,7 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
                     fontSize: label === "Siguiente" ? "0.94rem" : "1.22rem",
                     lineHeight: 1,
                     fontWeight: 950,
-                    color: "#07111f",
+                    color: "var(--text)",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
@@ -227,8 +227,8 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
         width: "100%",
         padding: "12px 13px",
         borderRadius: 20,
-        border: hovered ? `1px solid ${highlight.color}3d` : "1px solid rgba(162,214,249,.18)",
-        background: hovered ? `linear-gradient(135deg, ${highlight.color}12 0%, rgba(255,255,255,.88) 100%)` : "rgba(255,255,255,.62)",
+        border: hovered ? `1px solid ${highlight.color}3d` : "1px solid var(--dashboard-card-border)",
+        background: hovered ? `linear-gradient(135deg, ${highlight.color}12 0%, var(--dashboard-card-bg) 100%)` : "var(--dashboard-soft-bg)",
         boxShadow: hovered ? `0 14px 28px ${highlight.color}18` : "0 8px 18px rgba(14,30,60,.035)",
         cursor: "pointer",
         textAlign: "left",
@@ -259,7 +259,7 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
             fontWeight: 950,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: "rgba(15,23,42,.42)",
+            color: "var(--muted)",
           }}
         >
           {hasLatest ? `Ultimo ${highlight.singular}` : `Estacion 0${index + 1}`}
@@ -269,7 +269,7 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
             fontFamily: "var(--f-title)",
             fontSize: "0.96rem",
             fontWeight: 950,
-            color: "#07111f",
+            color: "var(--text)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -281,7 +281,7 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
           style={{
             fontFamily: "var(--f-body)",
             fontSize: "0.78rem",
-            color: "rgba(38,52,75,.64)",
+            color: "var(--body)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -299,7 +299,7 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
           display: "grid",
           placeItems: "center",
           color: hovered ? "#fff" : highlight.color,
-          background: hovered ? highlight.color : "rgba(255,255,255,.76)",
+          background: hovered ? highlight.color : "var(--dashboard-icon-bg)",
           border: `1px solid ${highlight.color}20`,
           transition: "background .18s ease, color .18s ease",
         }}
@@ -335,7 +335,7 @@ function OverviewCard({ cardData, index, isMobile, onOpenSection }) {
         boxShadow: hovered
           ? `0 22px 48px rgba(7,17,31,.105), 0 0 0 1px ${color}24, inset 0 1px 0 rgba(255,255,255,.92)`
           : portfolioCard.boxShadow,
-        borderColor: hovered ? `${color}34` : "rgba(255,255,255,.68)",
+        borderColor: hovered ? `${color}34` : "var(--dashboard-card-border)",
         transition: "transform .2s ease, box-shadow .2s ease, border-color .2s ease",
       }}
     >
@@ -376,7 +376,7 @@ function OverviewCard({ cardData, index, isMobile, onOpenSection }) {
               ...portfolioIconFrame,
               color,
               border: `1px solid ${color}28`,
-              background: `linear-gradient(145deg, rgba(255,255,255,.92), ${color}12)`,
+              background: `linear-gradient(145deg, var(--dashboard-icon-bg), ${color}12)`,
               transform: hovered ? "translateY(-1px) scale(1.015)" : "translateY(0) scale(1)",
               transition: "transform .2s ease",
             }}
@@ -391,7 +391,7 @@ function OverviewCard({ cardData, index, isMobile, onOpenSection }) {
               fontWeight: 950,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "rgba(15,23,42,.42)",
+              color: "var(--muted)",
             }}
           >
             estacion 0{index + 1}
@@ -410,14 +410,14 @@ function OverviewCard({ cardData, index, isMobile, onOpenSection }) {
             width: "fit-content",
             padding: "6px 10px",
             borderRadius: 999,
-            background: count ? `${color}18` : "rgba(15,23,42,.06)",
-            border: `1px solid ${count ? `${color}22` : "rgba(15,23,42,.08)"}`,
+            background: count ? `${color}18` : "var(--dashboard-icon-bg)",
+            border: `1px solid ${count ? `${color}22` : "var(--dashboard-card-border)"}`,
             fontFamily: "var(--f-ui)",
             fontSize: "0.68rem",
             fontWeight: 950,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: count ? color : "rgba(15,23,42,.50)",
+            color: count ? color : "var(--muted)",
           }}
         >
           {microStatus}
@@ -426,7 +426,7 @@ function OverviewCard({ cardData, index, isMobile, onOpenSection }) {
         <h2 style={{ ...cardTitle, margin: 0, fontSize: "1.32rem", letterSpacing: "-0.05em", lineHeight: 1 }}>
           {heading}
         </h2>
-        <p style={{ ...cardText, margin: 0, maxWidth: 520, color: "rgba(38,52,75,.78)" }}>{text}</p>
+        <p style={{ ...cardText, margin: 0, maxWidth: 520, color: "var(--body)" }}>{text}</p>
       </div>
 
       <div style={portfolioFooter}>
@@ -456,7 +456,7 @@ function OverviewCard({ cardData, index, isMobile, onOpenSection }) {
               borderRadius: 16,
               display: "grid",
               placeItems: "center",
-              background: hovered ? `linear-gradient(135deg, ${color} 0%, #07111f 100%)` : "rgba(255,255,255,.84)",
+              background: hovered ? `linear-gradient(135deg, ${color} 0%, #07111f 100%)` : "var(--dashboard-icon-bg)",
               color: hovered ? "#fff" : color,
               border: hovered ? `1px solid ${color}` : `1px solid ${color}20`,
               boxShadow: hovered ? `0 12px 24px ${color}22` : "0 10px 22px rgba(14,30,60,.06)",

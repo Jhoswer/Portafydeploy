@@ -42,7 +42,7 @@ const SECTIONS = [
     color: "#2563eb",
   },
   { key: "cv", label: "Mi CV", icon: FileText, color: "#0d9488" },
-  { key: "analytics", label: "Analytics", icon: BarChart3, color: "#7c3aed" },
+  { key: "analytics", label: "Estadisticas", icon: BarChart3, color: "#7c3aed" },
   {
     key: "calendar",
     label: "Calendario",
@@ -169,10 +169,10 @@ export default function DashboardLayout() {
                         className="dashboard-nav-icon"
                         style={{
                           ...dashboardShell.iconBadge,
-                          color: isActive ? "#ef5759" : "#1f2937",
+                          color: isActive ? "#ef5759" : "var(--text)",
                           background: isActive
                             ? "rgba(254,226,226,.86)"
-                            : "rgba(239,246,255,.82)",
+                            : "var(--dashboard-icon-bg)",
                         }}
                       >
                         <NavIcon size={16} />
@@ -218,9 +218,8 @@ export default function DashboardLayout() {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 14,
-                  background:
-                    "linear-gradient(180deg, #fbfdff 0%, #f6fbff 100%)",
-                  border: "none",
+                  background: "var(--dashboard-soft-bg)",
+                  border: "1px solid var(--dashboard-card-border)",
                   boxShadow: "inset 0 1px 0 rgba(255,255,255,.8)",
                 }}
               >
@@ -253,8 +252,8 @@ export default function DashboardLayout() {
                 style={{
                   ...dashboardNavButton(false, "#2048a8"),
                   marginTop: 12,
-                  background: "#fff",
-                  border: "none",
+                  background: "var(--dashboard-card-bg)",
+                  border: "1px solid var(--dashboard-card-border)",
                 }}
                 className="dashboard-nav-item"
               >

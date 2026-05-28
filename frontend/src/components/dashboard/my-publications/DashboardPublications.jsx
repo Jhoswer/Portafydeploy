@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Bookmark, Eye, FileText, MessageCircle, Newspaper, RefreshCw, Sparkles, ThumbsUp } from "lucide-react";
+import { Bookmark, ChevronLeft, ChevronRight, Eye, FileText, MessageCircle, Newspaper, RefreshCw, Sparkles, ThumbsUp } from "lucide-react";
 import { fetchFeedPost, fetchMyFeedPosts } from "../../../services/feedService";
 import { dashboardShell } from "../../../styles/components/dashboardShell";
 import {
@@ -14,6 +14,17 @@ import * as styles from "../../../styles/components/dashboard/publicationStyles"
 
 const INITIAL_COMMENTS = 3;
 const NEXT_COMMENTS = 5;
+const PAGE_SIZE = 6;
+const SORT_OPTIONS = [
+  { value: "popular", label: "Mas populares" },
+  { value: "likes", label: "Mas likes" },
+  { value: "newest", label: "Mas nuevos" },
+  { value: "oldest", label: "Mas antiguos" },
+];
+
+function publicationScore(post = {}) {
+  return Number(post.likes || 0) * 3 + countComments(post) * 2 + Number(post.saves || 0) * 2;
+}
 
 function MetricCard({ icon: Icon, label, value }) {
   return (
@@ -247,6 +258,8 @@ export default function DashboardPublications() {
   const [selectedId, setSelectedId] = useState(null);
   const [loadingPostId, setLoadingPostId] = useState(null);
   const [visibleComments, setVisibleComments] = useState(INITIAL_COMMENTS);
+  const [sortBy, setSortBy] = useState("popular");
+  const [page, setPage] = useState(1);
   const [width, setWidth] = useState(() => (typeof window === "undefined" ? 1280 : window.innerWidth));
 
   useEffect(() => {
@@ -263,9 +276,38 @@ export default function DashboardPublications() {
     saves: statValue(posts, (post) => post.saves),
   }), [posts]);
 
-  const selectedPost = posts.find((post) => post.publicationId === selectedId) || posts[0] || null;
+  const sortedPosts = useMemo(() => {
+    const items = [...posts];
+    const dateValue = (post) => new Date(post.createdAt || post.posted || 0).getTime() || 0;
+
+    if (sortBy === "likes") {
+      return items.sort((a, b) => Number(b.likes || 0) - Number(a.likes || 0));
+    }
+
+    if (sortBy === "oldest") {
+      return items.sort((a, b) => dateValue(a) - dateValue(b));
+    }
+
+    if (sortBy === "newest") {
+      return items.sort((a, b) => dateValue(b) - dateValue(a));
+    }
+
+    return items.sort((a, b) => publicationScore(b) - publicationScore(a));
+  }, [posts, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedPosts.length / PAGE_SIZE));
+  const pagedPosts = sortedPosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const selectedPost = posts.find((post) => post.publicationId === selectedId) || sortedPosts[0] || null;
   const isCompact = width < 1120;
   const isMobile = width < 720;
+
+  useEffect(() => {
+    setPage(1);
+  }, [sortBy]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
 
   const loadPosts = useCallback(async ({ silent = false, force = false } = {}) => {
     if (!silent) setLoading(true);
@@ -273,7 +315,7 @@ export default function DashboardPublications() {
     setError("");
 
     try {
-      const items = await fetchMyFeedPosts({ limit: 40, force });
+      const items = await fetchMyFeedPosts({ limit: 100, force });
       setPosts(items);
       setSelectedId((current) => current ?? items[0]?.publicationId ?? null);
     } catch (loadError) {
@@ -332,6 +374,22 @@ export default function DashboardPublications() {
         <MetricCard icon={Bookmark} label="Guardados" value={summary.saves} />
       </div>
 
+      {!loading && !error && posts.length ? (
+        <div style={styles.filterBar}>
+          <label style={styles.sortField}>
+            <span>Ordenar vitrina</span>
+            <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} style={styles.sortSelect}>
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </label>
+          <div style={styles.pageSummary}>
+            {sortedPosts.length} compartidos - pagina {page} de {totalPages}
+          </div>
+        </div>
+      ) : null}
+
       {error ? <section style={{ ...dashboardShell.surfaceCard, padding: 18 }}><p style={dashboardShell.body}>{error}</p></section> : null}
       {loading ? <section style={{ ...dashboardShell.surfaceCard, padding: 18 }}><p style={dashboardShell.body}>Cargando vitrina...</p></section> : null}
       {!loading && !error && !posts.length ? (
@@ -343,7 +401,7 @@ export default function DashboardPublications() {
       {!loading && !error && posts.length ? (
         <div style={styles.workspace(isCompact)}>
           <div style={styles.list}>
-            {posts.map((post) => (
+            {pagedPosts.map((post) => (
               <PublicationCard
                 key={post.publicationId || post.id}
                 post={post}
@@ -352,6 +410,19 @@ export default function DashboardPublications() {
                 onSelect={() => selectPost(post)}
               />
             ))}
+            {totalPages > 1 ? (
+              <div style={styles.pagination}>
+                <button type="button" onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={page === 1} style={styles.pageButton(page === 1)}>
+                  <ChevronLeft size={14} />
+                  Anterior
+                </button>
+                <span style={styles.pageCounter}>{page}/{totalPages}</span>
+                <button type="button" onClick={() => setPage((value) => Math.min(totalPages, value + 1))} disabled={page === totalPages} style={styles.pageButton(page === totalPages)}>
+                  Siguiente
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            ) : null}
           </div>
 
           <PublicationDetail

@@ -128,6 +128,22 @@ export async function fetchFeedPosts({ limit = 20, signal, force = false } = {})
   return value;
 }
 
+export async function fetchTrendingFeedPosts({ limit = 6, signal, force = false } = {}) {
+  const cacheKey = `trending:${limit}`;
+  const cached = getCache(cacheKey);
+  if (cached && !force) return cached;
+
+  const payload = await apiClient.get(`feed/trending?limit=${limit}`, {
+    signal,
+    fallbackMessage: "No se pudieron cargar las tendencias.",
+    timeoutMs: 180000,
+  });
+
+  const value = Array.isArray(payload?.data) ? payload.data : [];
+  setCache(cacheKey, value);
+  return value;
+}
+
 export async function fetchMyFeedPosts({ limit = 30, signal, force = false } = {}) {
   const cacheKey = `mine:${limit}`;
   const cached = getCache(cacheKey);

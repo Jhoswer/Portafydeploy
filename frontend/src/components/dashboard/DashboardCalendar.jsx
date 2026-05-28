@@ -66,11 +66,11 @@ export default function DashboardCalendar() {
           </p>
           <div style={badgeRow}>
             <span style={softBadge}>
-              <CalendarDays size={14} color="#1f2937" />
+              <CalendarDays size={14} color="currentColor" />
               Vista mensual
             </span>
             <span style={softBadge}>
-              <Sparkles size={14} color="#1f2937" />
+              <Sparkles size={14} color="currentColor" />
               Espacio para recordatorios inteligentes
             </span>
           </div>
@@ -136,7 +136,7 @@ export default function DashboardCalendar() {
 
           <div style={timelineBlock}>
             <div style={timelineHeader}>
-              <Clock3 size={15} color="#1f2937" />
+              <Clock3 size={15} color="currentColor" />
               <span>{selectedEvent ? selectedEvent.time : "Sin hora asignada"}</span>
             </div>
             <p style={timelineText}>
@@ -259,9 +259,9 @@ const monthButton = {
   width: 34,
   height: 34,
   borderRadius: 999,
-  border: "1px solid rgba(205,225,245,.7)",
-  background: "#f6f9fc",
-  color: "#1f2937",
+  border: "1px solid var(--dashboard-card-border)",
+  background: "var(--dashboard-icon-bg)",
+  color: "var(--text)",
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
@@ -310,7 +310,7 @@ const dayCell = (isSelected, hasEvent, isToday) => ({
     : isToday
       ? "1px solid rgba(205,225,245,.8)"
       : "1px solid rgba(162,214,249,.16)",
-  background: isSelected ? "rgba(232,72,74,.06)" : "#fbfdff",
+  background: isSelected ? "rgba(232,72,74,.10)" : "var(--dashboard-soft-bg)",
   display: "grid",
   placeItems: "center",
   gap: 4,
@@ -324,7 +324,7 @@ const eventDot = (isSelected) => ({
   width: 7,
   height: 7,
   borderRadius: "50%",
-  background: isSelected ? "#ef5759" : "#1f2937",
+  background: isSelected ? "#ef5759" : "var(--text)",
 });
 
 const focusTitle = {
@@ -343,8 +343,8 @@ const focusDate = {
 const timelineBlock = {
   padding: "14px 14px 16px",
   borderRadius: 18,
-  background: "#fbfdff",
-  border: "1px solid rgba(205,225,245,.78)",
+  background: "var(--dashboard-soft-bg)",
+  border: "1px solid var(--dashboard-card-border)",
   display: "grid",
   gap: 8,
 };
@@ -371,8 +371,8 @@ const tipsGrid = { display: "grid", gap: 10 };
 const tipCard = {
   padding: "12px 14px",
   borderRadius: 16,
-  border: "1px solid rgba(205,225,245,.76)",
-  background: "#fbfdff",
+  border: "1px solid var(--dashboard-card-border)",
+  background: "var(--dashboard-soft-bg)",
 };
 const tipTitle = {
   fontFamily: "var(--f-ui)",

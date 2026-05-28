@@ -62,20 +62,34 @@ export default function DashboardMain() {
   const [suggestionMessage, setSuggestionMessage] = useState("");
   const [verificationOpen, setVerificationOpen] = useState(false);
   const [verification, setVerification] = useState(null);
+  const [verificationLoading, setVerificationLoading] = useState(true);
   const [verificationBusy, setVerificationBusy] = useState(false);
   const [verificationError, setVerificationError] = useState("");
 
   useEffect(() => {
-    fetchVerificationStatus().then(setVerification).catch(() => {});
+    let cancelled = false;
+    setVerificationLoading(true);
+    fetchVerificationStatus()
+      .then((payload) => {
+        if (!cancelled) setVerification(payload);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setVerificationLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const verificationCopy = useMemo(() => {
+    if (verificationLoading) return { label: "Verificando estado", tone: "#2563eb", text: "Estamos revisando si tu cuenta ya fue verificada." };
     const status = verification?.status || "none";
     if (status === "approved") return { label: "Cuenta verificada", tone: "#16a34a", text: "Tu perfil ya muestra el sello de confianza." };
     if (status === "pending") return { label: "Revision pendiente", tone: "#ca8a04", text: "Tu solicitud esta esperando revision del equipo." };
     if (status === "rejected") return { label: "Requiere ajuste", tone: "#dc2626", text: verification?.rejection_reason || "Revisa el motivo y vuelve a enviar tus documentos." };
     return { label: "Sin solicitud", tone: "#2563eb", text: "Envia tu documento y activa una senal de confianza en tu perfil." };
-  }, [verification]);
+  }, [verification, verificationLoading]);
 
   const submitSuggestion = async (payload) => {
     if (suggestionBusy) return;
@@ -132,7 +146,7 @@ export default function DashboardMain() {
             </button>
             <button type="button" onClick={() => navigateDashboard("analytics")} style={secondaryHeroButton}>
               <BarChart3 size={16} />
-              Ver analytics
+              Ver estadisticas
             </button>
           </div>
         </div>
@@ -149,7 +163,7 @@ export default function DashboardMain() {
           </div>
           <p style={{ ...smallText, margin: "4px 0 0" }}>{verificationCopy.text}</p>
           <div style={progressTrack}>
-            <span style={{ ...progressBar, width: verification?.status === "approved" ? "100%" : verification?.status === "pending" ? "66%" : "38%", background: verificationCopy.tone }} />
+            <span style={{ ...progressBar, width: verification?.status === "approved" ? "100%" : verificationLoading ? "24%" : verification?.status === "pending" ? "66%" : "38%", background: verificationCopy.tone }} />
           </div>
         </div>
       </section>
@@ -188,9 +202,22 @@ export default function DashboardMain() {
             <span />
             {verificationCopy.label}
           </div>
-          <button type="button" onClick={() => { setVerificationError(""); setVerificationOpen(true); }} style={widePrimary}>
+          <button
+            type="button"
+            onClick={() => {
+              if (verificationLoading || verification?.status === "approved") return;
+              setVerificationError("");
+              setVerificationOpen(true);
+            }}
+            disabled={verificationLoading || verification?.status === "approved"}
+            style={{
+              ...widePrimary,
+              opacity: verificationLoading || verification?.status === "approved" ? 0.72 : 1,
+              cursor: verificationLoading || verification?.status === "approved" ? "not-allowed" : "pointer",
+            }}
+          >
             <ShieldCheck size={16} />
-            {verification?.status === "pending" ? "Ver estado de solicitud" : "Enviar para verificar"}
+            {verificationLoading ? "Comprobando estado" : verification?.status === "approved" ? "Cuenta verificada" : verification?.status === "pending" ? "Ver estado de solicitud" : "Enviar para verificar"}
           </button>
         </article>
 
@@ -355,8 +382,8 @@ const scorePanel = {
   gap: 16,
   padding: 20,
   borderRadius: 22,
-  background: "rgba(255,255,255,.94)",
-  color: "#0f172a",
+  background: "var(--dashboard-card-bg, rgba(255,255,255,.94))",
+  color: "var(--text, #0f172a)",
   boxShadow: "0 22px 44px rgba(14,30,60,.16)",
 };
 
@@ -399,7 +426,7 @@ const quickActionCard = (color) => ({
   gap: 14,
   padding: 18,
   borderRadius: 22,
-  background: "#fff",
+  background: "var(--dashboard-card-bg, #fff)",
   border: `1px solid ${color}22`,
   boxShadow: `0 16px 34px ${color}12`,
   textAlign: "left",
@@ -419,13 +446,13 @@ const quickTitle = {
   fontFamily: "var(--f-title)",
   fontSize: "1rem",
   fontWeight: 950,
-  color: "#0f172a",
+  color: "var(--text, #0f172a)",
 };
 
 const quickText = {
   display: "block",
   marginTop: 4,
-  color: "#64748b",
+  color: "var(--muted, #64748b)",
   fontFamily: "var(--f-body)",
   fontSize: ".84rem",
   lineHeight: 1.45,
@@ -448,13 +475,13 @@ const panelCard = {
 const trustCard = {
   ...panelCard,
   border: "1px solid rgba(37,99,235,.18)",
-  background: "linear-gradient(180deg, #fff 0%, #f8fbff 100%)",
+  background: "linear-gradient(180deg, var(--dashboard-card-bg, #fff) 0%, var(--dashboard-soft-bg, #f8fbff) 100%)",
 };
 
 const suggestionCard = {
   ...panelCard,
   border: "1px solid rgba(225,29,72,.16)",
-  background: "linear-gradient(180deg, #fff 0%, #fff8fb 100%)",
+  background: "linear-gradient(180deg, var(--dashboard-card-bg, #fff) 0%, var(--dashboard-soft-bg, #fff8fb) 100%)",
 };
 
 const cardHeader = {
@@ -478,7 +505,7 @@ const panelEyebrow = {
   fontWeight: 900,
   letterSpacing: ".08em",
   textTransform: "uppercase",
-  color: "#64748b",
+  color: "var(--muted, #64748b)",
 };
 
 const cardTitle = {
@@ -487,19 +514,19 @@ const cardTitle = {
   fontSize: "1.22rem",
   lineHeight: 1.15,
   fontWeight: 950,
-  color: "#0f172a",
+  color: "var(--text, #0f172a)",
 };
 
 const cardText = {
   margin: 0,
-  color: "#64748b",
+  color: "var(--body, #64748b)",
   fontFamily: "var(--f-body)",
   fontSize: ".92rem",
   lineHeight: 1.65,
 };
 
 const smallText = {
-  color: "#64748b",
+  color: "var(--body, #64748b)",
   fontFamily: "var(--f-body)",
   fontSize: ".88rem",
   lineHeight: 1.55,
@@ -551,9 +578,9 @@ const roadmapItem = (done) => ({
   gap: 10,
   padding: "12px 14px",
   borderRadius: 16,
-  background: done ? "rgba(22,163,74,.07)" : "rgba(248,251,255,.92)",
+  background: done ? "rgba(22,163,74,.07)" : "var(--dashboard-soft-bg, rgba(248,251,255,.92))",
   border: done ? "1px solid rgba(22,163,74,.16)" : "1px solid rgba(205,225,245,.72)",
-  color: "#0f172a",
+  color: "var(--text, #0f172a)",
   fontFamily: "var(--f-ui)",
   fontSize: ".88rem",
   fontWeight: 850,
@@ -570,8 +597,8 @@ const insightItem = {
   padding: "13px 14px",
   borderRadius: 16,
   border: "1px solid rgba(205,225,245,.72)",
-  background: "#fbfdff",
-  color: "#64748b",
+  background: "var(--dashboard-soft-bg, #fbfdff)",
+  color: "var(--body, #64748b)",
   fontFamily: "var(--f-body)",
   fontSize: ".86rem",
   lineHeight: 1.5,

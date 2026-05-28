@@ -149,6 +149,30 @@
   border-radius: 0;
 }
 
+.dark .card {
+  background: hsl(218 30% 12%);
+  border-color: rgba(255, 255, 255, .08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .32);
+}
+
+.dark .card:hover {
+  border-color: rgba(162, 214, 249, .18);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .4);
+}
+
+.dark .card-title,
+.dark .resource-label,
+.dark .suggestion-name,
+.dark .project-name {
+  color: hsl(210 40% 92%);
+}
+
+.dark .resource-sub,
+.dark .suggestion-role,
+.dark .project-desc {
+  color: hsl(215 20% 64%);
+}
+
 .search-header {
   padding: 104px;
 }

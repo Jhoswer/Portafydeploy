@@ -172,8 +172,8 @@ export function SkillLevelPicker({ value, onChange }) {
                 padding: "10px 12px",
                 minWidth: 94,
                 borderRadius: 16,
-                border: isActive ? "1px solid rgba(91,124,250,.30)" : "1px solid rgba(162,214,249,.18)",
-                background: isActive ? "rgba(247,250,255,.96)" : "rgba(255,255,255,.76)",
+                border: isActive ? "1px solid rgba(91,124,250,.30)" : "1px solid var(--dashboard-card-border)",
+                background: isActive ? "rgba(91,124,250,.12)" : "var(--dashboard-card-bg)",
                 cursor: "pointer",
                 transition: "transform .18s ease, border-color .18s ease, box-shadow .18s ease",
                 boxShadow: isActive ? "0 10px 22px rgba(14,30,60,.06)" : "none",
@@ -336,12 +336,12 @@ export function HoverRow({ children, active = false, accentColor = "#4f8cff" }) 
         position: "relative",
         flex: "0 0 auto",
         padding: "14px 12px 14px 15px",
-        border: active ? `1px solid ${accentColor}32` : "1px solid rgba(162,214,249,.13)",
+        border: active ? `1px solid ${accentColor}32` : "1px solid var(--dashboard-card-border)",
         background: active
-          ? `linear-gradient(135deg, ${accentColor}13 0%, rgba(255,255,255,.94) 46%, rgba(248,252,255,.88) 100%)`
+          ? `linear-gradient(135deg, ${accentColor}13 0%, var(--dashboard-card-bg) 52%)`
           : hovered
-            ? "linear-gradient(135deg, rgba(255,255,255,.96) 0%, rgba(246,250,255,.86) 100%)"
-            : "rgba(255,255,255,.38)",
+            ? "var(--dashboard-card-bg)"
+            : "var(--dashboard-soft-bg)",
         borderRadius: 20,
         overflow: "hidden",
         transform: hovered ? "translateY(-1px)" : "translateY(0)",
@@ -428,7 +428,7 @@ export function FileUploadField({
           : hovered
             ? "rgba(91,124,250,.34)"
             : "rgba(162,214,249,.26)",
-        background: hovered ? "linear-gradient(180deg, rgba(249,252,255,.98) 0%, rgba(242,248,255,.95) 100%)" : "rgba(248,250,252,.82)",
+        background: hovered ? "var(--dashboard-card-bg)" : "var(--dashboard-soft-bg)",
         boxShadow: hovered ? "0 14px 28px rgba(79,140,255,.08)" : fieldCardWithError(errorMessage).boxShadow,
         transition: "border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease",
         transform: hovered ? "translateY(-1px)" : "translateY(0)",

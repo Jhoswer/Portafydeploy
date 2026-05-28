@@ -15,6 +15,7 @@ export async function searchUsers({ query, category, filter }) {
 }
 
 const SEARCH_USERS_FILTERS_ENDPOINT = "user/search/filters";
+const suggestedUsersCache = new Map();
 
 function normalizeText(value) {
   return typeof value === "string" ? value.trim() : "";
@@ -181,7 +182,12 @@ export async function searchUsersByFilters(options = {}) {
   };
 }
 
-export async function fetchSuggestedUsers({ limit = 3, signal } = {}) {
+export async function fetchSuggestedUsers({ limit = 3, signal, force = false } = {}) {
+  const cacheKey = `suggested:${limit}`;
+  if (!force && suggestedUsersCache.has(cacheKey)) {
+    return suggestedUsersCache.get(cacheKey);
+  }
+
   const response = await searchUsersByFilters({
     query: "",
     perPage: Math.max(limit, 1),
@@ -189,7 +195,9 @@ export async function fetchSuggestedUsers({ limit = 3, signal } = {}) {
     signal,
   });
 
-  return response.items.slice(0, limit);
+  const items = response.items.slice(0, limit);
+  suggestedUsersCache.set(cacheKey, items);
+  return items;
 }
 
 export function resolveUserPhoto(photo) {

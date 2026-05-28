@@ -44,6 +44,7 @@ Route::post('/user/search/filters', [ProfileController::class, 'searchWithFilter
 Route::get('/perfil/public/{usuario}/overview', [ProfileController::class, 'publicOverview']);
 
 Route::get('/feed/posts', [FeedController::class, 'index'])->middleware('auth:sanctum')->withoutMiddleware(['auth']);
+Route::get('/feed/trending', [FeedController::class, 'trending'])->middleware('auth:sanctum')->withoutMiddleware(['auth']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/formacion', [FormacionAcademicaController::class, 'store']);
