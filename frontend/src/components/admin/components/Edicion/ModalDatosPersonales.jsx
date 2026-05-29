@@ -601,7 +601,7 @@ export default function ModalDatosPersonales({ user, onClose, onSave }) {
                     ════════════════════════════════════ */}
                     <hr className="edicion-modal__divider" />
 
-                    <div className="edicion-cv-details-header">
+                    <div className="edicion-cv-details-header edicion-cv-details-header--socials">
                       <Globe size={14} />
                       <span className="edicion-cv-details-header__label">Redes Sociales</span>
                       <span className="edicion-tabla__count">
@@ -635,18 +635,7 @@ export default function ModalDatosPersonales({ user, onClose, onSave }) {
 
                       {/* Formulario de nueva red social */}
                       {isAddingSocial && !isSocialsLoading && (
-                        <div
-                          style={{
-                            display:       "flex",
-                            flexDirection: "column",
-                            gap:           "8px",
-                            padding:       "10px 12px",
-                            background:    "#f0f7ff",
-                            border:        "1.5px dashed #93c5fd",
-                            borderRadius:  "8px",
-                            marginTop:     "4px",
-                          }}
-                        >
+                        <div className="modal-social-new-form">
                           <div className="edicion-modal__row">
                             <div className="edicion-modal__field">
                               <label className="edicion-modal__label">
@@ -760,22 +749,14 @@ export default function ModalDatosPersonales({ user, onClose, onSave }) {
                                   {isDeleted ? "~~ " : ""}
                                   <strong>{platformLabel}</strong>
                                   {social.url && (
-                                    <span style={{ marginLeft: 6, fontSize: "11px", color: "#94a3b8", fontWeight: 400 }}>
+                                    <span className="modal-social-url-preview">
                                       {social.url.length > 40
                                         ? social.url.slice(0, 40) + "…"
                                         : social.url}
                                     </span>
                                   )}
                                   {social._isNew && (
-                                    <span
-                                      style={{
-                                        marginLeft: 6, fontSize: "9.5px", padding: "1px 7px",
-                                        borderRadius: "9999px", background: "#dcfce7",
-                                        color: "#15803d", fontWeight: 700,
-                                      }}
-                                    >
-                                      Nueva
-                                    </span>
+                                    <span className="modal-social-badge-new">Nueva</span>
                                   )}
                                 </span>
 
@@ -809,19 +790,7 @@ export default function ModalDatosPersonales({ user, onClose, onSave }) {
 
                               {/* Panel de edición inline */}
                               {isSelected && !isDeleted && (
-                                <div
-                                  style={{
-                                    padding:       "12px 14px",
-                                    background:    "#f8fafc",
-                                    border:        "1.5px solid #bfdbfe",
-                                    borderTop:     "none",
-                                    borderRadius:  "0 0 8px 8px",
-                                    display:       "flex",
-                                    flexDirection: "column",
-                                    gap:           "10px",
-                                    animation:     "edicion-modal-in 0.18s ease",
-                                  }}
-                                >
+                                <div className="modal-social-edit-panel">
                                   {/* Plataforma + Visibilidad */}
                                   <div className="edicion-modal__row">
                                     <div className="edicion-modal__field">

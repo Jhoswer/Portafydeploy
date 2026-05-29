@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
 use App\Models\Profile;
+use App\Support\ProfileRoleGuard;
 
 class ProfileController extends Controller
 {
@@ -50,6 +51,12 @@ class ProfileController extends Controller
 
     public function publicOverview(Usuario $usuario): JsonResponse
     {
+        if (ProfileRoleGuard::userIsAdministrative($usuario)) {
+            return response()->json([
+                'message' => 'Este perfil no esta disponible publicamente.',
+            ], 404);
+        }
+
         return response()->json($this->profileService->overview($usuario));
     }
 

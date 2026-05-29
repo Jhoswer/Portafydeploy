@@ -1,0 +1,92 @@
+/* ─── CV Module — Dark Mode Variables ───────────────────────────────────────
+   Archivo propio del HU7 para no alterar los estilos globales del equipo.
+   Las variables aquí definidas aplican SOLO a los componentes del módulo CV.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Modo claro (por defecto) ─────────────────────────────────────────────── */
+:root {
+  --cv-bg:              #ffffff;
+  --cv-bg-secondary:    #f8fbff;
+  --cv-bg-hover:        rgba(37, 93, 222, 0.04);
+  --cv-border:          rgba(205, 225, 245, 0.8);
+  --cv-border-soft:     rgba(205, 225, 245, 0.6);
+  --cv-surface:         #ffffff;
+  --cv-surface-modal:   #ffffff;
+
+  --cv-strip-bg:        rgba(37, 93, 222, 0.04);
+  --cv-strip-border:    rgba(37, 93, 222, 0.10);
+  --cv-strip-text:      #255dde;
+
+  --cv-error-bg:        rgba(239, 87, 89, 0.06);
+  --cv-error-border:    rgba(239, 87, 89, 0.18);
+  --cv-error-text:      #c0392b;
+
+  --cv-success-bg:      rgba(13, 148, 136, 0.06);
+  --cv-success-border:  rgba(13, 148, 136, 0.18);
+  --cv-success-text:    #0d9488;
+
+  --cv-empty-bg:        linear-gradient(180deg, #fbfdff 0%, #f4f8ff 100%);
+  --cv-empty-border:    rgba(162, 214, 249, 0.7);
+
+  --cv-loading-color:   var(--muted, #94a3b8);
+
+  --cv-card-bg:         #ffffff;
+  --cv-card-border:     rgba(205, 225, 245, 0.8);
+  --cv-card-shadow:     0 2px 12px rgba(14, 30, 60, 0.06);
+  --cv-card-footer:     rgba(205, 225, 245, 0.6);
+
+  --cv-icon-btn-bg:     #f8fbff;
+  --cv-icon-btn-border: rgba(205, 225, 245, 0.8);
+
+  --cv-cancel-btn-bg:   #ffffff;
+  --cv-cancel-btn-border: rgba(205, 225, 245, 0.9);
+
+  --cv-dropzone-bg:     rgba(246, 251, 255, 0.8);
+  --cv-dropzone-border: rgba(162, 214, 249, 0.6);
+  --cv-file-selected-bg: rgba(37, 93, 222, 0.06);
+  --cv-file-selected-border: rgba(37, 93, 222, 0.14);
+}
+
+/* ── Modo oscuro ──────────────────────────────────────────────────────────── */
+html.dark {
+  --cv-bg:              #0f172a;
+  --cv-bg-secondary:    #1e293b;
+  --cv-bg-hover:        rgba(37, 93, 222, 0.12);
+  --cv-border:          rgba(51, 65, 85, 0.9);
+  --cv-border-soft:     rgba(51, 65, 85, 0.6);
+  --cv-surface:         #1e293b;
+  --cv-surface-modal:   #1e293b;
+
+  --cv-strip-bg:        rgba(37, 93, 222, 0.12);
+  --cv-strip-border:    rgba(37, 93, 222, 0.22);
+  --cv-strip-text:      #bfdbfe;
+
+  --cv-error-bg:        rgba(239, 87, 89, 0.12);
+  --cv-error-border:    rgba(239, 87, 89, 0.28);
+  --cv-error-text:      #fca5a5;
+
+  --cv-success-bg:      rgba(13, 148, 136, 0.12);
+  --cv-success-border:  rgba(13, 148, 136, 0.28);
+  --cv-success-text:    #5eead4;
+
+  --cv-empty-bg:        linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  --cv-empty-border:    rgba(51, 65, 85, 0.8);
+
+  --cv-loading-color:   #94a3b8;
+
+  --cv-card-bg:         #1e293b;
+  --cv-card-border:     rgba(51, 65, 85, 0.9);
+  --cv-card-shadow:     0 2px 12px rgba(0, 0, 0, 0.3);
+  --cv-card-footer:     rgba(51, 65, 85, 0.6);
+
+  --cv-icon-btn-bg:     #0f172a;
+  --cv-icon-btn-border: rgba(51, 65, 85, 0.8);
+
+  --cv-cancel-btn-bg:   #1e293b;
+  --cv-cancel-btn-border: rgba(51, 65, 85, 0.9);
+
+  --cv-dropzone-bg:     rgba(30, 41, 59, 0.8);
+  --cv-dropzone-border: rgba(51, 65, 85, 0.7);
+  --cv-file-selected-bg: rgba(37, 93, 222, 0.12);
+  --cv-file-selected-border: rgba(37, 93, 222, 0.24);
+}

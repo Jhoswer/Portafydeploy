@@ -8,6 +8,7 @@ use App\Models\PublicationComment;
 use App\Models\Report;
 use App\Models\Usuario;
 use App\Support\OfficialSchema;
+use App\Support\ProfileRoleGuard;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,10 @@ class ReportService
 
         if (! $reportedProfile) {
             throw new \RuntimeException('No se pudo identificar al usuario reportado.');
+        }
+
+        if (ProfileRoleGuard::profileIsAdministrative($reportedProfile)) {
+            throw new \RuntimeException('Esta publicacion no esta disponible para reportes.');
         }
 
         if ((int) $reportedProfile->getKey() === (int) $reporterProfile->getKey()) {
@@ -96,6 +101,10 @@ class ReportService
         $reporterProfile = OfficialSchema::ensureProfile($authenticatedUser);
         $reportedProfile = OfficialSchema::ensureProfile($reportedUser);
 
+        if (ProfileRoleGuard::profileIsAdministrative($reportedProfile)) {
+            throw new \RuntimeException('Este perfil no esta disponible para reportes.');
+        }
+
         if ((int) $reportedProfile->getKey() === (int) $reporterProfile->getKey()) {
             throw new \RuntimeException('No puedes reportar tu propio perfil.');
         }
@@ -146,6 +155,10 @@ class ReportService
         $reportedProfile = $comment->commentator;
 
         if (! $reportedProfile || $comment->removed_at) {
+            throw new \RuntimeException('Este comentario no esta disponible para reportes.');
+        }
+
+        if (ProfileRoleGuard::profileIsAdministrative($reportedProfile)) {
             throw new \RuntimeException('Este comentario no esta disponible para reportes.');
         }
 

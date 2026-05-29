@@ -1,10 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Search, LayoutGrid, List, X,
   Mail, Phone, MapPin, FileText, User,
   ChevronRight, GripVertical, Briefcase,
-  Calendar, CheckCircle, XCircle, Clock, AlertCircle, Video, Building2
+  Calendar, CheckCircle, XCircle, Clock,
+  AlertCircle, Video, Building2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { actualizarEstadoPostulacion, crearEntrevista } from "../../../services/postulationService";
@@ -14,14 +16,16 @@ import InterviewModal from "./InterviewModal";
 
 const REFRESH_INTERVAL_MS = 30_000;
 
-const COLUMNS = [
-  { key: "new",             label: "Nuevo",         color: "#38bdf8", bg: "rgba(56,189,248,0.08)",  border: "rgba(56,189,248,0.2)",  icon: AlertCircle },
-  { key: "in_verification", label: "En revisión",   color: "#6366f1", bg: "rgba(99,102,241,0.08)",  border: "rgba(99,102,241,0.2)",  icon: Clock       },
-  { key: "in_interview",    label: "En entrevista", color: "#e879f9", bg: "rgba(232,121,249,0.08)", border: "rgba(232,121,249,0.2)", icon: User        },
-  { key: "accepted",        label: "Aceptado",      color: "#10b981", bg: "rgba(16,185,129,0.08)",  border: "rgba(16,185,129,0.2)",  icon: CheckCircle },
-  { key: "refused",         label: "Rechazado",     color: "#f43f5e", bg: "rgba(244,63,94,0.08)",   border: "rgba(244,63,94,0.2)",   icon: XCircle     },
+// COLUMNS ahora es una función que recibe t()
+const getColumns = (t) => [
+  { key: "new",             label: t("postulantes.columns.new"),             color: "#38bdf8", bg: "rgba(56,189,248,0.08)",  border: "rgba(56,189,248,0.2)",  icon: AlertCircle },
+  { key: "in_verification", label: t("postulantes.columns.in_verification"), color: "#6366f1", bg: "rgba(99,102,241,0.08)",  border: "rgba(99,102,241,0.2)",  icon: Clock       },
+  { key: "in_interview",    label: t("postulantes.columns.in_interview"),    color: "#e879f9", bg: "rgba(232,121,249,0.08)", border: "rgba(232,121,249,0.2)", icon: User        },
+  { key: "accepted",        label: t("postulantes.columns.accepted"),        color: "#10b981", bg: "rgba(16,185,129,0.08)",  border: "rgba(16,185,129,0.2)",  icon: CheckCircle },
+  { key: "refused",         label: t("postulantes.columns.refused"),         color: "#f43f5e", bg: "rgba(244,63,94,0.08)",   border: "rgba(244,63,94,0.2)",   icon: XCircle     },
 ];
 
+/* ── helpers sin cambios ── */
 function getInitials(name = "") {
   return name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase() || "?";
 }
@@ -30,11 +34,7 @@ function formatDate(dateStr) {
   if (!dateStr) return null;
   const date = new Date(dateStr);
   if (isNaN(date)) return null;
-  return date.toLocaleDateString("es-BO", {
-    day:   "2-digit",
-    month: "short",
-    year:  "numeric",
-  });
+  return date.toLocaleDateString("es-BO", { day: "2-digit", month: "short", year: "numeric" });
 }
 
 function resolvePostulant(raw) {
@@ -61,7 +61,6 @@ function resolvePostulant(raw) {
       interview: raw.interview ?? null,
     };
   }
-
   const p  = raw?.postulant ?? raw?.profile ?? raw?.user ?? raw ?? {};
   const cv = raw?.cv ?? raw?.CV ?? null;
   return {
@@ -94,7 +93,7 @@ function Avatar({ name, photo, size = 36 }) {
       />
     );
   }
-  const colors = ["#6366f1", "#10b981", "#f59e0b", "#e879f9", "#38bdf8", "#f43f5e"];
+  const colors = ["#6366f1","#10b981","#f59e0b","#e879f9","#38bdf8","#f43f5e"];
   const color  = colors[initials.charCodeAt(0) % colors.length];
   return (
     <div style={{
@@ -108,8 +107,8 @@ function Avatar({ name, photo, size = 36 }) {
   );
 }
 
-function StateBadge({ state }) {
-  const col = COLUMNS.find((c) => c.key === state) ?? COLUMNS[0];
+function StateBadge({ state, columns }) {
+  const col = columns.find((c) => c.key === state) ?? columns[0];
   return (
     <span style={{
       display: "inline-flex", alignItems: "center", gap: 5,
@@ -123,7 +122,8 @@ function StateBadge({ state }) {
   );
 }
 
-function PostulantRow({ postulant, onClick }) {
+function PostulantRow({ postulant, onClick, columns }) {
+  const { t }     = useTranslation();
   const navigate  = useNavigate();
   const dateLabel = formatDate(postulant.createdAt);
 
@@ -142,7 +142,7 @@ function PostulantRow({ postulant, onClick }) {
               navigate(`/perfil-profesional?usuario=${postulant.userId ?? postulant.id}`);
             }}
           >
-            Ver perfil
+            {t("postulantes.row.viewProfile")}
           </button>
           {postulant.email && (
             <button
@@ -153,7 +153,7 @@ function PostulantRow({ postulant, onClick }) {
                 window.open(`https://mail.google.com/mail/?view=cm&to=${postulant.email}`, "_blank");
               }}
             >
-              <Mail size={11} /> Contactar
+              <Mail size={11} /> {t("postulantes.row.contact")}
             </button>
           )}
         </div>
@@ -161,16 +161,17 @@ function PostulantRow({ postulant, onClick }) {
           {postulant.career   && <span><Briefcase size={10} /> {postulant.career}</span>}
           {postulant.location && <span><MapPin size={10} /> {postulant.location}</span>}
           {postulant.email    && <span><Mail size={10} /> {postulant.email}</span>}
-          {dateLabel          && <span><Calendar size={10} /> Postuló el {dateLabel}</span>}
+          {dateLabel          && <span><Calendar size={10} /> {t("postulantes.row.appliedOn", { date: dateLabel })}</span>}
         </div>
       </div>
-      <StateBadge state={postulant.state} />
+      <StateBadge state={postulant.state} columns={columns} />
       <ChevronRight size={14} className="post-row__arrow" />
     </motion.div>
   );
 }
 
 function KanbanCard({ postulant, onDragStart, onClick }) {
+  const { t } = useTranslation();
   return (
     <motion.div className="kanban-card" draggable
       onDragStart={(e) => onDragStart(e, postulant)}
@@ -187,13 +188,14 @@ function KanbanCard({ postulant, onDragStart, onClick }) {
         <GripVertical size={13} className="kanban-card__grip" />
       </div>
       {postulant.location && <div className="kanban-card__meta"><MapPin size={10} />{postulant.location}</div>}
-      {postulant.cvUrl    && <div className="kanban-card__cv"><FileText size={11} /> CV adjunto</div>}
+      {postulant.cvUrl    && <div className="kanban-card__cv"><FileText size={11} /> {t("postulantes.card.cvAttached")}</div>}
     </motion.div>
   );
 }
 
 function KanbanColumn({ column, postulants, onDrop, onDragOver, onDragStart, onCardClick }) {
-  const Icon = column.icon;
+  const { t } = useTranslation();
+  const Icon  = column.icon;
   return (
     <div className="kanban-col"
       onDragOver={(e) => { e.preventDefault(); onDragOver(column.key); }}
@@ -213,20 +215,21 @@ function KanbanColumn({ column, postulants, onDrop, onDragOver, onDragStart, onC
             <KanbanCard key={p.id} postulant={p} onDragStart={onDragStart} onClick={onCardClick} />
           ))}
         </AnimatePresence>
-        {postulants.length === 0 && <div className="kanban-col__empty">Arrastra aquí</div>}
+        {postulants.length === 0 && (
+          <div className="kanban-col__empty">{t("postulantes.kanban.dragHere")}</div>
+        )}
       </div>
     </div>
   );
 }
 
-function ProfileModal({ postulant, onClose, onStateChange }) {
-  const navigate    = useNavigate();
-  const dateLabel   = formatDate(postulant.createdAt);
+function ProfileModal({ postulant, onClose, onStateChange, columns }) {
+  const { t }     = useTranslation();
+  const navigate  = useNavigate();
+  const dateLabel = formatDate(postulant.createdAt);
   const [selectedState, setSelectedState] = useState(postulant.state);
 
-  useEffect(() => {
-    setSelectedState(postulant.state);
-  }, [postulant.state]);
+  useEffect(() => { setSelectedState(postulant.state); }, [postulant.state]);
 
   const handleStateChange = (newState) => {
     setSelectedState(newState);
@@ -248,7 +251,7 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
               {postulant.email  && <p className="profile-modal__career" style={{ opacity: 0.6 }}>{postulant.email}</p>}
               {dateLabel && (
                 <p style={{ margin: "4px 0 0", fontSize: 11, opacity: 0.5, display: "flex", alignItems: "center", gap: 5 }}>
-                  <Calendar size={10} /> Postuló el {dateLabel}
+                  <Calendar size={10} /> {t("postulantes.profile.appliedOn", { date: dateLabel })}
                 </p>
               )}
               <button
@@ -256,7 +259,7 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
                 style={{ marginTop: 6 }}
                 onClick={() => navigate(`/perfil-profesional?usuario=${postulant.userId ?? postulant.id}`)}
               >
-                Ver perfil completo
+                {t("postulantes.profile.viewFull")}
               </button>
               {postulant.email && (
                 <button
@@ -267,7 +270,7 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
                     window.open(`https://mail.google.com/mail/?view=cm&to=${postulant.email}`, "_blank");
                   }}
                 >
-                  <Mail size={11} /> Contactar
+                  <Mail size={11} /> {t("postulantes.profile.contact")}
                 </button>
               )}
             </div>
@@ -276,14 +279,16 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
         </div>
 
         <div className="profile-modal__body">
+
+          {/* CV */}
           <div className="profile-section">
-            <p className="profile-section__label">Curriculum Vitae</p>
+            <p className="profile-section__label">{t("postulantes.profile.cv")}</p>
             {postulant.cvUrl ? (
               <a href={postulant.cvUrl} target="_blank" rel="noreferrer" className="profile-cv-btn">
                 <FileText size={15} />
                 <div>
                   <p style={{ margin: 0, fontWeight: 500, fontSize: 13 }}>{postulant.cvName}</p>
-                  <p style={{ margin: 0, fontSize: 11, opacity: 0.6 }}>Abrir o descargar CV</p>
+                  <p style={{ margin: 0, fontSize: 11, opacity: 0.6 }}>{t("postulantes.profile.cvOpen")}</p>
                 </div>
                 <ChevronRight size={14} style={{ marginLeft: "auto" }} />
               </a>
@@ -291,32 +296,35 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
               <div className="profile-cv-btn" style={{ cursor: "default", opacity: 0.7 }}>
                 <FileText size={15} style={{ color: "#10b981" }} />
                 <div>
-                  <p style={{ margin: 0, fontWeight: 500, fontSize: 13 }}>CV registrado</p>
-                  <p style={{ margin: 0, fontSize: 11, opacity: 0.6 }}>El postulante tiene CV en el sistema</p>
+                  <p style={{ margin: 0, fontWeight: 500, fontSize: 13 }}>{t("postulantes.profile.cvRegistered")}</p>
+                  <p style={{ margin: 0, fontSize: 11, opacity: 0.6 }}>{t("postulantes.profile.cvInSystem")}</p>
                 </div>
               </div>
             ) : (
-              <p className="profile-section__empty">No adjuntó CV</p>
+              <p className="profile-section__empty">{t("postulantes.profile.cvNone")}</p>
             )}
           </div>
 
+          {/* Carta de presentación */}
           {postulant.reason && (
             <div className="profile-section">
-              <p className="profile-section__label">Carta de presentación</p>
+              <p className="profile-section__label">{t("postulantes.profile.coverLetter")}</p>
               <p className="profile-section__text">{postulant.reason}</p>
             </div>
           )}
 
+          {/* Bio */}
           {postulant.bio && (
             <div className="profile-section">
-              <p className="profile-section__label">Sobre el postulante</p>
+              <p className="profile-section__label">{t("postulantes.profile.about")}</p>
               <p className="profile-section__text">{postulant.bio}</p>
             </div>
           )}
 
+          {/* Entrevista */}
           {postulant.state === "in_interview" && postulant.interview && (
             <div className="profile-section">
-              <p className="profile-section__label">Entrevista agendada</p>
+              <p className="profile-section__label">{t("postulantes.profile.interview")}</p>
               <div className="profile-cv-btn" style={{ cursor: "default", flexDirection: "column", alignItems: "flex-start", gap: 6 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   {postulant.interview.type === "virtual"
@@ -324,7 +332,9 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
                     : <Building2 size={14} style={{ color: "#e879f9" }} />
                   }
                   <span style={{ fontWeight: 500, fontSize: 13 }}>
-                    {postulant.interview.type === "virtual" ? "Virtual" : "Presencial"}
+                    {postulant.interview.type === "virtual"
+                      ? t("postulantes.profile.virtual")
+                      : t("postulantes.profile.presencial")}
                   </span>
                 </div>
                 {postulant.interview.interview_date && (
@@ -349,11 +359,12 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
             </div>
           )}
 
+          {/* Estado */}
           <div className="profile-section">
-            <p className="profile-section__label">Estado de la postulación</p>
+            <p className="profile-section__label">{t("postulantes.profile.stateLabel")}</p>
             <div className="profile-states">
-              {COLUMNS.map((col) => {
-                const Icon = col.icon;
+              {columns.map((col) => {
+                const Icon   = col.icon;
                 const active = selectedState === col.key;
                 return (
                   <button key={col.key}
@@ -368,11 +379,12 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
             </div>
           </div>
 
+          {/* Motivo de rechazo */}
           {selectedState === "refused" && (
             <div className="profile-section">
-              <p className="profile-section__label">Motivo de rechazo</p>
+              <p className="profile-section__label">{t("postulantes.profile.refusedReason")}</p>
               <p className="profile-section__text" style={{ color: "#f43f5e" }}>
-                {postulant.reason || "Sin motivo registrado"}
+                {postulant.reason || t("postulantes.profile.noReason")}
               </p>
             </div>
           )}
@@ -382,25 +394,22 @@ function ProfileModal({ postulant, onClose, onStateChange }) {
   );
 }
 
-// ── Componente principal ───────────────────────────────────
+/* ── Componente principal ─────────────────────────────────── */
 export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
-  const {
-    convocatorias,
-    getPostulantes,
-    refreshPostulantes,
-    updatePostulanteState,
-  } = useEmpresa();
+  const { t } = useTranslation();
+  const COLUMNS = getColumns(t); // 👈 genera con t() en cada render
 
-  const [postulants, setPostulants]             = useState([]);
-  const [loading, setLoading]                   = useState(true);
-  const [view, setView]                         = useState("lista");
-  const [search, setSearch]                     = useState("");
-  const [selected, setSelected]                 = useState(null);
-  const [dragItem, setDragItem]                 = useState(null);
-  const [dragOverCol, setDragOverCol]           = useState(null);
+  const { convocatorias, getPostulantes, refreshPostulantes, updatePostulanteState } = useEmpresa();
+
+  const [postulants,       setPostulants]       = useState([]);
+  const [loading,          setLoading]          = useState(true);
+  const [view,             setView]             = useState("lista");
+  const [search,           setSearch]           = useState("");
+  const [selected,         setSelected]         = useState(null);
+  const [dragItem,         setDragItem]         = useState(null);
+  const [dragOverCol,      setDragOverCol]      = useState(null);
   const [interviewPending, setInterviewPending] = useState(null);
 
-  // ── Carga inicial: muestra caché + refresca del backend ─
   useEffect(() => {
     if (!jobId) return;
     const fromContext = getPostulantes(jobId);
@@ -411,20 +420,14 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
     refreshPostulantes(jobId).finally(() => setLoading(false));
   }, [jobId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Sincronizar con el contexto cuando cambia ──────────
   useEffect(() => {
     const fromContext = getPostulantes(jobId);
-    if (fromContext.length > 0) {
-      setPostulants(fromContext.map(resolvePostulant));
-    }
+    if (fromContext.length > 0) setPostulants(fromContext.map(resolvePostulant));
   }, [convocatorias]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Auto-refresh cada 30 segundos ──────────────────────
   useEffect(() => {
     if (!jobId) return;
-    const interval = setInterval(() => {
-      refreshPostulantes(jobId);
-    }, REFRESH_INTERVAL_MS);
+    const interval = setInterval(() => refreshPostulantes(jobId), REFRESH_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [jobId]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -432,9 +435,9 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
     const q = search.toLowerCase().trim();
     if (!q) return postulants;
     return postulants.filter((p) =>
-      p.name.toLowerCase().includes(q)    ||
-      p.email.toLowerCase().includes(q)   ||
-      p.career.toLowerCase().includes(q)  ||
+      p.name.toLowerCase().includes(q)     ||
+      p.email.toLowerCase().includes(q)    ||
+      p.career.toLowerCase().includes(q)   ||
       p.location.toLowerCase().includes(q)
     );
   }, [postulants, search]);
@@ -447,9 +450,8 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
       map[key].push(p);
     });
     return map;
-  }, [filtered]);
+  }, [filtered, COLUMNS]);
 
-  // ── Cambiar estado: optimista + API + sync contexto ────
   const handleStateChange = async (id, newState, skipInterviewCheck = false) => {
     if (newState === "in_interview" && !skipInterviewCheck) {
       const postulant = postulants.find((p) => p.id === id);
@@ -458,35 +460,23 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
     }
 
     let prevPostulants;
-
     setPostulants((prev) => {
       prevPostulants = prev;
       return prev.map((p) => p.id === id ? { ...p, state: newState } : p);
     });
-
-    if (selected?.id === id) {
-      setSelected((prev) => prev ? { ...prev, state: newState } : prev);
-    }
+    if (selected?.id === id) setSelected((prev) => prev ? { ...prev, state: newState } : prev);
 
     try {
       await actualizarEstadoPostulacion(id, newState);
       updatePostulanteState(jobId, id, newState);
-
-      toast.success(
-        newState === "new"             ? "Marcado como Nuevo"    :
-        newState === "in_verification" ? "En revisión"           :
-        newState === "in_interview"    ? "Entrevista agendada ✓" :
-        newState === "accepted"        ? "Postulante aceptado ✓" :
-        newState === "refused"         ? "Postulante rechazado"  :
-        "Estado actualizado"
-      );
+      toast.success(t(`postulantes.toast.${newState}`, { defaultValue: t("postulantes.toast.updated") }));
     } catch {
       setPostulants(prevPostulants);
       if (selected?.id === id) {
         const prev = prevPostulants?.find((p) => p.id === id);
         setSelected((s) => s ? { ...s, state: prev?.state ?? s.state } : s);
       }
-      toast.error("No se pudo actualizar el estado. Intenta de nuevo.");
+      toast.error(t("postulantes.toast.updateError"));
     }
   };
 
@@ -497,7 +487,7 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
       await crearEntrevista(id, details);
       handleStateChange(id, "in_interview", true);
     } catch {
-      toast.error("No se pudo agendar la entrevista. Intenta de nuevo.");
+      toast.error(t("postulantes.toast.interviewError"));
     }
   };
 
@@ -508,9 +498,7 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
 
   const handleDrop = (e, colKey) => {
     e.preventDefault();
-    if (dragItem && dragItem.state !== colKey) {
-      handleStateChange(dragItem.id, colKey);
-    }
+    if (dragItem && dragItem.state !== colKey) handleStateChange(dragItem.id, colKey);
     setDragItem(null);
     setDragOverCol(null);
   };
@@ -519,13 +507,13 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
     const map = {};
     COLUMNS.forEach((c) => { map[c.key] = postulants.filter((p) => p.state === c.key).length; });
     return map;
-  }, [postulants]);
+  }, [postulants, COLUMNS]);
 
   if (loading) {
     return (
       <div className="pc-loading">
         <div className="pc-loading__spinner" />
-        <p>Cargando postulantes...</p>
+        <p>{t("postulantes.loading")}</p>
       </div>
     );
   }
@@ -535,11 +523,13 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
       <div className="pc-header">
         <div className="pc-header__top">
           <button className="pc-back-btn" onClick={onBack}>
-            <ArrowLeft size={15} /> Volver
+            <ArrowLeft size={15} /> {t("postulantes.back")}
           </button>
           <div className="pc-header__title-block">
             <h1 className="pc-title">{jobTitle ?? "Convocatoria"}</h1>
-            <p className="pc-subtitle">{postulants.length} postulante{postulants.length !== 1 ? "s" : ""} en total</p>
+            <p className="pc-subtitle">
+              {t("postulantes.total", { count: postulants.length })}
+            </p>
           </div>
         </div>
 
@@ -560,7 +550,7 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
           <div className="pc-search">
             <Search size={14} className="pc-search__icon" />
             <input type="text" className="pc-search__input"
-              placeholder="Buscar por nombre, email, carrera..."
+              placeholder={t("postulantes.search")}
               value={search} onChange={(e) => setSearch(e.target.value)}
             />
             {search && (
@@ -571,9 +561,9 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
           </div>
           <div className="pc-view-toggle">
             <button className={`pc-view-btn${view === "lista" ? " pc-view-btn--active" : ""}`}
-              onClick={() => setView("lista")} title="Vista lista"><List size={15} /></button>
+              onClick={() => setView("lista")} title="Lista"><List size={15} /></button>
             <button className={`pc-view-btn${view === "kanban" ? " pc-view-btn--active" : ""}`}
-              onClick={() => setView("kanban")} title="Vista kanban"><LayoutGrid size={15} /></button>
+              onClick={() => setView("kanban")} title="Kanban"><LayoutGrid size={15} /></button>
           </div>
         </div>
       </div>
@@ -583,10 +573,12 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
           {filtered.length === 0 ? (
             <div className="pc-empty">
               <User size={28} />
-              <p>{search ? "Sin resultados para esa búsqueda" : "No hay postulantes aún"}</p>
+              <p>{search ? t("postulantes.empty.noResults") : t("postulantes.empty.none")}</p>
             </div>
           ) : (
-            filtered.map((p) => <PostulantRow key={p.id} postulant={p} onClick={setSelected} />)
+            filtered.map((p) => (
+              <PostulantRow key={p.id} postulant={p} onClick={setSelected} columns={COLUMNS} />
+            ))
           )}
         </div>
       )}
@@ -618,6 +610,7 @@ export default function PostulantesConvocatoria({ jobId, jobTitle, onBack }) {
             postulant={selected}
             onClose={() => setSelected(null)}
             onStateChange={handleStateChange}
+            columns={COLUMNS}
           />
         )}
       </AnimatePresence>

@@ -1,32 +1,29 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ArrowLeft, Globe, Users, SlidersHorizontal,
   ChevronRight, Check, ChevronDown,
 } from "lucide-react";
 
-/* ─────────────────────────────────────────────────────────────
-   Datos — Bolivia
-───────────────────────────────────────────────────────────── */
 export const PROFESSIONAL_AREAS = [
-  { id: 1,  name: "Tecnología e Ingeniería",   careers: ["Ingeniería de Sistemas","Ingeniería Informática","Ingeniería de Software","Ingeniería Electrónica","Ingeniería Eléctrica","Ingeniería Industrial","Ingeniería Mecánica","Ingeniería Civil","Ingeniería Ambiental","Ingeniería de Telecomunicaciones"] },
-  { id: 2,  name: "Ciencias Económicas",        careers: ["Administración de Empresas","Contaduría Pública","Economía","Auditoría","Finanzas","Comercio Internacional","Marketing","Gestión Pública"] },
-  { id: 3,  name: "Ciencias de la Salud",       careers: ["Medicina","Enfermería","Odontología","Farmacia y Bioquímica","Fisioterapia y Kinesiología","Nutrición y Dietética","Optometría","Radiología e Imagen"] },
-  { id: 4,  name: "Ciencias Jurídicas",         careers: ["Derecho","Ciencias Políticas","Relaciones Internacionales"] },
-  { id: 5,  name: "Arquitectura y Construcción",careers: ["Arquitectura","Ingeniería Civil","Diseño de Interiores","Urbanismo"] },
-  { id: 6,  name: "Ciencias de la Educación",   careers: ["Ciencias de la Educación","Educación Primaria","Educación Inicial","Educación Especial","Lingüística e Idiomas"] },
-  { id: 7,  name: "Ciencias Sociales",          careers: ["Comunicación Social","Psicología","Trabajo Social","Sociología","Periodismo"] },
-  { id: 8,  name: "Ciencias Exactas",           careers: ["Matemáticas","Física","Química","Estadística","Biología"] },
-  { id: 9,  name: "Agropecuaria y Veterinaria", careers: ["Agronomía","Veterinaria y Zootecnia","Ingeniería Agronómica","Recursos Naturales y Medio Ambiente","Ingeniería Forestal"] },
-  { id: 10, name: "Arte y Diseño",              careers: ["Diseño Gráfico","Diseño Industrial","Artes Plásticas","Música","Arquitectura de Interiores"] },
+  { id: 1,  name: "Tecnología e Ingeniería",    careers: ["Ingeniería de Sistemas","Ingeniería Informática","Ingeniería de Software","Ingeniería Electrónica","Ingeniería Eléctrica","Ingeniería Industrial","Ingeniería Mecánica","Ingeniería Civil","Ingeniería Ambiental","Ingeniería de Telecomunicaciones"] },
+  { id: 2,  name: "Ciencias Económicas",         careers: ["Administración de Empresas","Contaduría Pública","Economía","Auditoría","Finanzas","Comercio Internacional","Marketing","Gestión Pública"] },
+  { id: 3,  name: "Ciencias de la Salud",        careers: ["Medicina","Enfermería","Odontología","Farmacia y Bioquímica","Fisioterapia y Kinesiología","Nutrición y Dietética","Optometría","Radiología e Imagen"] },
+  { id: 4,  name: "Ciencias Jurídicas",          careers: ["Derecho","Ciencias Políticas","Relaciones Internacionales"] },
+  { id: 5,  name: "Arquitectura y Construcción", careers: ["Arquitectura","Ingeniería Civil","Diseño de Interiores","Urbanismo"] },
+  { id: 6,  name: "Ciencias de la Educación",    careers: ["Ciencias de la Educación","Educación Primaria","Educación Inicial","Educación Especial","Lingüística e Idiomas"] },
+  { id: 7,  name: "Ciencias Sociales",           careers: ["Comunicación Social","Psicología","Trabajo Social","Sociología","Periodismo"] },
+  { id: 8,  name: "Ciencias Exactas",            careers: ["Matemáticas","Física","Química","Estadística","Biología"] },
+  { id: 9,  name: "Agropecuaria y Veterinaria",  careers: ["Agronomía","Veterinaria y Zootecnia","Ingeniería Agronómica","Recursos Naturales y Medio Ambiente","Ingeniería Forestal"] },
+  { id: 10, name: "Arte y Diseño",               careers: ["Diseño Gráfico","Diseño Industrial","Artes Plásticas","Música","Arquitectura de Interiores"] },
 ];
 
 const MAIN_OPTIONS = [
-  { val: "public",        Icon: Globe,             color: "#1a6fbd", bg: "#e6f1fb", title: "Todo el mundo",       sub: "Cualquier persona en Portafy puede verla" },
-  { val: "followers",     Icon: Users,             color: "#534AB7", bg: "#EEEDFE", title: "Mis seguidores",      sub: "Solo las personas que te siguen"           },
-  { val: "professionals", Icon: SlidersHorizontal, color: "#854F0B", bg: "#FAEEDA", title: "Tipo de profesional", sub: null },
+  { val: "public",        Icon: Globe,             color: "#1a6fbd", bg: "#e6f1fb" },
+  { val: "followers",     Icon: Users,             color: "#534AB7", bg: "#EEEDFE" },
+  { val: "professionals", Icon: SlidersHorizontal, color: "#854F0B", bg: "#FAEEDA" },
 ];
 
-/* ── Dropdown genérico reutilizable ─────────────────────────── */
 function Dropdown({ label, placeholder, value, options, onChange, disabled = false }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -51,7 +48,6 @@ function Dropdown({ label, placeholder, value, options, onChange, disabled = fal
         </span>
         <ChevronDown size={16} className={`aud-cascade-chevron ${open ? "aud-cascade-chevron--open" : ""}`} />
       </button>
-
       {open && (
         <div className="aud-cascade-menu">
           {options.map(opt => {
@@ -74,18 +70,16 @@ function Dropdown({ label, placeholder, value, options, onChange, disabled = fal
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Modal principal
-───────────────────────────────────────────────────────────── */
 export default function AudienceModal({
   currentAudience = "public",
   currentFilters  = { id_professional_area: null, career: null },
   onClose,
   onConfirm,
 }) {
-  const [view,         setView]         = useState("main");
-  const [selected,     setSelected]     = useState(currentAudience);
-  const [selectedArea, setSelectedArea] = useState(
+  const { t } = useTranslation();
+  const [view,           setView]           = useState("main");
+  const [selected,       setSelected]       = useState(currentAudience);
+  const [selectedArea,   setSelectedArea]   = useState(
     currentFilters.id_professional_area
       ? PROFESSIONAL_AREAS.find(a => a.id === currentFilters.id_professional_area) ?? null
       : null
@@ -95,11 +89,11 @@ export default function AudienceModal({
   const handleAreaChange = (areaName) => {
     const area = PROFESSIONAL_AREAS.find(a => a.name === areaName);
     setSelectedArea(area ?? null);
-    setSelectedCareer(null); // resetear carrera al cambiar área
+    setSelectedCareer(null);
   };
 
   const profSummary = () => {
-    if (!selectedArea) return "Filtra por área y carrera";
+    if (!selectedArea) return t("audienceModal.profSummary.default");
     if (!selectedCareer) return selectedArea.name;
     return `${selectedArea.name} · ${selectedCareer}`;
   };
@@ -127,14 +121,13 @@ export default function AudienceModal({
     <div className="aud-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="aud-modal">
 
-        {/* Header */}
         <div className="aud-header">
           <button type="button" className="aud-back-btn" onClick={handleBack}>
             <ArrowLeft size={18} />
           </button>
           <div className="aud-header-text">
-            <h2>{view === "main" ? "Audiencia de la convocatoria" : "Tipo de profesional"}</h2>
-            <p>{view === "main" ? "¿Quién puede ver y postularse?" : "Filtra por área y carrera"}</p>
+            <h2>{view === "main" ? t("audienceModal.title") : t("audienceModal.titleProfessional")}</h2>
+            <p>{view === "main" ? t("audienceModal.subtitle") : t("audienceModal.subtitleProfessional")}</p>
           </div>
         </div>
 
@@ -142,9 +135,11 @@ export default function AudienceModal({
         {view === "main" && (
           <>
             <div className="aud-list">
-              {MAIN_OPTIONS.map(({ val, Icon, color, bg, title, sub }) => {
+              {MAIN_OPTIONS.map(({ val, Icon, color, bg }) => {
                 const isSelected      = selected === val;
                 const isProfessionals = val === "professionals";
+                const optTitle = t(`audienceModal.options.${val}.title`);
+                const optSub   = isProfessionals ? profSummary() : t(`audienceModal.options.${val}.sub`);
                 return (
                   <div
                     key={val}
@@ -155,8 +150,8 @@ export default function AudienceModal({
                       <Icon size={22} />
                     </div>
                     <div className="aud-text">
-                      <div className="aud-title">{title}</div>
-                      <div className="aud-sub">{isProfessionals ? profSummary() : sub}</div>
+                      <div className="aud-title">{optTitle}</div>
+                      <div className="aud-sub">{optSub}</div>
                     </div>
                     {isProfessionals
                       ? <ChevronRight size={16} color="#aaa" />
@@ -168,50 +163,46 @@ export default function AudienceModal({
             </div>
             <div className="aud-footer">
               <button type="button" className="aud-btn-done" onClick={handleDone}>
-                Listo
+                {t("audienceModal.done")}
               </button>
             </div>
           </>
         )}
 
-        {/* ══ Vista profesional — dos dropdowns en cascada ══ */}
+        {/* ══ Vista profesional ══ */}
         {view === "professionals" && (
           <>
             <div className="aud-cascade-body">
-
-              {/* Dropdown 1: Área */}
               <Dropdown
-                label="Área"
-                placeholder="Selecciona un área..."
+                label={t("audienceModal.dropdown.areaLabel")}
+                placeholder={t("audienceModal.dropdown.areaPlaceholder")}
                 value={selectedArea?.name ?? null}
                 options={PROFESSIONAL_AREAS.map(a => a.name)}
                 onChange={handleAreaChange}
               />
-
-              {/* Dropdown 2: Carrera — deshabilitado hasta elegir área */}
               <Dropdown
-                label="Carrera"
-                placeholder={selectedArea ? "Selecciona una carrera..." : "Primero elige un área"}
+                label={t("audienceModal.dropdown.careerLabel")}
+                placeholder={
+                  selectedArea
+                    ? t("audienceModal.dropdown.careerPlaceholder")
+                    : t("audienceModal.dropdown.careerPlaceholderDisabled")
+                }
                 value={selectedCareer}
                 options={selectedArea?.careers ?? []}
                 onChange={setSelectedCareer}
                 disabled={!selectedArea}
               />
-
-              {/* Preview cuando hay selección */}
               {selectedArea && (
                 <div className="aud-cascade-preview">
                   <SlidersHorizontal size={13} color="#854F0B" />
                   <span>
                     {selectedCareer
                       ? `${selectedArea.name} · ${selectedCareer}`
-                      : `Toda el área de ${selectedArea.name}`}
+                      : t("audienceModal.profSummary.wholeArea", { area: selectedArea.name })}
                   </span>
                 </div>
               )}
-
             </div>
-
             <div className="aud-footer">
               <button
                 type="button"
@@ -220,10 +211,11 @@ export default function AudienceModal({
                 disabled={!selectedArea}
               >
                 {!selectedArea
-                  ? "Elige un área para continuar"
-                  : selectedCareer
-                    ? `Aplicar · ${selectedCareer}`
-                    : `Aplicar · ${selectedArea.name}`}
+                  ? t("audienceModal.applyDisabled")
+                  : t("audienceModal.apply", {
+                      name: selectedCareer ? selectedCareer : selectedArea.name
+                    })
+                }
               </button>
             </div>
           </>

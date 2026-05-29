@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ArrowRight,
   BarChart3,
@@ -53,6 +54,7 @@ const roadmap = [
 ];
 
 export default function DashboardMain() {
+  const { t } = useTranslation();
   const viewport = useViewport();
   const isTablet = viewport < 980;
   const isMobile = viewport < 720;
@@ -83,13 +85,13 @@ export default function DashboardMain() {
   }, []);
 
   const verificationCopy = useMemo(() => {
-    if (verificationLoading) return { label: "Verificando estado", tone: "#2563eb", text: "Estamos revisando si tu cuenta ya fue verificada." };
+    if (verificationLoading) return { label: t("appI18n.dashboard.main.verificationLoading"), tone: "#2563eb", text: t("appI18n.dashboard.main.verificationLoadingText") };
     const status = verification?.status || "none";
-    if (status === "approved") return { label: "Cuenta verificada", tone: "#16a34a", text: "Tu perfil ya muestra el sello de confianza." };
-    if (status === "pending") return { label: "Revision pendiente", tone: "#ca8a04", text: "Tu solicitud esta esperando revision del equipo." };
-    if (status === "rejected") return { label: "Requiere ajuste", tone: "#dc2626", text: verification?.rejection_reason || "Revisa el motivo y vuelve a enviar tus documentos." };
-    return { label: "Sin solicitud", tone: "#2563eb", text: "Envia tu documento y activa una senal de confianza en tu perfil." };
-  }, [verification, verificationLoading]);
+    if (status === "approved") return { label: t("appI18n.dashboard.main.verified"), tone: "#16a34a", text: t("appI18n.dashboard.main.verifiedText") };
+    if (status === "pending") return { label: t("appI18n.dashboard.main.pending"), tone: "#ca8a04", text: t("appI18n.dashboard.main.pendingText") };
+    if (status === "rejected") return { label: t("appI18n.dashboard.main.rejected"), tone: "#dc2626", text: verification?.rejection_reason || t("appI18n.dashboard.main.rejectedText") };
+    return { label: t("appI18n.dashboard.main.none"), tone: "#2563eb", text: t("appI18n.dashboard.main.noneText") };
+  }, [verification, verificationLoading, t]);
 
   const submitSuggestion = async (payload) => {
     if (suggestionBusy) return;
@@ -98,7 +100,7 @@ export default function DashboardMain() {
     try {
       await sendSuggestion(payload);
       setSuggestionOpen(false);
-      setSuggestionMessage("Sugerencia enviada correctamente.");
+      setSuggestionMessage(t("appI18n.dashboard.main.suggestionSent"));
       setTimeout(() => setSuggestionMessage(""), 2400);
     } catch (err) {
       setSuggestionError(err.message || "No se pudo enviar la sugerencia.");
@@ -131,22 +133,22 @@ export default function DashboardMain() {
         <div style={{ display: "grid", gap: 18, minWidth: 0 }}>
           <span style={heroEyebrow}>
             <Sparkles size={16} />
-            Inicio profesional
+            {t("appI18n.dashboard.main.eyebrow")}
           </span>
           <div>
-            <h1 style={heroTitle}>Construye una presencia que se entienda en segundos.</h1>
+            <h1 style={heroTitle}>{t("appI18n.dashboard.main.title")}</h1>
             <p style={heroText}>
-              Gestiona tu perfil, mide el alcance de tu portafolio y envia senales de confianza desde un solo lugar.
+              {t("appI18n.dashboard.main.text")}
             </p>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button type="button" onClick={() => navigateDashboard("profile")} style={primaryHeroButton}>
               <PenLine size={16} />
-              Mejorar mi perfil
+              {t("appI18n.dashboard.main.improveProfile")}
             </button>
             <button type="button" onClick={() => navigateDashboard("analytics")} style={secondaryHeroButton}>
               <BarChart3 size={16} />
-              Ver estadisticas
+              {t("appI18n.dashboard.main.viewStats")}
             </button>
           </div>
         </div>
@@ -154,7 +156,7 @@ export default function DashboardMain() {
         <div style={scorePanel}>
           <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
             <div>
-              <div style={panelEyebrow}>Estado de confianza</div>
+              <div style={panelEyebrow}>{t("appI18n.dashboard.main.trustStatus")}</div>
               <div style={scoreTitle}>{verificationCopy.label}</div>
             </div>
             <span style={{ ...scoreIcon, color: verificationCopy.tone, background: `${verificationCopy.tone}14` }}>
@@ -193,8 +195,8 @@ export default function DashboardMain() {
               <ShieldCheck size={19} />
             </span>
             <div>
-              <div style={panelEyebrow}>Verificacion</div>
-              <h2 style={cardTitle}>Haz que tu perfil inspire confianza</h2>
+              <div style={panelEyebrow}>{t("appI18n.dashboard.main.verification")}</div>
+              <h2 style={cardTitle}>{t("appI18n.dashboard.main.verificationTitle")}</h2>
             </div>
           </div>
           <p style={cardText}>{verificationCopy.text}</p>
@@ -217,7 +219,7 @@ export default function DashboardMain() {
             }}
           >
             <ShieldCheck size={16} />
-            {verificationLoading ? "Comprobando estado" : verification?.status === "approved" ? "Cuenta verificada" : verification?.status === "pending" ? "Ver estado de solicitud" : "Enviar para verificar"}
+            {verificationLoading ? t("appI18n.dashboard.main.checking") : verification?.status === "approved" ? t("appI18n.dashboard.main.verified") : verification?.status === "pending" ? t("appI18n.dashboard.main.viewRequest") : t("appI18n.dashboard.main.sendVerification")}
           </button>
         </article>
 
@@ -227,17 +229,17 @@ export default function DashboardMain() {
               <Lightbulb size={19} />
             </span>
             <div>
-              <div style={panelEyebrow}>Sugerencias</div>
-              <h2 style={cardTitle}>Propone una mejora con contexto</h2>
+              <div style={panelEyebrow}>{t("appI18n.dashboard.main.suggestions")}</div>
+              <h2 style={cardTitle}>{t("appI18n.dashboard.main.suggestionsTitle")}</h2>
             </div>
           </div>
           <p style={cardText}>
-            Envia ideas sobre perfil, proyectos, experiencia o cualquier parte de PortaFy. El equipo recibe tipo, area y motivo.
+            {t("appI18n.dashboard.main.suggestionsText")}
           </p>
           {suggestionMessage ? <div style={successNote}>{suggestionMessage}</div> : null}
           <button type="button" onClick={() => { setSuggestionError(""); setSuggestionOpen(true); }} style={wideSecondary}>
             <Send size={16} />
-            Enviar sugerencia
+            {t("appI18n.dashboard.main.sendSuggestion")}
           </button>
         </article>
       </section>

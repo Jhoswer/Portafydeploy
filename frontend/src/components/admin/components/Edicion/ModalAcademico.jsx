@@ -14,14 +14,14 @@ import {
 
 /* ── Opciones de tipo de formación (campo libre pero con sugerencias) ── */
 const TRAINING_TYPES = [
-  { value: "pregrado",   label: "Pregrado"   },
-  { value: "posgrado",   label: "Posgrado"   },
-  { value: "maestria",   label: "Maestría"   },
-  { value: "doctorado",  label: "Doctorado"  },
-  { value: "tecnico",    label: "Técnico"    },
-  { value: "diplomado",  label: "Diplomado"  },
-  { value: "curso",      label: "Curso"      },
-  { value: "otro",       label: "Otro"       },
+  { value: "pregrado", label: "Pregrado" },
+  { value: "posgrado", label: "Posgrado" },
+  { value: "maestria", label: "Maestría" },
+  { value: "doctorado", label: "Doctorado" },
+  { value: "tecnico", label: "Técnico" },
+  { value: "diplomado", label: "Diplomado" },
+  { value: "curso", label: "Curso" },
+  { value: "otro", label: "Otro" },
 ];
 
 /* ── Helpers ── */
@@ -32,15 +32,15 @@ function normalizeBool(v) {
 function normalizeCareer(c = {}) {
   return {
     id_university_career: c.id_university_career ?? null,
-    id_university:        c.id_university         ?? "",
-    id_career:            c.id_career             ?? "",
-    training_type:        c.training_type          ?? "",
-    start_date:           c.start_date             ? c.start_date.slice(0, 10) : "",
-    end_date:             c.end_date               ? c.end_date.slice(0, 10)   : "",
-    visibility:           normalizeBool(c.visibility ?? true),
-    university_name:      c.university_name        ?? "",
-    career_name:          c.career_name            ?? "",
-    _delete:              false,
+    id_university: c.id_university ?? "",
+    id_career: c.id_career ?? "",
+    training_type: c.training_type ?? "",
+    start_date: c.start_date ? c.start_date.slice(0, 10) : "",
+    end_date: c.end_date ? c.end_date.slice(0, 10) : "",
+    visibility: normalizeBool(c.visibility ?? true),
+    university_name: c.university_name ?? "",
+    career_name: c.career_name ?? "",
+    _delete: false,
   };
 }
 
@@ -57,21 +57,21 @@ function formatDateShort(value) {
 
 export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
   /* ── Estado del formulario ── */
-  const [idJobTitle,    setIdJobTitle]    = useState("");
-  const [careers,       setCareers]       = useState([]);
-  const [catalogs,      setCatalogs]      = useState({ job_titles: [], universities: [], careers: [] });
+  const [idJobTitle, setIdJobTitle] = useState("");
+  const [careers, setCareers] = useState([]);
+  const [catalogs, setCatalogs] = useState({ job_titles: [], universities: [], careers: [] });
   const [originalJobTitle, setOriginalJobTitle] = useState("");
-  const [originalCareers,  setOriginalCareers]  = useState([]);
+  const [originalCareers, setOriginalCareers] = useState([]);
 
   /* ── UI ── */
-  const [selectedIndex,    setSelectedIndex]    = useState(null); // índice del item abierto para editar
-  const [isAddingCareer,   setIsAddingCareer]   = useState(false);
-  const [newCareer,        setNewCareer]        = useState(emptyCareer());
+  const [selectedIndex, setSelectedIndex] = useState(null); // índice del item abierto para editar
+  const [isAddingCareer, setIsAddingCareer] = useState(false);
+  const [newCareer, setNewCareer] = useState(emptyCareer());
 
-  const [isLoading,    setIsLoading]    = useState(true);
-  const [isSaving,     setIsSaving]     = useState(false);
-  const [error,        setError]        = useState(null);
-  const [showConfirm,  setShowConfirm]  = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [confirmError, setConfirmError] = useState("");
 
   /* ── Carga ── */
@@ -83,8 +83,8 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
       setError(null);
       try {
         const data = await getAdminAcademico(idProfile);
-        const p    = data?.profile  ?? {};
-        const ucs  = (data?.university_careers ?? []).map(normalizeCareer);
+        const p = data?.profile ?? {};
+        const ucs = (data?.university_careers ?? []).map(normalizeCareer);
         const cats = data?.catalogs ?? { job_titles: [], universities: [], careers: [] };
 
         setIdJobTitle(String(p.id_job_title ?? ""));
@@ -150,15 +150,15 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
   const handleConfirmAdd = () => {
     if (!newCareer.id_university || !newCareer.id_career) return;
 
-    const univObj   = catalogs.universities.find((u) => String(u.value) === String(newCareer.id_university));
+    const univObj = catalogs.universities.find((u) => String(u.value) === String(newCareer.id_university));
     const careerObj = catalogs.careers.find((c) => String(c.value) === String(newCareer.id_career));
 
     setCareers((prev) => [
       ...prev,
       {
         ...newCareer,
-        university_name: univObj?.label  ?? "",
-        career_name:     careerObj?.label ?? "",
+        university_name: univObj?.label ?? "",
+        career_name: careerObj?.label ?? "",
       },
     ]);
     setIsAddingCareer(false);
@@ -203,8 +203,8 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
       if (!orig) return false;
       return (
         orig.training_type !== c.training_type ||
-        orig.start_date    !== c.start_date    ||
-        orig.end_date      !== c.end_date      ||
+        orig.start_date !== c.start_date ||
+        orig.end_date !== c.end_date ||
         normalizeBool(orig.visibility) !== normalizeBool(c.visibility)
       );
     });
@@ -227,13 +227,13 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
         id_job_title: idJobTitle ? Number(idJobTitle) : null,
         careers: careers.map((c) => ({
           id_university_career: c.id_university_career,
-          id_university:        c.id_university ? Number(c.id_university) : null,
-          id_career:            c.id_career     ? Number(c.id_career)     : null,
-          training_type:        c.training_type  || null,
-          start_date:           c.start_date     || null,
-          end_date:             c.end_date       || null,
-          visibility:           Boolean(c.visibility),
-          _delete:              Boolean(c._delete),
+          id_university: c.id_university ? Number(c.id_university) : null,
+          id_career: c.id_career ? Number(c.id_career) : null,
+          training_type: c.training_type || null,
+          start_date: c.start_date || null,
+          end_date: c.end_date || null,
+          visibility: Boolean(c.visibility),
+          _delete: Boolean(c._delete),
         })),
       };
 
@@ -320,14 +320,6 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
                         </option>
                       ))}
                     </select>
-                    {idJobTitle && (
-                      <span
-                        className="edicion-tabla__badge edicion-tabla__badge--type-labor"
-                        style={{ marginTop: 4, alignSelf: "flex-start" }}
-                      >
-                        {catalogs.job_titles.find((j) => String(j.value) === String(idJobTitle))?.label}
-                      </span>
-                    )}
                   </div>
 
                   <hr className="edicion-modal__divider" />
@@ -336,7 +328,7 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
                   <div className="edicion-cv-details-header">
                     <GraduationCap size={14} />
                     <span className="edicion-cv-details-header__label">
-                      Formaciones académicas
+                      FORMACIONES ACADÉMICAS
                     </span>
                     <span className="edicion-tabla__count">
                       {visibleCareers.length} registros
@@ -360,18 +352,7 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
 
                     {/* Formulario de nueva carrera */}
                     {isAddingCareer && (
-                      <div
-                        style={{
-                          display:       "flex",
-                          flexDirection: "column",
-                          gap:           "8px",
-                          padding:       "10px 12px",
-                          background:    "#f0f7ff",
-                          border:        "1.5px dashed #93c5fd",
-                          borderRadius:  "8px",
-                          marginTop:     "4px",
-                        }}
-                      >
+                      <div className="modal-add-career-form">
                         <div className="edicion-modal__row">
                           <div className="edicion-modal__field">
                             <label className="edicion-modal__label">Universidad *</label>
@@ -504,8 +485,8 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
                     <div className="edicion-cv-section__items" style={{ flexDirection: "column", gap: "6px" }}>
                       {careers.map((career, index) => {
                         const isSelected = selectedIndex === index;
-                        const isDeleted  = Boolean(career._delete);
-                        const isNew      = !career.id_university_career;
+                        const isDeleted = Boolean(career._delete);
+                        const isNew = !career.id_university_career;
                         const trainingLabel =
                           TRAINING_TYPES.find((t) => t.value === career.training_type)?.label ??
                           career.training_type ??
@@ -518,7 +499,7 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
                               className={[
                                 "edicion-cv-item",
                                 isSelected ? "edicion-cv-item--selected" : "",
-                                isDeleted  ? "edicion-cv-item--deleted"  : "",
+                                isDeleted ? "edicion-cv-item--deleted" : "",
                               ].join(" ").trim()}
                               onClick={() => handleSelectItem(index)}
                               style={{ width: "100%", boxSizing: "border-box" }}
@@ -531,32 +512,12 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
                                 {" · "}
                                 {career.university_name || "Universidad sin nombre"}
                                 {career.training_type && (
-                                  <span
-                                    style={{
-                                      marginLeft:   "6px",
-                                      fontSize:     "10.5px",
-                                      padding:      "1px 7px",
-                                      borderRadius: "9999px",
-                                      background:   "#ede9fe",
-                                      color:        "#6d28d9",
-                                      fontWeight:   600,
-                                    }}
-                                  >
+                                  <span className="modal-career-badge-type">
                                     {trainingLabel}
                                   </span>
                                 )}
                                 {isNew && (
-                                  <span
-                                    style={{
-                                      marginLeft:   "6px",
-                                      fontSize:     "10px",
-                                      padding:      "1px 7px",
-                                      borderRadius: "9999px",
-                                      background:   "#dcfce7",
-                                      color:        "#15803d",
-                                      fontWeight:   600,
-                                    }}
-                                  >
+                                  <span className="modal-career-badge-new">
                                     Nuevo
                                   </span>
                                 )}
@@ -594,19 +555,7 @@ export default function ModalAcademico({ idProfile, user, onClose, onSave }) {
 
                             {/* Panel de edición inline (solo si seleccionado y no eliminado) */}
                             {isSelected && !isDeleted && (
-                              <div
-                                style={{
-                                  padding:       "12px 14px",
-                                  background:    "#f8fafc",
-                                  border:        "1.5px solid #bfdbfe",
-                                  borderTop:     "none",
-                                  borderRadius:  "0 0 8px 8px",
-                                  display:       "flex",
-                                  flexDirection: "column",
-                                  gap:           "10px",
-                                  animation:     "edicion-modal-in 0.18s ease",
-                                }}
-                              >
+                              <div className="modal-career-edit-panel">
                                 {/* Universidad + Carrera */}
                                 <div className="edicion-modal__row">
                                   <div className="edicion-modal__field">

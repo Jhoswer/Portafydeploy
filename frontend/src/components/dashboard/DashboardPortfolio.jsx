@@ -19,6 +19,9 @@ import { getItemSubtitle, getItemTitle } from "../../features/dashboard-portfoli
 
 const MAX_PROJECT_COVER_SIZE_BYTES = 2 * 1024 * 1024;
 const PORTFOLIO_UPDATED_EVENT = "portfolio:updated";
+const MAIN_SECTION_KEYS = ["experience", "projects", "social", "skills"];
+const SAFE_EDUCATION_TEXT = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,:&()\/'-]+$/;
+const SAFE_INSTITUTION_TEXT = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,&()'-]+$/;
 
 function isBlank(value) {
   if (Array.isArray(value)) return value.length === 0;
@@ -65,6 +68,21 @@ function validateSectionDraft(sectionKey, draft) {
     if (isBlank(draft.url)) errors.url = "Completa la URL del enlace.";
   }
 
+  if (sectionKey === "education") {
+    if (isBlank(draft.level)) errors.level = "Selecciona el tipo de formacion.";
+    if (isBlank(draft.program)) errors.program = "Completa el programa o carrera.";
+    if (!isBlank(draft.program) && draft.program.length > 140) errors.program = "Maximo 140 caracteres.";
+    if (!isBlank(draft.program) && !SAFE_EDUCATION_TEXT.test(draft.program)) errors.program = "Usa solo letras, numeros y signos basicos.";
+    if (isBlank(draft.institution)) errors.institution = "Completa la institucion.";
+    if (!isBlank(draft.institution) && draft.institution.length > 120) errors.institution = "Maximo 120 caracteres.";
+    if (!isBlank(draft.institution) && !SAFE_INSTITUTION_TEXT.test(draft.institution)) errors.institution = "La institucion contiene caracteres no validos.";
+    if (isBlank(draft.startDate)) errors.startDate = "Selecciona la fecha de inicio.";
+    if (!draft.isCurrent && isBlank(draft.endDate)) errors.endDate = "Selecciona la fecha de fin o marca que sigue vigente.";
+    if (draft.startDate && draft.endDate && !draft.isCurrent && draft.endDate < draft.startDate) {
+      errors.endDate = "La fecha de fin no puede ser anterior al inicio.";
+    }
+  }
+
   if (Object.keys(errors).length > 0) {
     errors._form = "Faltan campos obligatorios por completar.";
   }
@@ -92,7 +110,7 @@ export default function DashboardPortfolio() {
       setLoadError("");
 
       try {
-        const { skills, experience, projects, social, socialExtra } = await fetchPortfolioOverview();
+        const { skills, experience, projects, social, education, formacion, socialExtra } = await fetchPortfolioOverview();
 
         if (cancelled) return;
 
@@ -101,6 +119,7 @@ export default function DashboardPortfolio() {
           experience,
           projects,
           social,
+          education: education ?? formacion ?? [],
         });
 
         setExtraBySection((prev) => ({
@@ -138,8 +157,16 @@ export default function DashboardPortfolio() {
       Object.values(SECTION_META).map((section) => ({
         ...section,
         count: itemsBySection[section.key].length,
-      })),
+      })).filter((section) => MAIN_SECTION_KEYS.includes(section.key)),
     [itemsBySection]
+  );
+  const educationSummary = useMemo(
+    () => ({
+      ...SECTION_META.education,
+      count: itemsBySection.education?.length ?? 0,
+      latest: itemsBySection.education?.[0] ?? null,
+    }),
+    [itemsBySection.education]
   );
   const portfolioProgress = useMemo(() => {
     const totalSections = Object.keys(SECTION_META).length;
@@ -223,7 +250,7 @@ export default function DashboardPortfolio() {
       kind: "delete",
       itemId,
       title: "Eliminar registro",
-      description: `Se eliminara ${target ? `"${target.title ?? target.name ?? target.platform}"` : "este registro"}. Esta accion no se puede deshacer.`,
+      description: `Se eliminara ${target ? `"${target.title ?? target.name ?? target.platform ?? target.program}"` : "este registro"}. Esta accion no se puede deshacer.`,
       confirmLabel: "Si, eliminar",
     });
   };
@@ -348,6 +375,7 @@ export default function DashboardPortfolio() {
         overviewCards={overviewCards}
         progress={portfolioProgress}
         recentHighlights={recentHighlights}
+        educationSummary={educationSummary}
         onOpenSection={openSection}
       />
     );

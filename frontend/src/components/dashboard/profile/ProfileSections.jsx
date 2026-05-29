@@ -147,12 +147,17 @@ export function MessageBox({ color, text, fit = false }) {
 }
 
 export function StatCard({ label, value, onClick = null }) {
+  const [hovered, setHovered] = useState(false);
   const Component = onClick ? "button" : "div";
   const stat = statMeta(label);
   return (
     <Component
       type={onClick ? "button" : undefined}
       onClick={onClick || undefined}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
       style={{
         width: "100%",
         minHeight: 104,
@@ -163,10 +168,11 @@ export function StatCard({ label, value, onClick = null }) {
         padding: "18px 20px",
         borderRadius: 20,
         background: "var(--dashboard-card-bg)",
-        border: "1px solid var(--dashboard-card-border)",
-        boxShadow: onClick ? `0 16px 34px ${stat.shadow}` : "0 12px 26px rgba(14,30,60,.05)",
+        border: hovered ? `1px solid ${stat.borderStrong}` : "1px solid var(--dashboard-card-border)",
+        boxShadow: hovered ? `0 18px 36px ${stat.shadow}` : onClick ? `0 16px 34px ${stat.shadow}` : "0 12px 26px rgba(14,30,60,.05)",
         cursor: onClick ? "pointer" : "default",
         textAlign: "left",
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
         transition: "transform .16s ease, box-shadow .16s ease, border-color .16s ease",
       }}
     >
@@ -178,8 +184,10 @@ export function StatCard({ label, value, onClick = null }) {
           display: "grid",
           placeItems: "center",
           color: stat.color,
-          background: stat.soft,
+          background: hovered ? stat.softStrong : stat.soft,
           border: `1px solid ${stat.border}`,
+          transform: hovered ? "scale(1.04)" : "scale(1)",
+          transition: "transform .16s ease, background .16s ease",
         }}
       >
         <stat.icon size={18} />
@@ -199,21 +207,21 @@ export function StatCard({ label, value, onClick = null }) {
 function statMeta(label) {
   const key = String(label || "").toLowerCase();
   if (key.includes("seguidor") || key.includes("seguido")) {
-    return { icon: Users, color: "#2563eb", soft: "rgba(37,99,235,.10)", border: "rgba(37,99,235,.22)", shadow: "rgba(37,99,235,.10)" };
+    return { icon: Users, color: "#2563eb", soft: "rgba(37,99,235,.10)", softStrong: "rgba(37,99,235,.16)", border: "rgba(37,99,235,.22)", borderStrong: "rgba(37,99,235,.36)", shadow: "rgba(37,99,235,.13)" };
   }
   if (key.includes("visita")) {
-    return { icon: Eye, color: "#0d9488", soft: "rgba(13,148,136,.10)", border: "rgba(13,148,136,.22)", shadow: "rgba(13,148,136,.10)" };
+    return { icon: Eye, color: "#0d9488", soft: "rgba(13,148,136,.10)", softStrong: "rgba(13,148,136,.16)", border: "rgba(13,148,136,.22)", borderStrong: "rgba(13,148,136,.36)", shadow: "rgba(13,148,136,.13)" };
   }
   if (key.includes("proyecto")) {
-    return { icon: FolderKanban, color: "#7c3aed", soft: "rgba(124,58,237,.10)", border: "rgba(124,58,237,.22)", shadow: "rgba(124,58,237,.10)" };
+    return { icon: FolderKanban, color: "#7c3aed", soft: "rgba(124,58,237,.10)", softStrong: "rgba(124,58,237,.16)", border: "rgba(124,58,237,.22)", borderStrong: "rgba(124,58,237,.36)", shadow: "rgba(124,58,237,.13)" };
   }
   if (key.includes("exp")) {
-    return { icon: CalendarClock, color: "#ea580c", soft: "rgba(234,88,12,.10)", border: "rgba(234,88,12,.22)", shadow: "rgba(234,88,12,.10)" };
+    return { icon: CalendarClock, color: "#ea580c", soft: "rgba(234,88,12,.10)", softStrong: "rgba(234,88,12,.16)", border: "rgba(234,88,12,.22)", borderStrong: "rgba(234,88,12,.36)", shadow: "rgba(234,88,12,.13)" };
   }
   if (key.includes("empresa")) {
-    return { icon: Building2, color: "#be123c", soft: "rgba(190,18,60,.09)", border: "rgba(190,18,60,.20)", shadow: "rgba(190,18,60,.09)" };
+    return { icon: Building2, color: "#be123c", soft: "rgba(190,18,60,.09)", softStrong: "rgba(190,18,60,.15)", border: "rgba(190,18,60,.20)", borderStrong: "rgba(190,18,60,.34)", shadow: "rgba(190,18,60,.12)" };
   }
-  return { icon: Sparkles, color: "#475569", soft: "rgba(71,85,105,.09)", border: "rgba(71,85,105,.18)", shadow: "rgba(71,85,105,.08)" };
+  return { icon: Sparkles, color: "#475569", soft: "rgba(71,85,105,.09)", softStrong: "rgba(71,85,105,.15)", border: "rgba(71,85,105,.18)", borderStrong: "rgba(71,85,105,.30)", shadow: "rgba(71,85,105,.11)" };
 }
 
 export function SocialItem({ item }) {

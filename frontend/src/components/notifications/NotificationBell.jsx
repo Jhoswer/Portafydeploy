@@ -1,12 +1,14 @@
 import { useRef, useState } from "react";
 import { Bell } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import NotificationDropdown from "./NotificationDropdown";
 import { useNotifications } from "../../hooks/useNotifications";
 
 export default function NotificationBell({ mobile = false }) {
   const [open, setOpen] = useState(false);
-  const ref             = useRef(null);
+  const ref = useRef(null);
+  const { t } = useTranslation();
   const notificationState = useNotifications();
   const { unreadCount } = notificationState;
 
@@ -21,7 +23,7 @@ export default function NotificationBell({ mobile = false }) {
           onClick={() => setOpen((v) => !v)}
         >
           <Bell size={18} />
-          <span>Notificaciones</span>
+          <span>{t("notificationBell.title")}</span>
           {unreadCount > 0 && (
             <span className="pf-notif-mobile__badge">
               {unreadCount > 99 ? "99+" : unreadCount}
@@ -45,7 +47,7 @@ export default function NotificationBell({ mobile = false }) {
         type="button"
         className="pf-notif__trigger"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Notificaciones"
+        aria-label={t("notificationBell.ariaLabel")}
       >
         <Bell size={20} />
         {unreadCount > 0 && (

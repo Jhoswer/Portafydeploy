@@ -34,6 +34,7 @@ use App\Http\Controllers\AdminProfileTableController;
 use App\Http\Controllers\AdminCreacionController;
 use App\Http\Controllers\AdminProfileEliminacionTableController;
 use App\Http\Controllers\BackupController;
+use App\Http\Middleware\SetLogUserContext;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -46,9 +47,11 @@ Route::get('/perfil/public/{usuario}/overview', [ProfileController::class, 'publ
 Route::get('/feed/posts', [FeedController::class, 'index'])->middleware('auth:sanctum')->withoutMiddleware(['auth']);
 Route::get('/feed/trending', [FeedController::class, 'trending'])->middleware('auth:sanctum')->withoutMiddleware(['auth']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', SetLogUserContext::class])->group(function () {
     Route::post('/formacion', [FormacionAcademicaController::class, 'store']);
     Route::get('/formacion', [FormacionAcademicaController::class, 'index']);
+    Route::put('/formacion/{formacion}', [FormacionAcademicaController::class, 'update']);
+    Route::delete('/formacion/{formacion}', [FormacionAcademicaController::class, 'destroy']);
 
     Route::get('/skills', [SkillController::class, 'index']);
     Route::post('/skills', [SkillController::class, 'store']);

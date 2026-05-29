@@ -8,17 +8,31 @@ export async function searchUsers({ query, category, filter }) {
     filter,
   });
 
-  return apiClient.get(`user/search?${params.toString()}`, {
+  const items = await apiClient.get(`user/search?${params.toString()}`, {
     auth: false,
     fallbackMessage: "Error al conectar con el servidor.",
   });
+
+  return Array.isArray(items)
+    ? items.filter((item) => !isAdministrativeRole(item?.rol || item?.role))
+    : items;
 }
 
 const SEARCH_USERS_FILTERS_ENDPOINT = "user/search/filters";
 const suggestedUsersCache = new Map();
+const ADMIN_ROLES = new Set(["administrador", "super administrador", "admin", "superadmin"]);
+const PROFESSIONAL_ROLE = "profesional";
 
 function normalizeText(value) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+export function isAdministrativeRole(role) {
+  return ADMIN_ROLES.has(normalizeText(role).toLowerCase());
+}
+
+function isProfessionalRole(role) {
+  return normalizeText(role).toLowerCase() === PROFESSIONAL_ROLE;
 }
 
 function buildSearchFiltersPayload({
@@ -152,6 +166,7 @@ function normalizeSearchUser(user, index) {
     type: normalizeText(user?.type) || "usuario",
     name: fullName,
     title: resolveDisplayTitle(user),
+    role: normalizeText(user?.rol || user?.role),
     location: normalizeText(user?.ubicacion || user?.location),
     bio: normalizeText(user?.biografia || user?.bio || user?.descripcion),
     skills,
@@ -172,7 +187,9 @@ export async function searchUsersByFilters(options = {}) {
   });
 
   const items = extractItemsFromResponse(response);
-  const normalizedItems = items.map(normalizeSearchUser).filter(Boolean);
+  const normalizedItems = items
+    .map(normalizeSearchUser)
+    .filter((item) => item && !isAdministrativeRole(item.role));
 
   return {
     items: normalizedItems,
@@ -190,12 +207,14 @@ export async function fetchSuggestedUsers({ limit = 3, signal, force = false } =
 
   const response = await searchUsersByFilters({
     query: "",
-    perPage: Math.max(limit, 1),
+    perPage: Math.max(limit * 4, 12),
     page: 1,
     signal,
   });
 
-  const items = response.items.slice(0, limit);
+  const items = response.items
+    .filter((item) => isProfessionalRole(item.role))
+    .slice(0, limit);
   suggestedUsersCache.set(cacheKey, items);
   return items;
 }

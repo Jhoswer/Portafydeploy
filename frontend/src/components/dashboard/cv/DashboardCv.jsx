@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FileText, FileUp, Loader2, Plus, Sparkles, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { FileText, FileUp, Loader2, Plus, Sparkles } from "lucide-react";
 
 import CvImportModal from "./CvImportModal";
 import CvCard from "./CvCard";
@@ -11,13 +12,17 @@ import {
   toggleVisibleCv,
 } from "../../../services/cvService";
 
+import "../../../styles/components/dashboard/cv-module.css";
+
 export default function DashboardCv() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
   const [cvs, setCvs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showImport, setShowImport] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(null); // guarda el id a eliminar
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const fetchCvs = useCallback(async () => {
     setLoading(true);
@@ -26,62 +31,57 @@ export default function DashboardCv() {
       const res = await listarCvs();
       setCvs(res.data ?? []);
     } catch {
-      setError("No se pudieron cargar los CVs. Intenta de nuevo.");
+      setError(t("cv.errorLoad"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchCvs();
   }, [fetchCvs]);
 
-  const handleToggleVisible = useCallback(async (id) => {
-    try {
-      const res = await toggleVisibleCv(id);
-      setCvs((prev) => prev.map((cv) => (cv.id_cv === id ? res.data : cv)));
-    } catch {
-      setError("No se pudo actualizar la visibilidad.");
-    }
-  }, []);
+  const handleToggleVisible = useCallback(
+    async (id) => {
+      try {
+        const res = await toggleVisibleCv(id);
+        setCvs((prev) => prev.map((cv) => (cv.id_cv === id ? res.data : cv)));
+      } catch {
+        setError(t("cv.errorVisibility"));
+      }
+    },
+    [t],
+  );
 
-  const handleDelete = useCallback(async (id) => {
-    try {
-      await eliminarCv(id);
-      setCvs((prev) => prev.filter((cv) => cv.id_cv !== id));
-      setConfirmDelete(null);
-    } catch {
-      setError("No se pudo eliminar el CV.");
-    }
-  }, []);
+  const handleDelete = useCallback(
+    async (id) => {
+      try {
+        await eliminarCv(id);
+        setCvs((prev) => prev.filter((cv) => cv.id_cv !== id));
+        setConfirmDelete(null);
+      } catch {
+        setError(t("cv.errorDelete"));
+      }
+    },
+    [t],
+  );
 
   // eslint-disable-next-line no-unused-vars
-  const handleImported = useCallback(async (normalized) => {
-    /* try {
-    const res = await listarCvs();
-    setCvs(res.data ?? []);
-  } catch {
-    setError("No se pudo actualizar la lista de CVs.");
-  } finally {
-    setShowImport(false);
-  } */
+  const handleImported = useCallback(async (_normalized) => {
     setShowImport(false);
   }, []);
 
   useEffect(() => {
-    if (!showImport) {
-      fetchCvs();
-    }
+    if (!showImport) fetchCvs();
   }, [showImport, fetchCvs]);
 
   return (
     <div style={s.root}>
+      {/* Header */}
       <div style={s.header}>
         <div style={s.headerLeft}>
-          <div style={s.title}>Mis CVs</div>
-          <div style={s.subtitle}>
-            Gestiona, edita y exporta tus currículums vitae
-          </div>
+          <div style={s.title}>{t("cv.title")}</div>
+          <div style={s.subtitle}>{t("cv.subtitle")}</div>
         </div>
         <div style={s.actions}>
           <button
@@ -89,54 +89,78 @@ export default function DashboardCv() {
             style={s.btnSecondary}
             onClick={() => setShowImport(true)}
           >
-            <FileUp size={14} /> Importar CV
+            <FileUp size={14} /> {t("cv.importBtn")}
           </button>
           <button
             type="button"
             style={s.btnPrimary}
             onClick={() => navigate("/dashboard/cv/editor")}
           >
-            <Plus size={14} /> Generar desde perfil
+            <Plus size={14} /> {t("cv.generateBtn")}
           </button>
         </div>
       </div>
 
-      <div style={s.strip}>
+      {/* Strip informativo */}
+      <div
+        style={{
+          ...s.strip,
+          background: "var(--cv-strip-bg)",
+          border: "1px solid var(--cv-strip-border)",
+          color: "var(--cv-strip-text)",
+        }}
+      >
         <Sparkles size={14} style={{ flexShrink: 0 }} />
-        Puedes generar un CV desde los datos de tu perfil, o importar uno
-        existente en PDF o Word.
+        {t("cv.strip")}
       </div>
 
-      {error && <div style={s.errorBox}>{error}</div>}
+      {/* Error */}
+      {error && (
+        <div
+          style={{
+            ...s.errorBox,
+            background: "var(--cv-error-bg)",
+            border: "1px solid var(--cv-error-border)",
+            color: "var(--cv-error-text)",
+          }}
+        >
+          {error}
+        </div>
+      )}
 
+      {/* Loading / Empty / Grid */}
       {loading ? (
-        <div style={s.loadingBox}>
+        <div style={{ ...s.loadingBox, color: "var(--cv-loading-color)" }}>
           <Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} />
-          Cargando CVs...
+          {t("cv.loading")}
         </div>
       ) : cvs.length === 0 ? (
-        <div style={s.empty}>
+        <div
+          style={{
+            ...s.empty,
+            background: "var(--cv-empty-bg)",
+            border: "1.5px dashed var(--cv-empty-border)",
+          }}
+        >
           <div style={s.emptyIcon}>
             <FileText size={26} />
           </div>
-          <div style={s.emptyTitle}>Todavía no tenés CVs</div>
-          <div style={s.emptyText}>
-            Importá un CV existente o generá uno nuevo desde tu perfil.
-          </div>
+          <div style={s.emptyTitle}>{t("cv.empty.title")}</div>
+          <div style={s.emptyText}>{t("cv.empty.text")}</div>
           <div style={s.actions}>
             <button
               type="button"
               style={s.btnSecondary}
               onClick={() => setShowImport(true)}
             >
-              <FileUp size={14} /> Importar CV
+              <FileUp size={14} /> {t("cv.importBtn")}
             </button>
             <button
               type="button"
               style={s.btnPrimary}
               onClick={() => navigate("/dashboard/cv/editor")}
             >
-              <Sparkles size={14} /> Generar CV
+              <Sparkles size={14} /> {t("cv.generateBtnShort")}
             </button>
           </div>
         </div>
@@ -155,12 +179,15 @@ export default function DashboardCv() {
         </div>
       )}
 
+      {/* Modal importar */}
       {showImport && (
         <CvImportModal
           onClose={() => setShowImport(false)}
           onImported={handleImported}
         />
       )}
+
+      {/* Modal confirmar eliminación */}
       {confirmDelete && (
         <div
           style={{
@@ -177,7 +204,7 @@ export default function DashboardCv() {
         >
           <div
             style={{
-              background: "#fff",
+              background: "var(--cv-surface-modal)",
               borderRadius: 16,
               padding: "28px 28px 24px",
               maxWidth: 380,
@@ -186,6 +213,7 @@ export default function DashboardCv() {
               display: "flex",
               flexDirection: "column",
               gap: 16,
+              border: "1px solid var(--cv-border)",
             }}
           >
             <div
@@ -196,7 +224,7 @@ export default function DashboardCv() {
                 color: "var(--text)",
               }}
             >
-              ¿Eliminar CV?
+              {t("cv.delete.title")}
             </div>
             <div
               style={{
@@ -206,8 +234,7 @@ export default function DashboardCv() {
                 lineHeight: 1.6,
               }}
             >
-              Esta acción no se puede deshacer. El CV será eliminado de tu
-              lista.
+              {t("cv.delete.body")}
             </div>
             <div
               style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}
@@ -217,8 +244,9 @@ export default function DashboardCv() {
                 style={{
                   padding: "8px 16px",
                   borderRadius: 8,
-                  border: "1px solid rgba(205,225,245,.9)",
-                  background: "#fff",
+                  border: "1px solid var(--cv-cancel-btn-border)",
+                  background: "var(--cv-cancel-btn-bg)",
+                  color: "var(--text)",
                   fontFamily: "var(--f-ui)",
                   fontSize: "0.83rem",
                   fontWeight: 600,
@@ -226,7 +254,7 @@ export default function DashboardCv() {
                 }}
                 onClick={() => setConfirmDelete(null)}
               >
-                Cancelar
+                {t("cv.delete.cancel")}
               </button>
               <button
                 type="button"
@@ -243,7 +271,7 @@ export default function DashboardCv() {
                 }}
                 onClick={() => handleDelete(confirmDelete)}
               >
-                Eliminar
+                {t("cv.delete.confirm")}
               </button>
             </div>
           </div>

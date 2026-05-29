@@ -17,26 +17,26 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../../context/useAuth";
+import { useTranslation } from "react-i18next";
 
 const NAV_ITEMS = {
   panel: [
-    { page: "home",      route: "/feed",        icon: House,           label: "Inicio",    color: "res-blue"   },
-    { page: "dashboard", route: "/dashboard",      icon: LayoutDashboard, label: "Dashboard", color: "res-violet" },
-    { page: "search",    route: "/search", icon: Search,          label: "Buscar",    color: "res-blue"   },
+    { page: "home",      route: "/feed",        icon: House,           labelKey: "home",    color: "res-blue"   },
+    { page: "dashboard", route: "/dashboard",      icon: LayoutDashboard, labelKey: "dashboard", color: "res-violet" },
+    { page: "search",    route: "/search", icon: Search,          labelKey: "search",    color: "res-blue"   },
   ],
   actividad: [
-    { page: "guardados",  route: "/guardados",  icon: Bookmark,   label: "Guardados",  color: "res-teal" },
-    { page: "tendencias", route: "/tendencias", icon: TrendingUp, label: "Tendencias",  color: "res-blue" },
+    { page: "guardados",  route: "/guardados",  icon: Bookmark,   labelKey: "saved",  color: "res-teal" },
+    { page: "tendencias", route: "/tendencias", icon: TrendingUp, labelKey: "trending",  color: "res-blue" },
   ],
 };
 
 const EXPLORE_FILTER_ITEMS = [
-  { filter: "todos",         icon: User,      label: "Todos",         color: "res-violet" },
-  { filter: "portafolios",   icon: Layers,    label: "Portafolios",   color: "res-teal"   },
-  { filter: "convocatorias", icon: Briefcase, label: "Convocatorias", color: "res-blue"   },
+  { filter: "todos",         icon: User,      labelKey: "all",         color: "res-violet" },
+  { filter: "portafolios",   icon: Layers,    labelKey: "portfolios",   color: "res-teal"   },
+  { filter: "oferta",        icon: Briefcase, labelKey: "jobs",         color: "res-blue"   },
 ];
 
-// Filtros de búsqueda — cada uno tiene opciones desplegables
 const SEARCH_FILTERS = [
   {
     id: "tipo",
@@ -65,6 +65,7 @@ const SEARCH_FILTERS = [
 ];
 
 export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, activeSearchFilters = {} }) {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [openFilter, setOpenFilter] = useState(null); 
   const { user } = useAuth();
@@ -77,8 +78,9 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
     .flat()
     .find(item => item.route === location.pathname)?.page ?? "home";
 
-  function renderNavItem({ page, route, icon: Icon, label, sub, color }) {
+  function renderNavItem({ page, route, icon: Icon, label, labelKey, sub, color }) {
     const isActive = activePage === page;
+    const itemLabel = labelKey ? t(`appI18n.feed.left.${labelKey}`) : label;
     return (
       <div
         key={page}
@@ -87,14 +89,14 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
           if (page === "tendencias") onFilter?.("tendencias");
           navigate(route);
         }}
-        title={collapsed ? label : ""}
+        title={collapsed ? itemLabel : ""}
       >
         <div className={`resource-icon ${color}`}>
           <Icon size={18} />
         </div>
         {!collapsed && (
           <div className="resource-text">
-            <div className="resource-label">{label}</div>
+            <div className="resource-label">{itemLabel}</div>
             {sub && <div className="resource-sub">{sub}</div>}
           </div>
         )}
@@ -102,8 +104,9 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
     );
   }
 
-  function renderExploreFilterItem({ filter, icon: Icon, label, color }) {
+  function renderExploreFilterItem({ filter, icon: Icon, label, labelKey, color }) {
     const isActive = activeFilter === filter;
+    const itemLabel = labelKey ? t(`appI18n.feed.left.${labelKey}`) : label;
     return (
       <div
         key={filter}
@@ -112,14 +115,14 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
           if (location.pathname === "/tendencias") navigate("/feed");
           onFilter?.(filter);
         }}
-        title={collapsed ? label : ""}
+        title={collapsed ? itemLabel : ""}
       >
         <div className={`resource-icon ${color}`}>
           <Icon size={15} />
         </div>
         {!collapsed && (
           <div className="resource-text">
-            <div className="resource-label">{label}</div>
+            <div className="resource-label">{itemLabel}</div>
           </div>
         )}
       </div>
@@ -332,7 +335,7 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
         <div className="card">
           <div className="card-body">
             <div className="panel-card-title card-title">
-              {!collapsed && <span>Panel</span>}
+              {!collapsed && <span>{t("appI18n.feed.left.panel")}</span>}
               <button
                 className="sidebar-toggle-btn"
                 onClick={() => setCollapsed(!collapsed)}
@@ -351,7 +354,7 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
           /* ── MODO BÚSQUEDA: filtros verticales ── */
           <div className="card">
             <div className="card-body">
-              <div className="card-title search-filters-title">Filtros</div>
+              <div className="card-title search-filters-title">{t("appI18n.feed.left.filters")}</div>
               {renderSearchFilters()}
             </div>
           </div>
@@ -360,14 +363,14 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
           <>
             <div className="card">
               <div className="card-body">
-                <div className="card-title">Explorar</div>
+                <div className="card-title">{t("appI18n.feed.left.explore")}</div>
                 {EXPLORE_FILTER_ITEMS.map(renderExploreFilterItem)}
               </div>
             </div>
 
             <div className="card">
               <div className="card-body">
-                <div className="card-title">Actividad</div>
+                <div className="card-title">{t("appI18n.feed.left.activity")}</div>
                 {NAV_ITEMS.actividad.map(renderNavItem)}
               </div>
             </div>

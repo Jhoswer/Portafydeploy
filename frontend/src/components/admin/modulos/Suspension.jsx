@@ -23,6 +23,7 @@ import {
   buscarUsuariosSuspension,
   suspenderUsuario,
 } from "../../../services/adminService";
+import "../../../styles/components/admin/components/Suspencion/Suspencion.css";
 
 const ROLE_STYLES = {
   "super administrador": {
@@ -79,10 +80,8 @@ function getRoleKey(role) {
 
 function formatDate(value) {
   if (!value) return "Sin definir";
-
   const date = value.includes("T") ? new Date(value) : new Date(`${value}T12:00:00`);
   if (Number.isNaN(date.getTime())) return String(value);
-
   return new Intl.DateTimeFormat("es-ES", {
     year: "numeric",
     month: "long",
@@ -98,7 +97,6 @@ function buildSummaryMessage(result, payload) {
   const user = result?.usuario ?? {};
   const type = payload.tipo === TEMPORARY ? "temporal" : "permanente";
   const until = payload.tipo === TEMPORARY ? ` hasta ${formatDate(payload.fecha_fin)}` : "";
-
   return `${getFullName(user)} fue suspendido de forma ${type}${until}. Motivo: ${payload.motivo}`;
 }
 
@@ -129,17 +127,14 @@ export default function Suspension() {
 
   const fetchUsuarios = async (term) => {
     const q = normalizeText(term);
-
     if (!q) {
       setUsuarios([]);
       setSearched(false);
       setError("");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
       const data = await buscarUsuariosSuspension({ query: q });
       setUsuarios(Array.isArray(data) ? data : []);
@@ -158,7 +153,6 @@ export default function Suspension() {
     debounceRef.current = setTimeout(() => {
       fetchUsuarios(query);
     }, 350);
-
     return () => clearTimeout(debounceRef.current);
   }, [query]);
 
@@ -170,7 +164,6 @@ export default function Suspension() {
 
   const openSuspensionModal = (usuario) => {
     if (!usuario?.can_suspend) return;
-
     setSelectedUser(usuario);
     setPendingPayload(null);
     setFormError("");
@@ -198,21 +191,19 @@ export default function Suspension() {
 
   const handleConfirm = async () => {
     if (!pendingPayload) return;
-
     setBusy(true);
     setError("");
     setConfirmError("");
     let succeeded = false;
-
     try {
       const result = await suspenderUsuario(pendingPayload);
       const response = result?.data ?? result ?? {};
-      const userResult = response?.data?.usuario ?? response?.data ?? response?.usuario ?? selectedUser;
+      const userResult =
+        response?.data?.usuario ?? response?.data ?? response?.usuario ?? selectedUser;
 
       setUsuarios((prev) =>
         prev.map((item) => {
           if (String(getUserId(item)) !== String(getUserId(userResult))) return item;
-
           return {
             ...item,
             suspendido: true,
@@ -226,12 +217,7 @@ export default function Suspension() {
         })
       );
 
-      setSuccessMessage(
-        buildSummaryMessage(
-          response?.data ?? response,
-          pendingPayload
-        )
-      );
+      setSuccessMessage(buildSummaryMessage(response?.data ?? response, pendingPayload));
       succeeded = true;
     } catch (err) {
       setConfirmError(err?.message || "No se pudo aplicar la suspension.");
@@ -257,13 +243,13 @@ export default function Suspension() {
         title="Suspension"
         subtitle="Administracion de suspensiones de usuarios."
       >
-        <div style={{ display: "grid", placeItems: "center", minHeight: "56vh", padding: 24 }}>
-          <div style={{ maxWidth: 560, width: "100%", padding: 24, borderRadius: 20, background: "linear-gradient(135deg, rgba(239,87,89,.08), rgba(162,214,249,.10))", border: "1px solid rgba(239,87,89,.16)", textAlign: "center" }}>
-            <div style={{ width: 64, height: 64, margin: "0 auto 14px", borderRadius: 20, background: "rgba(239,87,89,.12)", display: "grid", placeItems: "center" }}>
+        <div className="susp-restricted-wrapper">
+          <div className="susp-restricted-card">
+            <div className="susp-restricted-icon">
               <ShieldAlert size={28} color="#ef5759" />
             </div>
-            <h2 style={{ margin: 0, color: "#0f172a", fontSize: 22 }}>Acceso restringido</h2>
-            <p style={{ margin: "10px 0 0", color: "#64748b", fontSize: 14, lineHeight: 1.6 }}>
+            <h2>Acceso restringido</h2>
+            <p>
               Este módulo está reservado únicamente para el super administrador.
               Los administradores normales no pueden suspender usuarios.
             </p>
@@ -278,121 +264,56 @@ export default function Suspension() {
       title="Suspension"
       subtitle="Busca usuarios y aplica suspensiones temporales o permanentes con control de acceso por ubicacion."
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 10,
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "14px 16px",
-            borderRadius: 16,
-            background: "linear-gradient(135deg, rgba(239,87,89,.09), rgba(162,214,249,.11))",
-            border: "1px solid rgba(239,87,89,.14)",
-          }}
-        >
-          <div>
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#ef5759", textTransform: "uppercase", letterSpacing: ".08em" }}>
-              Controles criticos
-            </p>
-            <h2 style={{ margin: "4px 0 0", fontSize: 22, lineHeight: 1.1, color: "var(--text-primary, #0f172a)" }}>
-              Módulo de suspensión
-            </h2>
+      <div className="susp-layout">
+        {/* ── Banner de controles ── */}
+        <div className="susp-header-banner">
+          <div className="susp-header-banner__title-group">
+            <p>Controles criticos</p>
+            <h2>Módulo de suspensión</h2>
           </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 4,
-              padding: "10px 14px",
-              borderRadius: 14,
-              background: "rgba(255,255,255,.75)",
-              border: "1px solid rgba(15,23,42,.06)",
-            }}
-          >
-            <span style={{ fontSize: 12, fontWeight: 700, color: "#0f172a" }}>{currentScopeLabel}</span>
-            <span style={{ fontSize: 12, color: "#64748b" }}>{scopeHint}</span>
+          <div className="susp-header-banner__scope">
+            <span className="susp-header-banner__scope-label">{currentScopeLabel}</span>
+            <span className="susp-header-banner__scope-hint">{scopeHint}</span>
           </div>
         </div>
 
+        {/* ── Éxito ── */}
         {successMessage ? (
-          <div
-            style={{
-              display: "flex",
-              gap: 10,
-              alignItems: "flex-start",
-              padding: "14px 16px",
-              borderRadius: 14,
-              background: "rgba(5,150,105,.08)",
-              border: "1px solid rgba(5,150,105,.18)",
-            }}
-          >
+          <div className="susp-success-banner">
             <CheckCircle2 size={18} color="#059669" />
             <div>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#047857" }}>
-                Suspensión aplicada correctamente
-              </p>
-              <p style={{ margin: "4px 0 0", fontSize: 13, color: "#065f46", lineHeight: 1.5 }}>
-                {successMessage}
-              </p>
+              <p className="susp-success-banner__title">Suspensión aplicada correctamente</p>
+              <p className="susp-success-banner__text">{successMessage}</p>
             </div>
           </div>
         ) : null}
 
-        <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              background: "var(--card, #fff)",
-              border: "1.5px solid",
-              borderColor: query ? "rgba(239,87,89,.45)" : "rgba(162,214,249,.45)",
-              borderRadius: 14,
-              boxShadow: query ? "0 0 0 3px rgba(239,87,89,.08)" : "0 2px 10px rgba(0,0,0,.04)",
-              transition: "border-color .2s, box-shadow .2s",
-            }}
-          >
-            <Search size={15} color={query ? "#ef5759" : "#94a3b8"} style={{ marginLeft: 14, flexShrink: 0 }} />
+        {/* ── Búsqueda ── */}
+        <div className="susp-search-row">
+          <div className={`susp-search-input-wrapper${query ? " susp-search-input-wrapper--active" : ""}`}>
+            <Search
+              className="susp-search-input-wrapper__icon"
+              size={15}
+              color={query ? "#ef5759" : "#94a3b8"}
+            />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Nombre, apellido o correo..."
-              style={{
-                flex: 1,
-                border: "none",
-                outline: "none",
-                background: "transparent",
-                fontSize: 14,
-                color: "var(--text, #0f172a)",
-                padding: "13px 10px",
-                fontFamily: "inherit",
-              }}
             />
             {loading ? (
-              <Loader2 size={15} color="#ef5759" style={{ marginRight: 12, animation: "spin .8s linear infinite" }} />
+              <Loader2 size={15} color="#ef5759" className="susp-search-input-wrapper__spinner" />
             ) : null}
             {query && !loading ? (
               <button
                 type="button"
+                className="susp-search-clear-btn"
                 onClick={() => {
                   setQuery("");
                   setUsuarios([]);
                   setSearched(false);
                   setError("");
-                }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  marginRight: 10,
-                  color: "#94a3b8",
-                  display: "flex",
-                  padding: 4,
-                  borderRadius: 6,
                 }}
                 aria-label="Limpiar búsqueda"
               >
@@ -403,124 +324,54 @@ export default function Suspension() {
 
           <button
             type="button"
+            className="susp-search-submit-btn"
             onClick={() => fetchUsuarios(query)}
             disabled={loading}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 7,
-              padding: "0 18px",
-              background: loading ? "rgba(239,87,89,.5)" : "linear-gradient(135deg, #ef5759 0%, #f87171 100%)",
-              border: "none",
-              borderRadius: 14,
-              cursor: loading ? "not-allowed" : "pointer",
-              fontSize: 13,
-              fontWeight: 700,
-              color: "#fff",
-              fontFamily: "inherit",
-              boxShadow: "0 4px 16px rgba(239,87,89,.28)",
-            }}
           >
             <Search size={14} />
             Buscar
           </button>
         </div>
 
+        {/* ── Error de búsqueda ── */}
         {error ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "12px 16px",
-              borderRadius: 12,
-              background: "rgba(239,87,89,.07)",
-              border: "1px solid rgba(239,87,89,.20)",
-            }}
-          >
+          <div className="susp-error-banner">
             <AlertTriangle size={14} color="#ef5759" />
-            <p style={{ fontSize: 13, color: "#ef5759", margin: 0 }}>{error}</p>
+            <p>{error}</p>
           </div>
         ) : null}
 
+        {/* ── Estados y resultados ── */}
         <AnimatePresence mode="wait">
           {!searched && !loading ? (
-            <div
-              key="empty"
-              style={{
-                textAlign: "center",
-                padding: "52px 0",
-                borderRadius: 18,
-                background: "linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.94))",
-                border: "1px dashed rgba(148,163,184,.32)",
-              }}
-            >
-              <div
-                style={{
-                  width: 68,
-                  height: 68,
-                  borderRadius: 20,
-                  background: "rgba(239,87,89,.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto 16px",
-                }}
-              >
+            <div key="empty" className="susp-empty-state">
+              <div className="susp-empty-state__icon susp-empty-state__icon--red">
                 <Ban size={28} color="#ef5759" />
               </div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", margin: "0 0 6px" }}>
-                Busca un usuario a suspender
-              </p>
-              <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+              <p className="susp-empty-state__title">Busca un usuario a suspender</p>
+              <p className="susp-empty-state__subtitle">
                 Ingresa un nombre, apellido o correo para revisar si puede ser sancionado.
               </p>
             </div>
           ) : null}
 
           {searched && !loading && usuarios.length === 0 ? (
-            <div
-              key="no-results"
-              style={{
-                textAlign: "center",
-                padding: "52px 0",
-                borderRadius: 18,
-                background: "linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.94))",
-                border: "1px dashed rgba(148,163,184,.32)",
-              }}
-            >
-              <div
-                style={{
-                  width: 68,
-                  height: 68,
-                  borderRadius: 20,
-                  background: "rgba(148,163,184,.09)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto 16px",
-                }}
-              >
+            <div key="no-results" className="susp-empty-state">
+              <div className="susp-empty-state__icon susp-empty-state__icon--gray">
                 <ShieldOff size={28} color="#64748b" />
               </div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", margin: "0 0 6px" }}>
-                Sin resultados
-              </p>
-              <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+              <p className="susp-empty-state__title">Sin resultados</p>
+              <p className="susp-empty-state__subtitle">
                 No se encontraron usuarios para <strong>{query}</strong>.
               </p>
             </div>
           ) : null}
 
           {usuarios.length > 0 ? (
-            <div
-              key="results"
-              style={{ display: "flex", flexDirection: "column", gap: 10 }}
-            >
-              <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 2px" }}>
-                <strong style={{ color: "#0f172a" }}>{usuarios.length}</strong> resultado{usuarios.length !== 1 ? "s" : ""}
+            <div key="results" className="susp-results-list">
+              <p className="susp-results-count">
+                <strong>{usuarios.length}</strong> resultado{usuarios.length !== 1 ? "s" : ""}
               </p>
-
               {usuarios.map((usuario, index) => (
                 <SuspensionCard
                   key={getUserId(usuario) ?? index}
@@ -533,6 +384,7 @@ export default function Suspension() {
         </AnimatePresence>
       </div>
 
+      {/* ── Modales ── */}
       <AnimatePresence>
         {showForm && selectedUser ? (
           <SuspensionFormModal
@@ -561,14 +413,11 @@ export default function Suspension() {
           />
         ) : null}
       </AnimatePresence>
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
     </AdminModuleLayout>
   );
 }
 
+/* ── Tarjeta de usuario ──────────────────────────────────── */
 function SuspensionCard({ usuario, onSuspender }) {
   const role = getRoleKey(usuario?.rol);
   const roleStyle = getRoleStyle(role);
@@ -576,168 +425,100 @@ function SuspensionCard({ usuario, onSuspender }) {
   const suspendido = !!usuario?.suspendido;
   const canSuspend = !!usuario?.can_suspend;
 
+  const cardClass = [
+    "susp-card",
+    suspendido ? "susp-card--suspended" : canSuspend ? "susp-card--suspendable" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <article
-      style={{
-        display: "flex",
-        gap: 14,
-        alignItems: "center",
-        padding: "14px 16px",
-        borderRadius: 16,
-        background: "var(--card, #fff)",
-        border: "1.5px solid",
-        borderColor: suspendido ? "rgba(148,163,184,.32)" : canSuspend ? "rgba(239,87,89,.24)" : "rgba(148,163,184,.26)",
-        boxShadow: "0 2px 10px rgba(0,0,0,.04)",
-      }}
-    >
-      <div style={{ position: "relative", flexShrink: 0 }}>
+    <article className={cardClass}>
+      {/* avatar */}
+      <div className="susp-card__avatar-wrapper">
         {usuario?.foto_perfil ? (
           <img
+            className="susp-card__avatar-img"
             src={usuario.foto_perfil}
             alt={getFullName(usuario)}
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 14,
-              objectFit: "cover",
-              border: "2px solid rgba(239,87,89,.14)",
-            }}
           />
         ) : (
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 14,
-              background: "linear-gradient(135deg, rgba(239,87,89,.14), rgba(162,214,249,.24))",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 15,
-              fontWeight: 800,
-              color: "#ef5759",
-            }}
-          >
+          <div className="susp-card__avatar-initials">
             {initials || <User size={18} />}
           </div>
         )}
-
         <span
-          style={{
-            position: "absolute",
-            right: -4,
-            bottom: -4,
-            width: 18,
-            height: 18,
-            borderRadius: "50%",
-            background: roleStyle.background,
-            color: roleStyle.color,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "2px solid var(--bg, #f1f5f9)",
-          }}
+          className="susp-card__role-badge"
+          style={{ background: roleStyle.background, color: roleStyle.color }}
         >
           {roleStyle.icon}
         </span>
       </div>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 14, fontWeight: 800, color: "#0f172a" }}>
-            {getFullName(usuario)}
-          </span>
+      {/* info */}
+      <div className="susp-card__info">
+        <div className="susp-card__name-row">
+          <span className="susp-card__name">{getFullName(usuario)}</span>
           <span
-            style={{
-              fontSize: 10,
-              fontWeight: 800,
-              padding: "2px 8px",
-              borderRadius: 999,
-              background: roleStyle.background,
-              color: roleStyle.color,
-              textTransform: "uppercase",
-              letterSpacing: ".05em",
-            }}
+            className="susp-card__role-pill"
+            style={{ background: roleStyle.background, color: roleStyle.color }}
           >
             {roleStyle.label}
           </span>
           {suspendido ? (
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 800,
-                padding: "2px 8px",
-                borderRadius: 999,
-                background: "rgba(148,163,184,.12)",
-                color: "#475569",
-                textTransform: "uppercase",
-                letterSpacing: ".05em",
-              }}
-            >
-              Suspendido
-            </span>
+            <span className="susp-card__suspended-pill">Suspendido</span>
           ) : null}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4, flexWrap: "wrap" }}>
+        <div className="susp-card__meta-row">
           <Mail size={11} color="#94a3b8" />
-          <span style={{ fontSize: 12, color: "#64748b" }}>{usuario?.email ?? "Sin correo"}</span>
+          <span className="susp-card__meta-text">{usuario?.email ?? "Sin correo"}</span>
           {usuario?.ubicacion ? (
             <>
-              <span style={{ color: "#cbd5e1" }}>•</span>
+              <span className="susp-card__meta-sep">•</span>
               <MapPin size={11} color="#94a3b8" />
-              <span style={{ fontSize: 12, color: "#64748b" }}>{usuario.ubicacion}</span>
+              <span className="susp-card__meta-text">{usuario.ubicacion}</span>
             </>
           ) : null}
           {usuario?.suspension_status && usuario.suspension_status !== "activo" ? (
             <>
-              <span style={{ color: "#cbd5e1" }}>•</span>
+              <span className="susp-card__meta-sep">•</span>
               <CalendarDays size={11} color="#94a3b8" />
-              <span style={{ fontSize: 12, color: "#64748b" }}>
-                {usuario.suspension_status === "temporal" ? `Temporal hasta ${formatDate(usuario.suspension_ends_at)}` : "Permanente"}
+              <span className="susp-card__meta-text">
+                {usuario.suspension_status === "temporal"
+                  ? `Temporal hasta ${formatDate(usuario.suspension_ends_at)}`
+                  : "Permanente"}
               </span>
             </>
           ) : null}
         </div>
 
-        <div style={{ display: "flex", gap: 10, marginTop: 6, flexWrap: "wrap" }}>
-          <small style={{ color: "#94a3b8" }}>ID #{getUserId(usuario)}</small>
+        <div className="susp-card__footer-row">
+          <small className="susp-card__id">ID #{getUserId(usuario)}</small>
           {usuario?.disable_reason ? (
-            <small style={{ color: "#ef5759" }}>{usuario.disable_reason}</small>
+            <small className="susp-card__disable-reason">{usuario.disable_reason}</small>
           ) : null}
         </div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8, flexShrink: 0 }}>
+      {/* acción */}
+      <div className="susp-card__actions">
         <button
           type="button"
+          className={`susp-card__suspend-btn${canSuspend ? " susp-card__suspend-btn--active" : ""}`}
           onClick={() => onSuspender(usuario)}
           disabled={!canSuspend}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "10px 14px",
-            borderRadius: 12,
-            border: "none",
-            cursor: canSuspend ? "pointer" : "not-allowed",
-            fontSize: 13,
-            fontWeight: 800,
-            color: "#fff",
-            background: canSuspend ? "linear-gradient(135deg, #ef5759 0%, #f87171 100%)" : "rgba(148,163,184,.55)",
-            boxShadow: canSuspend ? "0 6px 18px rgba(239,87,89,.22)" : "none",
-          }}
         >
           <Ban size={14} />
           {suspendido ? "Ya suspendido" : canSuspend ? "Suspender" : "No disponible"}
         </button>
-
         <ChevronRight size={16} color={canSuspend ? "#ef5759" : "#cbd5e1"} />
       </div>
     </article>
   );
 }
 
+/* ── Modal de formulario ─────────────────────────────────── */
 function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
   const [tipo, setTipo] = useState(TEMPORARY);
   const [fechaFin, setFechaFin] = useState("");
@@ -746,33 +527,27 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, []);
 
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.key === "Escape" && !isBusy) onClose();
     };
-
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isBusy, onClose]);
 
   const submit = () => {
     const motivoNormalizado = normalizeText(motivo);
-
     if (!motivoNormalizado) {
       setLocalError("El motivo es obligatorio.");
       return;
     }
-
     if (tipo === TEMPORARY && !fechaFin) {
       setLocalError("La fecha de fin es obligatoria para suspensiones temporales.");
       return;
     }
-
     setLocalError("");
     onContinue({
       user_id: getUserId(usuario),
@@ -782,100 +557,76 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
     });
   };
 
+  const roleStyle = getRoleStyle(usuario?.rol);
+
   return (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(15,23,42,.52)",
-        backdropFilter: "blur(8px)",
-        display: "grid",
-        placeItems: "center",
-        zIndex: 80,
-        padding: 18,
-      }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !isBusy) onClose();
-      }}
+      className="susp-overlay"
+      onClick={(e) => { if (e.target === e.currentTarget && !isBusy) onClose(); }}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="suspension-form-title"
-        style={{
-          width: "min(760px, 100%)",
-          borderRadius: 20,
-          background: "linear-gradient(180deg, rgba(255,255,255,.98), rgba(250,252,255,.98))",
-          boxShadow: "0 30px 80px rgba(15,23,42,.28)",
-          border: "1px solid rgba(255,255,255,.6)",
-          overflow: "hidden",
-        }}
+        className="susp-modal susp-modal--form"
       >
-        <div style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: 20, borderBottom: "1px solid rgba(148,163,184,.16)" }}>
-          <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #ef5759, #fb7185)", color: "#fff", display: "grid", placeItems: "center", flexShrink: 0 }}>
+        {/* cabecera */}
+        <div className="susp-modal__header">
+          <div className="susp-modal__header-icon">
             <ShieldAlert size={20} />
           </div>
-
-          <div style={{ flex: 1 }}>
-            <h3 id="suspension-form-title" style={{ margin: 0, fontSize: 20, color: "#0f172a" }}>
+          <div className="susp-modal__header-text">
+            <h3 id="suspension-form-title" className="susp-modal__header-title">
               Suspender a {getFullName(usuario)}
             </h3>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b", lineHeight: 1.5 }}>
+            <p className="susp-modal__header-subtitle">
               Define el tipo de sancion, la fecha de fin si corresponde y un motivo claro para registrar la accion.
             </p>
           </div>
-
           <button
             type="button"
+            className="susp-modal__close-btn"
             onClick={onClose}
             disabled={isBusy}
             aria-label="Cerrar"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 12,
-              border: "none",
-              background: "rgba(148,163,184,.12)",
-              color: "#475569",
-              cursor: "pointer",
-              display: "grid",
-              placeItems: "center",
-            }}
           >
             <X size={16} />
           </button>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 18, padding: 20 }}>
-          <aside style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ padding: 16, borderRadius: 16, background: "rgba(239,87,89,.05)", border: "1px solid rgba(239,87,89,.16)" }}>
-              <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color: "#ef5759", textTransform: "uppercase", letterSpacing: ".06em" }}>
-                Usuario seleccionado
-              </p>
-              <div style={{ display: "flex", gap: 12, marginTop: 10, alignItems: "center" }}>
-                <div style={{ width: 50, height: 50, borderRadius: 16, background: "linear-gradient(135deg, rgba(239,87,89,.18), rgba(162,214,249,.22))", display: "grid", placeItems: "center", fontWeight: 800, color: "#ef5759" }}>
-                  {`${usuario?.nombre?.[0] ?? ""}${usuario?.apellido?.[0] ?? ""}`.toUpperCase() || <User size={18} />}
+        {/* cuerpo */}
+        <div className="susp-modal__form-body">
+          {/* aside */}
+          <aside className="susp-modal__aside">
+            <div className="susp-modal__user-info-card">
+              <p className="susp-modal__user-info-card__label">Usuario seleccionado</p>
+              <div className="susp-modal__user-info-card__content">
+                <div className="susp-modal__user-avatar">
+                  {`${usuario?.nombre?.[0] ?? ""}${usuario?.apellido?.[0] ?? ""}`.toUpperCase() || (
+                    <User size={18} />
+                  )}
                 </div>
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                    <strong style={{ color: "#0f172a" }}>{getFullName(usuario)}</strong>
-                    <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: getRoleStyle(usuario?.rol).background, color: getRoleStyle(usuario?.rol).color, fontWeight: 800 }}>
-                      {getRoleStyle(usuario?.rol).label}
+                <div>
+                  <div className="susp-modal__user-name">
+                    <strong>{getFullName(usuario)}</strong>
+                    <span
+                      className="susp-card__role-pill"
+                      style={{ background: roleStyle.background, color: roleStyle.color }}
+                    >
+                      {roleStyle.label}
                     </span>
                   </div>
-                  <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 4, color: "#64748b", fontSize: 12 }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 6 }}><Mail size={11} /> {usuario?.email}</span>
-                    <span style={{ display: "flex", alignItems: "center", gap: 6 }}><MapPin size={11} /> {usuario?.ubicacion || "Sin ubicacion"}</span>
+                  <div className="susp-modal__user-meta">
+                    <span><Mail size={11} /> {usuario?.email}</span>
+                    <span><MapPin size={11} /> {usuario?.ubicacion || "Sin ubicacion"}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div style={{ padding: 16, borderRadius: 16, background: "rgba(2,132,199,.05)", border: "1px solid rgba(2,132,199,.16)" }}>
-              <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color: "#0284c7", textTransform: "uppercase", letterSpacing: ".06em" }}>
-                Reglas
-              </p>
-              <ul style={{ margin: "10px 0 0", paddingLeft: 18, color: "#475569", fontSize: 13, lineHeight: 1.6 }}>
+            <div className="susp-modal__rules-card">
+              <p className="susp-modal__rules-card__label">Reglas</p>
+              <ul>
                 <li>El motivo es obligatorio.</li>
                 <li>Las suspensiones temporales requieren fecha de fin.</li>
                 <li>Los administradores y super administradores no se pueden suspender.</li>
@@ -883,12 +634,13 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
             </div>
           </aside>
 
-          <section style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* campos */}
+          <section className="susp-modal__form-section">
             <Field label="Tipo de sancion" icon={<ShieldAlert size={13} />}>
               <select
+                className="susp-input"
                 value={tipo}
                 onChange={(e) => setTipo(e.target.value)}
-                style={inputStyle}
               >
                 <option value={TEMPORARY}>Temporal</option>
                 <option value={PERMANENT}>Permanente</option>
@@ -899,9 +651,9 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
               <Field label="Fecha de fin" icon={<CalendarDays size={13} />}>
                 <input
                   type="date"
+                  className="susp-input"
                   value={fechaFin}
                   onChange={(e) => setFechaFin(e.target.value)}
-                  style={inputStyle}
                   min={new Date().toISOString().slice(0, 10)}
                 />
               </Field>
@@ -909,27 +661,31 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
 
             <Field label="Motivo" required icon={<Lock size={13} />}>
               <textarea
+                className="susp-input susp-textarea"
                 value={motivo}
                 onChange={(e) => setMotivo(e.target.value)}
                 placeholder="Explica claramente por qué se aplica la suspensión..."
                 rows={6}
-                style={{ ...inputStyle, resize: "vertical", minHeight: 140 }}
               />
             </Field>
 
             {localError || error ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "rgba(239,87,89,.07)", border: "1px solid rgba(239,87,89,.18)" }}>
+              <div className="susp-modal-error">
                 <AlertTriangle size={14} color="#ef5759" />
-                <p style={{ margin: 0, color: "#ef5759", fontSize: 13 }}>{error || localError}</p>
+                <p>{error || localError}</p>
               </div>
             ) : null}
 
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 6 }}>
-              <button type="button" onClick={onClose} disabled={isBusy} style={ghostButtonStyle}>
+            <div className="susp-modal__btn-row">
+              <button type="button" className="susp-btn-ghost" onClick={onClose} disabled={isBusy}>
                 Cancelar
               </button>
-              <button type="button" onClick={submit} disabled={isBusy} style={primaryButtonStyle}>
-                {isBusy ? <Loader2 size={15} style={{ animation: "spin .8s linear infinite" }} /> : <CheckCircle2 size={15} />}
+              <button type="button" className="susp-btn-primary" onClick={submit} disabled={isBusy}>
+                {isBusy ? (
+                  <Loader2 size={15} className="susp-btn-primary__spinner" />
+                ) : (
+                  <CheckCircle2 size={15} />
+                )}
                 Revisar
               </button>
             </div>
@@ -940,19 +696,17 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
   );
 }
 
+/* ── Modal de confirmación ───────────────────────────────── */
 function SuspensionConfirmModal({ usuario, payload, isBusy, error, onClose, onBack, onConfirm }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, []);
 
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.key === "Escape" && !isBusy) onClose();
     };
-
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isBusy, onClose]);
@@ -961,74 +715,62 @@ function SuspensionConfirmModal({ usuario, payload, isBusy, error, onClose, onBa
 
   return (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(15,23,42,.60)",
-        backdropFilter: "blur(8px)",
-        display: "grid",
-        placeItems: "center",
-        zIndex: 90,
-        padding: 18,
-      }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !isBusy) onClose();
-      }}
+      className="susp-overlay susp-overlay--confirm"
+      onClick={(e) => { if (e.target === e.currentTarget && !isBusy) onClose(); }}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="suspension-confirm-title"
-        style={{
-          width: "min(640px, 100%)",
-          borderRadius: 20,
-          background: "linear-gradient(180deg, rgba(255,255,255,.98), rgba(250,252,255,.98))",
-          boxShadow: "0 30px 80px rgba(15,23,42,.28)",
-          border: "1px solid rgba(255,255,255,.6)",
-          overflow: "hidden",
-        }}
+        className="susp-modal susp-modal--confirm"
       >
-        <div style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: 20, borderBottom: "1px solid rgba(148,163,184,.16)" }}>
-          <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #ef5759, #fb7185)", color: "#fff", display: "grid", placeItems: "center", flexShrink: 0 }}>
+        {/* cabecera */}
+        <div className="susp-modal__header">
+          <div className="susp-modal__header-icon">
             <AlertTriangle size={20} />
           </div>
-          <div style={{ flex: 1 }}>
-            <h3 id="suspension-confirm-title" style={{ margin: 0, fontSize: 20, color: "#0f172a" }}>
+          <div className="susp-modal__header-text">
+            <h3 id="suspension-confirm-title" className="susp-modal__header-title">
               Confirmar suspensión
             </h3>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b", lineHeight: 1.5 }}>
+            <p className="susp-modal__header-subtitle">
               Revisa el resumen antes de aplicar la sanción. Esta acción quedará registrada.
             </p>
           </div>
         </div>
 
-        <div style={{ padding: 20, display: "grid", gap: 14 }}>
-          <div style={{ padding: 16, borderRadius: 16, background: "rgba(239,87,89,.05)", border: "1px solid rgba(239,87,89,.16)" }}>
-            <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color: "#ef5759", textTransform: "uppercase", letterSpacing: ".06em" }}>
-              Resumen
-            </p>
-            <div style={{ marginTop: 12, display: "grid", gap: 8, color: "#0f172a", fontSize: 14 }}>
+        {/* cuerpo */}
+        <div className="susp-confirm-body">
+          <div className="susp-confirm-summary">
+            <p className="susp-confirm-summary__label">Resumen</p>
+            <div className="susp-confirm-summary__rows">
               <Row label="Usuario" value={getFullName(usuario)} />
               <Row label="Tipo" value={isTemporal ? "Temporal" : "Permanente"} />
-              {isTemporal ? <Row label="Fecha de fin" value={formatDate(payload?.fecha_fin)} /> : null}
+              {isTemporal ? (
+                <Row label="Fecha de fin" value={formatDate(payload?.fecha_fin)} />
+              ) : null}
               <Row label="Motivo" value={payload?.motivo} />
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-            <button type="button" onClick={onBack} disabled={isBusy} style={ghostButtonStyle}>
+          <div className="susp-modal__btn-row susp-modal__btn-row--between">
+            <button type="button" className="susp-btn-ghost" onClick={onBack} disabled={isBusy}>
               Volver
             </button>
-            <button type="button" onClick={onConfirm} disabled={isBusy} style={primaryButtonStyle}>
-              {isBusy ? <Loader2 size={15} style={{ animation: "spin .8s linear infinite" }} /> : <CheckCircle2 size={15} />}
+            <button type="button" className="susp-btn-primary" onClick={onConfirm} disabled={isBusy}>
+              {isBusy ? (
+                <Loader2 size={15} className="susp-btn-primary__spinner" />
+              ) : (
+                <CheckCircle2 size={15} />
+              )}
               Aplicar suspensión
             </button>
           </div>
 
           {error ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "rgba(239,87,89,.07)", border: "1px solid rgba(239,87,89,.18)" }}>
+            <div className="susp-modal-error">
               <AlertTriangle size={14} color="#ef5759" />
-              <p style={{ margin: 0, color: "#ef5759", fontSize: 13 }}>{error}</p>
+              <p>{error}</p>
             </div>
           ) : null}
         </div>
@@ -1037,13 +779,14 @@ function SuspensionConfirmModal({ usuario, payload, isBusy, error, onClose, onBa
   );
 }
 
+/* ── Componentes auxiliares ──────────────────────────────── */
 function Field({ label, icon, required = false, children }) {
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <span style={{ fontSize: 12, fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: ".06em", display: "flex", alignItems: "center", gap: 6 }}>
+    <label className="susp-field">
+      <span className="susp-field__label">
         {icon}
         {label}
-        {required ? <span style={{ color: "#ef5759" }}>*</span> : null}
+        {required ? <span className="susp-field__required">*</span> : null}
       </span>
       {children}
     </label>
@@ -1052,51 +795,9 @@ function Field({ label, icon, required = false, children }) {
 
 function Row({ label, value }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "110px 1fr", gap: 12 }}>
-      <span style={{ color: "#64748b", fontWeight: 700 }}>{label}</span>
-      <span style={{ color: "#0f172a", wordBreak: "break-word" }}>{value || "Sin definir"}</span>
+    <div className="susp-row">
+      <span className="susp-row__label">{label}</span>
+      <span className="susp-row__value">{value || "Sin definir"}</span>
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  borderRadius: 14,
-  border: "1px solid rgba(148,163,184,.28)",
-  background: "#fff",
-  padding: "11px 13px",
-  fontSize: 14,
-  color: "#0f172a",
-  fontFamily: "inherit",
-  outline: "none",
-  boxShadow: "inset 0 1px 0 rgba(255,255,255,.6)",
-};
-
-const ghostButtonStyle = {
-  padding: "11px 16px",
-  borderRadius: 12,
-  border: "1px solid rgba(148,163,184,.26)",
-  background: "#fff",
-  color: "#475569",
-  fontSize: 13,
-  fontWeight: 800,
-  cursor: "pointer",
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 8,
-};
-
-const primaryButtonStyle = {
-  padding: "11px 16px",
-  borderRadius: 12,
-  border: "none",
-  background: "linear-gradient(135deg, #ef5759 0%, #f87171 100%)",
-  color: "#fff",
-  fontSize: 13,
-  fontWeight: 800,
-  cursor: "pointer",
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 8,
-  boxShadow: "0 6px 18px rgba(239,87,89,.22)",
-};

@@ -140,9 +140,8 @@ export function PostReactions({
   busy,
   onLike, onSave, onToggleComment,
   alreadyApplied, onApply,
-  // 👇 Agrega estas dos props al post que le pases
-  shareUrl,   // ej: "https://miapp.com/oferta/123"
-  shareText,  // ej: "Mira esta oferta de trabajo"
+  shareUrl,  
+  shareText, 
 }) {
   const [shareOpen, setShareOpen] = useState(false);
 
@@ -179,7 +178,7 @@ export function PostReactions({
           {saved ? "Guardado" : "Guardar"}
         </button>
 
-        {/* 👇 Botón nuevo */}
+        {/*  Botón nuevo */}
         <button type="button" onClick={() => setShareOpen(true)} style={pill(false)}>
           <Share2 size={15} /> Compartir
         </button>
@@ -192,14 +191,14 @@ export function PostReactions({
           </span>
         ) : (
           <button type="button" onClick={onApply}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#2563eb", color: "#fff", borderRadius: 999, padding: "7px 16px", fontWeight: 500, fontSize: 13, border: "none", cursor: "pointer" }}>
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#E8484A", color: "#fff", borderRadius: 999, padding: "7px 16px", fontWeight: 500, fontSize: 13, border: "none", cursor: "pointer" }}>
             <Briefcase size={14} /> Postularme
           </button>
         )}
 
       </div>
 
-      {/* 👇 Modal — se renderiza fuera del div de botones */}
+      {/*  Modal — se renderiza fuera del div de botones */}
       <ShareModal
         isOpen={shareOpen}
         onClose={() => setShareOpen(false)}

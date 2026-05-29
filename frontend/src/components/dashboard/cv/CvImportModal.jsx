@@ -11,9 +11,12 @@ import { importarCv } from "../../../services/cvImportService";
 import { normalizarCvImportado } from "../../../features/cv-import/normalizers";
 import CvImportReviewModal from "./CvImportReviewModal";
 import { cargarDatosPortafolio, crearCv } from "../../../services/cvService";
+import "../../../styles/components/dashboard/cv-module.css";
+import { useTranslation } from "react-i18next";
 
 const ACCEPTED = ".pdf,.doc,.docx,.txt";
 const MAX_MB = 10;
+
 
 const s = {
   overlay: {
@@ -28,7 +31,7 @@ const s = {
     padding: 16,
   },
   modal: {
-    background: "#fff",
+    background: "var(--cv-surface-modal)",
     borderRadius: 20,
     width: "100%",
     maxWidth: 480,
@@ -66,7 +69,7 @@ const s = {
   },
   body: { padding: "24px", display: "grid", gap: 16 },
   dropzone: (isDragging) => ({
-    border: `2px dashed ${isDragging ? "#255dde" : "rgba(162,214,249,.6)"}`,
+    border: `2px dashed ${isDragging ? "#255dde" : "var(--cv-dropzone-border)"}`,
     borderRadius: 14,
     padding: "32px 24px",
     display: "flex",
@@ -74,7 +77,7 @@ const s = {
     alignItems: "center",
     gap: 10,
     cursor: "pointer",
-    background: isDragging ? "rgba(37,93,222,.04)" : "rgba(246,251,255,.8)",
+    background: isDragging ? "var(--cv-bg-hover)" : "var(--cv-dropzone-bg)",
     transition: "all .18s",
     textAlign: "center",
   }),
@@ -105,8 +108,8 @@ const s = {
     gap: 10,
     padding: "10px 14px",
     borderRadius: 10,
-    background: "rgba(37,93,222,.06)",
-    border: "1px solid rgba(37,93,222,.14)",
+    background: "var(--cv-file-selected-bg)",
+    border: "1px solid var(--cv-file-selected-border)",
   },
   fileName: {
     fontFamily: "var(--f-ui)",
@@ -124,9 +127,9 @@ const s = {
     gap: 8,
     padding: "10px 14px",
     borderRadius: 10,
-    background: "rgba(239,87,89,.06)",
-    border: "1px solid rgba(239,87,89,.18)",
-    color: "#c0392b",
+    background: "var(--cv-error-bg)",
+    border: "1px solid var(--cv-error-border)",
+    color: "var(--cv-error-text)",
     fontFamily: "var(--f-body)",
     fontSize: "0.82rem",
   },
@@ -136,9 +139,9 @@ const s = {
     gap: 8,
     padding: "10px 14px",
     borderRadius: 10,
-    background: "rgba(13,148,136,.06)",
-    border: "1px solid rgba(13,148,136,.18)",
-    color: "#0d9488",
+    background: "var(--cv-cancel-btn-bg)",
+    border: "1px solid var(--cv-cancel-btn-border)",
+    color: "var(--text)",
     fontFamily: "var(--f-body)",
     fontSize: "0.82rem",
   },
@@ -191,6 +194,7 @@ export default function CvImportModal({ onClose, onImported }) {
   const [normalized, setNormalized] = useState(null);
   const [existingData, setExistingData] = useState(null);
   const [showReview, setShowReview] = useState(false);
+  const { t } = useTranslation();
 
   function validateFile(f) {
     if (!f) return "Selecciona un archivo.";
@@ -294,9 +298,7 @@ export default function CvImportModal({ onClose, onImported }) {
 
       if (totalNew === 0) {
         // Sin entidades nuevas — mensaje breve, sin modal
-        setSuccess(
-          "CV importado. No se encontraron elementos nuevos respecto a tu perfil.",
-        );
+        setSuccess(t("cv.import.successNoNew"));
         setTimeout(() => {
           onImported(normalizedData);
           /* onClose(); */
@@ -326,15 +328,12 @@ export default function CvImportModal({ onClose, onImported }) {
         style={s.modal}
         role="dialog"
         aria-modal="true"
-        aria-label="Importar CV"
+        aria-label={t("cv.import.title")}
       >
         <div style={s.header}>
           <div>
-            <div style={s.title}>Importar CV</div>
-            <div style={s.subtitle}>
-              Tu CV se procesará con IA y pre-rellenará los formularios
-              automáticamente.
-            </div>
+            <div style={s.title}>{t("cv.import.title")}</div>
+            <div style={s.subtitle}>{t("cv.import.subtitle")}</div>
           </div>
           <button
             type="button"
@@ -358,10 +357,10 @@ export default function CvImportModal({ onClose, onImported }) {
               <FileUp size={22} />
             </div>
             <div style={s.dropTitle}>
-              {file ? "Cambiar archivo" : "Arrastrá tu CV aquí"}
+              {file ? t("cv.import.dropChange") : t("cv.import.dropTitle")}
             </div>
             <div style={s.dropSub}>
-              o hacé clic para seleccionar · PDF, Word, TXT · máx {MAX_MB} MB
+              {t("cv.import.dropSub", { max: MAX_MB })}
             </div>
             <input
               ref={inputRef}
@@ -398,7 +397,7 @@ export default function CvImportModal({ onClose, onImported }) {
 
         <div style={s.footer}>
           <button type="button" style={s.btnSecondary} onClick={onClose}>
-            Cancelar
+            {t("cv.import.cancel")}
           </button>
           <button
             type="button"
@@ -411,12 +410,11 @@ export default function CvImportModal({ onClose, onImported }) {
                 <Loader2
                   size={15}
                   style={{ animation: "spin 1s linear infinite" }}
-                />{" "}
-                Procesando...
+                /> {t("cv.import.processing")}
               </>
             ) : (
               <>
-                <FileUp size={15} /> Importar CV
+                <FileUp size={15} /> {t("cv.import.btn")}
               </>
             )}
           </button>

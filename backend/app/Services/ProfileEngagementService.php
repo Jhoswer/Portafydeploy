@@ -6,6 +6,7 @@ use App\Models\Profile;
 use App\Models\Relation;
 use App\Models\Usuario;
 use App\Support\OfficialSchema;
+use App\Support\ProfileRoleGuard;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -45,6 +46,9 @@ class ProfileEngagementService
         $viewer = OfficialSchema::ensureProfile($authenticatedUser);
         $target = OfficialSchema::ensureProfile($targetUser);
 
+        $this->assertSocialProfile($viewer);
+        $this->assertSocialProfile($target);
+
         if ((int) $viewer->getKey() === (int) $target->getKey()) {
             throw new RuntimeException('No puedes seguirte a ti mismo.');
         }
@@ -73,6 +77,9 @@ class ProfileEngagementService
         $viewer = OfficialSchema::ensureProfile($authenticatedUser);
         $target = OfficialSchema::ensureProfile($targetUser);
 
+        $this->assertSocialProfile($viewer);
+        $this->assertSocialProfile($target);
+
         Relation::query()
             ->where('id_profile1', $viewer->getKey())
             ->where('id_profile2', $target->getKey())
@@ -89,11 +96,20 @@ class ProfileEngagementService
         $viewer = OfficialSchema::ensureProfile($authenticatedUser);
         $target = OfficialSchema::ensureProfile($targetUser);
 
+        $this->assertSocialProfile($viewer);
+        $this->assertSocialProfile($target);
+
         return $this->summary($target, $viewer);
     }
 
     public function list(Profile $target, string $type, ?Profile $viewer): array
     {
+        $this->assertSocialProfile($target);
+
+        if ($viewer) {
+            $this->assertSocialProfile($viewer);
+        }
+
         if (! in_array($type, ['followers', 'following'], true)) {
             throw new RuntimeException('Tipo de lista no valido.');
         }
@@ -152,6 +168,10 @@ class ProfileEngagementService
             return null;
         }
 
+        if (ProfileRoleGuard::profileIsAdministrative($profile)) {
+            return null;
+        }
+
         $user = $profile->userRole?->user;
         $fullName = trim(collect([$profile->name, $profile->last_name])->filter()->implode(' '));
         $profileId = (int) $profile->getKey();
@@ -166,5 +186,12 @@ class ProfileEngagementService
             'is_me' => $viewer && (int) $viewer->getKey() === $profileId,
             'is_following' => $viewerFollowing->has($profileId),
         ];
+    }
+
+    private function assertSocialProfile(Profile $profile): void
+    {
+        if (ProfileRoleGuard::profileIsAdministrative($profile)) {
+            throw new RuntimeException('Este perfil no esta disponible para acciones sociales.');
+        }
     }
 }

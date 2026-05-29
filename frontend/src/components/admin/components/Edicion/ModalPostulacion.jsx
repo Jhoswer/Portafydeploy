@@ -42,18 +42,6 @@ function formatDate(value) {
   });
 }
 
-/* Estilo compartido para campos de solo lectura */
-const READONLY_STYLE = {
-  background:  "#f1f5f9",
-  color:       "#64748b",
-  cursor:      "default",
-  userSelect:  "none",
-  fontSize:    "12.5px",
-  minHeight:   "38px",
-  display:     "flex",
-  alignItems:  "center",
-};
-
 export default function ModalPostulacion({ idProfile, postulation, onClose, onSave }) {
   /* ── Campos editables ── */
   const [formData, setFormData] = useState({
@@ -232,7 +220,7 @@ export default function ModalPostulacion({ idProfile, postulation, onClose, onSa
                         />
                         Fecha de postulación
                       </label>
-                      <div className="edicion-modal__input" style={READONLY_STYLE}>
+                      <div className="edicion-modal__input edicion-modal__input--readonly">
                         {formatDate(createdAt)}
                       </div>
                     </div>
@@ -245,7 +233,7 @@ export default function ModalPostulacion({ idProfile, postulation, onClose, onSa
                         />
                         Última actualización
                       </label>
-                      <div className="edicion-modal__input" style={READONLY_STYLE}>
+                      <div className="edicion-modal__input edicion-modal__input--readonly">
                         {formatDate(updatedAt)}
                       </div>
                     </div>

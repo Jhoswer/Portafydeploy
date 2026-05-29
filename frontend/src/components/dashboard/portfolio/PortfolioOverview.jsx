@@ -1,5 +1,6 @@
 import { ArrowUpRight, Orbit, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   cardText,
   cardTitle,
@@ -24,12 +25,13 @@ import {
 } from "../../../features/dashboard-portfolio/portfolioStyles";
 import { useViewport } from "../../../features/dashboard-portfolio/portfolioWorkspaceControls";
 
-export default function PortfolioOverview({ overviewCards, progress, recentHighlights = [], onOpenSection }) {
+export default function PortfolioOverview({ overviewCards, progress, recentHighlights = [], educationSummary = null, onOpenSection }) {
+  const { t } = useTranslation();
   const viewport = useViewport();
   const isTablet = viewport < 1080;
   const isMobile = viewport < 720;
-  const totalItems = overviewCards.reduce((total, cardData) => total + cardData.count, 0);
-  const nextSection = overviewCards.find((cardData) => cardData.count === 0)?.title ?? "Publicacion";
+  const totalItems = overviewCards.reduce((total, cardData) => total + cardData.count, 0) + (educationSummary?.count ?? 0);
+  const nextSection = overviewCards.find((cardData) => cardData.count === 0)?.title ?? t("appI18n.portfolio.publication");
   const stageStyle = {
     ...overviewStage,
     gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : overviewStage.gridTemplateColumns,
@@ -73,11 +75,11 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
                 color: "var(--muted)",
               }}
             >
-              Portafolio activo
+              {t("appI18n.portfolio.active")}
             </span>
             <span style={{ fontFamily: "var(--f-title)", fontSize: "0.95rem", fontWeight: 950, color: "var(--text)" }}>
-              {progress.percent}% completado
-              <span style={{ color: "var(--muted)", fontWeight: 800 }}> / {totalItems} registros</span>
+              {t("appI18n.portfolio.completed", { percent: progress.percent })}
+              <span style={{ color: "var(--muted)", fontWeight: 800 }}> / {t("appI18n.portfolio.records", { count: totalItems })}</span>
             </span>
           </div>
           <div style={{ height: 8, borderRadius: 999, background: "rgba(15,23,42,.07)", overflow: "hidden" }}>
@@ -106,6 +108,14 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
             />
           ))}
         </section>
+
+        {educationSummary ? (
+          <EducationSummaryCard
+            summary={educationSummary}
+            isMobile={isMobile}
+            onOpenSection={onOpenSection}
+          />
+        ) : null}
       </div>
 
       <section style={heroStyle}>
@@ -138,16 +148,15 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
         <div style={{ position: "relative", display: "grid", gap: 18, alignContent: "center" }}>
           <span style={missionBadge}>
             <Sparkles size={14} />
-            Actividad inteligente
+            {t("appI18n.portfolio.smartActivity")}
           </span>
 
           <div style={{ display: "grid", gap: 14 }}>
             <h1 style={{ ...missionTitle, fontSize: isMobile ? "1.85rem" : "clamp(2rem, 3vw, 3.3rem)" }}>
-              Lo ultimo que agregaste, convertido en senales utiles.
+              {t("appI18n.portfolio.title")}
             </h1>
             <p style={missionDescription}>
-              Este bloque resume el pulso de tu portafolio: que modulo esta vivo, que pieza se agrego al frente
-              y donde conviene entrar para seguir afinando tu historia profesional.
+              {t("appI18n.portfolio.text")}
             </p>
           </div>
         </div>
@@ -155,11 +164,11 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
         <div style={{ display: "grid", gap: 12, minWidth: 0 }}>
           <div style={{ ...statsStyle, alignContent: "center", marginTop: 0 }}>
             {[
-              ["Progreso", `${progress.percent}%`],
-              ["Registros", totalItems],
-              ["Siguiente", nextSection],
-            ].map(([label, value]) => (
-              <div key={label} style={missionStat}>
+              { key: "progress", label: t("appI18n.portfolio.progress"), value: `${progress.percent}%` },
+              { key: "records", label: t("appI18n.portfolio.recordsPlural"), value: totalItems },
+              { key: "next", label: t("appI18n.portfolio.next"), value: nextSection },
+            ].map(({ key, label, value }) => (
+              <div key={key} style={missionStat}>
                 <div
                   style={{
                     fontFamily: "var(--f-ui)",
@@ -176,7 +185,7 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
                 <div
                   style={{
                     fontFamily: "var(--f-title)",
-                    fontSize: label === "Siguiente" ? "0.94rem" : "1.22rem",
+                    fontSize: key === "next" ? "0.94rem" : "1.22rem",
                     lineHeight: 1,
                     fontWeight: 950,
                     color: "var(--text)",
@@ -204,6 +213,123 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
         </div>
       </section>
     </div>
+  );
+}
+
+function EducationSummaryCard({ summary, isMobile, onOpenSection }) {
+  const { t } = useTranslation();
+  const [hovered, setHovered] = useState(false);
+  const Icon = summary.icon;
+  const latest = summary.latest;
+  const period = latest
+    ? [latest.startDate ? latest.startDate.slice(0, 4) : "", latest.isCurrent ? "Presente" : latest.endDate ? latest.endDate.slice(0, 4) : ""]
+        .filter(Boolean)
+        .join(" - ")
+    : "";
+
+  return (
+    <button
+      type="button"
+      onClick={() => onOpenSection(summary.key)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "auto minmax(0, 1fr) auto",
+        alignItems: "center",
+        gap: 14,
+        width: "100%",
+        padding: isMobile ? 16 : 18,
+        borderRadius: 22,
+        textAlign: "left",
+        border: hovered ? `1px solid ${summary.color}3d` : "1px solid var(--dashboard-card-border)",
+        background: hovered
+          ? `linear-gradient(135deg, ${summary.color}12 0%, var(--dashboard-card-bg) 100%)`
+          : "var(--dashboard-card-bg)",
+        boxShadow: hovered ? `0 18px 34px ${summary.color}18` : "0 10px 24px rgba(7,17,31,.045)",
+        cursor: "pointer",
+        transition: "border-color .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease",
+        transform: hovered ? "translateY(-1px)" : "translateY(0)",
+      }}
+    >
+      <span
+        style={{
+          width: 46,
+          height: 46,
+          borderRadius: 16,
+          display: "grid",
+          placeItems: "center",
+          color: summary.color,
+          background: `${summary.color}12`,
+          border: `1px solid ${summary.color}24`,
+        }}
+      >
+        <Icon size={20} />
+      </span>
+
+      <span style={{ minWidth: 0, display: "grid", gap: 5 }}>
+        <span
+          style={{
+            fontFamily: "var(--f-ui)",
+            fontSize: "0.68rem",
+            fontWeight: 950,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "var(--muted)",
+          }}
+        >
+          {t("appI18n.portfolio.education")}
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--f-title)",
+            fontSize: "1.05rem",
+            lineHeight: 1.1,
+            fontWeight: 950,
+            color: "var(--text)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {latest ? latest.program : t("appI18n.portfolio.addEducation")}
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--f-body)",
+            fontSize: ".83rem",
+            color: "var(--body)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {latest
+            ? [latest.institution, latest.level, period].filter(Boolean).join(" · ")
+            : t("appI18n.portfolio.educationText")}
+        </span>
+      </span>
+
+      <span
+        style={{
+          justifySelf: isMobile ? "start" : "end",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "9px 12px",
+          borderRadius: 999,
+          fontFamily: "var(--f-ui)",
+          fontSize: ".78rem",
+          fontWeight: 900,
+          color: hovered ? "#fff" : summary.color,
+          background: hovered ? summary.color : `${summary.color}10`,
+          border: `1px solid ${summary.color}20`,
+        }}
+      >
+        {summary.count} {summary.count === 1 ? t("appI18n.portfolio.record") : t("appI18n.portfolio.recordsPlural")}
+        <ArrowUpRight size={14} />
+      </span>
+    </button>
   );
 }
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { LockKeyhole, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { hasPermission, PERMISSION_NAMES } from "../../utils/permissions";
 import {
   COMMENT_MAX_LENGTH,
@@ -24,11 +25,13 @@ import { ConfirmModal } from "../../features/dashboard-portfolio/portfolioWorksp
 import { useAuth } from "../../context/useAuth";
 import { createCommentReport, createPublicationReport } from "../../services/reportService";
 import { followProfile, unfollowProfile } from "../../services/profileTrustService";
+import { isAdministrativeRole } from "../../services/searchService";
 
 const FEED_LIMIT = 20;
 const REFRESH_INTERVAL_MS = 30000;
 
 export default function FeedReal({ activeFilter }) {
+  const { t } = useTranslation();
   const { user, cvs } = useAuth();
   const navigate = useNavigate();
   const cachedPosts = useMemo(() => (
@@ -287,6 +290,7 @@ export default function FeedReal({ activeFilter }) {
   const toggleAuthorFollow = useCallback(async (post) => {
     if (!requireAuthenticated("seguir")) return;
     if (!post?.authorId || String(post.authorId) === String(user?.id)) return;
+    if (isAdministrativeRole(post.authorRole)) return;
     if (pendingFollowAuthorRef.current && String(pendingFollowAuthorRef.current) === String(post.authorId)) return;
 
     const previousPosts = posts;
@@ -408,22 +412,22 @@ export default function FeedReal({ activeFilter }) {
         <div className="card" style={{ padding: "16px 18px", display: "flex", justifyContent: "space-between", gap: 14, alignItems: "center" }}>
           <div>
             <div style={{ fontFamily: "var(--f-title)", fontWeight: 850, color: "var(--text)", marginBottom: 3 }}>
-              {activeFilter === "tendencias" ? "Tendencias profesionales" : "Feed profesional"}
+              {activeFilter === "tendencias" ? t("appI18n.feed.header.trendingTitle") : t("appI18n.feed.header.title")}
             </div>
             <div style={{ fontSize: 13, color: "var(--text-muted)" }}>
-              {activeFilter === "tendencias" ? "Publicaciones populares ordenadas por actividad de la plataforma." : "Contenido real compartido desde portafolios y perfiles."}
+              {activeFilter === "tendencias" ? t("appI18n.feed.header.trendingSubtitle") : t("appI18n.feed.header.subtitle")}
             </div>
           </div>
           <button className="composer-btn" type="button" onClick={() => loadPosts({ silent: true, force: true })} disabled={loading || isPending || refreshing} style={{ border: "1px solid var(--border-soft)", background: "var(--dashboard-soft-bg, #fbfdff)" }}>
             <RefreshCw size={15} />
-            {refreshing || isPending ? "Sincronizando" : "Actualizar"}
+            {refreshing || isPending ? t("appI18n.common.syncing") : t("appI18n.common.refresh")}
           </button>
         </div>
 
         {refreshing && posts.length ? <FeedSyncHint /> : null}
         {loading ? <FeedSkeleton /> : null}
-        {error && !loading ? <FeedState title="No se pudo cargar el feed" text={error} /> : null}
-        {!loading && !error && filteredPosts.length === 0 ? <FeedState title="Aun no hay contenido compartido" text="Comparte un proyecto o experiencia desde tu perfil para verlo aqui." /> : null}
+        {error && !loading ? <FeedState title={t("appI18n.feed.states.loadErrorTitle")} text={error} /> : null}
+        {!loading && !error && filteredPosts.length === 0 ? <FeedState title={t("appI18n.feed.states.emptyTitle")} text={t("appI18n.feed.states.emptyText")} /> : null}
 
         {!loading && !error ? filteredPosts.map((post) => {
           if (post.sourceType === "offer") {
@@ -506,9 +510,9 @@ export default function FeedReal({ activeFilter }) {
 
       {pendingUnsharePost ? (
         <ConfirmModal
-          title="Dejar de compartir"
-          description="Este contenido se retirara del feed y de tu vitrina. El proyecto o experiencia original seguira guardado en tu portafolio."
-          confirmLabel="Dejar de compartir"
+          title={t("appI18n.feed.states.unshareTitle")}
+          description={t("appI18n.feed.states.unshareText")}
+          confirmLabel={t("appI18n.feed.states.unshareTitle")}
           tone="danger"
           onCancel={() => setPendingUnsharePost(null)}
           onConfirm={() => unsharePost(pendingUnsharePost)}
@@ -584,6 +588,7 @@ export default function FeedReal({ activeFilter }) {
 }
 
 function VisitorAuthPrompt({ action, onClose, onLogin, onRegister }) {
+  const { t } = useTranslation();
   const actionCopy = {
     like: "reaccionar a publicaciones",
     save: "guardar publicaciones",
@@ -610,16 +615,15 @@ function VisitorAuthPrompt({ action, onClose, onLogin, onRegister }) {
           <LockKeyhole size={22} />
         </div>
         <div>
-          <h3 id="feed-auth-modal-title">Inicia sesion para interactuar</h3>
+          <h3 id="feed-auth-modal-title">{t("appI18n.feed.states.authTitle")}</h3>
           <p>
-            Puedes explorar el feed libremente. Para {actionCopy[action] || "interactuar con publicaciones"},
-            entra a tu cuenta o crea una nueva.
+            {t("appI18n.feed.states.authText", { action: actionCopy[action] || "interactuar con publicaciones" })}
           </p>
         </div>
         <div className="feed-auth-modal__actions">
-          <button type="button" onClick={onClose}>Seguir explorando</button>
-          <button type="button" onClick={onRegister}>Registrarme</button>
-          <button type="button" onClick={onLogin}>Iniciar sesion</button>
+          <button type="button" onClick={onClose}>{t("appI18n.feed.states.keepExploring")}</button>
+          <button type="button" onClick={onRegister}>{t("appI18n.feed.states.register")}</button>
+          <button type="button" onClick={onLogin}>{t("appI18n.feed.states.login")}</button>
         </div>
       </section>
     </div>

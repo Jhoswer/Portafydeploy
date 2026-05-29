@@ -1,0 +1,499 @@
+-- ============================================================
+-- TRIGGERS LOG - PortaFy  |  PARTE 1 DE 4
+-- Ejecutar PRIMERO: Función genérica + Nivel 0
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION fn_log_auditoria()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_id_user_rol   BIGINT;
+    v_profile_id     BIGINT;
+    v_tipo          VARCHAR(10);
+    v_tabla         VARCHAR(255);
+    v_col           TEXT;
+    v_old_val       TEXT;
+    v_new_val       TEXT;
+    v_columnas      TEXT[];
+    v_i             INT;
+    v_session_user  BIGINT;
+BEGIN
+    v_tabla := TG_TABLE_NAME;
+
+    IF TG_OP = 'INSERT' THEN
+        v_tipo := 'create';
+    ELSIF TG_OP = 'UPDATE' THEN
+        v_tipo := 'update';
+    ELSIF TG_OP = 'DELETE' THEN
+        v_tipo := 'delete';
+    END IF;
+
+    BEGIN
+        IF TG_OP = 'DELETE' THEN
+            v_id_user_rol := NULLIF((row_to_json(OLD) ->> 'id_user_rol'), '')::BIGINT;
+            IF v_id_user_rol IS NULL THEN
+                v_id_user_rol := NULLIF((row_to_json(OLD) ->> 'id_user_role'), '')::BIGINT;
+            END IF;
+            v_profile_id := NULLIF((row_to_json(OLD) ->> 'id_profile'), '')::BIGINT;
+        ELSE
+            v_id_user_rol := NULLIF((row_to_json(NEW) ->> 'id_user_rol'), '')::BIGINT;
+            IF v_id_user_rol IS NULL THEN
+                v_id_user_rol := NULLIF((row_to_json(NEW) ->> 'id_user_role'), '')::BIGINT;
+            END IF;
+            v_profile_id := NULLIF((row_to_json(NEW) ->> 'id_profile'), '')::BIGINT;
+        END IF;
+    EXCEPTION WHEN OTHERS THEN
+        v_id_user_rol := NULL;
+        v_profile_id := NULL;
+    END;
+
+    IF v_id_user_rol IS NULL AND v_profile_id IS NOT NULL THEN
+        SELECT p.id_user_rol
+        INTO v_id_user_rol
+        FROM "public"."PROFILE" p
+        WHERE p.id_profile = v_profile_id
+        LIMIT 1;
+    END IF;
+
+    IF v_id_user_rol IS NULL THEN
+        BEGIN
+            v_session_user := NULLIF(current_setting('app.current_user_rol', true), '')::BIGINT;
+            v_id_user_rol := v_session_user;
+        EXCEPTION WHEN OTHERS THEN
+            v_id_user_rol := NULL;
+        END;
+    END IF;
+
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO "public"."LOG"
+            (id_user_rol, modified_table, modified_field, previous_value, new_value, created_at, type)
+        VALUES
+            (v_id_user_rol, v_tabla, NULL, NULL, NULL, NOW(), v_tipo);
+
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO "public"."LOG"
+            (id_user_rol, modified_table, modified_field, previous_value, new_value, created_at, type)
+        VALUES
+            (v_id_user_rol, v_tabla, NULL, NULL, NULL, NOW(), v_tipo);
+
+    ELSIF TG_OP = 'UPDATE' THEN
+        SELECT array_agg(column_name::TEXT)
+        INTO v_columnas
+        FROM information_schema.columns
+        WHERE table_schema = TG_TABLE_SCHEMA
+          AND table_name   = TG_TABLE_NAME;
+
+        FOR v_i IN 1 .. COALESCE(array_length(v_columnas, 1), 0) LOOP
+            v_col     := v_columnas[v_i];
+            v_old_val := row_to_json(OLD) ->> v_col;
+            v_new_val := row_to_json(NEW) ->> v_col;
+
+            IF v_old_val IS DISTINCT FROM v_new_val THEN
+                INSERT INTO "public"."LOG"
+                    (id_user_rol, modified_table, modified_field, previous_value, new_value, created_at, type)
+                VALUES
+                    (v_id_user_rol, v_tabla, v_col, v_old_val, v_new_val, NOW(), v_tipo);
+            END IF;
+        END LOOP;
+    END IF;
+
+    IF TG_OP = 'DELETE' THEN
+        RETURN OLD;
+    ELSE
+        RETURN NEW;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- ============================================================
+-- NIVEL 0: Tablas sin dependencias de FK
+-- ============================================================
+
+DROP TRIGGER IF EXISTS trg_log_role ON "public"."ROLE";
+CREATE TRIGGER trg_log_role
+AFTER INSERT OR UPDATE OR DELETE ON "public"."ROLE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_country ON "public"."COUNTRY";
+CREATE TRIGGER trg_log_country
+AFTER INSERT OR UPDATE OR DELETE ON "public"."COUNTRY"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_area ON "public"."AREA";
+CREATE TRIGGER trg_log_area
+AFTER INSERT OR UPDATE OR DELETE ON "public"."AREA"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_audience_type ON "public"."AUDIENCE_TYPE";
+CREATE TRIGGER trg_log_audience_type
+AFTER INSERT OR UPDATE OR DELETE ON "public"."AUDIENCE_TYPE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_professional_area ON "public"."PROFESSIONAL_AREA";
+CREATE TRIGGER trg_log_professional_area
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROFESSIONAL_AREA"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_job_title ON "public"."JOB_TITLE";
+CREATE TRIGGER trg_log_job_title
+AFTER INSERT OR UPDATE OR DELETE ON "public"."JOB_TITLE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_emoji ON "public"."EMOJI";
+CREATE TRIGGER trg_log_emoji
+AFTER INSERT OR UPDATE OR DELETE ON "public"."EMOJI"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_platform ON "public"."PLATFORM";
+CREATE TRIGGER trg_log_platform
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PLATFORM"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_career ON "public"."CAREER";
+CREATE TRIGGER trg_log_career
+AFTER INSERT OR UPDATE OR DELETE ON "public"."CAREER"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_university ON "public"."UNIVERSITY";
+CREATE TRIGGER trg_log_university
+AFTER INSERT OR UPDATE OR DELETE ON "public"."UNIVERSITY"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_provider ON "public"."PROVIDER";
+CREATE TRIGGER trg_log_provider
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROVIDER"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+-- FIN PARTE 1 -- Continúa con triggers_parte2.sql
+
+-- ============================================================
+-- TRIGGERS LOG - PortaFy  |  PARTE 2 DE 4
+-- Ejecutar SEGUNDO: Niveles 1, 2 y 3
+-- ============================================================
+
+-- ============================================================
+-- NIVEL 1: Dependen de tablas Nivel 0
+-- ============================================================
+
+DROP TRIGGER IF EXISTS trg_log_user ON "public"."USER";
+CREATE TRIGGER trg_log_user
+AFTER INSERT OR UPDATE OR DELETE ON "public"."USER"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_state_country ON "public"."STATE_COUNTRY";
+CREATE TRIGGER trg_log_state_country
+AFTER INSERT OR UPDATE OR DELETE ON "public"."STATE_COUNTRY"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_skill ON "public"."SKILL";
+CREATE TRIGGER trg_log_skill
+AFTER INSERT OR UPDATE OR DELETE ON "public"."SKILL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_professional_career ON "public"."PROFESSIONAL_CAREER";
+CREATE TRIGGER trg_log_professional_career
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROFESSIONAL_CAREER"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_university_career ON "public"."UNIVERSITY_CAREER";
+CREATE TRIGGER trg_log_university_career
+AFTER INSERT OR UPDATE OR DELETE ON "public"."UNIVERSITY_CAREER"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+
+-- ============================================================
+-- NIVEL 2: Dependen de USER / tablas Nivel 1
+-- ============================================================
+
+DROP TRIGGER IF EXISTS trg_log_user_role ON "public"."USER_ROLE";
+CREATE TRIGGER trg_log_user_role
+AFTER INSERT OR UPDATE OR DELETE ON "public"."USER_ROLE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_company ON "public"."COMPANY";
+CREATE TRIGGER trg_log_company
+AFTER INSERT OR UPDATE OR DELETE ON "public"."COMPANY"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_credential ON "public"."CREDENTIAL";
+CREATE TRIGGER trg_log_credential
+AFTER INSERT OR UPDATE OR DELETE ON "public"."CREDENTIAL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_session ON "public"."SESSION";
+CREATE TRIGGER trg_log_session
+AFTER INSERT OR UPDATE OR DELETE ON "public"."SESSION"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_permission ON "public"."PERMISSION";
+CREATE TRIGGER trg_log_permission
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PERMISSION"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+
+-- ============================================================
+-- NIVEL 3: Dependen de USER_ROLE / COMPANY
+-- ============================================================
+
+DROP TRIGGER IF EXISTS trg_log_profile ON "public"."PROFILE";
+CREATE TRIGGER trg_log_profile
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROFILE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_notification_settings ON "public"."NOTIFICATION_SETTINGS";
+CREATE TRIGGER trg_log_notification_settings
+AFTER INSERT OR UPDATE OR DELETE ON "public"."NOTIFICATION_SETTINGS"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_permission_user_rol ON "public"."PERMISSION_USER_ROL";
+CREATE TRIGGER trg_log_permission_user_rol
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PERMISSION_USER_ROL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+-- FIN PARTE 2 -- Continúa con triggers_parte3.sql
+
+-- ============================================================
+-- TRIGGERS LOG - PortaFy  |  PARTE 3 DE 4
+-- Ejecutar TERCERO: Nivel 4
+-- ============================================================
+
+-- ============================================================
+-- NIVEL 4: Dependen de PROFILE
+-- ============================================================
+
+DROP TRIGGER IF EXISTS trg_log_skill_profile ON "public"."SKILL_PROFILE";
+CREATE TRIGGER trg_log_skill_profile
+AFTER INSERT OR UPDATE OR DELETE ON "public"."SKILL_PROFILE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_portfolio ON "public"."PORTFOLIO";
+CREATE TRIGGER trg_log_portfolio
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PORTFOLIO"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_cv ON "public"."CV";
+CREATE TRIGGER trg_log_cv
+AFTER INSERT OR UPDATE OR DELETE ON "public"."CV"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_experience ON "public"."EXPERIENCE";
+CREATE TRIGGER trg_log_experience
+AFTER INSERT OR UPDATE OR DELETE ON "public"."EXPERIENCE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_project ON "public"."PROJECT";
+CREATE TRIGGER trg_log_project
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROJECT"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_certificate ON "public"."CERTIFICATE";
+CREATE TRIGGER trg_log_certificate
+AFTER INSERT OR UPDATE OR DELETE ON "public"."CERTIFICATE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_social_network ON "public"."SOCIAL_NETWORK";
+CREATE TRIGGER trg_log_social_network
+AFTER INSERT OR UPDATE OR DELETE ON "public"."SOCIAL_NETWORK"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_publication ON "public"."PUBLICATION";
+CREATE TRIGGER trg_log_publication
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PUBLICATION"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_suggestion ON "public"."SUGGESTION";
+CREATE TRIGGER trg_log_suggestion
+AFTER INSERT OR UPDATE OR DELETE ON "public"."SUGGESTION"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_report ON "public"."REPORT";
+CREATE TRIGGER trg_log_report
+AFTER INSERT OR UPDATE OR DELETE ON "public"."REPORT"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_offer ON "public"."OFFER";
+CREATE TRIGGER trg_log_offer
+AFTER INSERT OR UPDATE OR DELETE ON "public"."OFFER"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_profile_state ON "public"."PROFILE_STATE";
+CREATE TRIGGER trg_log_profile_state
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROFILE_STATE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_profile_verification_request ON "public"."PROFILE_VERIFICATION_REQUEST";
+CREATE TRIGGER trg_log_profile_verification_request
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROFILE_VERIFICATION_REQUEST"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_profile_view ON "public"."PROFILE_VIEW";
+CREATE TRIGGER trg_log_profile_view
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROFILE_VIEW"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_calendar ON "public"."CALENDAR";
+CREATE TRIGGER trg_log_calendar
+AFTER INSERT OR UPDATE OR DELETE ON "public"."CALENDAR"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_relation ON "public"."RELATION";
+CREATE TRIGGER trg_log_relation
+AFTER INSERT OR UPDATE OR DELETE ON "public"."RELATION"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_analytic_event ON "public"."ANALYTIC_EVENT";
+CREATE TRIGGER trg_log_analytic_event
+AFTER INSERT OR UPDATE OR DELETE ON "public"."ANALYTIC_EVENT"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_preference ON "public"."PREFERENCE";
+CREATE TRIGGER trg_log_preference
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PREFERENCE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_chat ON "public"."CHAT";
+CREATE TRIGGER trg_log_chat
+AFTER INSERT OR UPDATE OR DELETE ON "public"."CHAT"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_group_chat ON "public"."GROUP_CHAT";
+CREATE TRIGGER trg_log_group_chat
+AFTER INSERT OR UPDATE OR DELETE ON "public"."GROUP_CHAT"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_event ON "public"."EVENT";
+CREATE TRIGGER trg_log_event
+AFTER INSERT OR UPDATE OR DELETE ON "public"."EVENT"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+-- FIN PARTE 3 -- Continúa con triggers_parte4.sql
+
+-- ============================================================
+-- TRIGGERS LOG - PortaFy  |  PARTE 4 DE 4
+-- Ejecutar CUARTO (último): Nivel 5
+-- ============================================================
+
+-- ============================================================
+-- NIVEL 5: Dependen de tablas Nivel 4
+-- ============================================================
+
+DROP TRIGGER IF EXISTS trg_log_portfolio_detail ON "public"."PORTFOLIO_DETAIL";
+CREATE TRIGGER trg_log_portfolio_detail
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PORTFOLIO_DETAIL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_cv_detail ON "public"."CV_DETAIL";
+CREATE TRIGGER trg_log_cv_detail
+AFTER INSERT OR UPDATE OR DELETE ON "public"."CV_DETAIL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_cv_custom_entry ON "public"."CV_CUSTOM_ENTRY";
+CREATE TRIGGER trg_log_cv_custom_entry
+AFTER INSERT OR UPDATE OR DELETE ON "public"."CV_CUSTOM_ENTRY"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_experience_detail ON "public"."EXPERIENCE_DETAIL";
+CREATE TRIGGER trg_log_experience_detail
+AFTER INSERT OR UPDATE OR DELETE ON "public"."EXPERIENCE_DETAIL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_project_skill ON "public"."PROJECT_SKILL";
+CREATE TRIGGER trg_log_project_skill
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROJECT_SKILL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_project_participant ON "public"."PROJECT_PARTICIPANT";
+CREATE TRIGGER trg_log_project_participant
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PROJECT_PARTICIPANT"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_publication_detail ON "public"."PUBLICATION_DETAIL";
+CREATE TRIGGER trg_log_publication_detail
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PUBLICATION_DETAIL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_publication_audience_professional ON "public"."PUBLICATION_AUDIENCE_PROFESSIONAL";
+CREATE TRIGGER trg_log_publication_audience_professional
+AFTER INSERT OR UPDATE OR DELETE ON "public"."PUBLICATION_AUDIENCE_PROFESSIONAL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_attended ON "public"."ATTENDED";
+CREATE TRIGGER trg_log_attended
+AFTER INSERT OR UPDATE OR DELETE ON "public"."ATTENDED"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_offer_detail ON "public"."OFFER_DETAIL";
+CREATE TRIGGER trg_log_offer_detail
+AFTER INSERT OR UPDATE OR DELETE ON "public"."OFFER_DETAIL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_offer_audience_professional ON "public"."OFFER_AUDIENCE_PROFESSIONAL";
+CREATE TRIGGER trg_log_offer_audience_professional
+AFTER INSERT OR UPDATE OR DELETE ON "public"."OFFER_AUDIENCE_PROFESSIONAL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_postulation ON "public"."POSTULATION";
+CREATE TRIGGER trg_log_postulation
+AFTER INSERT OR UPDATE OR DELETE ON "public"."POSTULATION"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_voucher ON "public"."VOUCHER";
+CREATE TRIGGER trg_log_voucher
+AFTER INSERT OR UPDATE OR DELETE ON "public"."VOUCHER"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_reaction ON "public"."REACTION";
+CREATE TRIGGER trg_log_reaction
+AFTER INSERT OR UPDATE OR DELETE ON "public"."REACTION"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_comment ON "public"."COMMENT";
+CREATE TRIGGER trg_log_comment
+AFTER INSERT OR UPDATE OR DELETE ON "public"."COMMENT"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_saved ON "public"."SAVED";
+CREATE TRIGGER trg_log_saved
+AFTER INSERT OR UPDATE OR DELETE ON "public"."SAVED"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_notification ON "public"."NOTIFICATION";
+CREATE TRIGGER trg_log_notification
+AFTER INSERT OR UPDATE OR DELETE ON "public"."NOTIFICATION"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_interview ON "public"."INTERVIEW";
+CREATE TRIGGER trg_log_interview
+AFTER INSERT OR UPDATE OR DELETE ON "public"."INTERVIEW"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_message ON "public"."MESSAGE";
+CREATE TRIGGER trg_log_message
+AFTER INSERT OR UPDATE OR DELETE ON "public"."MESSAGE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_group_detail ON "public"."GROUP_DETAIL";
+CREATE TRIGGER trg_log_group_detail
+AFTER INSERT OR UPDATE OR DELETE ON "public"."GROUP_DETAIL"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+DROP TRIGGER IF EXISTS trg_log_response ON "public"."RESPONSE";
+CREATE TRIGGER trg_log_response
+AFTER INSERT OR UPDATE OR DELETE ON "public"."RESPONSE"
+FOR EACH ROW EXECUTE FUNCTION fn_log_auditoria();
+
+-- ============================================================
+-- FIN - 65 triggers instalados correctamente
+
+-- NOTA:
+-- Para tablas sin id_profile, configurar antes el contexto por sesión:
+-- SELECT set_config('app.current_user_rol', '<id_user_role>', true);
+-- ============================================================
+
+//Se ejecuto la siguiente consulta: 
+SELECT setval(
+  pg_get_serial_sequence('public."LOG"', 'id_log'),
+  (SELECT MAX(id_log) FROM public."LOG")
+);
+
+//

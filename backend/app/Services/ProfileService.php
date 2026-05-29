@@ -266,6 +266,12 @@ class ProfileService
         $usuario = $request->user();
         $data = [];
 
+        foreach (['nombre', 'apellido'] as $field) {
+            if ($request->filled($field)) {
+                $data[$field] = $request->input($field);
+            }
+        }
+
         if ($request->filled('biografia')) {
             $data['biografia'] = $request->input('biografia');
         }

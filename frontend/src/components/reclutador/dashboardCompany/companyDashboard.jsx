@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ToggleSwitch } from "../../ui/ui";
 import { obtenerMisOfertas } from "../../../services/offerService";
 import { useAuth } from "../../../context/useAuth";
-
-const VIS_ITEMS = [
-  { key: "convocatorias", label: "Convocatorias"     },
-  { key: "empresa",       label: "Perfil empresa"    },
-  { key: "contacto",      label: "Datos de contacto" },
-  { key: "redes",         label: "Redes sociales"    },
-];
 
 function offerBadgeClass(state) {
   if (state === "open")    return { cls: "dash-badge--blue",  label: "Activa"   };
@@ -46,6 +40,7 @@ function Skeleton() {
 }
 
 export default function DashboardCompany({ onNavigate }) {
+  const { t } = useTranslation();
   const { company } = useAuth();
   const [offers,      setOffers]      = useState([]);
   const [postulantes, setPostulantes] = useState([]);
@@ -55,6 +50,13 @@ export default function DashboardCompany({ onNavigate }) {
   });
 
   const companyName = company?.name ?? "Mi empresa";
+
+  const VIS_ITEMS = [
+    { key: "convocatorias", label: t("empresa.visibilidad.convocatorias") },
+    { key: "empresa",       label: t("empresa.visibilidad.empresa")       },
+    { key: "contacto",      label: t("empresa.visibilidad.contacto")      },
+    { key: "redes",         label: t("empresa.visibilidad.redes")         },
+  ];
 
   useEffect(() => {
     obtenerMisOfertas()
@@ -89,10 +91,10 @@ export default function DashboardCompany({ onNavigate }) {
   const visiblesCount = Object.values(visibility).filter(Boolean).length;
 
   const STATS = [
-    { label: "Convocatorias activas",  value: activas.length,     badgeCls: "dash-badge--blue",  badge: "En curso",  nav: "convocatorias" },
-    { label: "Candidatos por revisar", value: enRevision.length,  badgeCls: "dash-badge--amber", badge: "Pendiente", nav: "convocatorias" },
-    { label: "Candidatos aceptados",   value: aceptados.length,   badgeCls: "dash-badge--green", badge: "Aceptados", nav: "convocatorias" },
-    { label: "Total postulantes",      value: postulantes.length, badgeCls: "dash-badge--gray",  badge: "Histórico"                      },
+    { label: t("empresa.stats.convocatorias_activas"),  value: activas.length,     badgeCls: "dash-badge--blue",  badge: t("empresa.badges.en_curso"),   nav: "convocatorias" },
+    { label: t("empresa.stats.candidatos_por_revisar"), value: enRevision.length,  badgeCls: "dash-badge--amber", badge: t("empresa.badges.pendiente"),   nav: "convocatorias" },
+    { label: t("empresa.stats.candidatos_aceptados"),   value: aceptados.length,   badgeCls: "dash-badge--green", badge: t("empresa.badges.aceptados"),   nav: "convocatorias" },
+    { label: t("empresa.stats.total_postulantes"),      value: postulantes.length, badgeCls: "dash-badge--gray",  badge: t("empresa.badges.historico")                        },
   ];
 
   return (
@@ -100,18 +102,14 @@ export default function DashboardCompany({ onNavigate }) {
 
       <div className="dash-banner">
         <div>
-          <div className="dash-banner__eyebrow">Panel de reclutamiento</div>
-          <h2 className="dash-banner__title">Bienvenido, {companyName}</h2>
+          <div className="dash-banner__eyebrow">{t("empresa.dashboard.eyebrow")}</div>
+          <h2 className="dash-banner__title">{t("empresa.dashboard.bienvenido", { nombre: companyName })}</h2>
           <p className="dash-banner__sub">
-            Tienes{" "}
-            <span className="dash-banner__highlight">{activas.length} convocatorias activas</span>
-            {" "}y{" "}
-            <span className="dash-banner__highlight">{enRevision.length} candidatos</span>
-            {" "}pendientes de revisión.
+            {t("empresa.dashboard.resumen", { activas: activas.length, revision: enRevision.length })}
           </p>
         </div>
         <button className="dash-banner__btn" onClick={() => onNavigate("nueva")}>
-          + Nueva convocatoria
+          {t("empresa.dashboard.nueva_convocatoria")}
         </button>
       </div>
 
@@ -129,13 +127,13 @@ export default function DashboardCompany({ onNavigate }) {
 
         <div className="dash-card">
           <div className="dash-card__header">
-            <h3 className="dash-card__title">Convocatorias recientes</h3>
+            <h3 className="dash-card__title">{t("empresa.dashboard.convocatorias_recientes")}</h3>
             <button className="dash-card__link" onClick={() => onNavigate("convocatorias")}>
-              Ver todas →
+              {t("empresa.dashboard.ver_todas")}
             </button>
           </div>
           {offers.length === 0 ? (
-            <p className="dash-card__empty">No tienes convocatorias aún.</p>
+            <p className="dash-card__empty">{t("empresa.dashboard.sin_convocatorias")}</p>
           ) : (
             <div className="dash-conv-list">
               {offers.slice(0, 3).map((o) => {
@@ -153,7 +151,7 @@ export default function DashboardCompany({ onNavigate }) {
                       <span className={`dash-stat__badge ${badge.cls}`}>{badge.label}</span>
                     </div>
                     <div className="dash-conv-item__meta">
-                      {totalPost} postulantes · {o.area ?? "—"}
+                      {t("empresa.dashboard.postulantes", { count: totalPost, area: o.area ?? "—" })}
                     </div>
                   </div>
                 );
@@ -164,13 +162,13 @@ export default function DashboardCompany({ onNavigate }) {
 
         <div className="dash-card">
           <div className="dash-card__header">
-            <h3 className="dash-card__title">Candidatos recientes</h3>
+            <h3 className="dash-card__title">{t("empresa.dashboard.candidatos_recientes")}</h3>
             <button className="dash-card__link" onClick={() => onNavigate("convocatorias")}>
-              Ver todos →
+              {t("empresa.dashboard.ver_todos")}
             </button>
           </div>
           {postulantes.length === 0 ? (
-            <p className="dash-card__empty">No hay postulantes aún.</p>
+            <p className="dash-card__empty">{t("empresa.dashboard.sin_postulantes")}</p>
           ) : (
             <div>
               {postulantes.slice(0, 4).map((p) => {
@@ -194,7 +192,7 @@ export default function DashboardCompany({ onNavigate }) {
       </div>
 
       <div className="dash-vis">
-        <h3 className="dash-vis__title">Visibilidad del perfil empresa</h3>
+        <h3 className="dash-vis__title">{t("empresa.dashboard.visibilidad_titulo")}</h3>
         <div className="dash-vis__grid">
           {VIS_ITEMS.map(({ key, label }) => (
             <div key={key} className="dash-vis__row">
@@ -209,7 +207,9 @@ export default function DashboardCompany({ onNavigate }) {
           ))}
         </div>
         <p className={`dash-vis__summary ${visiblesCount > 0 ? "dash-vis__summary--on" : "dash-vis__summary--off"}`}>
-          {visiblesCount > 0 ? `${visiblesCount} secciones visibles` : "Perfil privado"}
+          {visiblesCount > 0
+            ? t("empresa.dashboard.secciones_visibles", { count: visiblesCount })
+            : t("empresa.dashboard.perfil_privado")}
         </p>
       </div>
 

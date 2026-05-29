@@ -23,11 +23,13 @@ export function ReportPublicationModal({
     ? "Comentario"
     : post.sourceType === "experience"
       ? "Experiencia"
-      : "Proyecto";
+      : post.sourceType === "offer"
+        ? "Convocatoria"
+        : "Proyecto";
+
   const title = isCommentReport
     ? (comment?.text || "Comentario reportado")
-    : (post.project?.title || post.experience?.title || "Publicacion");
-
+    : (post.title || post.project?.title || post.experience?.title || "Publicacion");
   function handleSubmit(event) {
     event.preventDefault();
     onSubmit?.({

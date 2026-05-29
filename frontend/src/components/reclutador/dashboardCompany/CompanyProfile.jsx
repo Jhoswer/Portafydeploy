@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Linkedin, Instagram, Facebook } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../context/useAuth";
 
 import { CompanyHeader }      from "../profile/CompanyHeader";
@@ -8,7 +8,7 @@ import { CompanyAboutCard }   from "../profile/CompanyAboutCard";
 import { CompanyContactCard } from "../profile/CompanyContactCard";
 import { JobPostCard }        from "../shared/JobPostCard";
 import { fetchPublicCompany } from "../../../services/companyTrustService";
-import { CompanyInfo, ContactTab } from "../profile/CompanyInfoSection";
+import { CompanyInfoSection } from "../profile/CompanyInfoSection";
 
 function extractCompanyId(slug = "") {
   const parts = slug.split("-");
@@ -16,6 +16,7 @@ function extractCompanyId(slug = "") {
 }
 
 export default function EmpresaPerfil() {
+  const { t } = useTranslation();
   const { slug } = useParams();
   const { company: authCompany } = useAuth();
 
@@ -54,7 +55,7 @@ export default function EmpresaPerfil() {
         setMetrics(data.metrics ?? {});
         setOffers(data.offers   ?? []);
       })
-      .catch((err) => setError(err.message || "No se pudo cargar la empresa."))
+      .catch((err) => setError(err.message || t("empresa.perfil.error_cargar")))
       .finally(() => setLoading(false));
   }, [companyId, isPublic, authCompany?.id_company]);
 
@@ -68,6 +69,12 @@ export default function EmpresaPerfil() {
   const companyLogo = company?.logo_url ?? null;
   const nombre      = company?.name     ?? "Mi empresa";
 
+  const companyMetrics = isPublic ? metrics : {
+    followers:    company?.followers    ?? 0,
+    following:    company?.following    ?? 0,
+    is_following: company?.is_following ?? false,
+  };
+
   return (
     <>
       <CompanyHeader
@@ -77,31 +84,30 @@ export default function EmpresaPerfil() {
         companyData={company}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        companyMetrics={isPublic ? metrics : {
-          followers:    company?.followers    ?? 0,
-          following:    company?.following    ?? 0,
-          is_following: company?.is_following ?? false,
-        }}
+        companyMetrics={companyMetrics}
       />
 
       <div className="empresa-perfil__grid">
 
-        {/* ── Convocatorias ───────────────────────────── */}
         {activeTab === "convocatorias" && (
           <>
-            <div className="empresa-perfil__feed">
+            <div className="empresa-perfil__full">
               <div className="convocatorias-card">
                 <div className="convocatorias-card__header">
                   <h3 className="convocatorias-card__title">
-                    {isPublic ? "Convocatorias activas" : "Convocatorias destacadas"}
+                    {isPublic
+                      ? t("empresa.perfil.convocatorias_activas")
+                      : t("empresa.perfil.convocatorias_destacadas")}
                   </h3>
                 </div>
                 <div className="convocatorias-card__body">
                   {loading ? (
-                    <p className="convocatorias-card__empty">Cargando...</p>
+                    <p className="convocatorias-card__empty">{t("empresa.perfil.cargando")}</p>
                   ) : offers.length === 0 ? (
                     <p className="convocatorias-card__empty">
-                      {isPublic ? "No hay convocatorias activas." : "No tienes convocatorias"}
+                      {isPublic
+                        ? t("empresa.perfil.sin_convocatorias_publicas")
+                        : t("empresa.perfil.sin_convocatorias_propias")}
                     </p>
                   ) : (
                     <div className="convocatorias-card__list">
@@ -123,46 +129,17 @@ export default function EmpresaPerfil() {
                 </div>
               </div>
             </div>
-
-            <div className="empresa-perfil__sidebar">
-              <CompanyAboutCard
-                description={company?.description}
-                mission={company?.mission}
-                vision={company?.vision}
-                industry={company?.industry}
-                size={company?.size}
-              />
-              <CompanyContactCard
-                phone={company?.phone}
-                website={company?.website}
-                location={company?.city}
-                social={[
-                  { icon: Linkedin,  url: "#" },
-                  { icon: Instagram, url: "#" },
-                  { icon: Facebook,  url: "#" },
-                ]}
-              />
-            </div>
           </>
         )}
 
-        {/* ── Información ─────────────────────────────── */}
-        {activeTab === "informacion" && (
+        {["informacion", "rubro", "contacto", "seguidores"].includes(activeTab) && (
           <div className="empresa-perfil__full">
-            <CompanyInfo isOwner={!isPublic} />
-          </div>
-        )}
-
-        {activeTab === "contacto" && (
-  <div className="empresa-perfil__full">
-    <ContactTab company={company} isOwner={!isPublic} />
-  </div>
-)}
-
-        {/* ── Equipo ──────────────────────────────────── */}
-        {activeTab === "equipo" && (
-          <div className="empresa-perfil__full">
-            {/* aquí va tu futuro componente de equipo */}
+            <CompanyInfoSection
+              activeTab={activeTab}
+              isOwner={!isPublic}
+              company={company}
+              companyMetrics={companyMetrics}
+            />
           </div>
         )}
 

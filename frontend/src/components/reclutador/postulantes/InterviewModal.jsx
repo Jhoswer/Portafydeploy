@@ -1,30 +1,32 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { X, Video, MapPin, Building2, CheckCircle } from "lucide-react";
+import { X, Video, Building2, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function InterviewModal({ postulant, onConfirm, onCancel }) {
-  const [type, setType]       = useState("virtual");
-  const [link, setLink]       = useState("");
+  const { t } = useTranslation();
+  const [type,    setType]    = useState("virtual");
+  const [link,    setLink]    = useState("");
   const [address, setAddress] = useState("");
-  const [date, setDate]       = useState("");
-  const [time, setTime]       = useState("");
+  const [date,    setDate]    = useState("");
+  const [time,    setTime]    = useState("");
 
   const handleConfirm = () => {
     if (type === "virtual" && !link.trim()) {
-      toast.error("Añade el enlace de la entrevista virtual");
+      toast.error(t("interviewModal.errorLink"));
       return;
     }
     if (type === "presencial" && !address.trim()) {
-      toast.error("Añade la dirección de la entrevista");
+      toast.error(t("interviewModal.errorAddress"));
       return;
     }
     onConfirm({
-    type,
-    link: type === "virtual" ? link.trim() : null,
-    address: type === "presencial" ? address.trim() : null,
-    interview_date: date,
-    interview_time: time,
+      type,
+      link:           type === "virtual"   ? link.trim()    : null,
+      address:        type === "presencial" ? address.trim() : null,
+      interview_date: date,
+      interview_time: time,
     });
   };
 
@@ -41,7 +43,7 @@ export default function InterviewModal({ postulant, onConfirm, onCancel }) {
       >
         <div className="profile-modal__header">
           <div>
-            <h2 className="profile-modal__name">Agendar entrevista</h2>
+            <h2 className="profile-modal__name">{t("interviewModal.title")}</h2>
             <p className="profile-modal__career">{postulant.name}</p>
           </div>
           <button className="profile-modal__close" onClick={onCancel}>
@@ -50,23 +52,24 @@ export default function InterviewModal({ postulant, onConfirm, onCancel }) {
         </div>
 
         <div className="profile-modal__body" style={{ gap: 16 }}>
+
           {/* Tipo */}
           <div className="profile-section">
-            <p className="profile-section__label">Tipo de entrevista</p>
+            <p className="profile-section__label">{t("interviewModal.typeLabel")}</p>
             <div style={{ display: "flex", gap: 8 }}>
-              {["virtual", "presencial"].map((t) => (
+              {["virtual", "presencial"].map((opt) => (
                 <button
-                  key={t}
-                  className={`profile-state-btn${type === t ? " profile-state-btn--active" : ""}`}
-                  style={type === t ? {
+                  key={opt}
+                  className={`profile-state-btn${type === opt ? " profile-state-btn--active" : ""}`}
+                  style={type === opt ? {
                     background: "rgba(99,102,241,0.1)",
                     border: "1.5px solid #6366f1",
                     color: "#6366f1",
                   } : {}}
-                  onClick={() => setType(t)}
+                  onClick={() => setType(opt)}
                 >
-                  {t === "virtual" ? <Video size={13} /> : <Building2 size={13} />}
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                  {opt === "virtual" ? <Video size={13} /> : <Building2 size={13} />}
+                  {t(`interviewModal.${opt}`)}
                 </button>
               ))}
             </div>
@@ -74,7 +77,7 @@ export default function InterviewModal({ postulant, onConfirm, onCancel }) {
 
           {/* Fecha y hora */}
           <div className="profile-section">
-            <p className="profile-section__label">Fecha y hora</p>
+            <p className="profile-section__label">{t("interviewModal.dateTime")}</p>
             <div style={{ display: "flex", gap: 8 }}>
               <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
                 className="pc-search__input" style={{ flex: 1 }} />
@@ -83,13 +86,13 @@ export default function InterviewModal({ postulant, onConfirm, onCancel }) {
             </div>
           </div>
 
-          {/* Campo dinámico según tipo */}
+          {/* Campo dinámico */}
           {type === "virtual" ? (
             <div className="profile-section">
-              <p className="profile-section__label">Enlace de la reunión</p>
+              <p className="profile-section__label">{t("interviewModal.linkLabel")}</p>
               <input
                 type="url"
-                placeholder="https://meet.google.com/..."
+                placeholder={t("interviewModal.linkPlaceholder")}
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
                 className="pc-search__input"
@@ -98,10 +101,10 @@ export default function InterviewModal({ postulant, onConfirm, onCancel }) {
             </div>
           ) : (
             <div className="profile-section">
-              <p className="profile-section__label">Dirección</p>
+              <p className="profile-section__label">{t("interviewModal.addressLabel")}</p>
               <input
                 type="text"
-                placeholder="Av. Ejemplo 123, Cochabamba"
+                placeholder={t("interviewModal.addressPlaceholder")}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="pc-search__input"
@@ -112,14 +115,14 @@ export default function InterviewModal({ postulant, onConfirm, onCancel }) {
 
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", paddingTop: 8 }}>
             <button className="profile-state-btn" onClick={onCancel}>
-              Cancelar
+              {t("interviewModal.cancel")}
             </button>
             <button
               className="profile-state-btn profile-state-btn--active"
               style={{ background: "rgba(16,185,129,0.1)", border: "1.5px solid #10b981", color: "#10b981" }}
               onClick={handleConfirm}
             >
-              <CheckCircle size={13} /> Confirmar entrevista
+              <CheckCircle size={13} /> {t("interviewModal.confirm")}
             </button>
           </div>
         </div>

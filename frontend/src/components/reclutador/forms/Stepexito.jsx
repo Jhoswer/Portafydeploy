@@ -1,8 +1,11 @@
+import { useTranslation, Trans } from "react-i18next";
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { StepWrapper } from "./Formui";
 
 export default function StepExito({ empresa, onNavigate }) {
+  const { t } = useTranslation();
+
   return (
     <StepWrapper stepKey="paso-exito">
       <div className="forms-success-icon">
@@ -10,11 +13,14 @@ export default function StepExito({ empresa, onNavigate }) {
       </div>
 
       <h2 className="forms-card__title" style={{ textAlign: "center" }}>
-        ¡Perfil creado exitosamente!
+        {t("recruiterForms.stepExito.title")}
       </h2>
       <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 28 }}>
-        Tu empresa <strong>{empresa}</strong> ya está registrada.
-        Ahora puedes publicar ofertas y encontrar candidatos.
+        <Trans
+          i18nKey="recruiterForms.stepExito.subtitle"
+          values={{ empresa }}
+          components={{ strong: <strong /> }}
+        />
       </p>
 
       <motion.button
@@ -22,7 +28,7 @@ export default function StepExito({ empresa, onNavigate }) {
         onClick={onNavigate}
         className="forms-submit"
       >
-        Ir al panel
+        {t("recruiterForms.stepExito.cta")}
       </motion.button>
     </StepWrapper>
   );

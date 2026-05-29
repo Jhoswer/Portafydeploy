@@ -1,0 +1,475 @@
+/* ============================================================
+   src/styles/components/recruiter/CompanyContact.css
+   ============================================================ */
+
+/* ── Card base ────────────────────────────────────────────── */
+.cinfo__card {
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-l);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Section header ───────────────────────────────────────── */
+.cinfo__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.cinfo__section-title {
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.cinfo__subsection-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted-text);
+  margin: 0 0 10px;
+}
+
+/* ── Error ────────────────────────────────────────────────── */
+.cinfo__error {
+  font-size: 12px;
+  color: var(--color-red);
+  font-family: var(--font-body);
+  margin: 0 0 12px;
+}
+
+/* ── Empty state ──────────────────────────────────────────── */
+.cinfo__empty {
+  font-size: 13px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+  font-style: italic;
+}
+
+/* ── Botones editar / cancelar ────────────────────────────── */
+.cinfo__edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  color: var(--color-muted-text);
+  background: none;
+  border: 1px solid rgba(205, 225, 245, 0.8);
+  border-radius: var(--radius-s);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background var(--ease), color var(--ease), border-color var(--ease);
+}
+
+.cinfo__edit-btn:hover {
+  background: var(--color-bg-section-alt);
+  color: var(--color-text);
+  border-color: rgba(205, 225, 245, 1);
+}
+
+.cinfo__cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  color: var(--color-muted-text);
+  background: none;
+  border: 1px solid rgba(205, 225, 245, 0.8);
+  border-radius: var(--radius-s);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background var(--ease);
+}
+
+.cinfo__cancel-btn:hover {
+  background: var(--color-bg-section-alt);
+}
+
+.cinfo__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Inputs ───────────────────────────────────────────────── */
+.cinfo__input {
+  flex: 1;
+  font-size: 13px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.8);
+  border-radius: var(--radius-s);
+  padding: 6px 10px;
+  outline: none;
+  width: 100%;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.cinfo__input:focus {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(var(--color-red-rgb, 220, 38, 38), 0.08);
+}
+
+.cinfo__input::placeholder {
+  color: var(--color-muted-text);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   UBICACIÓN
+   ══════════════════════════════════════════════════════════════ */
+.ccontact__location-block {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--color-bg-section-alt);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-m);
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.ccontact__location-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(var(--color-red-rgb, 220, 38, 38), 0.08);
+  color: var(--color-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ccontact__location-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ccontact__location-text {
+  font-size: 13.5px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+.ccontact__map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  color: var(--color-red);
+  text-decoration: none;
+  margin-top: 6px;
+  width: fit-content;
+  transition: opacity var(--ease);
+}
+
+.ccontact__map-link:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FILAS DE CONTACTO
+   ══════════════════════════════════════════════════════════════ */
+.ccontact__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ccontact__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-m);
+  transition: background var(--ease);
+}
+
+.ccontact__row:hover {
+  background: var(--color-bg-section-alt);
+}
+
+.ccontact__row-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-bg-section-alt);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-muted-text);
+}
+
+.ccontact__row-link {
+  font-size: 13.5px;
+  font-family: var(--font-body);
+  color: var(--color-red);
+  text-decoration: none;
+  transition: opacity var(--ease);
+}
+
+.ccontact__row-link:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+.ccontact__row-value {
+  font-size: 13.5px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+}
+
+/* ── Filas edición general ────────────────────────────────── */
+.cinfo__general-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cinfo__general-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cinfo__general-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-bg-section-alt);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-muted-text);
+}
+
+.cinfo__general-label {
+  font-size: 13px;
+  font-family: var(--font-body);
+  color: var(--color-muted-text);
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.cinfo__general-value {
+  font-size: 13px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REDES SOCIALES
+   ══════════════════════════════════════════════════════════════ */
+.ccontact__social-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ccontact__social-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--color-bg-section-alt);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-m);
+  transition: border-color var(--ease);
+}
+
+.ccontact__social-edit-row:focus-within {
+  border-color: rgba(205, 225, 245, 1);
+}
+
+.ccontact__social-edit-label {
+  font-size: 13px;
+  font-family: var(--font-body);
+  color: var(--color-muted-text);
+  white-space: nowrap;
+  min-width: 82px;
+}
+
+/* Picker */
+.ccontact__social-picker-wrap {
+  margin-top: 4px;
+}
+
+.ccontact__social-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px;
+  background: var(--color-bg-section-alt);
+  border: 1px solid rgba(205, 225, 245, 0.6);
+  border-radius: var(--radius-m);
+}
+
+.ccontact__social-picker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  color: var(--color-text);
+  background: var(--color-white);
+  border: 1px solid rgba(205, 225, 245, 0.8);
+  border-radius: var(--radius-s);
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease), color var(--ease);
+}
+
+.ccontact__social-picker-item:hover {
+  background: rgba(var(--color-red-rgb, 220, 38, 38), 0.06);
+  border-color: var(--color-red);
+  color: var(--color-red);
+}
+
+/* Botón agregar */
+.cinfo__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  color: var(--color-red);
+  background: none;
+  border: 1px dashed var(--color-red);
+  border-radius: var(--radius-s);
+  padding: 6px 14px;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity var(--ease), background var(--ease);
+  margin-top: 4px;
+}
+
+.cinfo__add-btn:hover {
+  opacity: 1;
+  background: rgba(var(--color-red-rgb, 220, 38, 38), 0.06);
+}
+
+/* Botón eliminar */
+.cinfo__remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-s);
+  background: none;
+  border: none;
+  color: var(--color-muted-text);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--ease), color var(--ease);
+}
+
+.cinfo__remove-btn:hover {
+  background: rgba(var(--color-red-rgb, 220, 38, 38), 0.08);
+  color: var(--color-red);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .cinfo__card {
+    padding: 1rem;
+  }
+
+  .ccontact__social-edit-label {
+    display: none;
+  }
+
+  .cinfo__general-label {
+    display: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DARK MODE
+   ══════════════════════════════════════════════════════════════ */
+.dark .cinfo__card {
+  background: var(--color-surface);
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .cinfo__input {
+  background: var(--color-surface);
+  border-color: rgba(162, 214, 249, 0.12);
+  color: var(--color-text);
+}
+
+.dark .cinfo__input:focus {
+  border-color: var(--color-red);
+}
+
+.dark .cinfo__edit-btn,
+.dark .cinfo__cancel-btn {
+  border-color: rgba(162, 214, 249, 0.12);
+}
+
+.dark .cinfo__edit-btn:hover,
+.dark .cinfo__cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .ccontact__location-block {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .ccontact__row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dark .ccontact__row-icon,
+.dark .cinfo__general-icon {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .ccontact__social-edit-row {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .ccontact__social-picker {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .ccontact__social-picker-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(162, 214, 249, 0.12);
+  color: var(--color-text);
+}
+
+.dark .ccontact__social-picker-item:hover {
+  background: rgba(var(--color-red-rgb, 220, 38, 38), 0.10);
+}

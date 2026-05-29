@@ -1,17 +1,25 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin, Clock, Users, Eye, Briefcase, Monitor, Award,
   DollarSign, Pencil, Trash2, ChevronRight, MoreHorizontal,
-  Building2, Globe, FolderCheck, Play, Pause, Megaphone, Calendar
+  Building2, Globe, FolderCheck, Calendar
 } from "lucide-react";
 import { Button } from "../../ui/button";
 
-const statusStyles = {
-  Activa:    { dot: "#10b981", bg: "#f0fdf4", text: "#065f46", border: "#a7f3d0", label: "Activa"    },
-  Borrador:  { dot: "#f59e0b", bg: "#fffbeb", text: "#78350f", border: "#fde68a", label: "Borrador"  },
-  Cerrada:   { dot: "#f43f5e", bg: "#fff1f2", text: "#881337", border: "#fda4af", label: "Cerrada"   },
-  Eliminada: { dot: "#6b7280", bg: "#f9fafb", text: "#374151", border: "#d1d5db", label: "Eliminada" },
+const STATUS_KEYS = {
+  Activa:    "Activa",
+  Borrador:  "Borrador",
+  Cerrada:   "Cerrada",
+  Eliminada: "Eliminada",
+};
+
+const STATUS_STYLES = {
+  Activa:    { dot: "#10b981", bg: "#f0fdf4", text: "#065f46", border: "#a7f3d0" },
+  Borrador:  { dot: "#f59e0b", bg: "#fffbeb", text: "#78350f", border: "#fde68a" },
+  Cerrada:   { dot: "#f43f5e", bg: "#fff1f2", text: "#881337", border: "#fda4af" },
+  Eliminada: { dot: "#6b7280", bg: "#f9fafb", text: "#374151", border: "#d1d5db" },
 };
 
 const statusLabels = {
@@ -19,14 +27,15 @@ const statusLabels = {
   private: "Borrador", closed: "Cerrada", removed: "Eliminada",
 };
 
-function formatDate(date) {
-  if (!date) return "Sin fecha";
+function formatDate(date, t) {
+  if (!date) return t("jobCard.noDate");
   return new Date(date).toLocaleDateString("es-BO", {
     day: "2-digit", month: "short", year: "numeric",
   });
 }
 
 function CardMenu({ onViewDetail, onEdit, onDelete, onToggleStatus, statusLabel }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -52,20 +61,20 @@ function CardMenu({ onViewDetail, onEdit, onDelete, onToggleStatus, statusLabel 
         <div className="job-card__menu-dropdown">
           <button type="button" className="job-card__menu-item"
             onMouseDown={(e) => { e.stopPropagation(); onViewDetail(); setOpen(false); }}>
-            Ver detalle
+            {t("jobCard.menu.viewDetail")}
           </button>
           {onEdit && (
             <button type="button" className="job-card__menu-item"
               onMouseDown={(e) => { e.stopPropagation(); onEdit(); setOpen(false); }}>
-              <Pencil size={13} /> Editar
+              <Pencil size={13} /> {t("jobCard.menu.edit")}
             </button>
           )}
           {onToggleStatus && (
             <button type="button" className="job-card__menu-item"
               onMouseDown={(e) => { e.stopPropagation(); onToggleStatus(); setOpen(false); }}>
-              {statusLabel === "Activa"   && <><span>🔒</span> Cerrar convocatoria</>}
-              {statusLabel === "Cerrada"  && <><span>🔓</span> Reabrir convocatoria</>}
-              {statusLabel === "Borrador" && <><span>📢</span> Publicar</>}
+              {statusLabel === "Activa"   && <><span>🔒</span> {t("jobCard.menu.close")}</>}
+              {statusLabel === "Cerrada"  && <><span>🔓</span> {t("jobCard.menu.reopen")}</>}
+              {statusLabel === "Borrador" && <><span>📢</span> {t("jobCard.menu.publish")}</>}
             </button>
           )}
           {onDelete && (
@@ -73,7 +82,7 @@ function CardMenu({ onViewDetail, onEdit, onDelete, onToggleStatus, statusLabel 
               <div className="job-card__menu-divider" />
               <button type="button" className="job-card__menu-item job-card__menu-item--danger"
                 onMouseDown={(e) => { e.stopPropagation(); onDelete(); setOpen(false); }}>
-                <Trash2 size={13} /> Eliminar
+                <Trash2 size={13} /> {t("jobCard.menu.delete")}
               </button>
             </>
           )}
@@ -92,6 +101,7 @@ function Pill({ icon: Icon, label, color }) {
 }
 
 function DetailModal({ job, onClose, onEdit, onDelete }) {
+  const { t } = useTranslation();
   const {
     title, description, companyName, companyLogo, ubicacion, publishedDate,
     type, modalidad, nivel, salaryMin, salaryMax, currency, skills,
@@ -99,7 +109,7 @@ function DetailModal({ job, onClose, onEdit, onDelete }) {
   } = job;
 
   const hasSalary = salaryMin && salaryMax;
-  const initials = companyName?.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase() ?? "?";
+  const initials  = companyName?.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase() ?? "?";
   const chips = [
     { icon: Briefcase, value: type,      color: "#185FA5" },
     { icon: Monitor,   value: modalidad, color: "#7c3aed" },
@@ -125,20 +135,22 @@ function DetailModal({ job, onClose, onEdit, onDelete }) {
               <div>
                 <p className="job-modal__company-name">{companyName}</p>
                 <div className="job-modal__company-meta">
-                  <MapPin size={11} />{ubicacion || "Sin ubicación"}
+                  <MapPin size={11} />{ubicacion || t("jobCard.noLocation")}
                   <span>·</span>
                   <Clock size={11} />{publishedDate}
                 </div>
               </div>
             </div>
             <div className="flex gap-2 shrink-0">
-              {onEdit   && <Button variant="ghost" size="sm" onClick={onEdit}><Pencil size={14} /> Editar</Button>}
-              {onDelete && <Button variant="red"   size="sm" onClick={onDelete}><Trash2 size={14} /> Eliminar</Button>}
+              {onEdit   && <Button variant="ghost" size="sm" onClick={onEdit}><Pencil size={14} /> {t("jobCard.modal.edit")}</Button>}
+              {onDelete && <Button variant="red"   size="sm" onClick={onDelete}><Trash2 size={14} /> {t("jobCard.modal.delete")}</Button>}
             </div>
           </div>
 
           <h2 className="job-modal__title">{title}</h2>
-          <p className="job-modal__section-label">Estado: {finalStatus}</p>
+          <p className="job-modal__section-label">
+            {t("jobCard.modal.statusLabel")} {t(`jobCard.status.${STATUS_KEYS[finalStatus] ?? "Activa"}`)}
+          </p>
 
           {chips.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
@@ -149,8 +161,8 @@ function DetailModal({ job, onClose, onEdit, onDelete }) {
           )}
 
           <div>
-            <p className="job-modal__section-label">Descripción</p>
-            <p className="job-modal__desc">{description || "Sin descripción"}</p>
+            <p className="job-modal__section-label">{t("jobCard.modal.descLabel")}</p>
+            <p className="job-modal__desc">{description || t("jobCard.modal.noDescription")}</p>
           </div>
 
           {bannerImage && (
@@ -161,13 +173,13 @@ function DetailModal({ job, onClose, onEdit, onDelete }) {
             <div className="job-modal__salary">
               <DollarSign size={15} color="#059669" />
               {currency} {Number(salaryMin).toLocaleString()} – {Number(salaryMax).toLocaleString()}
-              <span>/ mes</span>
+              <span>{t("jobCard.modal.perMonth")}</span>
             </div>
           )}
 
           {skills?.length > 0 && (
             <div>
-              <p className="job-modal__section-label">Habilidades</p>
+              <p className="job-modal__section-label">{t("jobCard.modal.skillsLabel")}</p>
               <div className="flex flex-wrap gap-1.5">
                 {skills.map((s) => <span key={s} className="job-modal__skill">{s}</span>)}
               </div>
@@ -176,10 +188,12 @@ function DetailModal({ job, onClose, onEdit, onDelete }) {
 
           <div className="job-modal__stats">
             <span className="job-modal__stat">
-              <Users size={13} />{postulantesCount ?? 0} postulantes
+              <Users size={13} />{postulantesCount ?? 0} {t("jobCard.modal.applicants")}
             </span>
             {viewsCount != null && (
-              <span className="job-modal__stat"><Eye size={13} />{viewsCount} vistas</span>
+              <span className="job-modal__stat">
+                <Eye size={13} />{viewsCount} {t("jobCard.modal.views")}
+              </span>
             )}
           </div>
         </div>
@@ -189,6 +203,7 @@ function DetailModal({ job, onClose, onEdit, onDelete }) {
 }
 
 function DeleteModal({ title, onConfirm, onCancel, loading }) {
+  const { t } = useTranslation();
   return (
     <div className="delete-modal-overlay" onClick={onCancel}>
       <motion.div
@@ -200,12 +215,16 @@ function DeleteModal({ title, onConfirm, onCancel, loading }) {
         transition={{ duration: 0.18 }}
       >
         <div className="delete-modal__icon"><Trash2 size={22} color="#be123c" /></div>
-        <h3 className="delete-modal__title">¿Eliminar convocatoria?</h3>
-        <p className="delete-modal__desc">"<strong>{title}</strong>" se eliminará permanentemente.</p>
+        <h3 className="delete-modal__title">{t("jobCard.deleteModal.title")}</h3>
+        <p className="delete-modal__desc">
+          "<strong>{title}</strong>" {t("jobCard.deleteModal.desc")}
+        </p>
         <div className="delete-modal__actions">
-          <button className="delete-modal__cancel" onClick={onCancel}>Cancelar</button>
+          <button className="delete-modal__cancel" onClick={onCancel}>
+            {t("jobCard.deleteModal.cancel")}
+          </button>
           <button className="delete-modal__confirm" onClick={onConfirm} disabled={loading}>
-            {loading ? "Eliminando..." : "Sí, eliminar"}
+            {loading ? t("jobCard.deleteModal.confirming") : t("jobCard.deleteModal.confirm")}
           </button>
         </div>
       </motion.div>
@@ -224,6 +243,7 @@ function PipeItem({ color, label, count }) {
 }
 
 export function JobPostCard(props) {
+  const { t } = useTranslation();
   const {
     compact = false,
     id, title, description, companyName, companyLogo,
@@ -236,14 +256,14 @@ export function JobPostCard(props) {
     showStatus = true, onApply, onEdit, onDelete, onToggleStatus,
   } = props;
 
-  const [showDetail, setShowDetail]               = useState(false);
+  const [showDetail,        setShowDetail]        = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleting, setDeleting]                   = useState(false);
+  const [deleting,          setDeleting]          = useState(false);
 
   const resolvedState = realState ?? real_state ?? state;
   const finalStatus   = status ?? statusLabels[resolvedState] ?? "Activa";
-  const publishedDate = timeAgo ?? formatDate(createdAt ?? created_at);
-  const sStyle        = statusStyles[finalStatus] ?? statusStyles.Activa;
+  const publishedDate = timeAgo ?? t("jobCard.publishedOn", { date: formatDate(createdAt ?? created_at, t) });
+  const sStyle        = STATUS_STYLES[finalStatus] ?? STATUS_STYLES.Activa;
   const initials      = companyName?.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase() ?? "?";
 
   const handleDelete = async () => {
@@ -255,7 +275,7 @@ export function JobPostCard(props) {
 
   const jobData = {
     id, title, description, companyName, companyLogo, ubicacion,
-    publishedDate: timeAgo ?? `Publicado el ${formatDate(createdAt ?? created_at)}`,
+    publishedDate: timeAgo ?? t("jobCard.publishedOn", { date: formatDate(createdAt ?? created_at, t) }),
     type, modalidad, nivel, salaryMin, salaryMax, currency, skills,
     finalStatus, bannerImage, postulantesCount, viewsCount,
   };
@@ -270,15 +290,14 @@ export function JobPostCard(props) {
       >
         <div className="job-card__body">
 
-          {/* ── Header: logo + empresa + estado + menú ── */}
           <div className="job-card__header">
             <div className="job-card__logo">
               {companyLogo ? <img src={companyLogo} alt={companyName} /> : initials}
             </div>
             <div className="job-card__company">
-              <p className="job-card__company-name">{companyName || "Empresa"}</p>
+              <p className="job-card__company-name">{companyName || t("jobCard.company")}</p>
               <div className="job-card__company-meta">
-                <Building2 size={10} /><span>Empresa</span>
+                <Building2 size={10} /><span>{t("jobCard.company")}</span>
               </div>
             </div>
 
@@ -288,7 +307,7 @@ export function JobPostCard(props) {
                 style={{ background: sStyle.bg, color: sStyle.text, border: `1px solid ${sStyle.border}` }}
               >
                 <span className="job-card__status-dot" style={{ background: sStyle.dot }} />
-                {sStyle.label}
+                {t(`jobCard.status.${STATUS_KEYS[finalStatus] ?? "Activa"}`)}
               </span>
             )}
 
@@ -301,16 +320,14 @@ export function JobPostCard(props) {
             />
           </div>
 
-          {/* ── Título ── */}
           <h2 className="job-card__title">{title}</h2>
 
-          {/* ── Meta: ubicación + fecha ── */}
           <div className="job-card__meta-row">
             <MapPin size={11} />
-            <span>{ubicacion || "Sin ubicación"}</span>
+            <span>{ubicacion || t("jobCard.noLocation")}</span>
             <span className="job-card__meta-sep">·</span>
             <Calendar size={11} />
-            <span>Publicado el {formatDate(createdAt ?? created_at)}</span>
+            <span>{t("jobCard.publishedOn", { date: formatDate(createdAt ?? created_at, t) })}</span>
             {type && (
               <>
                 <span className="job-card__meta-sep">·</span>
@@ -322,7 +339,6 @@ export function JobPostCard(props) {
 
           <div className="job-card__divider" />
 
-          {/* ── Métricas: Postulantes / Entrevistas / Contratado ── */}
           <div className="job-card__metrics">
             <div className="job-card__metric">
               <div className="job-card__metric-icon job-card__metric-icon--users">
@@ -330,7 +346,7 @@ export function JobPostCard(props) {
               </div>
               <div className="job-card__metric-text">
                 <p className="job-card__metric-value">{postulantesCount ?? 0}</p>
-                <p className="job-card__metric-label">Postulantes</p>
+                <p className="job-card__metric-label">{t("jobCard.metrics.applicants")}</p>
               </div>
             </div>
             <div className="job-card__metric">
@@ -339,7 +355,7 @@ export function JobPostCard(props) {
               </div>
               <div className="job-card__metric-text">
                 <p className="job-card__metric-value">{interviewsCount ?? 0}</p>
-                <p className="job-card__metric-label">Entrevistas</p>
+                <p className="job-card__metric-label">{t("jobCard.metrics.interviews")}</p>
               </div>
             </div>
             <div className="job-card__metric">
@@ -348,31 +364,29 @@ export function JobPostCard(props) {
               </div>
               <div className="job-card__metric-text">
                 <p className="job-card__metric-value">{hiredCount ?? 0}</p>
-                <p className="job-card__metric-label">Contratado</p>
+                <p className="job-card__metric-label">{t("jobCard.metrics.hired")}</p>
               </div>
             </div>
           </div>
 
-          {/* ── Pipeline ── */}
           {pipeline && (
             <div className="job-card__pipeline">
-              <PipeItem color="#10b981" label="Nuevos"      count={pipeline.nuevos}     />
-              <PipeItem color="#6366f1" label="En revisión" count={pipeline.enRevision} />
-              <PipeItem color="#e879f9" label="Entrevista"  count={pipeline.entrevista} />
-              <PipeItem color="#f59e0b" label="Oferta"      count={pipeline.oferta}     />
+              <PipeItem color="#10b981" label={t("jobCard.pipeline.new")}       count={pipeline.nuevos}     />
+              <PipeItem color="#6366f1" label={t("jobCard.pipeline.inReview")}  count={pipeline.enRevision} />
+              <PipeItem color="#e879f9" label={t("jobCard.pipeline.interview")} count={pipeline.entrevista} />
+              <PipeItem color="#f59e0b" label={t("jobCard.pipeline.offer")}     count={pipeline.oferta}     />
             </div>
           )}
         </div>
 
-        {/* ── Footer: solo Ver postulantes + Ver detalle ── */}
         <div className="job-card__footer">
           {onApply && (
             <button className="job-card__action-btn" onClick={onApply}>
-              <Users size={14} /> Ver postulantes
+              <Users size={14} /> {t("jobCard.actions.viewApplicants")}
             </button>
           )}
           <button className="job-card__detail-btn" onClick={() => setShowDetail(true)}>
-            Ver detalle <ChevronRight size={12} />
+            {t("jobCard.actions.viewDetail")} <ChevronRight size={12} />
           </button>
         </div>
       </motion.article>

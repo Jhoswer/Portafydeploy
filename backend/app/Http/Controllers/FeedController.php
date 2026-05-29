@@ -17,6 +17,7 @@ use App\Services\NotificationService;
 use App\Services\PublicAssetUrlService;
 use App\Support\PermissionCatalog;
 use App\Support\OfficialSchema;
+use App\Support\ProfileRoleGuard;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -647,9 +648,13 @@ class FeedController extends Controller
     {
         $query = Publication::query()
             ->from('PUBLICATION')  // ← fuerza el alias de tabla explícito
+            ->whereHas('profile.userRole.role', function (Builder $roleQuery) {
+                $roleQuery->whereIn('name', ProfileRoleGuard::PUBLIC_PROFILE_ROLES);
+            })
             ->with([
                 'profile' => fn ( $profileQuery) => $profileQuery->withCount(['followerRelations', 'followingRelations']),
                 'profile.userRole.user',
+                'profile.userRole.role',
                 'profile.jobTitle',
                 'profile.verificationRequests',
                 'detail.project.skills',
@@ -657,6 +662,7 @@ class FeedController extends Controller
                 'detail.offer.skills',
                 'detail.offer.profile.company',
                 'latestComment.commentator.userRole.user',
+                'latestComment.commentator.userRole.role',
                 'latestComment.commentator.verificationRequests',
             ])
             ->withCount([
@@ -668,6 +674,7 @@ class FeedController extends Controller
         if ($includeComments) {
             $query->with([
                 'comments.commentator.userRole.user',
+                'comments.commentator.userRole.role',
                 'comments.commentator.verificationRequests',
             ]);
         }
@@ -739,19 +746,24 @@ class FeedController extends Controller
                 ? collect([$publication->latestComment])
                 : collect());
 
-        $commentsData = $comments->map(fn(PublicationComment $comment) => [
-            'id'           => (int) $comment->getKey(),
-            'text'         => $comment->comment,
-            'author'       => trim(
-                ($comment->commentator?->name ?? '') .
-                ' ' .
-                ($comment->commentator?->last_name ?? '')
-            ) ?: 'Usuario Portafy',
-            'authorAvatar' => $this->assetUrlService->fromStoragePath($comment->commentator?->profile_photo),
-            'authorId'     => $comment->commentator?->userRole?->user?->id ?? null,
-            'authorIsVerified' => $this->profileIsVerified($comment->commentator),
-            'posted'       => $comment->created_at?->diffForHumans() ?? '',
-        ])->values();
+        $commentsData = $comments->map(function (PublicationComment $comment) {
+            $commentator = $comment->commentator;
+            $commentatorIsAdmin = ProfileRoleGuard::profileIsAdministrative($commentator);
+
+            return [
+                'id'           => (int) $comment->getKey(),
+                'text'         => $comment->comment,
+                'author'       => trim(
+                    ($commentator?->name ?? '') .
+                    ' ' .
+                    ($commentator?->last_name ?? '')
+                ) ?: 'Usuario Portafy',
+                'authorAvatar' => $this->assetUrlService->fromStoragePath($commentator?->profile_photo),
+                'authorId'     => $commentatorIsAdmin ? null : ($commentator?->userRole?->user?->id ?? null),
+                'authorIsVerified' => $commentatorIsAdmin ? false : $this->profileIsVerified($commentator),
+                'posted'       => $comment->created_at?->diffForHumans() ?? '',
+            ];
+        })->values();
 
         $authorFollowersCount = 0;
         $authorFollowingCount = 0;
@@ -830,6 +842,7 @@ class FeedController extends Controller
                 'id'             => $user?->id,
                 'name'           => $authorName,
                 'title'          => $profile?->jobTitle?->name ?: 'Profesional Portafy',
+                'role'           => $profile?->userRole?->role?->name,
                 'avatar'         => $this->assetUrlService->fromStoragePath($profile?->profile_photo),
                 'isVerified'     => $this->profileIsVerified($profile),
                 'followersCount' => $authorFollowersCount,

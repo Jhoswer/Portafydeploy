@@ -1,4 +1,5 @@
 import { useCallback, useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ArrowLeft, Image, FileText, MapPin, Briefcase,
   ChevronDown, ChevronUp, X, Send,
@@ -10,30 +11,23 @@ import { crearOferta, obtenerOferta, actualizarOferta } from "../../../services/
 import { useAuth } from "../../../context/useAuth";
 import { hasPermission, PERMISSION_NAMES } from "../../../utils/permissions";
 import AudienceModal from "../convocatory/AudienceModal";
-import { PROFESSIONAL_AREAS } from "../convocatory/AudienceModal"; 
+import { PROFESSIONAL_AREAS } from "../convocatory/AudienceModal";
 
 const AUDIENCE_CONFIG = {
-  public:        { icon: Globe,               label: "Todo el mundo" },
-  followers:     { icon: Users,               label: "Mis seguidores" },
-  connections:   { icon: Link2,               label: "Mis conexiones" },
-  professionals: { icon: SlidersHorizontal,   label: "Tipo de profesional" },
+  public:        { icon: Globe             },
+  followers:     { icon: Users             },
+  connections:   { icon: Link2             },
+  professionals: { icon: SlidersHorizontal },
 };
 
 const AUDIENCE_TYPE_IDS = {
-  public: 1,
-  followers: 2,
-  connections: 3,
-  professionals: 4,
+  public: 1, followers: 2, connections: 3, professionals: 4,
 };
 
 const AUDIENCE_CODES_BY_ID = {
-  1: "public",
-  2: "followers",
-  3: "connections",
-  4: "professionals",
+  1: "public", 2: "followers", 3: "connections", 4: "professionals",
 };
 
-/* ── Chip selector ────────────────────────────────────────── */
 function ChipSelector({ icon: Icon, label, value, options, onChange, color = "#1a6fbd" }) {
   const [open, setOpen] = useState(false);
   const triggerCls = value ? "nc-chip__trigger" : "nc-chip__trigger nc-chip__trigger--empty";
@@ -72,7 +66,6 @@ function ChipSelector({ icon: Icon, label, value, options, onChange, color = "#1
   );
 }
 
-/* ── Toast de éxito ───────────────────────────────────────── */
 function SuccessToast({ message, sub }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -91,14 +84,13 @@ function SuccessToast({ message, sub }) {
   );
 }
 
-/* ── Componente principal ─────────────────────────────────── */
 export default function NewConvocatory({ editId = null, onBack }) {
+  const { t } = useTranslation();
   const isEditing = Boolean(editId);
   const goBack    = useCallback(() => onBack?.(), [onBack]);
   const { company, user } = useAuth();
   const canPublishOffer = hasPermission(user, PERMISSION_NAMES.OFFER_PUBLISH);
 
-  /* ── Estado general ── */
   const [loadingData,   setLoadingData]   = useState(isEditing);
   const [title,         setTitle]         = useState("");
   const [description,   setDescription]   = useState("");
@@ -120,11 +112,9 @@ export default function NewConvocatory({ editId = null, onBack }) {
   const [pdfFile,       setPdfFile]       = useState(null);
   const [pdfName,       setPdfName]       = useState("");
   const [loading,       setLoading]       = useState(false);
-
-  /* ── Estado de audiencia ── */
   const [showAudienceModal, setShowAudienceModal] = useState(false);
   const [audience,          setAudience]          = useState("public");
-  const [audienceFilters, setAudienceFilters] = useState({ id_professional_area: null, career: null });
+  const [audienceFilters,   setAudienceFilters]   = useState({ id_professional_area: null, career: null });
 
   const imageRef = useRef(null);
   const pdfRef   = useRef(null);
@@ -133,19 +123,18 @@ export default function NewConvocatory({ editId = null, onBack }) {
   const companyAvatar = company?.logo_url ?? null;
   const initials      = companyName.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
 
-  /* ── Píldora de audiencia ── */
   const AudienceIcon = AUDIENCE_CONFIG[audience]?.icon ?? Globe;
-  const audienceLabel = audience === "professionals" && audienceFilters?.id_professional_area
-  ? (() => {
-      const area = PROFESSIONAL_AREAS.find(a => a.id === audienceFilters.id_professional_area);
-      if (!area) return "Tipo de profesional";
-      return audienceFilters.career
-        ? `${area.name} · ${audienceFilters.career}`
-        : area.name;
-    })()
-  : AUDIENCE_CONFIG[audience]?.label ?? "Todo el mundo";
 
-  /* ── Carga en modo edición ── */
+  const audienceLabel = audience === "professionals" && audienceFilters?.id_professional_area
+    ? (() => {
+        const area = PROFESSIONAL_AREAS.find(a => a.id === audienceFilters.id_professional_area);
+        if (!area) return t("audienceModal.options.professionals.title");
+        return audienceFilters.career
+          ? `${area.name} · ${audienceFilters.career}`
+          : area.name;
+      })()
+    : t(`audienceModal.options.${audience}.title`);
+
   useEffect(() => {
     if (!editId) return;
     setLoadingData(true);
@@ -167,22 +156,18 @@ export default function NewConvocatory({ editId = null, onBack }) {
         setSkills(rawSkills.map(s => typeof s === "string" ? s : s.name ?? "").filter(Boolean));
         const banner = oferta.banner_url ?? oferta.banner_image ?? oferta.banner ?? null;
         if (banner) setBannerPreview(banner);
-        if (oferta.id_audience_type) {
-          setAudience(
-            AUDIENCE_CODES_BY_ID[oferta.id_audience_type] ?? "public"
-          );
-        }
-        if (oferta.audience_filters) {
+        if (oferta.id_audience_type)
+          setAudience(AUDIENCE_CODES_BY_ID[oferta.id_audience_type] ?? "public");
+        if (oferta.audience_filters)
           setAudienceFilters({
             id_professional_area: oferta.audience_filters.id_professional_area ?? null,
             career: oferta.audience_filters.career ?? null,
           });
-        }
         if (oferta.salary_min || oferta.closed_at || oferta.skills?.length) setExpanded(true);
       })
-      .catch(() => { toast.error("No se pudo cargar la convocatoria"); goBack(); })
+      .catch(() => { toast.error(t("newConvocatory.toast.loadError")); goBack(); })
       .finally(() => setLoadingData(false));
-  }, [editId, goBack]);
+  }, [editId, goBack, t]);
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -206,18 +191,16 @@ export default function NewConvocatory({ editId = null, onBack }) {
     }
   };
 
-  /* ── Confirmar audiencia desde el modal ── */
   const handleAudienceConfirm = ({ audience: aud, filters }) => {
     setAudience(aud);
     if (filters) setAudienceFilters(filters);
     setShowAudienceModal(false);
   };
 
-  /* ── Publicar ── */
   const publish = async (asDraft = false) => {
-    if (!title.trim()) { toast.error("El título es obligatorio"); return; }
+    if (!title.trim()) { toast.error(t("newConvocatory.toast.titleRequired")); return; }
     if (!asDraft && !canPublishOffer) {
-      toast.error("No tienes permisos para publicar ofertas de trabajo.");
+      toast.error(t("newConvocatory.toast.noPermission"));
       return;
     }
     setLoading(true);
@@ -229,28 +212,25 @@ export default function NewConvocatory({ editId = null, onBack }) {
       closedAt: closedAt || null,
       skills, bannerFile, asDraft,
       id_audience_type: AUDIENCE_TYPE_IDS[audience],
-      audienceFilters:
-        audience === "professionals"
-          ? audienceFilters
-          : null,
+      audienceFilters: audience === "professionals" ? audienceFilters : null,
     };
     try {
       if (isEditing) {
         await actualizarOferta(editId, payload);
         toast.custom(() => <SuccessToast
-          message={asDraft ? "Borrador actualizado" : "¡Convocatoria editada con éxito!"}
-          sub={asDraft ? "Los cambios fueron guardados." : "Los cambios ya son visibles."}
+          message={asDraft ? t("newConvocatory.toast.draftUpdated") : t("newConvocatory.toast.editSuccess")}
+          sub={asDraft ? t("newConvocatory.toast.draftUpdatedSub") : t("newConvocatory.toast.editSuccessSub")}
         />);
       } else {
         await crearOferta(payload);
         toast.custom(() => <SuccessToast
-          message={asDraft ? "Borrador guardado" : "¡Convocatoria creada con éxito!"}
-          sub={asDraft ? "Puedes editarlo y publicarlo cuando quieras." : "Tu oferta ya está visible para los candidatos."}
+          message={asDraft ? t("newConvocatory.toast.draftSaved") : t("newConvocatory.toast.createSuccess")}
+          sub={asDraft ? t("newConvocatory.toast.draftSavedSub") : t("newConvocatory.toast.createSuccessSub")}
         />);
       }
       goBack();
     } catch (err) {
-      toast.error(err.message || "Error al guardar");
+      toast.error(err.message || t("newConvocatory.toast.saveError"));
     } finally {
       setLoading(false);
     }
@@ -260,7 +240,7 @@ export default function NewConvocatory({ editId = null, onBack }) {
     return (
       <div className="new-conv-loading">
         <div className="new-conv-loading__spinner" />
-        <p className="new-conv-loading__text">Cargando convocatoria...</p>
+        <p className="new-conv-loading__text">{t("newConvocatory.loading")}</p>
       </div>
     );
   }
@@ -268,30 +248,27 @@ export default function NewConvocatory({ editId = null, onBack }) {
   return (
     <div className="new-conv">
 
-      {/* ── Cabecera ── */}
       <div className="new-conv__header">
         <button className="new-conv__back-btn" type="button" onClick={goBack}>
           <ArrowLeft size={18} />
         </button>
         <div>
           <h1 className="new-conv__header-title">
-            {isEditing ? "Editar convocatoria" : "Nueva convocatoria"}
+            {isEditing ? t("newConvocatory.header.edit") : t("newConvocatory.header.new")}
           </h1>
           {isEditing && (
-            <p className="new-conv__header-sub">Modifica los campos que deseas actualizar</p>
+            <p className="new-conv__header-sub">{t("newConvocatory.header.editSub")}</p>
           )}
         </div>
         {isEditing && (
           <span className="new-conv__edit-badge">
-            <Sparkles size={11} /> Modo edición
+            <Sparkles size={11} /> {t("newConvocatory.header.editBadge")}
           </span>
         )}
       </div>
 
-      {/* ── Composer card ── */}
       <div className="new-conv__card">
 
-        {/* ── Autor + píldora de audiencia ── */}
         <div className="new-conv__author">
           <div className="new-conv__author-avatar">
             {companyAvatar
@@ -300,8 +277,6 @@ export default function NewConvocatory({ editId = null, onBack }) {
           </div>
           <div className="new-conv__author-info">
             <div className="new-conv__author-name">{companyName}</div>
-
-            {/* ← PÍLDORA DE AUDIENCIA (estilo Facebook) */}
             <button
               type="button"
               className="new-conv__audience-pill"
@@ -311,38 +286,33 @@ export default function NewConvocatory({ editId = null, onBack }) {
               <span>{audienceLabel}</span>
               <ChevronDown size={11} />
             </button>
-
           </div>
         </div>
 
-        {/* Título */}
         <input
           type="text"
           className="new-conv__title-input"
           value={title}
           onChange={e => setTitle(e.target.value)}
-          placeholder="Título del puesto *"
+          placeholder={t("newConvocatory.placeholders.title")}
         />
 
-        {/* Área */}
         <input
           type="text"
           className="new-conv__area-input"
           value={area}
           onChange={e => setArea(e.target.value)}
-          placeholder="Área o rubro (ej. Tecnología, Salud, Construcción...)"
+          placeholder={t("newConvocatory.placeholders.area")}
         />
 
-        {/* Descripción */}
         <textarea
           className="new-conv__desc-input"
           value={description}
           onChange={e => setDescription(e.target.value)}
-          placeholder="Describe el puesto, responsabilidades y lo que buscas en un candidato..."
+          placeholder={t("newConvocatory.placeholders.description")}
           rows={4}
         />
 
-        {/* Banner preview */}
         {bannerPreview && (
           <div className="new-conv__banner">
             <img src={bannerPreview} alt="Banner" />
@@ -356,7 +326,6 @@ export default function NewConvocatory({ editId = null, onBack }) {
           </div>
         )}
 
-        {/* PDF adjunto */}
         {pdfName && (
           <div className="new-conv__pdf">
             <FileText size={18} color="var(--color-blue-mid)" />
@@ -371,22 +340,27 @@ export default function NewConvocatory({ editId = null, onBack }) {
           </div>
         )}
 
-        {/* Chips rápidos */}
         <hr className="new-conv__divider" />
         <div className="new-conv__chips">
           <ChipSelector
-            icon={Briefcase} label="Tipo" value={type} onChange={setType}
-            options={["Full-time","Part-time","Freelance","Prácticas"]}
+            icon={Briefcase}
+            label={t("newConvocatory.chips.type")}
+            value={type} onChange={setType}
+            options={t("newConvocatory.chips.typeOptions", { returnObjects: true })}
             color="#1a6fbd"
           />
           <ChipSelector
-            icon={Monitor} label="Modalidad" value={modalidad} onChange={setModalidad}
-            options={["Remoto","Presencial","Híbrido"]}
+            icon={Monitor}
+            label={t("newConvocatory.chips.modality")}
+            value={modalidad} onChange={setModalidad}
+            options={t("newConvocatory.chips.modalityOptions", { returnObjects: true })}
             color="#7c3aed"
           />
           <ChipSelector
-            icon={Award} label="Nivel" value={nivel} onChange={setNivel}
-            options={["Sin experiencia","Junior","Mid","Senior","Lead"]}
+            icon={Award}
+            label={t("newConvocatory.chips.level")}
+            value={nivel} onChange={setNivel}
+            options={t("newConvocatory.chips.levelOptions", { returnObjects: true })}
             color="#059669"
           />
           <div className={`nc-location ${ubicacion ? "nc-location--filled" : "nc-location--empty"}`}>
@@ -396,31 +370,32 @@ export default function NewConvocatory({ editId = null, onBack }) {
               className="nc-location__input"
               value={ubicacion}
               onChange={e => setUbicacion(e.target.value)}
-              placeholder="Ciudad"
+              placeholder={t("newConvocatory.placeholders.city")}
               style={{ width: ubicacion ? Math.max(60, ubicacion.length * 8) : 60 }}
             />
           </div>
         </div>
 
-        {/* Panel expandible */}
         <hr className="new-conv__divider" />
         <button
           type="button"
           className="new-conv__expand-btn"
           onClick={() => setExpanded(e => !e)}
         >
-          <span>Más detalles</span>
+          <span>{t("newConvocatory.expand.label")}</span>
           {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
 
         {expanded && (
           <div className="new-conv__expand-body">
             <div>
-              <label className="new-conv__field-label">Rango salarial</label>
+              <label className="new-conv__field-label">{t("newConvocatory.expand.salary")}</label>
               <div className="new-conv__salary-grid">
-                <input className="new-conv__input" type="number" placeholder="Mínimo"
+                <input className="new-conv__input" type="number"
+                  placeholder={t("newConvocatory.placeholders.salaryMin")}
                   value={salaryMin} onChange={e => setSalaryMin(e.target.value)} />
-                <input className="new-conv__input" type="number" placeholder="Máximo"
+                <input className="new-conv__input" type="number"
+                  placeholder={t("newConvocatory.placeholders.salaryMax")}
                   value={salaryMax} onChange={e => setSalaryMax(e.target.value)} />
                 <select className="new-conv__input" value={currency} onChange={e => setCurrency(e.target.value)}>
                   <option>USD</option>
@@ -430,23 +405,23 @@ export default function NewConvocatory({ editId = null, onBack }) {
               </div>
               <label className="new-conv__checkbox-row">
                 <input type="checkbox" checked={showSalary} onChange={e => setShowSalary(e.target.checked)} />
-                Mostrar salario públicamente
+                {t("newConvocatory.expand.showSalary")}
               </label>
             </div>
             <div>
-              <label className="new-conv__field-label">Fecha límite de postulación</label>
+              <label className="new-conv__field-label">{t("newConvocatory.expand.deadline")}</label>
               <input className="new-conv__input" type="date"
                 value={closedAt} onChange={e => setClosedAt(e.target.value)} />
             </div>
             <div>
-              <label className="new-conv__field-label">Habilidades requeridas</label>
+              <label className="new-conv__field-label">{t("newConvocatory.expand.skills")}</label>
               <input
                 className="new-conv__input"
                 type="text"
                 value={currentSkill}
                 onChange={e => setCurrentSkill(e.target.value)}
                 onKeyDown={addSkill}
-                placeholder="Escribe y presiona Enter..."
+                placeholder={t("newConvocatory.placeholders.skillInput")}
               />
               {skills.length > 0 && (
                 <div className="new-conv__skills-row">
@@ -468,7 +443,6 @@ export default function NewConvocatory({ editId = null, onBack }) {
           </div>
         )}
 
-        {/* Action bar */}
         <hr className="new-conv__divider" />
         <div className="new-conv__actions">
           <div className="new-conv__attach-row">
@@ -477,7 +451,7 @@ export default function NewConvocatory({ editId = null, onBack }) {
             <button
               type="button"
               className={`new-conv__icon-btn ${bannerPreview ? "new-conv__icon-btn--active" : ""}`}
-              title="Adjuntar imagen"
+              title={t("newConvocatory.actions.attachImage")}
               onClick={() => imageRef.current?.click()}
             >
               <Image size={18} />
@@ -485,7 +459,7 @@ export default function NewConvocatory({ editId = null, onBack }) {
             <button
               type="button"
               className={`new-conv__icon-btn ${pdfFile ? "new-conv__icon-btn--active" : ""}`}
-              title="Adjuntar PDF"
+              title={t("newConvocatory.actions.attachPdf")}
               onClick={() => pdfRef.current?.click()}
             >
               <FileText size={18} />
@@ -499,7 +473,7 @@ export default function NewConvocatory({ editId = null, onBack }) {
               onClick={() => publish(true)}
               disabled={loading}
             >
-              Guardar borrador
+              {t("newConvocatory.actions.saveDraft")}
             </button>
             <button
               type="button"
@@ -508,15 +482,14 @@ export default function NewConvocatory({ editId = null, onBack }) {
               disabled={loading || !title.trim() || !canPublishOffer}
             >
               {isEditing
-                ? <><Sparkles size={14} />{loading ? "Guardando..." : "Guardar cambios"}</>
-                : <><Send size={14} />{loading ? "Publicando..." : "Publicar"}</>
+                ? <><Sparkles size={14} />{loading ? t("newConvocatory.actions.saving") : t("newConvocatory.actions.saveChanges")}</>
+                : <><Send size={14} />{loading ? t("newConvocatory.actions.publishing") : t("newConvocatory.actions.publish")}</>
               }
             </button>
           </div>
         </div>
       </div>
 
-      {/* ── Modal de audiencia ── */}
       {showAudienceModal && (
         <AudienceModal
           currentAudience={audience}
@@ -525,7 +498,6 @@ export default function NewConvocatory({ editId = null, onBack }) {
           onConfirm={handleAudienceConfirm}
         />
       )}
-
     </div>
   );
 }

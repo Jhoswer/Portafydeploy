@@ -41,9 +41,9 @@ export const cvUi = {
     gap: 6,
     padding: "9px 16px",
     borderRadius: 10,
-    border: "1px solid rgba(205,225,245,.9)",
-    background: "#fff",
-    color: "var(--body)",
+    border: "1px solid var(--cv-cancel-btn-border)",
+    background: "var(--cv-cancel-btn-bg)",
+    color: "var(--text)",
     fontFamily: "var(--f-ui)",
     fontSize: "0.83rem",
     fontWeight: 600,
@@ -55,18 +55,18 @@ export const cvUi = {
     gap: 10,
     padding: "10px 14px",
     borderRadius: 12,
-    background: "rgba(37,93,222,.04)",
-    border: "1px solid rgba(37,93,222,.10)",
+    background: "var(--cv-strip-bg)",
+    border: "1px solid var(--cv-strip-border)",
     fontFamily: "var(--f-body)",
     fontSize: "0.78rem",
-    color: "#255dde",
+    color: "var(--cv-strip-text)",
   },
   errorBox: {
     padding: "10px 14px",
     borderRadius: 10,
-    background: "rgba(239,87,89,.06)",
-    border: "1px solid rgba(239,87,89,.18)",
-    color: "#c0392b",
+    background: "var(--cv-error-bg)",
+    border: "1px solid var(--cv-error-border)",
+    color: "var(--cv-error-text)",
     fontFamily: "var(--f-body)",
     fontSize: "0.82rem",
   },
@@ -76,7 +76,7 @@ export const cvUi = {
     justifyContent: "center",
     gap: 10,
     padding: "48px 24px",
-    color: "var(--muted)",
+    color: "var(--cv-loading-color)",
     fontFamily: "var(--f-body)",
     fontSize: "0.85rem",
   },
@@ -88,8 +88,8 @@ export const cvUi = {
     gap: 16,
     padding: "48px 24px",
     borderRadius: 16,
-    background: "linear-gradient(180deg, #fbfdff 0%, #f4f8ff 100%)",
-    border: "1.5px dashed rgba(162,214,249,.7)",
+    background: "var(--cv-empty-bg)",
+    border: "1.5px dashed var(--cv-empty-border)",
     textAlign: "center",
   },
   emptyIcon: {
@@ -123,9 +123,9 @@ export const cvUi = {
   },
   card: {
     borderRadius: 16,
-    background: "#fff",
-    border: "1px solid rgba(205,225,245,.8)",
-    boxShadow: "0 2px 12px rgba(14,30,60,.06)",
+    background: "var(--cv-card-bg)",
+    border: "1px solid var(--cv-card-border)",
+    boxShadow: "var(--cv-card-shadow)",
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
@@ -139,7 +139,13 @@ export const cvUi = {
           ? "linear-gradient(135deg, #14532d 0%, #16a34a 100%)"
           : template === "crimson"
             ? "linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)"
-            : "linear-gradient(135deg, #1e293b 0%, #0d9488 100%)",
+            : template === "bicolor"
+              ? "linear-gradient(135deg, #1e293b 0%, #38bdf8 100%)"
+              : template === "tech"
+                ? "linear-gradient(135deg, #0d1117 0%, #58a6ff 100%)"
+                : template === "minimal"
+                  ? "linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%)"
+                  : "linear-gradient(135deg, #1e293b 0%, #0d9488 100%)",
     position: "relative",
     overflow: "hidden",
   }),
@@ -182,6 +188,7 @@ export const cvUi = {
     display: "flex",
     flexDirection: "column",
     gap: 8,
+    background: "var(--cv-card-bg)",
   },
   cardName: {
     fontFamily: "var(--f-title)",
@@ -206,11 +213,12 @@ export const cvUi = {
   },
   cardFooter: {
     padding: "10px 16px",
-    borderTop: "1px solid rgba(205,225,245,.6)",
+    borderTop: "1px solid var(--cv-card-footer)",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 8,
+    background: "var(--cv-card-bg)",
   },
   visibleBadge: (v) => ({
     display: "inline-flex",
@@ -230,8 +238,8 @@ export const cvUi = {
     width: 30,
     height: 30,
     borderRadius: 8,
-    border: "1px solid rgba(205,225,245,.8)",
-    background: "#f8fbff",
+    border: "1px solid var(--cv-icon-btn-border)",
+    background: "var(--cv-icon-btn-bg)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

@@ -15,15 +15,15 @@ import {
 } from "lucide-react";
 
 /* ── Tablas por sección ── */
-import TablaComentarios   from "./TablaComentarios";
-import TablaCvs           from "./TablaCvs";
-import TablaHabilidades   from "./TablaHabilidades";
-import TablaExperiencias  from "./TablaExperiencias";
-import TablaOfertas       from "./TablaOfertas";
+import TablaComentarios from "./TablaComentarios";
+import TablaCvs from "./TablaCvs";
+import TablaHabilidades from "./TablaHabilidades";
+import TablaExperiencias from "./TablaExperiencias";
+import TablaOfertas from "./TablaOfertas";
 import TablaPostulaciones from "./TablaPostulaciones";
-import TablaProyectos     from "./TablaProyectos";
+import TablaProyectos from "./TablaProyectos";
 import TablaPublicaciones from "./TablaPublicaciones";
-import TablaGuardados     from "./TablaGuardados";
+import TablaGuardados from "./TablaGuardados";
 
 /* ── Modal especial para Datos Personales ── */
 import ModalDatosPersonales from "./ModalDatosPersonales";
@@ -34,74 +34,74 @@ import ModalDatosPersonales from "./ModalDatosPersonales";
 ───────────────────────────────────────────────────────────── */
 const SECCIONES = [
   {
-    key:     "datos_personales",
-    label:   "Datos Personales",
-    Icon:    User,
-    desc:    "Eliminar proveedores, compañía, redes sociales, título y estudios del perfil.",
+    key: "datos_personales",
+    label: "Datos Personales",
+    Icon: User,
+    desc: "Eliminar proveedores, compañía, redes sociales, título y estudios del perfil.",
     isModal: true,
-    Tabla:   null,
+    Tabla: null,
   },
   {
-    key:   "comentarios",
+    key: "comentarios",
     label: "Comentarios",
-    Icon:  MessageCircle,
-    desc:  "Eliminar todos los comentarios realizados por el usuario.",
+    Icon: MessageCircle,
+    desc: "Eliminar todos los comentarios realizados por el usuario.",
     Tabla: TablaComentarios,
   },
   {
-    key:   "cvs",
+    key: "cvs",
     label: "CVs",
-    Icon:  FileText,
-    desc:  "Eliminar currículos creados.",
+    Icon: FileText,
+    desc: "Eliminar currículos creados.",
     Tabla: TablaCvs,
   },
   {
-    key:   "habilidades",
+    key: "habilidades",
     label: "Habilidades",
-    Icon:  Zap,
-    desc:  "Eliminar todas las habilidades y skills del perfil.",
+    Icon: Zap,
+    desc: "Eliminar todas las habilidades y skills del perfil.",
     Tabla: TablaHabilidades,
   },
   {
-    key:   "experiencias",
+    key: "experiencias",
     label: "Experiencias",
-    Icon:  Briefcase,
-    desc:  "Eliminar todas las experiencias laborales y académicas.",
+    Icon: Briefcase,
+    desc: "Eliminar todas las experiencias laborales y académicas.",
     Tabla: TablaExperiencias,
   },
   {
-    key:   "ofertas",
+    key: "ofertas",
     label: "Ofertas",
-    Icon:  FileText,
-    desc:  "Eliminar convocatorias publicadas.",
+    Icon: FileText,
+    desc: "Eliminar convocatorias publicadas.",
     Tabla: TablaOfertas,
   },
   {
-    key:   "postulaciones",
+    key: "postulaciones",
     label: "Postulaciones",
-    Icon:  SendHorizonal,
-    desc:  "Eliminar postulaciones enviadas.",
+    Icon: SendHorizonal,
+    desc: "Eliminar postulaciones enviadas.",
     Tabla: TablaPostulaciones,
   },
   {
-    key:   "proyectos",
+    key: "proyectos",
     label: "Proyectos",
-    Icon:  FolderKanban,
-    desc:  "Eliminar proyectos creados.",
+    Icon: FolderKanban,
+    desc: "Eliminar proyectos creados.",
     Tabla: TablaProyectos,
   },
   {
-    key:   "publicaciones",
+    key: "publicaciones",
     label: "Publicaciones",
-    Icon:  Newspaper,
-    desc:  "Eliminar publicaciones del feed.",
+    Icon: Newspaper,
+    desc: "Eliminar publicaciones del feed.",
     Tabla: TablaPublicaciones,
   },
   {
-    key:   "guardados",
+    key: "guardados",
     label: "Guardados",
-    Icon:  Bookmark,
-    desc:  "Eliminar todos los elementos guardados.",
+    Icon: Bookmark,
+    desc: "Eliminar todos los elementos guardados.",
     Tabla: TablaGuardados,
   },
 ];
@@ -125,9 +125,9 @@ function avatarColor(name = "") {
    EliminacionPanel
 ───────────────────────────────────────────────────────────── */
 export default function EliminacionPanel({ user, onBack }) {
-  const [activeSection,    setActiveSection]    = useState(null);
+  const [activeSection, setActiveSection] = useState(null);
   /* Modal de datos personales (separado del flujo de tablas) */
-  const [showModalDP,      setShowModalDP]      = useState(false);
+  const [showModalDP, setShowModalDP] = useState(false);
 
   /* ── Derivar idProfile ── */
   const idProfile = user?.id_profile ?? user?.id ?? null;
@@ -163,119 +163,104 @@ export default function EliminacionPanel({ user, onBack }) {
 
   return (
     <>
-      <div className="edicion-panel">
+      <div className="edicion-panel-wrapper">
+        <div className="edicion-panel">
 
-        {/* ── Header ── */}
-        <div className="edicion-panel__header">
-          <button className="edicion-panel__back" onClick={onBack}>
-            <ArrowLeft size={15} />
-            Volver
-          </button>
+          {/* ── Header ── */}
+          <div className="edicion-panel__header">
+            <button className="edicion-panel__back" onClick={onBack}>
+              <ArrowLeft size={15} />
+              Volver
+            </button>
 
-          <div className="edicion-panel__divider" />
+            <div className="edicion-panel__divider" />
 
-          <div className="edicion-panel__user-info">
-            <div
-              className="edicion-panel__user-avatar"
-              style={{ background: bg, color: fg }}
-            >
-              {profilePhoto ? (
-                <img src={profilePhoto} alt={fullName} />
-              ) : (
-                initials
-              )}
-            </div>
-            <div>
-              <p className="edicion-panel__user-name">{fullName}</p>
-              <p className="edicion-panel__user-role">
-                {user?.role === "reclutador" ? "Reclutador" : "Profesional"}
-                {user?.email ? ` · ${user.email}` : ""}
-              </p>
+            <div className="edicion-panel__user-info">
+              <div
+                className="edicion-panel__user-avatar"
+                style={{ background: bg, color: fg }}
+              >
+                {profilePhoto ? (
+                  <img src={profilePhoto} alt={fullName} />
+                ) : (
+                  initials
+                )}
+              </div>
+              <div>
+                <p className="edicion-panel__user-name">{fullName}</p>
+                <p className="edicion-panel__user-role">
+                  {user?.role === "reclutador" ? "Reclutador" : "Profesional"}
+                  {user?.email ? ` · ${user.email}` : ""}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <p className="edicion-panel__section-title">¿Qué deseas eliminar?</p>
+          <p className="edicion-panel__section-title">¿Qué deseas eliminar?</p>
 
-        {/* ── Burbujas de sección ── */}
-        <div className="edicion-panel__bubbles">
-          {SECCIONES.map(({ key, label, Icon, isModal }) => (
-            <button
-              key={key}
-              className={[
-                "edicion-bubble",
-                activeSection === key ? "edicion-bubble--active" : "",
-                /* La burbuja de datos personales usa acento diferente */
-                isModal ? "edicion-bubble--modal" : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              onClick={() => handleBubbleClick(key)}
-            >
-              <span className="edicion-bubble__icon">
-                <Icon size={14} />
-              </span>
-              {label}
-            </button>
-          ))}
-        </div>
+          {/* ── Burbujas de sección ── */}
+          <div className="edicion-panel__bubbles">
+            {SECCIONES.map(({ key, label, Icon, isModal }) => (
+              <button
+                key={key}
+                className={[
+                  "edicion-bubble",
+                  activeSection === key ? "edicion-bubble--active" : "",
+                  /* La burbuja de datos personales usa acento diferente */
+                  isModal ? "edicion-bubble--modal" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={() => handleBubbleClick(key)}
+              >
+                <span className="edicion-bubble__icon">
+                  <Icon size={14} />
+                </span>
+                {label}
+              </button>
+            ))}
+          </div>
 
-        {/* ── Tabla de la sección activa (secciones sin modal) ── */}
-        {activeSection && activeSec && idProfile && (
-          <div style={{ marginTop: 24 }}>
-            {/* Aviso de acción irreversible */}
+          {/* ── Tabla de la sección activa (secciones sin modal) ── */}
+          {activeSection && activeSec && idProfile && (
+            <div style={{ marginTop: 24 }}>
+              {/* Aviso de acción irreversible */}
+              <p className="edicion-panel__section-title">Selecciona las filas que deseas eliminar.</p>
+              {/* Componente tabla correspondiente */}
+              <activeSec.Tabla idProfile={idProfile} />
+            </div>
+          )}
+
+          {/* Sin perfil */}
+          {activeSection && !idProfile && (
             <div
               style={{
-                display:      "flex",
-                alignItems:   "center",
-                gap:          8,
-                padding:      "8px 14px",
-                marginBottom: 12,
-                background:   "#fff5f5",
-                border:       "1.5px solid #fecaca",
+                marginTop: 16,
+                padding: "12px 16px",
+                background: "#fef3c7",
+                border: "1.5px solid #fde68a",
                 borderRadius: 7,
-                fontSize:     12,
-                color:        "#b91c1c",
-                fontWeight:   500,
+                fontSize: 13,
+                color: "#92400e",
               }}
             >
-              Selecciona las filas que deseas eliminar.
+              No se pudo determinar el perfil del usuario.
             </div>
+          )}
+        </div>
 
-            {/* Componente tabla correspondiente */}
-            <activeSec.Tabla idProfile={idProfile} />
-          </div>
-        )}
-
-        {/* Sin perfil */}
-        {activeSection && !idProfile && (
-          <div
-            style={{
-              marginTop:    16,
-              padding:      "12px 16px",
-              background:   "#fef3c7",
-              border:       "1.5px solid #fde68a",
-              borderRadius: 7,
-              fontSize:     13,
-              color:        "#92400e",
+        {/* ── Modal Datos Personales ── */}
+        {showModalDP && idProfile && (
+          <ModalDatosPersonales
+            user={user}
+            onClose={() => setShowModalDP(false)}
+            onDeleted={() => {
+              /* Aquí puedes notificar al padre si es necesario */
+              setShowModalDP(false);
             }}
-          >
-            No se pudo determinar el perfil del usuario.
-          </div>
+          />
         )}
       </div>
-
-      {/* ── Modal Datos Personales ── */}
-      {showModalDP && idProfile && (
-        <ModalDatosPersonales
-          user={user}
-          onClose={() => setShowModalDP(false)}
-          onDeleted={() => {
-            /* Aquí puedes notificar al padre si es necesario */
-            setShowModalDP(false);
-          }}
-        />
-      )}
     </>
   );
 }

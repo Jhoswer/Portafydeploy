@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEmpresa } from "../../../lib/EmpresaContext";
 import { JobPostCard } from "../shared/JobPostCard";
 import PostulantesConvocatoria from "../postulantes/PostulantesConvocatoria";
@@ -8,6 +9,7 @@ import { useAuth } from "../../../context/useAuth";
 import { toast } from "sonner";
 
 export default function MisConvocatorias({ onEdit, onNueva }) {
+  const { t } = useTranslation();
   const { convocatorias, eliminarConvocatoria, cambiarEstadoConvocatoria } = useEmpresa();
   const [activeTab, setActiveTab]               = useState("publicadas");
   const [vistaPostulantes, setVistaPostulantes] = useState(null);
@@ -32,14 +34,15 @@ export default function MisConvocatorias({ onEdit, onNueva }) {
 
     await cambiarEstadoConvocatoria(id, nuevoState);
     toast.success(
-      nuevoState === "closed" ? "Convocatoria cerrada" :
-      nuevoState === "open"   ? "Convocatoria abierta" : "Convocatoria publicada"
+      nuevoState === "closed" ? t("misConvocatorias.toast.closed")    :
+      nuevoState === "open"   ? t("misConvocatorias.toast.opened")    :
+                                t("misConvocatorias.toast.published")
     );
   };
 
   const handleDelete = async (id) => {
     await eliminarConvocatoria(id);
-    toast.success("Convocatoria eliminada");
+    toast.success(t("misConvocatorias.toast.deleted"));
   };
 
   const resolveState = (c) => c.real_state ?? c.realState ?? c.state;
@@ -97,7 +100,7 @@ export default function MisConvocatorias({ onEdit, onNueva }) {
         <JobPostCard
           key={job.id ?? job.id_offer}
           {...commonProps(job, isDraft)}
-          timeAgo={isDraft ? "Borrador" : undefined}
+          timeAgo={isDraft ? t("misConvocatorias.timeAgo.draft") : undefined}
           viewsCount={job.viewsCount ?? job.views_count ?? undefined}
         />
       ))}
@@ -116,9 +119,9 @@ export default function MisConvocatorias({ onEdit, onNueva }) {
   );
 
   const TABS = [
-    { key: "publicadas", label: "Publicadas", count: activas.length },
-    { key: "borradores", label: "Borradores", count: borradores.length },
-    { key: "cerradas",   label: "Cerradas",   count: cerradas.length },
+    { key: "publicadas", label: t("misConvocatorias.tabs.published"), count: activas.length    },
+    { key: "borradores", label: t("misConvocatorias.tabs.drafts"),    count: borradores.length },
+    { key: "cerradas",   label: t("misConvocatorias.tabs.closed"),    count: cerradas.length   },
   ];
 
   return (
@@ -126,11 +129,11 @@ export default function MisConvocatorias({ onEdit, onNueva }) {
       <div className="mc-header">
         <div className="mc-header__top">
           <div>
-            <h1 className="mc-title">Mis Convocatorias</h1>
-            <p className="mc-subtitle">Gestiona tus ofertas de trabajo publicadas y borradores.</p>
+            <h1 className="mc-title">{t("misConvocatorias.title")}</h1>
+            <p className="mc-subtitle">{t("misConvocatorias.subtitle")}</p>
           </div>
           <button onClick={onNueva} className="pf-btn pf-btn--red">
-            <Plus size={15} /> Nueva convocatoria
+            <Plus size={15} /> {t("misConvocatorias.newBtn")}
           </button>
         </div>
         <div className="mc-tabs">
@@ -155,9 +158,9 @@ export default function MisConvocatorias({ onEdit, onNueva }) {
             {activas.length > 0 ? renderGrid(activas) : (
               <EmptyState
                 icon={LayoutGrid}
-                title="No hay convocatorias activas"
-                text="Aún no has publicado ninguna oportunidad de trabajo."
-                action={{ fn: onNueva, label: "Crear primera convocatoria" }}
+                title={t("misConvocatorias.empty.noActive.title")}
+                text={t("misConvocatorias.empty.noActive.text")}
+                action={{ fn: onNueva, label: t("misConvocatorias.empty.noActive.action") }}
               />
             )}
           </motion.div>
@@ -170,8 +173,8 @@ export default function MisConvocatorias({ onEdit, onNueva }) {
           >
             {borradores.length > 0 ? renderGrid(borradores, true) : (
               <EmptyState
-                title="No tienes borradores"
-                text="Tus borradores guardados aparecerán aquí."
+                title={t("misConvocatorias.empty.noDrafts.title")}
+                text={t("misConvocatorias.empty.noDrafts.text")}
               />
             )}
           </motion.div>
@@ -184,8 +187,8 @@ export default function MisConvocatorias({ onEdit, onNueva }) {
           >
             {cerradas.length > 0 ? renderGrid(cerradas) : (
               <EmptyState
-                title="No hay convocatorias cerradas"
-                text="Las convocatorias que cierres aparecerán aquí como historial."
+                title={t("misConvocatorias.empty.noClosed.title")}
+                text={t("misConvocatorias.empty.noClosed.text")}
               />
             )}
           </motion.div>

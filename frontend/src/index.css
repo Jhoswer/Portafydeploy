@@ -54,6 +54,8 @@
 @import "./styles//components/ui/ThemeToggle.css";
 @import "./styles/components/recruiter/RecruiterLayout.css";
 @import "./styles/components/recruiter/CompanyHeader.css";
+@import "./styles/components/recruiter/CompanyContact.css";
+@import "./styles/components/recruiter/CompanySocial.css";
 @import "./styles/components/recruiter/JobPostCard.css";
 @import "./styles/components/recruiter/CompanyAboutCard.css";
 @import "./styles/components/recruiter/CompanyContactCard.css";

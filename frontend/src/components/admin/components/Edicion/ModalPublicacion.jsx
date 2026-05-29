@@ -27,10 +27,10 @@ function formatDate(value) {
 
 function normalizePublication(pub = {}) {
   return {
-    description:      pub.description      ?? "",
-    outstanding:      normalizeBool(pub.outstanding),
-    visibility:       normalizeBool(pub.visibility),
-    state:            pub.state            ?? "incomplete",
+    description: pub.description ?? "",
+    outstanding: normalizeBool(pub.outstanding),
+    visibility: normalizeBool(pub.visibility),
+    state: pub.state ?? "incomplete",
     id_audience_type: pub.id_audience_type ? String(pub.id_audience_type) : "",
   };
 }
@@ -40,9 +40,9 @@ function normalizeDetail(detail = {}) {
     id_publication_detail: detail?.id_publication_detail ?? null,
     /* id_publicized se preserva pero NO se muestra en el form */
     id_publicized: detail?.id_publicized ? String(detail.id_publicized) : "",
-    id_offer:      detail?.id_offer      ? String(detail.id_offer)      : "",
-    id_project:    detail?.id_project    ? String(detail.id_project)    : "",
-    id_cv:         detail?.id_cv         ? String(detail.id_cv)         : "",
+    id_offer: detail?.id_offer ? String(detail.id_offer) : "",
+    id_project: detail?.id_project ? String(detail.id_project) : "",
+    id_cv: detail?.id_cv ? String(detail.id_cv) : "",
     id_experience: detail?.id_experience ? String(detail.id_experience) : "",
   };
 }
@@ -60,14 +60,14 @@ function labelFor(catalog = [], id) {
 /* ── Constantes ──────────────────────────────────────────────── */
 const STATE_OPTIONS = [
   { value: "incomplete", label: "Incompleta" },
-  { value: "published",  label: "Publicada"  },
-  { value: "removed",    label: "Eliminada"  },
+  { value: "published", label: "Publicada" },
+  { value: "removed", label: "Eliminada" },
 ];
 
 const STATE_BADGE = {
   incomplete: { color: "#f59e0b", bg: "#fef3c722", border: "#f59e0b55", label: "Incompleta" },
-  published:  { color: "#10b981", bg: "#d1fae522", border: "#10b98155", label: "Publicada"  },
-  removed:    { color: "#ef4444", bg: "#fee2e222", border: "#ef444455", label: "Eliminada"  },
+  published: { color: "#10b981", bg: "#d1fae522", border: "#10b98155", label: "Publicada" },
+  removed: { color: "#ef4444", bg: "#fee2e222", border: "#ef444455", label: "Eliminada" },
 };
 
 /**
@@ -75,9 +75,9 @@ const STATE_BADGE = {
  * "Perfil publicado" (id_publicized) se omite del formulario.
  */
 const DETAIL_FIELDS_EDITABLE = [
-  { key: "id_offer",      label: "Oferta asociada",   catalogKey: "offers"      },
-  { key: "id_project",    label: "Proyecto asociado", catalogKey: "projects"    },
-  { key: "id_cv",         label: "CV asociado",       catalogKey: "cvs"         },
+  { key: "id_offer", label: "Oferta asociada", catalogKey: "offers" },
+  { key: "id_project", label: "Proyecto asociado", catalogKey: "projects" },
+  { key: "id_cv", label: "CV asociado", catalogKey: "cvs" },
   { key: "id_experience", label: "Experiencia asoc.", catalogKey: "experiences" },
 ];
 
@@ -91,22 +91,22 @@ export default function ModalPublicacion({
   onClose,
   onSaved,
 }) {
-  const [formData,     setFormData]     = useState(normalizePublication());
-  const [detail,       setDetail]       = useState(normalizeDetail());
-  const [audiences,    setAudiences]    = useState([]);
-  const [catalogs,     setCatalogs]     = useState({});
-  const [original,     setOriginal]     = useState(null);
-  const [rawPub,       setRawPub]       = useState(null);
-  const [isLoading,    setIsLoading]    = useState(true);
-  const [isSaving,     setIsSaving]     = useState(false);
-  const [error,        setError]        = useState("");
-  const [showConfirm,  setShowConfirm]  = useState(false);
+  const [formData, setFormData] = useState(normalizePublication());
+  const [detail, setDetail] = useState(normalizeDetail());
+  const [audiences, setAudiences] = useState([]);
+  const [catalogs, setCatalogs] = useState({});
+  const [original, setOriginal] = useState(null);
+  const [rawPub, setRawPub] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
   const [confirmError, setConfirmError] = useState("");
 
   /* Audiencia – formulario de agregar */
   const [isAddingAud, setIsAddingAud] = useState(false);
-  const [newArea,     setNewArea]     = useState("");
-  const [newCareer,   setNewCareer]   = useState("");
+  const [newArea, setNewArea] = useState("");
+  const [newCareer, setNewCareer] = useState("");
 
   /* ── Carga ── */
   useEffect(() => {
@@ -115,8 +115,8 @@ export default function ModalPublicacion({
       setError("");
       try {
         const data = await getAdminPublication(idProfile, idPublication);
-        const pub  = normalizePublication(data.publication);
-        const det  = normalizeDetail(data.detail);
+        const pub = normalizePublication(data.publication);
+        const det = normalizeDetail(data.detail);
         const auds = (data.audiences ?? []).map((a) => ({ ...a, _delete: false, _new: false }));
         setFormData(pub);
         setDetail(det);
@@ -162,7 +162,7 @@ export default function ModalPublicacion({
       ...prev,
       {
         id: null,
-        id_professional_area:   newArea,
+        id_professional_area: newArea,
         id_professional_career: newCareer || null,
         _delete: false,
         _new: true,
@@ -184,10 +184,10 @@ export default function ModalPublicacion({
     const changes = [];
 
     const FIELD_LABELS = {
-      description:      "Descripción",
-      outstanding:      "Destacada",
-      visibility:       "Visible",
-      state:            "Estado",
+      description: "Descripción",
+      outstanding: "Destacada",
+      visibility: "Visible",
+      state: "Estado",
       id_audience_type: "Tipo de audiencia",
     };
     Object.entries(FIELD_LABELS).forEach(([key, label]) => {
@@ -226,33 +226,33 @@ export default function ModalPublicacion({
     setConfirmError("");
     try {
       const payload = {
-        description:      formData.description,
-        outstanding:      formData.outstanding,
-        visibility:       formData.visibility,
-        state:            formData.state,
+        description: formData.description,
+        outstanding: formData.outstanding,
+        visibility: formData.visibility,
+        state: formData.state,
         id_audience_type: formData.id_audience_type
           ? Number(formData.id_audience_type)
           : null,
         detail: {
           id_publication_detail: detail.id_publication_detail,
           /* id_publicized se envía tal cual, sin permitir edición */
-          id_publicized:  detail.id_publicized  ? Number(detail.id_publicized)  : null,
-          id_offer:       detail.id_offer        ? Number(detail.id_offer)       : null,
-          id_project:     detail.id_project      ? Number(detail.id_project)     : null,
-          id_cv:          detail.id_cv           ? Number(detail.id_cv)          : null,
-          id_experience:  detail.id_experience   ? Number(detail.id_experience)  : null,
+          id_publicized: detail.id_publicized ? Number(detail.id_publicized) : null,
+          id_offer: detail.id_offer ? Number(detail.id_offer) : null,
+          id_project: detail.id_project ? Number(detail.id_project) : null,
+          id_cv: detail.id_cv ? Number(detail.id_cv) : null,
+          id_experience: detail.id_experience ? Number(detail.id_experience) : null,
         },
         audiences: audiences.map((a) => ({
-          id:                     a.id ?? null,
-          id_professional_area:   a.id_professional_area   ? Number(a.id_professional_area)   : null,
+          id: a.id ?? null,
+          id_professional_area: a.id_professional_area ? Number(a.id_professional_area) : null,
           id_professional_career: a.id_professional_career ? Number(a.id_professional_career) : null,
-          _delete:                Boolean(a._delete),
+          _delete: Boolean(a._delete),
         })),
       };
 
       const data = await updateAdminPublication(idProfile, idPublication, payload);
-      const pub  = normalizePublication(data.publication);
-      const det  = normalizeDetail(data.detail);
+      const pub = normalizePublication(data.publication);
+      const det = normalizeDetail(data.detail);
       const auds = (data.audiences ?? []).map((a) => ({ ...a, _delete: false, _new: false }));
       setFormData(pub);
       setDetail(det);
@@ -272,7 +272,7 @@ export default function ModalPublicacion({
   };
 
   /* ── Derivados ── */
-  const badge            = STATE_BADGE[formData.state];
+  const badge = STATE_BADGE[formData.state];
   const visibleAudiences = audiences.filter((a) => !a._delete);
 
   /* ── Render ── */
@@ -390,19 +390,13 @@ export default function ModalPublicacion({
                   <div className="edicion-modal__row">
                     <div className="edicion-modal__field" style={{ flex: 1 }}>
                       <label className="edicion-modal__label">Creado</label>
-                      <div
-                        className="edicion-modal__input"
-                        style={{ background: "#f1f5f9", cursor: "default", color: "#64748b" }}
-                      >
+                      <div className="edicion-modal__input edicion-modal__input--readonly">
                         {formatDate(rawPub?.created_at)}
                       </div>
                     </div>
                     <div className="edicion-modal__field" style={{ flex: 1 }}>
                       <label className="edicion-modal__label">Actualizado</label>
-                      <div
-                        className="edicion-modal__input"
-                        style={{ background: "#f1f5f9", cursor: "default", color: "#64748b" }}
-                      >
+                      <div className="edicion-modal__input edicion-modal__input--readonly">
                         {formatDate(rawPub?.updated_at)}
                       </div>
                     </div>
@@ -428,7 +422,7 @@ export default function ModalPublicacion({
 
                     <div className="edicion-modal__fields" style={{ gap: 10 }}>
                       {DETAIL_FIELDS_EDITABLE.map(({ key, label, catalogKey }) => {
-                        const isActive  = Boolean(detail[key]);
+                        const isActive = Boolean(detail[key]);
                         /* Un campo se deshabilita si otro ya tiene valor */
                         const otherHasValue = EXCLUSIVE_KEYS.some(
                           (k) => k !== key && Boolean(detail[k])
@@ -436,10 +430,7 @@ export default function ModalPublicacion({
 
                         return (
                           <div className="edicion-modal__field" key={key}>
-                            <label
-                              className="edicion-modal__label"
-                              style={isActive ? { color: "#2563eb" } : undefined}
-                            >
+                            <label className={`edicion-modal__label${isActive ? " edicion-modal__label--active" : ""}`}>
                               {label}
                               {isActive && (
                                 <span
@@ -451,17 +442,11 @@ export default function ModalPublicacion({
                               )}
                             </label>
                             <select
-                              className="edicion-modal__input"
+                              className={`edicion-modal__input${isActive ? " edicion-modal__input--detail-active" : ""}`}
                               value={detail[key]}
                               onChange={(e) => handleDetailChange(key, e.target.value)}
                               disabled={otherHasValue && !isActive}
-                              style={
-                                otherHasValue && !isActive
-                                  ? { opacity: 0.4, cursor: "not-allowed" }
-                                  : isActive
-                                  ? { borderColor: "#60a5fa", background: "#eff6ff" }
-                                  : undefined
-                              }
+                              style={otherHasValue && !isActive ? { opacity: 0.4, cursor: "not-allowed" } : undefined}
                             >
                               <option value="">Ninguno</option>
                               {(catalogs[catalogKey] ?? []).map((item) => (
@@ -503,17 +488,7 @@ export default function ModalPublicacion({
 
                     {/* Formulario para nueva audiencia — usa clases de modal, no de item */}
                     {isAddingAud && (
-                      <div
-                        style={{
-                          display:       "flex",
-                          flexDirection: "column",
-                          gap:           8,
-                          padding:       "10px 12px",
-                          background:    "#f0f7ff",
-                          border:        "1.5px dashed #93c5fd",
-                          borderRadius:  8,
-                        }}
-                      >
+                      <div className="modal-add-career-form">
                         <div className="edicion-modal__field">
                           <label className="edicion-modal__label">
                             Área profesional <span className="edicion-modal__required">*</span>
@@ -574,7 +549,7 @@ export default function ModalPublicacion({
 
                       {audiences.map((aud, i) => {
                         if (aud._delete) return null;
-                        const areaLabel   = labelFor(catalogs.professional_areas ?? [], aud.id_professional_area);
+                        const areaLabel = labelFor(catalogs.professional_areas ?? [], aud.id_professional_area);
                         const careerLabel = aud.id_professional_career
                           ? labelFor(catalogs.professional_careers ?? [], aud.id_professional_career)
                           : null;
@@ -589,18 +564,7 @@ export default function ModalPublicacion({
                               {careerLabel && ` · ${careerLabel}`}
                             </span>
                             {aud._new && (
-                              <span
-                                style={{
-                                  fontSize:     "9.5px",
-                                  padding:      "1px 6px",
-                                  borderRadius: "9999px",
-                                  background:   "#dcfce7",
-                                  color:        "#15803d",
-                                  fontWeight:   700,
-                                }}
-                              >
-                                Nueva
-                              </span>
+                              <span className="modal-career-badge-new">Nueva</span>
                             )}
                             <button
                               type="button"

@@ -1,18 +1,20 @@
+import { useTranslation } from "react-i18next";
 import { useNotificationPrefs, PREF_CATEGORIES } from "../../hooks/useNotificationPrefs";
 
 export default function NotificationSettingsPage() {
+  const { t } = useTranslation();
   const { prefs, loading, saving, dirty, toggle, save } = useNotificationPrefs();
 
-  if (loading) return <div className="pf-settings-notif">Cargando preferencias...</div>;
+  if (loading) return <div className="pf-settings-notif">{t("notificationSettings.loading")}</div>;
 
   return (
     <div className="pf-settings-notif">
       {/* Header */}
       <div className="pf-settings-notif__header">
         <div>
-          <h2 className="pf-settings-notif__title">Configuración</h2>
+          <h2 className="pf-settings-notif__title">{t("notificationSettings.title")}</h2>
           <p className="pf-settings-notif__sub">
-            Elige una categoría y ajusta solo lo necesario.
+            {t("notificationSettings.sub")}
           </p>
         </div>
         <button
@@ -21,7 +23,7 @@ export default function NotificationSettingsPage() {
           onClick={save}
           disabled={!dirty || saving}
         >
-          {saving ? "Guardando..." : "✓ Guardar cambios"}
+          {saving ? t("notificationSettings.saving") : t("notificationSettings.saveChanges")}
         </button>
       </div>
 
@@ -33,8 +35,8 @@ export default function NotificationSettingsPage() {
             className={`pf-settings-notif__row${cat.locked ? " pf-settings-notif__row--locked" : ""}`}
           >
             <div className="pf-settings-notif__info">
-              <span className="pf-settings-notif__label">{cat.label}</span>
-              <span className="pf-settings-notif__desc">{cat.description}</span>
+              <span className="pf-settings-notif__label">{t(`notificationSettings.categories.${cat.key}.label`)}</span>
+              <span className="pf-settings-notif__desc">{t(`notificationSettings.categories.${cat.key}.description`)}</span>
             </div>
             <button
               type="button"

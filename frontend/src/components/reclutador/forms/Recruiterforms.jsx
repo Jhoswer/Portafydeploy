@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 import { registrarEmpresa } from "../../../services/companyService";
 import { validateStep }     from "./validation";
-import { STEPS }            from "./constants";
+import { getSteps }            from "./constants";
 import { ProgressBar, StepLabels } from "./Formui";
 import { useAuth } from "../../../context/useAuth";
 
@@ -17,6 +18,8 @@ import StepExito     from "./Stepexito";
 export default function RecruiterForms() {
   const navigate = useNavigate();
   const { markProfileCompleted } = useAuth();
+  const { t } = useTranslation();
+  const STEPS = getSteps(t);
 
   /* ── Navegación ─────────────────────────────────────────── */
   const [step, setStep]               = useState(0);
@@ -49,7 +52,7 @@ export default function RecruiterForms() {
   /* ── Handlers ───────────────────────────────────────────── */
   const goNext = async () => {
     const data = { empresa, descripcion, rubro, ciudad, pais, telefono, sitio };
-    const errs = validateStep(step, data);
+    const errs = validateStep(step, data, t);
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setErrors({});
     if (step < STEPS.length - 1) { setStep(s => s + 1); return; }

@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import NotificationItem from "./NotificationItem";
 import EmptyNotifications from "./EmptyNotifications";
 import { NOTIFICATION_LIMIT } from "../../features/notifications/constants";
 
 export default function NotificationDropdown({ onClose, notificationState }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { notifications, loading, markAsRead, markAllAsRead, unreadCount } =
     notificationState ?? {
       notifications: [],
@@ -16,22 +18,20 @@ export default function NotificationDropdown({ onClose, notificationState }) {
 
   return (
     <div className="pf-notif__dropdown">
-      {/* Header */}
       <div className="pf-notif__dropdown-header">
         <span className="pf-notif__dropdown-title">
-          Notificaciones
+          {t("notificationBell.title")}
           {unreadCount > 0 && (
             <span className="pf-notif__dropdown-count">{unreadCount}</span>
           )}
         </span>
         {unreadCount > 0 && (
           <button type="button" className="pf-notif__mark-all" onClick={markAllAsRead}>
-            Marcar todas como leídas
+            {t("notificationBell.markAllRead")}
           </button>
         )}
       </div>
 
-      {/* Lista */}
       <div className="pf-notif__dropdown-list">
         {loading ? (
           [1, 2, 3].map((i) => (
@@ -57,14 +57,13 @@ export default function NotificationDropdown({ onClose, notificationState }) {
         )}
       </div>
 
-      {/* Footer */}
       <div className="pf-notif__dropdown-footer">
         <button
           type="button"
           className="pf-notif__ver-todas"
           onClick={() => { navigate("/notifications"); onClose(); }}
         >
-          Ver todas las notificaciones
+          {t("notificationBell.viewAll")}
         </button>
       </div>
     </div>

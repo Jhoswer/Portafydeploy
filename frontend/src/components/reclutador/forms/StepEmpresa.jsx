@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Building2, MapPin, ChevronDown, Search } from "lucide-react";
 import { StepWrapper, IconCircle, FieldError, FieldHint, InputWrap, Actions } from "./Formui";
 import { RUBROS, PAISES, PAISES_CIUDADES } from "./constants";
@@ -10,9 +11,9 @@ export default function StepEmpresa({
   errors, setErrors,
   onNext, onBack,
 }) {
+  const { t } = useTranslation();
   const inputStyle = (hasError) => ({ borderColor: hasError ? "#e24b4a" : undefined });
 
-  /* ── Rubro autocomplete ─────────────────────────────────── */
   const handleRubroChange = (val) => {
     setRubro(val);
     const q = val.toLowerCase();
@@ -25,7 +26,6 @@ export default function StepEmpresa({
     setErrors(e => ({ ...e, rubro: undefined }));
   };
 
-  /* ── Cambio de país — resetea ciudad ────────────────────── */
   const handlePaisChange = (val) => {
     setPais(val);
     setCiudad("");
@@ -39,29 +39,30 @@ export default function StepEmpresa({
       <IconCircle><Search size={24} color="#fff" /></IconCircle>
 
       <h2 className="forms-card__title" style={{ textAlign: "center" }}>
-        Información de la empresa
+        {t("recruiterForms.stepEmpresa.title")}
       </h2>
       <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
-        Ayuda a los candidatos a entender el contexto de tu empresa.
+        {t("recruiterForms.stepEmpresa.subtitle")}
       </p>
 
-      {/* Rubro con autocompletado */}
       <div className="forms-field" style={{ position: "relative" }}>
-        <label className="forms-label">Rubro o industria</label>
+        <label className="forms-label">
+          {t("recruiterForms.stepEmpresa.rubro.label")}
+        </label>
         <InputWrap icon={<Building2 size={15} />}>
           <input
             type="text"
             className="forms-input"
             value={rubro}
             onChange={e => handleRubroChange(e.target.value)}
-            placeholder="Ej. Tecnología, Salud, Finanzas..."
+            placeholder={t("recruiterForms.stepEmpresa.rubro.placeholder")}
             autoComplete="off"
             style={inputStyle(errors.rubro)}
           />
         </InputWrap>
         {errors.rubro
           ? <FieldError msg={errors.rubro} />
-          : <FieldHint msg="Empieza a escribir para ver sugerencias" />
+          : <FieldHint msg={t("recruiterForms.stepEmpresa.rubro.hint")} />
         }
         {rubroSugs.length > 0 && (
           <div style={{
@@ -71,10 +72,7 @@ export default function StepEmpresa({
             borderRadius: 12, overflow: "hidden", marginTop: 4,
           }}>
             {rubroSugs.map(s => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => selectRubro(s)}
+              <button key={s} type="button" onClick={() => selectRubro(s)}
                 style={{
                   display: "block", width: "100%", textAlign: "left",
                   padding: "10px 14px", background: "none", border: "none",
@@ -91,9 +89,10 @@ export default function StepEmpresa({
         )}
       </div>
 
-      {/* País */}
       <div className="forms-field" style={{ marginTop: 12 }}>
-        <label className="forms-label">País</label>
+        <label className="forms-label">
+          {t("recruiterForms.stepEmpresa.pais.label")}
+        </label>
         <InputWrap icon={<ChevronDown size={15} />}>
           <select
             className="forms-input"
@@ -101,7 +100,7 @@ export default function StepEmpresa({
             onChange={e => handlePaisChange(e.target.value)}
             style={inputStyle(errors.pais)}
           >
-            <option value="">Seleccionar país</option>
+            <option value="">{t("recruiterForms.stepEmpresa.pais.placeholder")}</option>
             {PAISES.map(p => (
               <option key={p} value={p}>{p}</option>
             ))}
@@ -110,9 +109,10 @@ export default function StepEmpresa({
         {errors.pais && <FieldError msg={errors.pais} />}
       </div>
 
-      {/* Ciudad */}
       <div className="forms-field" style={{ marginTop: 12 }}>
-        <label className="forms-label">Ciudad</label>
+        <label className="forms-label">
+          {t("recruiterForms.stepEmpresa.ciudad.label")}
+        </label>
         <InputWrap icon={<MapPin size={15} />}>
           <select
             className="forms-input"
@@ -129,7 +129,10 @@ export default function StepEmpresa({
             }}
           >
             <option value="">
-              {pais ? "Seleccionar ciudad" : "Primero selecciona un país"}
+              {pais
+                ? t("recruiterForms.stepEmpresa.ciudad.placeholder")
+                : t("recruiterForms.stepEmpresa.ciudad.placeholderNoPais")
+              }
             </option>
             {ciudadesDisponibles.map(c => (
               <option key={c} value={c}>{c}</option>
@@ -138,11 +141,16 @@ export default function StepEmpresa({
         </InputWrap>
         {errors.ciudad
           ? <FieldError msg={errors.ciudad} />
-          : !pais && <FieldHint msg="Selecciona un país para ver las ciudades disponibles" />
+          : !pais && <FieldHint msg={t("recruiterForms.stepEmpresa.ciudad.hint")} />
         }
       </div>
 
-      <Actions onNext={onNext} nextLabel="Continuar" onBack={onBack} backLabel="Volver" />
+      <Actions
+        onNext={onNext}
+        nextLabel={t("recruiterForms.common.continue")}
+        onBack={onBack}
+        backLabel={t("recruiterForms.common.back")}
+      />
     </StepWrapper>
   );
 }

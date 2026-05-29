@@ -71,6 +71,7 @@ export function normalizeFeedPost(post) {
     author: authorName,
     authorId: post.author?.id ?? post.authorId ?? null,
     authorTitle,
+    authorRole: post.author?.role || post.authorRole || "",
     authorFollowers: Number(post.author?.followersCount ?? post.authorFollowers ?? 0),
     authorFollowing: Number(post.author?.followingCount ?? post.authorFollowing ?? 0),
     authorIsFollowing: Boolean(post.author?.isFollowing ?? post.authorIsFollowing),

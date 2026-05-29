@@ -106,10 +106,34 @@ export function normalizeEducationList(items = []) {
 }
 
 export function educationHeadline(education = []) {
-  const first = education.find((item) => item.program || item.level || item.institution);
-  if (!first) return "";
+  const primary = education.find((item) => {
+    const level = normalizeLevel(item.level);
+    return ["ingenieria", "licenciatura", "tecnico", "tecnologo"].includes(level);
+  });
 
-  return [first.program, first.level].filter(Boolean).join(" · ") || first.institution;
+  if (!primary?.program) return "";
+
+  const levelLabel = formatPrimaryLevel(primary.level);
+  return [primary.program, levelLabel].filter(Boolean).join(" - ");
+}
+
+function normalizeLevel(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function formatPrimaryLevel(value) {
+  const labels = {
+    ingenieria: "Ingenieria",
+    licenciatura: "Licenciatura",
+    tecnico: "Tecnico",
+    tecnologo: "Tecnologo",
+  };
+
+  return labels[normalizeLevel(value)] || "";
 }
 
 export function makeDraft(profile) {

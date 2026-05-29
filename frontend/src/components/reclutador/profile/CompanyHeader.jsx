@@ -3,10 +3,13 @@ import {
   Building2, MapPin, Globe, Camera, Share2,
   Pencil, Check, X, Users, Calendar,
 } from "lucide-react";
-import { Button }             from "../../ui/button";
-import { useAuth }            from "../../../context/useAuth";
-import { apiClient }          from "../../../services/http/httpClient";
-import { CompanyFollowBlock } from "../shared/FollowBlock";
+import { useTranslation }      from "react-i18next";
+import { Button }              from "../../ui/button";
+import { useAuth }             from "../../../context/useAuth";
+import { apiClient }           from "../../../services/http/httpClient";
+import { CompanyFollowBlock }  from "../shared/FollowBlock";
+import { useCompanyFollowSystem } from "../../../hooks/useCompanyFollowSystem";
+import { ConfirmUnfollowModal } from "../../dashboard/profile/ProfileTrustModals";
 
 const RUBROS = [
   "Tecnología", "Salud", "Finanzas", "Educación", "Comercio",
@@ -14,24 +17,32 @@ const RUBROS = [
   "Recursos Humanos", "Consultoría", "Energía", "Agro", "Turismo", "Medios",
 ];
 
-// ─── Tabs de navegación ────────────────────────────────────────────────────
 const TABS = [
-  { key: "convocatorias", label: "Convocatorias" },
-  { key: "informacion",   label: "Información"   },
-  { key: "contacto",      label: "Contacto"      },
-  { key: "equipo",        label: "Equipo"        },
+  { key: "convocatorias", labelKey: "company.header.tabs.convocatorias" },
+  { key: "informacion",   labelKey: "company.header.tabs.informacion"   },
+  { key: "rubro",         labelKey: "company.header.tabs.rubro"         },
+  { key: "contacto",      labelKey: "company.header.tabs.contacto"      },
+  { key: "seguidores",    labelKey: "company.header.tabs.seguidores"    },
 ];
 
 export function CompanyHeader({
   editing, setEditing,
   description, setDescription,
-  activeTab, setActiveTab,    
+  activeTab, setActiveTab,
   companyData    = null,
   isOwner        = true,
   companyMetrics = {},
 }) {
+  const { t } = useTranslation();
   const { company: authCompany, updateCompany } = useAuth();
   const company = companyData ?? authCompany;
+
+  const fw = useCompanyFollowSystem(company?.id_company);
+  const [fwInit, setFwInit] = useState(false);
+  if (!fwInit && company?.id_company) {
+    fw.init(companyMetrics);
+    setFwInit(true);
+  }
 
   const [bannerPreview, setBannerPreview] = useState(company?.banner_url ?? "/banner-empresa.png");
   const [bannerFile,    setBannerFile]    = useState(null);
@@ -59,7 +70,6 @@ export function CompanyHeader({
   const initials = (company?.name ?? "M")
     .split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
   const handleBannerChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -117,7 +127,7 @@ export function CompanyHeader({
   };
 
   const handleSave = async () => {
-    if (!form.name.trim()) { setServerError("El nombre es obligatorio."); return; }
+    if (!form.name.trim()) { setServerError(t("company.header.errors.nameRequired")); return; }
     setSaving(true);
     setServerError("");
     try {
@@ -140,7 +150,7 @@ export function CompanyHeader({
       setAvatarFile(null);
       setEditing(false);
     } catch (err) {
-      setServerError(err.message || "Error al guardar.");
+      setServerError(err.message || t("company.header.errors.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -151,7 +161,6 @@ export function CompanyHeader({
   return (
     <div className="company-header">
 
-      {/* inputs file ocultos */}
       {isOwner && (
         <>
           <input type="file" accept="image/*" id="bannerInput" className="hidden" onChange={handleBannerChange} />
@@ -159,7 +168,7 @@ export function CompanyHeader({
         </>
       )}
 
-      {/* ── Banner ── */}
+      {/* Banner */}
       <div className="company-header__banner group">
         <img src={bannerPreview} alt="Banner" />
         <div className="company-header__banner-overlay" />
@@ -169,25 +178,21 @@ export function CompanyHeader({
             className={`company-header__banner-btn ${editing ? "visible" : ""}`}
           >
             <Camera size={14} />
-            {editing ? "Cambiar banner" : "Editar portada"}
+            {editing ? t("company.header.banner.change") : t("company.header.banner.edit")}
           </button>
         )}
       </div>
 
-      {/* ── Cuerpo ── */}
+      {/* Cuerpo */}
       <div className="company-header__body">
         <div className="company-header__inner">
 
-          {/* Columna izquierda: avatar + info */}
           <div className="company-header__left">
 
             {/* Avatar */}
             <div className="company-header__avatar-wrap">
               <div className="company-header__avatar">
-                {avatarPreview
-                  ? <img src={avatarPreview} alt="Logo" />
-                  : initials
-                }
+                {avatarPreview ? <img src={avatarPreview} alt="Logo" /> : initials}
               </div>
               {isOwner && (
                 <button
@@ -199,27 +204,24 @@ export function CompanyHeader({
               )}
             </div>
 
-            {/* Info textual */}
+            {/* Info */}
             <div className="company-header__info">
 
-              {/* Nombre */}
               {editing ? (
                 <input
                   type="text"
                   value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   className="company-header__input company-header__input--name"
-                  placeholder="Nombre de la empresa"
+                  placeholder={t("company.header.fields.namePlaceholder")}
                 />
               ) : (
                 <h1 className="company-header__name">{nombre}</h1>
               )}
 
-              {/* Meta: industria · ciudad · año */}
               <div className="company-header__meta">
                 {editing ? (
                   <>
-                    {/* Industria editable */}
                     <div className="company-header__meta-item relative">
                       <Building2 size={14} />
                       <div className="relative">
@@ -229,7 +231,7 @@ export function CompanyHeader({
                           onChange={e => handleRubroChange(e.target.value)}
                           autoComplete="off"
                           className="company-header__input"
-                          placeholder="Industria"
+                          placeholder={t("company.header.fields.industryPlaceholder")}
                         />
                         {rubroSugs.length > 0 && (
                           <div className="company-header__suggestions">
@@ -248,7 +250,6 @@ export function CompanyHeader({
                       </div>
                     </div>
 
-                    {/* Ciudad editable */}
                     <div className="company-header__meta-item">
                       <MapPin size={14} />
                       <input
@@ -256,11 +257,10 @@ export function CompanyHeader({
                         value={form.city}
                         onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
                         className="company-header__input"
-                        placeholder="Ciudad"
+                        placeholder={t("company.header.fields.cityPlaceholder")}
                       />
                     </div>
 
-                    {/* Web editable */}
                     <div className="company-header__meta-item">
                       <Globe size={14} />
                       <input
@@ -268,17 +268,16 @@ export function CompanyHeader({
                         value={form.website}
                         onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
                         className="company-header__input"
-                        placeholder="https://empresa.com"
+                        placeholder={t("company.header.fields.websitePlaceholder")}
                       />
                     </div>
                   </>
                 ) : (
-                  /* Vista normal: industria · ciudad · Fundada XXXX */
                   <p className="company-header__meta-line">
                     {[
                       industria,
                       ciudad,
-                      anio ? `Fundada ${anio}` : null,
+                      anio ? t("company.header.founded", { year: anio }) : null,
                     ].filter(Boolean).join(" · ")}
                   </p>
                 )}
@@ -286,64 +285,63 @@ export function CompanyHeader({
 
               {serverError && <p className="company-header__error">{serverError}</p>}
 
-              {/* Seguidores / siguiendo */}
+              {/* Contadores — solo números, sin modal */}
               {!editing && company?.id_company && (
                 <div className="company-header__follow-row">
                   <CompanyFollowBlock
                     companyId={company.id_company}
-                    initialMetrics={{
-                      followers:    companyMetrics.followers    ?? 0,
-                      following:    companyMetrics.following    ?? 0,
-                      is_following: companyMetrics.is_following ?? false,
-                    }}
+                    initialMetrics={companyMetrics}
                     targetName={company.name}
-                    onOpenProfile={(user) => window.location.href = `/perfil-profesional?usuario=${user.user_id}`}
-                    readonly={isOwner}
+                    readonly
                   />
                 </div>
               )}
 
-
             </div>
           </div>
 
-          {/* Columna derecha: acciones */}
+          {/* Acciones */}
           <div className="company-header__actions">
             {editing ? (
               <>
                 <Button variant="outline" size="sm" onClick={handleCancel} disabled={saving}>
-                  <X className="w-4 h-4 mr-1.5" /> Cancelar
+                  <X className="w-4 h-4 mr-1.5" /> {t("company.header.actions.cancel")}
                 </Button>
                 <Button size="sm" onClick={handleSave} disabled={saving}>
                   <Check className="w-4 h-4 mr-1.5" />
-                  {saving ? "Guardando..." : "Guardar cambios"}
+                  {saving ? t("company.header.actions.saving") : t("company.header.actions.save")}
                 </Button>
               </>
             ) : (
               <>
-                {/* Visitante: Seguir + Compartir */}
+                {/* Botón seguir — solo para visitantes */}
                 {!isOwner && (
-                  <Button variant="outline" size="sm">
-                    + Seguir
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={fw.toggle}
+                    disabled={fw.busy}
+                  >
+                    {fw.isFollowing
+                      ? t("company.header.actions.unfollow")
+                      : t("company.header.actions.follow")}
                   </Button>
                 )}
 
-                {/* Siempre: Compartir */}
                 <div className="flex flex-col items-end gap-1">
                   <Button variant="white" size="sm" onClick={handleShare}>
-                    <Share2 className="w-4 h-4 mr-1.5" /> Compartir
+                    <Share2 className="w-4 h-4 mr-1.5" /> {t("company.header.actions.share")}
                   </Button>
                   {copied && (
                     <span className="company-header__copied">
-                      ✓ Link copiado
+                      {t("company.header.actions.linkCopied")}
                     </span>
                   )}
                 </div>
 
-                {/* Solo dueño: Editar */}
                 {isOwner && (
                   <Button variant="destructive" size="sm" onClick={handleEdit}>
-                    <Pencil className="w-4 h-4 mr-1.5" /> Editar perfil
+                    <Pencil className="w-4 h-4 mr-1.5" /> {t("company.header.actions.edit")}
                   </Button>
                 )}
               </>
@@ -353,15 +351,26 @@ export function CompanyHeader({
         </div>
       </div>
 
-      {/* ── Tabs de navegación ── */}
+      {/* Modal confirmar dejar de seguir */}
+      {fw.unfollowOpen && (
+        <ConfirmUnfollowModal
+          user={{ name: company?.name ?? "esta empresa" }}
+          busy={fw.busy}
+          error={fw.error}
+          onCancel={fw.cancelUnfollow}
+          onConfirm={fw.confirmUnfollow}
+        />
+      )}
+
+      {/* Tabs */}
       <nav className="company-header__tabs">
-        {TABS.map((t) => (
+        {TABS.map((tab) => (
           <button
-            key={t.key}
-            className={`company-header__tab${activeTab === t.key ? " active" : ""}`}
-            onClick={() => setActiveTab?.(t.key)}
+            key={tab.key}
+            className={`company-header__tab${activeTab === tab.key ? " active" : ""}`}
+            onClick={() => setActiveTab?.(tab.key)}
           >
-            {t.label}
+            {t(tab.labelKey)}
           </button>
         ))}
       </nav>

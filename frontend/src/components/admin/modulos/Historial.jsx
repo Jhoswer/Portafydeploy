@@ -24,7 +24,13 @@ export default function Historial() {
   }
 
   if (usuarioSeleccionado) {
-    return <HistorialDetalle usuario={usuarioSeleccionado} onVolver={volverABuscar} />;
+    return (
+      <HistorialDetalle
+        usuario={usuarioSeleccionado}
+        onVolver={volverABuscar}
+        showIntroPanel={false}
+      />
+    );
   }
 
   return (

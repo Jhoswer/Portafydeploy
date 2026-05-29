@@ -434,6 +434,10 @@ class BackupService
         $statements = $this->splitSqlStatements($sql);
         $backupTables = $this->extractPostgresBackupTables($sql);
         $backupSequences = $this->extractPostgresBackupSequences($sql);
+        $backupIncludesFunctions = preg_match('/^-- Function\|/m', $sql) === 1;
+        $backupIncludesTriggers = preg_match('/^-- Trigger\|/m', $sql) === 1;
+        $backupFunctions = $this->extractPostgresBackupFunctions($sql);
+        $backupTriggers = $this->extractPostgresBackupTriggers($sql);
         $currentTables = $this->listDatabaseTables('pgsql');
         $currentSequences = $this->listDatabaseSequences();
         $dropTableStatements = [];
@@ -482,6 +486,59 @@ class BackupService
                 DB::statement('DROP SEQUENCE IF EXISTS ' . $this->postgresQualifiedIdentifier('public.' . $sequence) . ' CASCADE');
             }
 
+            if ($backupIncludesTriggers) {
+                foreach ($this->listDatabaseTriggers() as $trigger) {
+                    $triggerKey = $this->postgresTriggerKey(
+                        (string) ($trigger['schema'] ?? 'public'),
+                        (string) ($trigger['trigger_name'] ?? ''),
+                        (string) ($trigger['table_name'] ?? '')
+                    );
+
+                    if (in_array($triggerKey, $backupTriggers, true)) {
+                        continue;
+                    }
+
+                    $triggerName = (string) ($trigger['trigger_name'] ?? '');
+                    $tableName = (string) ($trigger['table_name'] ?? '');
+
+                    if ($triggerName === '' || $tableName === '') {
+                        continue;
+                    }
+
+                    DB::statement(
+                        'DROP TRIGGER IF EXISTS ' . $this->postgresQuoteIdentifier($triggerName) .
+                        ' ON ' . $this->postgresQualifiedIdentifier('public.' . $tableName) . ' CASCADE'
+                    );
+                }
+            }
+
+            if ($backupIncludesFunctions) {
+                foreach ($this->listDatabaseFunctions() as $function) {
+                    $functionKey = $this->postgresFunctionKey(
+                        (string) ($function['schema'] ?? 'public'),
+                        (string) ($function['function_name'] ?? ''),
+                        (string) ($function['identity_arguments'] ?? '')
+                    );
+
+                    if (in_array($functionKey, $backupFunctions, true)) {
+                        continue;
+                    }
+
+                    $functionName = (string) ($function['function_name'] ?? '');
+                    $identityArguments = (string) ($function['identity_arguments'] ?? '');
+
+                    if ($functionName === '') {
+                        continue;
+                    }
+
+                    DB::statement(
+                        'DROP FUNCTION IF EXISTS ' .
+                        $this->postgresFunctionQualifiedName('public', $functionName, $identityArguments) .
+                        ' CASCADE'
+                    );
+                }
+            }
+
             foreach ($sequenceStatements as $statement) {
                 DB::unprepared($statement);
             }
@@ -521,6 +578,36 @@ class BackupService
             ->all();
     }
 
+    private function extractPostgresBackupFunctions(string $sql): array
+    {
+        preg_match_all('/^-- Function\|([^\|]+)\|([^\|]+)\|(.*)$/m', $sql, $matches, PREG_SET_ORDER);
+
+        return collect($matches)
+            ->map(fn (array $match) => $this->postgresFunctionKey(
+                (string) ($match[1] ?? 'public'),
+                (string) ($match[2] ?? ''),
+                (string) ($match[3] ?? '')
+            ))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function extractPostgresBackupTriggers(string $sql): array
+    {
+        preg_match_all('/^-- Trigger\|([^\|]+)\|([^\|]+)\|([^\|]+)$/m', $sql, $matches, PREG_SET_ORDER);
+
+        return collect($matches)
+            ->map(fn (array $match) => $this->postgresTriggerKey(
+                (string) ($match[1] ?? 'public'),
+                (string) ($match[2] ?? ''),
+                (string) ($match[3] ?? '')
+            ))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
     private function listDatabaseSequences(): array
     {
         $schema = $this->postgresSchema();
@@ -534,6 +621,59 @@ class BackupService
         ))
             ->map(fn ($row) => (string) ($row->sequence_name ?? ''))
             ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function listDatabaseFunctions(): array
+    {
+        $schema = $this->postgresSchema();
+
+        return collect(DB::select(
+            'select n.nspname as schema_name,
+                    p.proname as function_name,
+                    pg_get_function_identity_arguments(p.oid) as identity_arguments,
+                    pg_get_functiondef(p.oid) as definition
+             from pg_proc p
+             join pg_namespace n on n.oid = p.pronamespace
+             where n.nspname = ? and p.prokind = \'f\'
+             order by p.proname, pg_get_function_identity_arguments(p.oid)',
+            [$schema]
+        ))
+            ->map(fn ($row) => [
+                'schema' => (string) ($row->schema_name ?? 'public'),
+                'function_name' => (string) ($row->function_name ?? ''),
+                'identity_arguments' => (string) ($row->identity_arguments ?? ''),
+                'definition' => (string) ($row->definition ?? ''),
+            ])
+            ->filter(fn (array $function) => $function['function_name'] !== '' && $function['definition'] !== '')
+            ->values()
+            ->all();
+    }
+
+    private function listDatabaseTriggers(): array
+    {
+        $schema = $this->postgresSchema();
+
+        return collect(DB::select(
+            'select n.nspname as schema_name,
+                    c.relname as table_name,
+                    t.tgname as trigger_name,
+                    pg_get_triggerdef(t.oid, true) as definition
+             from pg_trigger t
+             join pg_class c on c.oid = t.tgrelid
+             join pg_namespace n on n.oid = c.relnamespace
+             where n.nspname = ? and not t.tgisinternal
+             order by c.relname, t.tgname',
+            [$schema]
+        ))
+            ->map(fn ($row) => [
+                'schema' => (string) ($row->schema_name ?? 'public'),
+                'table_name' => (string) ($row->table_name ?? ''),
+                'trigger_name' => (string) ($row->trigger_name ?? ''),
+                'definition' => (string) ($row->definition ?? ''),
+            ])
+            ->filter(fn (array $trigger) => $trigger['trigger_name'] !== '' && $trigger['table_name'] !== '' && $trigger['definition'] !== '')
             ->values()
             ->all();
     }
@@ -694,6 +834,8 @@ class BackupService
         $pdo = $connection->getPdo();
         $schema = $this->postgresSchema();
         $tables = $this->listDatabaseTables('pgsql');
+        $functions = $this->listDatabaseFunctions();
+        $triggers = $this->listDatabaseTriggers();
 
         fwrite($handle, "-- Backup generado el " . now()->toDateTimeString() . PHP_EOL);
         fwrite($handle, "BEGIN;" . PHP_EOL . PHP_EOL);
@@ -727,6 +869,20 @@ class BackupService
 
         foreach ($tables as $table) {
             $this->writePostgresSequencesSetval($handle, $schema, $table);
+        }
+
+        if ($functions !== []) {
+            fwrite($handle, PHP_EOL . "-- Functions" . PHP_EOL);
+            foreach ($functions as $function) {
+                $this->writePostgresFunctionDump($handle, $function);
+            }
+        }
+
+        if ($triggers !== []) {
+            fwrite($handle, PHP_EOL . "-- Triggers" . PHP_EOL);
+            foreach ($triggers as $trigger) {
+                $this->writePostgresTriggerDump($handle, $trigger);
+            }
         }
 
         fwrite($handle, PHP_EOL . "COMMIT;" . PHP_EOL);
@@ -831,6 +987,51 @@ class BackupService
                 "SELECT setval(" . $this->postgresLiteral($sequenceName) . ", COALESCE((SELECT MAX({$quotedColumn}) FROM {$qualifiedTable}), 1), true);" . PHP_EOL
             );
         }
+    }
+
+    private function writePostgresFunctionDump($handle, array $function): void
+    {
+        $schema = (string) ($function['schema'] ?? 'public');
+        $functionName = (string) ($function['function_name'] ?? '');
+        $identityArguments = (string) ($function['identity_arguments'] ?? '');
+        $definition = trim((string) ($function['definition'] ?? ''));
+
+        if ($functionName === '' || $definition === '') {
+            return;
+        }
+
+        $qualifiedName = $this->postgresFunctionQualifiedName($schema, $functionName, $identityArguments);
+        $definition = rtrim($definition, ";\r\n\t ");
+
+        fwrite(
+            $handle,
+            "-- Function|{$schema}|{$functionName}|{$identityArguments}" . PHP_EOL .
+            "DROP FUNCTION IF EXISTS {$qualifiedName} CASCADE;" . PHP_EOL .
+            $definition . ";" . PHP_EOL . PHP_EOL
+        );
+    }
+
+    private function writePostgresTriggerDump($handle, array $trigger): void
+    {
+        $schema = (string) ($trigger['schema'] ?? 'public');
+        $tableName = (string) ($trigger['table_name'] ?? '');
+        $triggerName = (string) ($trigger['trigger_name'] ?? '');
+        $definition = trim((string) ($trigger['definition'] ?? ''));
+
+        if ($schema === '' || $tableName === '' || $triggerName === '' || $definition === '') {
+            return;
+        }
+
+        $qualifiedTable = $this->postgresQualifiedIdentifier($schema . '.' . $tableName);
+        $qualifiedTrigger = $this->postgresQuoteIdentifier($triggerName);
+        $definition = rtrim($definition, ";\r\n\t ");
+
+        fwrite(
+            $handle,
+            "-- Trigger|{$schema}|{$triggerName}|{$tableName}" . PHP_EOL .
+            "DROP TRIGGER IF EXISTS {$qualifiedTrigger} ON {$qualifiedTable} CASCADE;" . PHP_EOL .
+            $definition . ";" . PHP_EOL . PHP_EOL
+        );
     }
 
     private function postgresSchema(): string
@@ -1009,6 +1210,21 @@ class BackupService
     private function postgresLiteral(string $value): string
     {
         return "'" . str_replace("'", "''", $value) . "'";
+    }
+
+    private function postgresFunctionQualifiedName(string $schema, string $functionName, string $identityArguments): string
+    {
+        return $this->postgresQualifiedIdentifier($schema . '.' . $functionName) . '(' . $identityArguments . ')';
+    }
+
+    private function postgresFunctionKey(string $schema, string $functionName, string $identityArguments): string
+    {
+        return $schema . '|' . $functionName . '|' . $identityArguments;
+    }
+
+    private function postgresTriggerKey(string $schema, string $triggerName, string $tableName): string
+    {
+        return $schema . '|' . $triggerName . '|' . $tableName;
     }
 
     private function writeTableDump($handle, string $table, string $driver, $pdo): void

@@ -46,6 +46,7 @@ function assetUrl(path) {
 export function getItemTitle(activeKey, item) {
   if (activeKey === "skills") return item.name;
   if (activeKey === "social") return item.platform;
+  if (activeKey === "education") return item.program;
   return item.title;
 }
 
@@ -54,6 +55,7 @@ export function getItemSubtitle(activeKey, item) {
   if (activeKey === "experience") return `${item.type} · ${item.company}`;
   if (activeKey === "skills") return item.category ? `${item.category} · ${item.level}` : item.level;
   if (activeKey === "social") return compactUrl(item.url);
+  if (activeKey === "education") return [item.institution, formatEducationLevel(item.level)].filter(Boolean).join(" · ");
   return "";
 }
 
@@ -95,6 +97,20 @@ export function DetailContent({ activeKey, item }) {
           <div style={detailLabel}>Visual</div>
           <SkillDots level={item.level} />
         </div>
+      </>
+    );
+  }
+
+  if (activeKey === "education") {
+    return (
+      <>
+        <InfoBlock label="Programa" text={item.program || "Sin programa"} />
+        <InfoBlock label="Institucion" text={item.institution || "Sin institucion"} />
+        <InfoBlock label="Tipo" text={formatEducationLevel(item.level) || "Sin tipo"} />
+        <InfoBlock
+          label="Fechas"
+          text={`${formatDateLabel(item.startDate) || "Sin inicio"} - ${item.isCurrent ? "Presente" : formatDateLabel(item.endDate) || "Sin definir"}`}
+        />
       </>
     );
   }
@@ -166,7 +182,7 @@ export function FormContent({ activeMeta, draft, extraData, fieldErrors, onDraft
       {visibleFields.map((field) => (
         <label key={field.key} style={{ display: "grid", gap: 6 }}>
           <span style={fieldLabel}>{field.label}</span>
-          {renderField(field, draft[field.key], draft, fieldErrors?.[field.key], onDraftChange, activeMeta)}
+          {renderField(field, draft[field.key], draft, fieldErrors?.[field.key], onDraftChange, activeMeta, extraData)}
         </label>
       ))}
     </div>
@@ -202,7 +218,7 @@ function renderExtraField(field, value, errorMessage, onExtraChange) {
   );
 }
 
-function renderField(field, value, draft, errorMessage, onDraftChange, activeMeta) {
+function renderField(field, value, draft, errorMessage, onDraftChange, activeMeta, extraData = {}) {
   if (field.type === "textarea") {
     const isLockedDescription = field.key === "description" && (activeMeta.key === "experience" || activeMeta.key === "projects");
     return (
@@ -225,7 +241,8 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
   }
 
   if (field.type === "select") {
-    const options = field.optionsByType?.[draft.type] ?? field.options ?? [];
+    const dynamicOptions = field.optionsFromExtra ? extraData[field.optionsFromExtra] ?? [] : null;
+    const options = dynamicOptions ?? field.optionsByType?.[draft.type] ?? field.options ?? [];
 
     if (activeMeta.key === "skills" && field.key === "level") {
       return (
@@ -243,10 +260,10 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
     return (
       <>
         <select value={value} onChange={(event) => onDraftChange(field.key, event.target.value)} style={selectWithError(errorMessage)}>
-          <option value="">Selecciona una opcion</option>
+          <option value="">{field.placeholder || "Selecciona una opcion"}</option>
           {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
+            <option key={option.value ?? option} value={option.value ?? option}>
+              {option.label ?? option}
             </option>
           ))}
         </select>
@@ -260,7 +277,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
       <>
         <label style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--body)", fontFamily: "var(--f-ui)" }}>
           <input type="checkbox" checked={Boolean(value)} onChange={(event) => onDraftChange(field.key, event.target.checked)} />
-          Sigo actualmente en este lugar
+          {field.label || "Sigo actualmente en este lugar"}
         </label>
         {errorMessage ? <FieldError message={errorMessage} /> : null}
       </>
@@ -327,6 +344,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
         value={value}
         onChange={(event) => onDraftChange(field.key, event.target.value)}
         placeholder={field.placeholder}
+        maxLength={field.maxLength}
         style={inputWithError(errorMessage)}
       />
       {errorMessage ? <FieldError message={errorMessage} /> : null}
@@ -424,4 +442,21 @@ function formatDateLabel(value) {
   }
 
   return normalized;
+}
+
+function formatEducationLevel(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  const labels = {
+    tecnico: "Tecnico",
+    tecnologo: "Tecnologo",
+    licenciatura: "Licenciatura",
+    ingenieria: "Ingenieria",
+    maestria: "Maestria",
+    doctorado: "Doctorado",
+    curso: "Curso",
+    diplomado: "Diplomado",
+    otro: "Otro",
+  };
+
+  return labels[normalized] || value || "";
 }

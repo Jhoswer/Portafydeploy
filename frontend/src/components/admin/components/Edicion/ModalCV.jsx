@@ -511,7 +511,7 @@ const buildResumen = () => {
                   <hr className="edicion-modal__divider" />
 
                   {/* Título de la zona de detalles */}
-                  <div className="edicion-cv-details-header">
+                  <div className="edicion-cv-details-header edicion-cv-details-header--socials">
                     <FileText size={14} />
                     <span className="edicion-cv-details-header__label">Detalle del CV</span>
                     <span className="edicion-tabla__count">{visibleDetails.length} activos</span>

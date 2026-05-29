@@ -19,6 +19,7 @@ import {
   UserPlus,
   X,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { MessageBox, MetaItem, StatCard } from "./ProfileSections";
 import { profileUi as ui } from "../../../styles/components/dashboard/profileStyles";
@@ -76,6 +77,7 @@ export default function ProfileHero({
   onReportProfile,
   onStatClick,
 }) {
+  const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useCloseOnOutside(menuOpen, () => setMenuOpen(false));
   const contactEmail = shownProfile.email && showContact ? shownProfile.email : "";
@@ -106,7 +108,7 @@ export default function ProfileHero({
             style={coverButtonStyle}
           >
             <ImagePlus size={14} />
-            Portada
+            {t("appI18n.profile.cover")}
           </button>
         ) : null}
         <input
@@ -150,33 +152,15 @@ export default function ProfileHero({
               <>
                 <div style={{ display: "flex", alignItems: "center", gap: 9, justifyContent: isMobile ? "center" : "flex-start", flexWrap: "wrap" }}>
                   <h1 style={nameStyle}>{fullName}</h1>
-                  {verified ? <ShieldCheck size={24} color="#2563eb" /> : null}
+                  {verified ? <VerifiedBadge /> : null}
                 </div>
 
                 {headline ? <div style={headlineStyle}>{headline}</div> : null}
-                {verified ? (
-                  <div style={verifiedPillStyle}>
-                    <ShieldCheck size={14} />
-                    Profesional verificado por PortaFy
-                  </div>
-                ) : null}
               </>
             )}
 
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 10, justifyContent: isMobile ? "center" : "flex-start" }}>
-              {editing ? (
-                <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 220 }}>
-                  <MapPin size={14} style={{ color: "var(--muted)", flexShrink: 0 }} />
-                  <input
-                    value={draft.ubicacion ?? ""}
-                    onChange={(event) => setDraft((prev) => ({ ...prev, ubicacion: event.target.value }))}
-                    placeholder="Tu ciudad o pais"
-                    style={{ ...ui.input, margin: 0, minWidth: 180 }}
-                  />
-                </div>
-              ) : (
-                <MetaItem icon={<MapPin size={14} />} text={shownProfile.ubicacion || "Ubicacion no especificada"} />
-              )}
+              <MetaItem icon={<MapPin size={14} />} text={shownProfile.ubicacion || t("appI18n.profile.locationFallback")} />
               {contactEmail ? <MetaItem icon={<Mail size={14} />} text={contactEmail} /> : null}
             </div>
           </div>
@@ -186,11 +170,11 @@ export default function ProfileHero({
               <>
                 <button type="button" onClick={cancelEdit} style={ui.secondary}>
                   <X size={14} />
-                  Cancelar
+                  {t("appI18n.profile.cancel")}
                 </button>
                 <button type="button" onClick={saveProfile} style={ui.primary}>
                   <Save size={14} />
-                  {saving ? "Guardando..." : "Guardar"}
+                  {saving ? t("appI18n.profile.saving") : t("appI18n.common.save")}
                 </button>
               </>
             ) : (
@@ -203,37 +187,37 @@ export default function ProfileHero({
                     style={isFollowing ? followingButtonStyle : followButtonStyle}
                   >
                     {isFollowing ? <UserCheck size={15} /> : <UserPlus size={15} />}
-                    {isFollowing ? "Siguiendo" : followBusy ? "Procesando..." : "Seguir"}
+                    {isFollowing ? t("appI18n.profile.following") : followBusy ? t("appI18n.profile.processing") : t("appI18n.profile.follow")}
                   </button>
                 ) : null}
 
                 {canEdit ? (
                   <button type="button" onClick={beginEdit} style={editButtonStyle}>
                     <PencilLine size={15} />
-                    Editar perfil
+                    {t("appI18n.profile.editProfile")}
                   </button>
                 ) : null}
 
                 <div style={{ position: "relative" }} ref={menuRef}>
-                  <button type="button" onClick={() => setMenuOpen((value) => !value)} style={menuButtonStyle} aria-label="Mas opciones">
+                  <button type="button" onClick={() => setMenuOpen((value) => !value)} style={menuButtonStyle} aria-label={t("appI18n.profile.moreOptions")}>
                     <MoreHorizontal size={17} />
                   </button>
                   {menuOpen ? (
                     <div style={menuStyle}>
                       {!canEdit && contactEmail ? (
                         <button type="button" onClick={() => { setMenuOpen(false); onAnalyticsEvent?.("contact_click"); window.location.href = `mailto:${contactEmail}`; }} style={menuItem}>
-                          <Mail size={14} /> Contactar
+                          <Mail size={14} /> {t("appI18n.profile.contact")}
                         </button>
                       ) : null}
                       <button type="button" onClick={() => { setMenuOpen(false); onAnalyticsEvent?.("cv_click"); if (cv.cvUrl) window.open(cv.cvUrl, "_blank"); else window.dispatchEvent(new CustomEvent("dashboard:navigate", { detail: "cv" })); }} style={menuItem}>
-                        <Download size={14} /> {cv.cvUrl ? "Ver CV" : "Gestion de CV"}
+                        <Download size={14} /> {cv.cvUrl ? t("appI18n.profile.viewCv") : t("appI18n.profile.manageCv")}
                       </button>
                       <button type="button" onClick={() => { setMenuOpen(false); shareProfile(); }} style={menuItem}>
-                        <Share2 size={14} /> Compartir perfil
+                        <Share2 size={14} /> {t("appI18n.profile.shareProfile")}
                       </button>
                       {canReport ? (
                         <button type="button" onClick={() => { setMenuOpen(false); onReportProfile?.(); }} style={{ ...menuItem, color: "#dc2626" }}>
-                          <Flag size={14} /> Reportar perfil
+                          <Flag size={14} /> {t("appI18n.profile.reportProfile")}
                         </button>
                       ) : null}
                     </div>
@@ -264,20 +248,12 @@ export default function ProfileHero({
               const metric = compactMetricMeta(stat.label);
 
               return (
-                <button
+                <CompactMetric
                   key={stat.label}
-                  type="button"
+                  stat={stat}
+                  metric={metric}
                   onClick={stat.action ? () => onStatClick?.(stat.action) : undefined}
-                  style={compactMetricStyle(Boolean(stat.action), metric)}
-                >
-                  <span style={compactMetricIconStyle(metric)}>
-                    <metric.icon size={14} />
-                  </span>
-                  <span style={{ display: "grid", gap: 2, minWidth: 0 }}>
-                    <strong style={compactMetricValueStyle}>{stat.value}</strong>
-                    <span style={compactMetricLabelStyle}>{stat.label}</span>
-                  </span>
-                </button>
+                />
               );
             })}
           </div>
@@ -286,6 +262,57 @@ export default function ProfileHero({
         {shareMessage ? <MessageBox color="blue" text={shareMessage} fit /> : null}
       </div>
     </section>
+  );
+}
+
+function VerifiedBadge() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <span
+      tabIndex={0}
+      aria-label="Profesional verificado por PortaFy"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+      style={verifiedBadgeWrapStyle}
+    >
+      <span style={verifiedBadgeStyle}>
+        <ShieldCheck size={20} strokeWidth={2.6} fill="rgba(37,99,235,.14)" />
+      </span>
+      {open ? (
+        <span style={verifiedTooltipStyle}>
+          <ShieldCheck size={14} strokeWidth={2.5} fill="rgba(37,99,235,.12)" />
+          Profesional verificado por PortaFy
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+function CompactMetric({ stat, metric, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  const Icon = metric.icon;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      style={compactMetricStyle(Boolean(onClick), metric, hovered)}
+    >
+      <span style={compactMetricIconStyle(metric, hovered)}>
+        <Icon size={14} />
+      </span>
+      <span style={{ display: "grid", gap: 2, minWidth: 0 }}>
+        <strong style={compactMetricValueStyle}>{stat.value}</strong>
+        <span style={compactMetricLabelStyle}>{stat.label}</span>
+      </span>
+    </button>
   );
 }
 
@@ -389,19 +416,46 @@ const headlineStyle = {
   fontWeight: 850,
 };
 
-const verifiedPillStyle = {
+const verifiedBadgeWrapStyle = {
+  position: "relative",
+  display: "inline-flex",
+  alignItems: "center",
+  outline: "none",
+};
+
+const verifiedBadgeStyle = {
+  width: 28,
+  height: 28,
+  display: "grid",
+  placeItems: "center",
+  borderRadius: "50%",
+  color: "#2563eb",
+  background: "linear-gradient(135deg, rgba(37,99,235,.13), rgba(14,165,233,.08))",
+  border: "none",
+  boxShadow: "0 10px 22px rgba(37,99,235,.16)",
+};
+
+const verifiedTooltipStyle = {
+  position: "absolute",
+  left: "50%",
+  top: "calc(100% + 10px)",
+  transform: "translateX(-50%)",
+  zIndex: 30,
   display: "inline-flex",
   alignItems: "center",
   gap: 7,
-  marginTop: 10,
-  padding: "8px 12px",
+  width: "max-content",
+  maxWidth: 260,
+  padding: "9px 12px",
   borderRadius: 999,
   color: "#1d4ed8",
-  background: "rgba(37,99,235,.08)",
-  border: "1px solid rgba(37,99,235,.18)",
+  background: "var(--dashboard-card-bg)",
+  border: "1px solid rgba(37,99,235,.20)",
+  boxShadow: "0 18px 38px rgba(14,30,60,.16)",
   fontFamily: "var(--f-ui)",
   fontSize: ".78rem",
   fontWeight: 900,
+  pointerEvents: "none",
 };
 
 const actionWrap = {
@@ -490,7 +544,7 @@ const secondaryStatsStyle = {
   marginTop: 16,
 };
 
-const compactMetricStyle = (clickable, metric) => ({
+const compactMetricStyle = (clickable, metric, hovered = false) => ({
   display: "inline-flex",
   alignItems: "center",
   gap: 10,
@@ -498,25 +552,28 @@ const compactMetricStyle = (clickable, metric) => ({
   minWidth: 132,
   padding: "9px 13px 9px 10px",
   borderRadius: 16,
-  border: `1px solid ${metric.border}`,
-  background: "var(--dashboard-soft-bg)",
+  border: `1px solid ${hovered ? metric.borderStrong : metric.border}`,
+  background: hovered ? `linear-gradient(135deg, ${metric.iconBg} 0%, var(--dashboard-card-bg) 100%)` : "var(--dashboard-soft-bg)",
   color: "var(--body)",
   cursor: clickable ? "pointer" : "default",
   fontFamily: "var(--f-ui)",
   textAlign: "left",
-  boxShadow: `0 12px 24px ${metric.shadow}`,
+  boxShadow: hovered ? `0 15px 28px ${metric.shadow}` : `0 12px 24px ${metric.shadow}`,
+  transform: hovered ? "translateY(-1px)" : "translateY(0)",
   transition: "transform .16s ease, box-shadow .16s ease, border-color .16s ease",
 });
 
-const compactMetricIconStyle = (metric) => ({
+const compactMetricIconStyle = (metric, hovered = false) => ({
   width: 32,
   height: 32,
   borderRadius: 12,
   display: "grid",
   placeItems: "center",
   color: metric.color,
-  background: metric.iconBg,
+  background: hovered ? metric.iconBgStrong : metric.iconBg,
   border: `1px solid ${metric.border}`,
+  transform: hovered ? "scale(1.04)" : "scale(1)",
+  transition: "transform .16s ease, background .16s ease",
   flexShrink: 0,
 });
 
@@ -545,7 +602,9 @@ function compactMetricMeta(label) {
       color: "#2563eb",
       soft: "rgba(239,246,255,.96)",
       iconBg: "rgba(37,99,235,.10)",
+      iconBgStrong: "rgba(37,99,235,.16)",
       border: "rgba(37,99,235,.20)",
+      borderStrong: "rgba(37,99,235,.34)",
       shadow: "rgba(37,99,235,.07)",
     };
   }
@@ -556,7 +615,9 @@ function compactMetricMeta(label) {
       color: "#0f766e",
       soft: "rgba(240,253,250,.96)",
       iconBg: "rgba(15,118,110,.10)",
+      iconBgStrong: "rgba(15,118,110,.16)",
       border: "rgba(15,118,110,.20)",
+      borderStrong: "rgba(15,118,110,.34)",
       shadow: "rgba(15,118,110,.07)",
     };
   }
@@ -567,7 +628,9 @@ function compactMetricMeta(label) {
       color: "#7c3aed",
       soft: "rgba(245,243,255,.96)",
       iconBg: "rgba(124,58,237,.10)",
+      iconBgStrong: "rgba(124,58,237,.16)",
       border: "rgba(124,58,237,.20)",
+      borderStrong: "rgba(124,58,237,.34)",
       shadow: "rgba(124,58,237,.07)",
     };
   }
@@ -577,7 +640,9 @@ function compactMetricMeta(label) {
     color: "#e11d48",
     soft: "rgba(255,241,242,.96)",
     iconBg: "rgba(225,29,72,.09)",
+    iconBgStrong: "rgba(225,29,72,.15)",
     border: "rgba(225,29,72,.18)",
+    borderStrong: "rgba(225,29,72,.32)",
     shadow: "rgba(225,29,72,.06)",
   };
 }

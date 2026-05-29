@@ -1,6 +1,7 @@
 import {
   BriefcaseBusiness,
   FolderKanban,
+  GraduationCap,
   Share2,
   Sparkles,
 } from "lucide-react";
@@ -203,6 +204,18 @@ export const SOCIAL_PLATFORM_LIBRARY = [
   "Otra",
 ];
 
+export const EDUCATION_LEVEL_LIBRARY = [
+  "tecnico",
+  "tecnologo",
+  "licenciatura",
+  "ingenieria",
+  "maestria",
+  "doctorado",
+  "curso",
+  "diplomado",
+  "otro",
+];
+
 export const SECTION_META = {
   projects: {
     key: "projects",
@@ -398,6 +411,43 @@ export const SECTION_META = {
       { key: "url", label: "URL", type: "url", placeholder: "https://..." },
     ],
   },
+  education: {
+    key: "education",
+    title: "Formacion profesional",
+    singular: "formacion",
+    icon: GraduationCap,
+    color: "#0f766e",
+    description:
+      "Registra carreras, diplomados, cursos, maestrias y otros estudios relevantes.",
+    helper:
+      "Agrega tu formacion academica o profesional usando la misma informacion del registro inicial.",
+    listSubtitle: (item) => [item.institution, item.level].filter(Boolean).join(" · "),
+    fields: [
+      {
+        key: "level",
+        label: "Tipo de formacion",
+        type: "select",
+        options: EDUCATION_LEVEL_LIBRARY,
+      },
+      {
+        key: "program",
+        label: "Programa o carrera",
+        type: "text",
+        placeholder: "Ingenieria de Sistemas / Diplomado en QA",
+        maxLength: 140,
+      },
+      {
+        key: "institution",
+        label: "Institucion",
+        type: "text",
+        placeholder: "Universidad o institucion",
+        maxLength: 120,
+      },
+      { key: "startDate", label: "Fecha inicio", type: "date" },
+      { key: "endDate", label: "Fecha fin", type: "date" },
+      { key: "isCurrent", label: "Actualmente", type: "checkbox" },
+    ],
+  },
 };
 
 export const INITIAL_ITEMS = {
@@ -405,6 +455,7 @@ export const INITIAL_ITEMS = {
   experience: [],
   skills: [],
   social: [],
+  education: [],
 };
 
 export const INITIAL_EXTRA_BY_SECTION = {

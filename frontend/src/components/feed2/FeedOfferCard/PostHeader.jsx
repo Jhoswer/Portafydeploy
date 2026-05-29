@@ -1,7 +1,84 @@
 import { useNavigate } from "react-router-dom";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Flag, PauseCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-export function PostHeader({ post }) {
+function useCloseOnOutside(open, onClose) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return undefined;
+    const handlePointerDown = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) onClose?.();
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [open, onClose]);
+  return ref;
+}
+
+const postMenuItemStyle = {
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  gap: 9,
+  border: "none",
+  borderRadius: 11,
+  padding: "9px 10px",
+  background: "transparent",
+  color: "var(--body)",
+  fontFamily: "var(--f-ui)",
+  fontSize: ".82rem",
+  fontWeight: 800,
+  textAlign: "left",
+  cursor: "pointer",
+};
+
+function PostOptionsMenu({ owner = false, onUnshare, onReport, isUnsharing = false }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useCloseOnOutside(open, () => setOpen(false));
+
+  if (owner && !onUnshare) return null;
+  if (!owner && !onReport) return null;
+
+  return (
+    <div className="post-options" ref={menuRef}>
+      <button
+        className="post-more"
+        type="button"
+        aria-label="Mas opciones"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <MoreHorizontal size={17} />
+      </button>
+      {open && (
+        <div className="post-options__menu">
+          {owner ? (
+            <button
+              type="button"
+              disabled={isUnsharing}
+              onClick={() => { setOpen(false); onUnshare?.(); }}
+              style={{ ...postMenuItemStyle, color: "#b42318", opacity: isUnsharing ? 0.68 : 1 }}
+            >
+              <PauseCircle size={15} />
+              {isUnsharing ? "Quitando..." : "Dejar de compartir"}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => { setOpen(false); onReport?.(); }}
+              style={{ ...postMenuItemStyle, color: "#b42318" }}
+            >
+              <Flag size={15} />
+              Reportar publicacion
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function PostHeader({ post, owner = false, onUnshare, onReport, isUnsharing = false }) {
   const navigate = useNavigate();
 
   const handleAuthorClick = () => {
@@ -17,54 +94,35 @@ export function PostHeader({ post }) {
         style={{
           background: "none", border: "none", padding: 0,
           cursor: post.authorSlug ? "pointer" : "default",
-          display: "flex", alignItems: "center",
-          borderRadius: "50%",
+          display: "flex", alignItems: "center", borderRadius: "50%",
         }}
-        title={post.authorSlug ? `Ver perfil de ${post.author}` : undefined}
       >
-        {post.avatar
-          ? (
-            <img
-              className="post-avatar"
-              src={post.avatar}
-              alt={post.author}
-              style={{ transition: "opacity 0.15s" }}
-              onMouseEnter={e => { if (post.authorSlug) e.target.style.opacity = "0.8"; }}
-              onMouseLeave={e => e.target.style.opacity = "1"}
-            />
-          ) : (
-            <div className="post-avatar" style={{ background: "#185FA5", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 16 }}>
-              {post.author?.[0] || "E"}
-            </div>
-          )
-        }
+        {post.avatar ? (
+          <img className="post-avatar" src={post.avatar} alt={post.author} />
+        ) : (
+          <div className="post-avatar" style={{ background: "#185FA5", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 16 }}>
+            {post.author?.[0] || "E"}
+          </div>
+        )}
       </button>
 
       <div className="post-meta">
         <button
           type="button"
           onClick={handleAuthorClick}
-          style={{
-            background: "none", border: "none", padding: 0,
-            cursor: post.authorSlug ? "pointer" : "default",
-            textAlign: "left",
-          }}
+          style={{ background: "none", border: "none", padding: 0, cursor: post.authorSlug ? "pointer" : "default", textAlign: "left" }}
         >
-          <div
-            className="post-author"
-            style={{ transition: "color 0.15s", ...(post.authorSlug ? { cursor: "pointer" } : {}) }}
-            onMouseEnter={e => { if (post.authorSlug) e.target.style.color = "#2563eb"; }}
-            onMouseLeave={e => e.target.style.color = ""}
-          >
-            {post.author}
-          </div>
+          <div className="post-author">{post.author}</div>
         </button>
         <div className="post-subtitle">{post.subtitle}</div>
       </div>
 
-      <button className="post-more" type="button" aria-label="Más opciones">
-        <MoreHorizontal size={17} />
-      </button>
+      <PostOptionsMenu
+        owner={owner}
+        onUnshare={onUnshare}
+        onReport={onReport}
+        isUnsharing={isUnsharing}
+      />
     </div>
   );
 }

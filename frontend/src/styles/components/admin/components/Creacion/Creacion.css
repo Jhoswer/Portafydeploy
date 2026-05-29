@@ -249,3 +249,87 @@
 .cre-panel__body {
   overflow-x: auto;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MODO OSCURO — html.dark
+   Creacion Module
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tabs ── */
+html.dark .cre-tabs {
+  background: #0f172a;
+}
+
+html.dark .cre-tabs__btn {
+  color: #64748b;
+}
+
+html.dark .cre-tabs__btn:hover {
+  background: #1e293b;
+  color: #94a3b8;
+}
+
+html.dark .cre-tabs__btn--active {
+  background: #1e293b;
+  color: #f1f5f9;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.30);
+}
+
+/* ── Placeholder forms ── */
+html.dark .cre-form-placeholder {
+  background: #0f172a;
+  border-color: #334155;
+  color: #475569;
+}
+
+/* ── Panel overlay ── */
+html.dark .cre-panel-overlay {
+  background: rgba(5, 10, 20, 0.55);
+}
+
+/* ── Panel ── */
+html.dark .cre-panel {
+  background: #1e293b;
+  box-shadow: -4px 0 32px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Panel header ── */
+html.dark .cre-panel__header {
+  border-bottom-color: #334155;
+}
+
+html.dark .cre-panel__user-name { color: #f1f5f9; }
+html.dark .cre-panel__user-role { color: #64748b; }
+
+html.dark .cre-panel__close {
+  background: #334155;
+  color: #94a3b8;
+}
+html.dark .cre-panel__close:hover {
+  background: #475569;
+  color: #f1f5f9;
+}
+
+/* ── Panel section tabs ── */
+html.dark .cre-panel__section-btn {
+  color: #64748b;
+}
+html.dark .cre-panel__section-btn:hover {
+  background: #334155;
+  color: #94a3b8;
+}
+html.dark .cre-panel__section-btn--active {
+  background: rgba(37, 99, 235, 0.18);
+  color: #60a5fa;
+}
+
+/* ── Panel body ── */
+html.dark .cre-panel__section-placeholder {
+  border-color: #334155;
+  color: #475569;
+}
+
+/* ── Nueva info ── */
+html.dark .cre-nueva-info {
+  /* sin fondo propio, hereda del panel */
+}

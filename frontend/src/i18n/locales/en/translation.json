@@ -12,7 +12,6 @@
     "myProfile": "My profile",
     "settings": "Settings",
     "logout": "Log out",
-
     "dashboard": "Dashboard",
     "saved": "Saved"
   },
@@ -126,14 +125,7 @@
       },
       "Company": {
         "heading": "Company",
-        "links": [
-          "About",
-          "Careers",
-          "Press",
-          "Contact",
-          "Privacy",
-          "Terms"
-        ]
+        "links": ["About", "Careers", "Press", "Contact", "Privacy", "Terms"]
       }
     },
     "rights": "All rights reserved",
@@ -214,7 +206,7 @@
       "captchaRequired": "Complete the captcha to continue",
       "passwordLetter": "Password must contain at least one letter",
       "passwordSymbol": "Password must contain at least one symbol"
-      }
+    }
   },
   "resetPassword": {
     "back": "Back to login",
@@ -519,5 +511,797 @@
     "previousPage": "Previous page",
     "nextPage": "Next page",
     "lastPage": "Last page"
+  },
+
+  "cv": {
+    "title": "My CVs",
+    "subtitle": "Manage, edit and export your résumés",
+    "importBtn": "Import CV",
+    "generateBtn": "Generate from profile",
+    "generateBtnShort": "Generate CV",
+    "strip": "You can generate a CV from your profile data, or import an existing one in PDF or Word.",
+    "loading": "Loading CVs...",
+    "errorLoad": "Could not load CVs. Please try again.",
+    "errorVisibility": "Could not update visibility.",
+    "errorDelete": "Could not delete the CV.",
+    "empty": {
+      "title": "You don't have any CVs yet",
+      "text": "Import an existing CV or generate a new one from your profile."
+    },
+    "delete": {
+      "title": "Delete CV?",
+      "body": "This action cannot be undone. The CV will be removed from your list.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "card": {
+      "generated": "Generated",
+      "updated": "Updated",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "edit": "Edit",
+      "download": "Download",
+      "delete": "Delete",
+      "toggleVisible": "Make visible",
+      "toggleHidden": "Hide"
+    },
+    "import": {
+      "title": "Import CV",
+      "subtitle": "Your CV will be processed with AI and will auto-fill the forms.",
+      "dropTitle": "Drag your CV here",
+      "dropChange": "Change file",
+      "dropSub": "or click to select · PDF, Word, TXT · max 10 MB",
+      "btn": "Import CV",
+      "processing": "Processing...",
+      "cancel": "Cancel",
+      "errorFormat": "Unsupported format. Upload PDF, Word (.docx) or TXT.",
+      "errorSize": "The file exceeds the 10 MB limit.",
+      "errorProcess": "Could not process the CV. Please try again.",
+      "successNoNew": "CV imported. No new elements found compared to your profile.",
+      "successNew": "CV imported. {{count}} new element(s) found."
+    },
+    "editor": {
+      "back": "Back",
+      "preview": "Preview",
+      "save": "Save",
+      "saving": "Saving...",
+      "saved": "Saved",
+      "export": "Export PDF",
+      "generating": "Generating...",
+      "previewTitle": "Preview",
+      "previewClose": "Close",
+      "previewHint": "To download with the correct name use Export PDF",
+      "templates": "Templates",
+      "typography": "Typography",
+      "sections": "Sections",
+      "importedContent": "Imported content",
+      "visibility": "Visibility",
+      "color": "Main color",
+      "zoom": "Zoom",
+      "toProfile": "To profile",
+      "onlyCv": "CV only",
+      "hide": "Hide",
+      "allProcessed": "All processed",
+      "clearAll": "Clear",
+      "pendingItems": "{{count}} item(s) to process"
+    }
+  },
+
+  "recruiterForms": {
+    "common": {
+      "continue": "Continue",
+      "back": "Back",
+      "optional": "optional"
+    },
+    "steps": {
+      "identidad": "Identity",
+      "branding": "Branding",
+      "empresa": "Company",
+      "contacto": "Contact"
+    },
+    "stepIdentidad": {
+      "title": "Basic identity",
+      "subtitle": "Tell us about the company you represent.",
+      "empresa": {
+        "label": "Company name",
+        "placeholder": "E.g. Acme Corp",
+        "hint": "Legal or commercial company name"
+      },
+      "descripcion": {
+        "label": "Description",
+        "placeholder": "Briefly describe what the company does, its mission, and work culture...",
+        "charCount": "{{current}} / {{max}}"
+      }
+    },
+    "stepBranding": {
+      "title": "Branding",
+      "subtitle": "Upload your logo so candidates can recognize your company.",
+      "dropzone": {
+        "heading": "Upload your logo",
+        "hint": "PNG, JPG · Maximum 5 MB"
+      },
+      "preview": {
+        "change": "Change",
+        "remove": "Remove"
+      }
+    },
+    "stepEmpresa": {
+      "title": "Company information",
+      "subtitle": "Help candidates understand your company context.",
+      "rubro": {
+        "label": "Industry or sector",
+        "placeholder": "E.g. Technology, Healthcare, Finance...",
+        "hint": "Start typing to see suggestions"
+      },
+      "pais": {
+        "label": "Country",
+        "placeholder": "Select country"
+      },
+      "ciudad": {
+        "label": "City",
+        "placeholder": "Select city",
+        "placeholderNoPais": "Select a country first",
+        "hint": "Select a country to see available cities"
+      }
+    },
+    "stepContacto": {
+      "title": "Contact information",
+      "subtitle": "How can candidates contact you?",
+      "telefono": {
+        "label": "Contact phone number",
+        "placeholder": "7123 4567",
+        "hint": "Direct or company phone number"
+      },
+      "sitio": {
+        "label": "Website",
+        "placeholder": "https://company.com",
+        "hint": "Full URL including https://"
+      },
+      "submit": "Finish registration"
+    },
+    "stepExito": {
+      "title": "Profile created successfully!",
+      "subtitle": "Your company <strong>{{empresa}}</strong> is now registered. You can now post jobs and find candidates.",
+      "cta": "Go to dashboard"
+    }
+  },
+  "recruiterValidations": {
+    "empresa": {
+      "required": "Company name is required",
+      "minLength": "Must be at least 2 characters"
+    },
+    "descripcion": {
+      "required": "Description is required",
+      "minLength": "Write at least 20 characters"
+    },
+    "rubro": {
+      "required": "Select or enter an industry"
+    },
+    "ciudad": {
+      "required": "City is required"
+    },
+    "pais": {
+      "required": "Select a country"
+    },
+    "telefono": {
+      "required": "Phone number is required",
+      "invalid": "Invalid number"
+    },
+    "sitio": {
+      "invalid": "Enter a valid URL (e.g. https://company.com)"
+    }
+  },
+  "newConvocatory": {
+    "loading": "Loading job posting...",
+    "header": {
+      "new": "New job posting",
+      "edit": "Edit job posting",
+      "editSub": "Modify the fields you want to update",
+      "editBadge": "Edit mode"
+    },
+    "placeholders": {
+      "title": "Job title *",
+      "area": "Area or industry (e.g. Technology, Health, Construction...)",
+      "description": "Describe the role, responsibilities, and what you're looking for in a candidate...",
+      "city": "City",
+      "skillInput": "Type and press Enter...",
+      "salaryMin": "Minimum",
+      "salaryMax": "Maximum"
+    },
+    "chips": {
+      "type": "Type",
+      "modality": "Modality",
+      "level": "Level",
+      "typeOptions": [
+        "Full-time",
+        "Part-time",
+        "Freelance",
+        "Internship"
+      ],
+      "modalityOptions": [
+        "Remote",
+        "On-site",
+        "Hybrid"
+      ],
+      "levelOptions": [
+        "No experience",
+        "Junior",
+        "Mid",
+        "Senior",
+        "Lead"
+      ]
+    },
+    "expand": {
+      "label": "More details",
+      "salary": "Salary range",
+      "showSalary": "Show salary publicly",
+      "deadline": "Application deadline",
+      "skills": "Required skills"
+    },
+    "actions": {
+      "attachImage": "Attach image",
+      "attachPdf": "Attach PDF",
+      "saveDraft": "Save draft",
+      "publish": "Publish",
+      "publishing": "Publishing...",
+      "saving": "Saving...",
+      "saveChanges": "Save changes"
+    },
+    "toast": {
+      "titleRequired": "Title is required",
+      "noPermission": "You don't have permission to publish job offers.",
+      "loadError": "Could not load the job posting",
+      "saveError": "Error saving",
+      "draftUpdated": "Draft updated",
+      "draftSaved": "Draft saved",
+      "editSuccess": "Job posting updated successfully!",
+      "createSuccess": "Job posting created successfully!",
+      "draftUpdatedSub": "Changes have been saved.",
+      "editSuccessSub": "Changes are now visible.",
+      "draftSavedSub": "You can edit and publish it whenever you want.",
+      "createSuccessSub": "Your offer is now visible to candidates."
+    }
+  },
+  "audienceModal": {
+    "title": "Posting audience",
+    "titleProfessional": "Professional type",
+    "subtitle": "Who can see and apply?",
+    "subtitleProfessional": "Filter by area and career",
+    "options": {
+      "public": {
+        "title": "Everyone",
+        "sub": "Anyone on Portafy can see it"
+      },
+      "followers": {
+        "title": "My followers",
+        "sub": "Only people who follow you"
+      },
+      "professionals": {
+        "title": "Professional type",
+        "sub": null
+      }
+    },
+    "profSummary": {
+      "default": "Filter by area and career",
+      "wholeArea": "All of {{area}}"
+    },
+    "dropdown": {
+      "areaLabel": "Area",
+      "areaPlaceholder": "Select an area...",
+      "careerLabel": "Career",
+      "careerPlaceholder": "Select a career...",
+      "careerPlaceholderDisabled": "First choose an area"
+    },
+    "done": "Done",
+    "apply": "Apply · {{name}}",
+    "applyDisabled": "Choose an area to continue"
+  },
+  "misConvocatorias": {
+    "title": "My Job Postings",
+    "subtitle": "Manage your published job offers and drafts.",
+    "newBtn": "New job posting",
+    "tabs": {
+      "published": "Published",
+      "drafts": "Drafts",
+      "closed": "Closed"
+    },
+    "empty": {
+      "noActive": {
+        "title": "No active postings",
+        "text": "You haven't published any job opportunities yet.",
+        "action": "Create first posting"
+      },
+      "noDrafts": {
+        "title": "No drafts",
+        "text": "Your saved drafts will appear here."
+      },
+      "noClosed": {
+        "title": "No closed postings",
+        "text": "Postings you close will appear here as history."
+      }
+    },
+    "toast": {
+      "closed": "Posting closed",
+      "opened": "Posting reopened",
+      "published": "Posting published",
+      "deleted": "Posting deleted"
+    },
+    "timeAgo": {
+      "draft": "Draft"
+    }
+  },
+  "jobCard": {
+    "status": {
+      "Activa": "Active",
+      "Borrador": "Draft",
+      "Cerrada": "Closed",
+      "Eliminada": "Deleted"
+    },
+    "noLocation": "No location",
+    "publishedOn": "Published on {{date}}",
+    "noDate": "No date",
+    "company": "Company",
+    "metrics": {
+      "applicants": "Applicants",
+      "interviews": "Interviews",
+      "hired": "Hired"
+    },
+    "pipeline": {
+      "new": "New",
+      "inReview": "In review",
+      "interview": "Interview",
+      "offer": "Offer"
+    },
+    "actions": {
+      "viewApplicants": "View applicants",
+      "viewDetail": "View detail"
+    },
+    "menu": {
+      "viewDetail": "View detail",
+      "edit": "Edit",
+      "close": "Close posting",
+      "reopen": "Reopen posting",
+      "publish": "Publish",
+      "delete": "Delete"
+    },
+    "modal": {
+      "noDescription": "No description",
+      "statusLabel": "Status:",
+      "descLabel": "Description",
+      "skillsLabel": "Skills",
+      "perMonth": "/ month",
+      "applicants": "applicants",
+      "views": "views",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "deleteModal": {
+      "title": "Delete job posting?",
+      "desc": "will be permanently deleted.",
+      "cancel": "Cancel",
+      "confirm": "Yes, delete",
+      "confirming": "Deleting..."
+    }
+  },
+  "postulantes": {
+    "columns": {
+      "new": "New",
+      "in_verification": "In review",
+      "in_interview": "In interview",
+      "accepted": "Accepted",
+      "refused": "Rejected"
+    },
+    "loading": "Loading applicants...",
+    "back": "Back",
+    "total_one": "{{count}} applicant in total",
+    "total_other": "{{count}} applicants in total",
+    "search": "Search by name, email, career...",
+    "empty": {
+      "noResults": "No results for that search",
+      "none": "No applicants yet"
+    },
+    "row": {
+      "viewProfile": "View profile",
+      "contact": "Contact",
+      "appliedOn": "Applied on {{date}}"
+    },
+    "kanban": {
+      "dragHere": "Drag here"
+    },
+    "card": {
+      "cvAttached": "CV attached"
+    },
+    "profile": {
+      "viewFull": "View full profile",
+      "contact": "Contact",
+      "appliedOn": "Applied on {{date}}",
+      "cv": "Curriculum Vitae",
+      "cvOpen": "Open or download CV",
+      "cvRegistered": "CV registered",
+      "cvInSystem": "The applicant has a CV in the system",
+      "cvNone": "No CV attached",
+      "coverLetter": "Cover letter",
+      "about": "About the applicant",
+      "interview": "Scheduled interview",
+      "virtual": "Virtual",
+      "presencial": "In-person",
+      "stateLabel": "Application status",
+      "refusedReason": "Rejection reason",
+      "noReason": "No reason recorded"
+    },
+    "toast": {
+      "new": "Marked as New",
+      "in_verification": "In review",
+      "in_interview": "Interview scheduled ✓",
+      "accepted": "Applicant accepted ✓",
+      "refused": "Applicant rejected",
+      "updated": "Status updated",
+      "updateError": "Could not update status. Please try again.",
+      "interviewError": "Could not schedule interview. Please try again."
+    }
+  },
+  "interviewModal": {
+    "title": "Schedule interview",
+    "typeLabel": "Interview type",
+    "virtual": "Virtual",
+    "presencial": "In-person",
+    "dateTime": "Date and time",
+    "linkLabel": "Meeting link",
+    "linkPlaceholder": "https://meet.google.com/...",
+    "addressLabel": "Address",
+    "addressPlaceholder": "123 Example St, City",
+    "cancel": "Cancel",
+    "confirm": "Confirm interview",
+    "errorLink": "Add the virtual interview link",
+    "errorAddress": "Add the interview address"
+  },
+  "company": {
+    "header": {
+      "tabs": {
+        "convocatorias": "Job Offers",
+        "informacion": "Information",
+        "rubro": "Industry",
+        "contacto": "Contact",
+        "seguidores": "Followers"
+      },
+      "banner": {
+        "change": "Change banner",
+        "edit": "Edit cover"
+      },
+      "fields": {
+        "namePlaceholder": "Company name",
+        "industryPlaceholder": "Industry",
+        "cityPlaceholder": "City",
+        "websitePlaceholder": "https://company.com"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "saving": "Saving...",
+        "save": "Save changes",
+        "follow": "+ Follow",
+        "unfollow": "Unfollow",
+        "share": "Share",
+        "edit": "Edit profile",
+        "linkCopied": "✓ Link copied"
+      },
+      "errors": {
+        "nameRequired": "The name is required.",
+        "saveFailed": "Failed to save."
+      },
+      "founded": "Founded {{year}}"
+    },
+    "info": {
+      "title": "About us",
+      "actions": {
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      },
+      "description": {
+        "placeholder": "Describe your company, what it does, and its culture...",
+        "empty": "No description available.",
+        "charCount": "{{count}} / 500"
+      },
+      "general": {
+        "title": "General information",
+        "foundedYear": "Founded year:",
+        "foundedYearPlaceholder": "Ex: 2015",
+        "size": "Size:",
+        "sizePlaceholder": "Select...",
+        "alcance": "Scope:",
+        "personeria": "Legal entity:",
+        "schedule": "Schedule:",
+        "schedulePlaceholder": "Ex: Mon–Fri 8:00–18:00",
+        "empty": "—"
+      },
+      "errors": {
+        "saveFailed": "Failed to save."
+      },
+      "size": {
+        "1_10": "1-10 employees",
+        "11_50": "11-50 employees",
+        "51_200": "51-200 employees",
+        "201_500": "201-500 employees",
+        "500plus": "500+ employees"
+      },
+      "alcance": {
+        "local": "Local",
+        "regional": "Regional",
+        "nacional": "National",
+        "internacional": "International"
+      },
+      "personeria": {
+        "natural": "Individual Business",
+        "srl": "Limited Liability Company (LLC)",
+        "sa": "Corporation (SA)",
+        "unipersonal": "Sole Proprietorship",
+        "ong": "NGO / Foundation",
+        "cooperativa": "Cooperative"
+      }
+    },
+    "rubro": {
+      "title": "Industry and business area",
+      "actions": {
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      },
+      "fields": {
+        "sector": "Main sector:",
+        "sectorPlaceholder": "Ex: Technology",
+        "specialty": "Specialty:",
+        "specialtyPlaceholder": "Ex: Software development",
+        "segment": "Segment:",
+        "segmentPlaceholder": "Ex: B2B and public sector",
+        "empty": "—"
+      },
+      "services": {
+        "title": "Main services",
+        "placeholder": "Separated by commas: Web development, Mobile apps...",
+        "hint": "Separate each service with a comma",
+        "empty": "No registered services"
+      },
+      "errors": {
+        "saveFailed": "Failed to save."
+      }
+    },
+    "contact": {
+      "title": "Contact",
+      "actions": {
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      },
+      "location": {
+        "title": "Location",
+        "addressPlaceholder": "456 Heroínas Ave.",
+        "cityPlaceholder": "Cochabamba",
+        "addressLabel": "Address:",
+        "cityLabel": "City:",
+        "viewOnMaps": "View on Maps",
+        "empty": "No address registered"
+      },
+      "fields": {
+        "title": "Contact information",
+        "phonePrefixPlaceholder": "+591",
+        "phonePlaceholder": "Number",
+        "phoneLabel": "Phone:",
+        "emailLabel": "Email:",
+        "emailPlaceholder": "contact@company.com",
+        "emailEmpty": "No email registered",
+        "websiteLabel": "Website:",
+        "websitePlaceholder": "https://company.com"
+      },
+      "errors": {
+        "saveFailed": "Failed to save."
+      }
+    },
+    "social": {
+      "title": "Social",
+      "searchPlaceholder": "Search",
+      "tabs": {
+        "followers": "Followers",
+        "following": "Following"
+      },
+      "summary": {
+        "followers": "{{count}} followers",
+        "following": "{{count}} following"
+      },
+      "states": {
+        "loading": "Loading...",
+        "notFound": "No users found."
+      },
+      "userFallback": "User",
+      "errors": {
+        "generic": "Failed to load."
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "back": "Back",
+    "markAllRead": "Mark all as read",
+    "loading": "Loading...",
+    "filter": {
+      "all": "All",
+      "unread": "Unread",
+      "read": "Read"
+    },
+    "type": {
+      "all": "All types",
+      "like": "Likes",
+      "comment": "Comments",
+      "follow": "Following",
+      "job_offer": "Job offers",
+      "postulation": "Applications"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {{page}} of {{lastPage}}"
+    }
+  },
+"notificationSettings": {
+  "title": "Settings",
+  "sub": "Choose a category and adjust only what you need.",
+  "saving": "Saving...",
+  "saveChanges": "✓ Save changes",
+  "loading": "Loading preferences...",
+  "categories": {
+    "activity_notifications": {
+      "label": "Social Activity",
+      "description": "Likes, comments and mentions on your posts"
+    },
+    "portfolio_notifications": {
+      "label": "Followed users' portfolios",
+      "description": "Project and experience updates"
+    },
+    "offer_notifications": {
+      "label": "New job postings",
+      "description": "Job offers matching your profile"
+    },
+    "support_notifications": {
+      "label": "Support messages",
+      "description": "Support replies and updates"
+    },
+    "platform_notifications": {
+      "label": "Platform notifications",
+      "description": "Portafy announcements and news"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "back": "Back",
+    "markAllRead": "Mark all as read",
+    "loading": "Loading...",
+    "filter": {
+      "all": "All",
+      "unread": "Unread",
+      "read": "Read"
+    },
+    "type": {
+      "all": "All types",
+      "like": "Likes",
+      "comment": "Comments",
+      "follow": "Following",
+      "job_offer": "Job offers",
+      "postulation": "Applications"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {{page}} of {{lastPage}}"
+    }
+  },
+"notificationSettings": {
+  "title": "Settings",
+  "sub": "Choose a category and adjust only what you need.",
+  "saving": "Saving...",
+  "saveChanges": "✓ Save changes",
+  "loading": "Loading preferences...",
+  "categories": {
+    "activity_notifications": {
+      "label": "Social Activity",
+      "description": "Likes, comments and mentions on your posts"
+    },
+    "portfolio_notifications": {
+      "label": "Followed users' portfolios",
+      "description": "Project and experience updates"
+    },
+    "offer_notifications": {
+      "label": "New job postings",
+      "description": "Job offers matching your profile"
+    },
+    "support_notifications": {
+      "label": "Support messages",
+      "description": "Support replies and updates"
+    },
+    "platform_notifications": {
+      "label": "Platform notifications",
+      "description": "Portafy announcements and news"
+    }
+  }
+},
+"notificationBell": {
+  "title": "Notifications",
+  "markAllRead": "Mark all as read",
+  "viewAll": "View all notifications",
+  "ariaLabel": "Notifications",
+  "empty": {
+    "title": "No notifications",
+    "sub": "When someone interacts with your content, it will appear here."
+  },
+  "item": {
+    "markAsRead": "Mark as read",
+    "read": "Read",
+    "defaultText": "New notification",
+    "altAvatar": "Notification"
+  },
+  "types": {
+    "like": "Like",
+    "comment": "Comment",
+    "follow": "Follow",
+    "event": "Event",
+    "job_offer": "Job offer",
+    "postulation": "Application",
+    "job_application": "Application"
+  },
+  "messages": {
+    "like": "{{name}} liked your post",
+    "follow": "{{name}} started following you",
+    "event": "New event: {{title}}",
+    "job_offer": "{{company}} posted a job offer: {{title}}",
+    "postulation": "{{name}} applied to: {{title}}",
+    "job_application": "{{name}} applied to: {{title}}",
+    "comment": "{{name}} commented",
+    "commentWithText": "{{name}} commented: \"{{text}}\"",
+    "default": "New notification",
+    "fallbackOffer": "the offer",
+    "fallbackPerson": "Someone",
+    "fallbackCompany": "Company"
+  }
+  }
+},
+"notificationBell": {
+  "title": "Notifications",
+  "markAllRead": "Mark all as read",
+  "viewAll": "View all notifications",
+  "ariaLabel": "Notifications",
+  "empty": {
+    "title": "No notifications",
+    "sub": "When someone interacts with your content, it will appear here."
+  },
+  "item": {
+    "markAsRead": "Mark as read",
+    "read": "Read",
+    "defaultText": "New notification",
+    "altAvatar": "Notification"
+  },
+  "types": {
+    "like": "Like",
+    "comment": "Comment",
+    "follow": "Follow",
+    "event": "Event",
+    "job_offer": "Job offer",
+    "postulation": "Application",
+    "job_application": "Application"
+  },
+  "messages": {
+    "like": "{{name}} liked your post",
+    "follow": "{{name}} started following you",
+    "event": "New event: {{title}}",
+    "job_offer": "{{company}} posted a job offer: {{title}}",
+    "postulation": "{{name}} applied to: {{title}}",
+    "job_application": "{{name}} applied to: {{title}}",
+    "comment": "{{name}} commented",
+    "commentWithText": "{{name}} commented: \"{{text}}\"",
+    "default": "New notification",
+    "fallbackOffer": "the offer",
+    "fallbackPerson": "Someone",
+    "fallbackCompany": "Company"
+  }
   }
 }

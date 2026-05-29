@@ -307,7 +307,7 @@ export function PostulationModal({ offer, onClose, onSuccess }) {
             onClick={handleSubmit}
             disabled={loading || loadingCvs}
             style={{
-              background: loading ? "#93c5fd" : "#2563eb",
+              background: loading ? "#D13537" : "#E8484A",
               color: "#fff",
               border: "none",
               borderRadius: 10,

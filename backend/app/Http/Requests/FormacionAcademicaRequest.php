@@ -32,8 +32,8 @@ class FormacionAcademicaRequest extends FormRequest
     {
         return [
             'nivel_formacion' => ['nullable', 'in:tecnico,tecnologo,licenciatura,ingenieria,maestria,doctorado,curso,diplomado,otro'],
-            'institucion' => ['required', 'string', 'min:2', 'max:200'],
-            'nombre_programa' => ['required', 'string', 'min:2', 'max:255'],
+            'institucion' => ['required', 'string', 'min:2', 'max:120', 'regex:/^[\pL\pN\s.,&()\'-]+$/u'],
+            'nombre_programa' => ['required', 'string', 'min:2', 'max:140', 'regex:/^[\pL\pN\s.,:&()\/\'-]+$/u'],
             'fecha_inicio' => ['nullable', 'date'],
             'fecha_fin' => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
             'actualmente' => ['nullable', 'boolean'],
@@ -43,6 +43,8 @@ class FormacionAcademicaRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'institucion.regex' => 'La institucion contiene caracteres no validos.',
+            'nombre_programa.regex' => 'El programa contiene caracteres no validos.',
             'fecha_fin.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
         ];
     }

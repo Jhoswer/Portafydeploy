@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   PencilLine,
@@ -31,6 +32,7 @@ import {
   validateCommentText,
 } from "../../services/feedService";
 import { isContactPublic } from "../../services/settingsService";
+import { isAdministrativeRole } from "../../services/searchService";
 import { useAuth } from "../../context/useAuth";
 import { hasPermission, PERMISSION_NAMES } from "../../utils/permissions";
 import { useViewport } from "../../hooks/useViewport";
@@ -107,6 +109,7 @@ function isDashboardProfileCacheFresh() {
 }
 
 export default function DashboardProfile({ userId = null, readOnly = false }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { updateUser, user } = useAuth();
   const width = useViewport();
@@ -693,10 +696,15 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
   };
 
   const shownProfile = profile || {};
+  const isAdministrativeProfile = isAdministrativeRole(shownProfile.rol || shownProfile.role);
   const groupedSkills = useMemo(() => groupSkills(skills), [skills]);
   const stats = useMemo(
-    () => buildStats(projects, experience, skills, shownProfile.metrics || {}, { showProfileViews: canEdit }),
-    [projects, experience, skills, shownProfile.metrics, canEdit],
+    () => buildStats(projects, experience, skills, shownProfile.metrics || {}, { showProfileViews: canEdit })
+      .map((stat) => ({
+        ...stat,
+        label: t(`appI18n.profile.stats.${stat.label}`, stat.label),
+      })),
+    [projects, experience, skills, shownProfile.metrics, canEdit, t],
   );
   const fullName =
     [shownProfile.nombre, shownProfile.apellido]
@@ -1126,18 +1134,18 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
   if (loading)
     return (
       <StateBox
-        title="Cargando perfil..."
-        text="Estamos reuniendo tu informacion visible."
+        title={t("appI18n.profile.loadingProfile")}
+        text={t("appI18n.profile.loadingProfileText")}
       />
     );
   if (!profile)
     return (
       <StateBox
-        title={error ? "No pudimos cargar tu perfil" : "Preparando perfil..."}
+        title={error ? t("appI18n.profile.loadErrorTitle") : t("appI18n.profile.preparing")}
         text={
           error
             ? error
-            : "Un momento, estamos conectando con tu perfil."
+            : t("appI18n.profile.preparingText")
         }
         action={
           error ? (
@@ -1158,7 +1166,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
                 padding: "0 18px",
               }}
             >
-              Reintentar carga
+              {t("appI18n.profile.retry")}
             </button>
           ) : null
         }
@@ -1192,8 +1200,8 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
         showContact={showContact}
         shownProfile={shownProfile}
         stats={stats}
-        canReport={!canEdit && Boolean(userId)}
-        canFollow={!canEdit && Boolean(userId)}
+        canReport={!canEdit && Boolean(userId) && !isAdministrativeProfile}
+        canFollow={!canEdit && Boolean(userId) && !isAdministrativeProfile}
         followBusy={followState.busy}
         isFollowing={followState.isFollowing}
         onToggleFollow={toggleFollowProfile}
@@ -1231,7 +1239,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
                 marginBottom: 16,
               }}
             >
-              <div style={ui.title}>Sobre mi</div>
+              <div style={ui.title}>{t("appI18n.profile.about")}</div>
               {canEdit && editing ? (
                 <span
                   style={{
@@ -1245,7 +1253,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
                   }}
                 >
                   <PencilLine size={14} />
-                  Editando
+                  {t("appI18n.profile.editing")}
                 </span>
               ) : null}
             </div>
@@ -1258,7 +1266,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
                     biografia: event.target.value,
                   }))
                 }
-                placeholder="Cuentale al mundo quien eres profesionalmente"
+                placeholder={t("appI18n.profile.aboutPlaceholder")}
                 rows={5}
                 style={ui.textarea}
               />
@@ -1270,10 +1278,10 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
             )}
           </section>
 
-          <Card title="Enlaces">
+          <Card title={t("appI18n.profile.links")}>
             <div style={{ display: "grid", gap: 10 }}>
               {sectionLoading["profile-side"] && !social.length ? (
-                <div style={ui.muted}>Cargando enlaces...</div>
+                <div style={ui.muted}>{t("appI18n.profile.loadingLinks")}</div>
               ) : null}
               {social.length ? (
                 social.map((item) => (
@@ -1290,10 +1298,10 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
             </div>
           </Card>
 
-          <Card title="Habilidades">
+          <Card title={t("appI18n.profile.skills")}>
             <div style={{ display: "grid", gap: 14 }}>
               {sectionLoading["profile-side"] && !skills.length ? (
-                <div style={ui.muted}>Cargando habilidades...</div>
+                <div style={ui.muted}>{t("appI18n.profile.loadingSkills")}</div>
               ) : null}
 
               {Object.keys(groupedSkills).length ? (
@@ -1328,10 +1336,10 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
             </div>
           </Card>
 
-          <Card title="Formacion profesional">
+          <Card title={t("appI18n.profile.education")}>
             <div style={{ display: "grid", gap: 10 }}>
               {sectionLoading["profile-side"] && !education.length ? (
-                <div style={ui.muted}>Cargando formacion...</div>
+                <div style={ui.muted}>{t("appI18n.profile.loadingEducation")}</div>
               ) : null}
 
               {education.length ? (
@@ -1357,10 +1365,10 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
               }}
             >
               {[
-                { key: "feed", label: "Vitrina" },
-                { key: "projects", label: "Proyectos" },
-                { key: "experience", label: "Experiencia" },
-                !isPublicProfile ? { key: "summary", label: "Resumen" } : null,
+                { key: "feed", label: t("appI18n.profile.tabs.showcase") },
+                { key: "projects", label: t("appI18n.profile.tabs.projects") },
+                { key: "experience", label: t("appI18n.profile.tabs.experience") },
+                !isPublicProfile ? { key: "summary", label: t("appI18n.profile.tabs.summary") } : null,
               ]
                 .filter(Boolean)
                 .map((item) => (

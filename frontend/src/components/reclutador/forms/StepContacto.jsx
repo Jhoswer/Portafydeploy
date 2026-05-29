@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Phone, Globe } from "lucide-react";
 import { StepWrapper, IconCircle, FieldError, FieldHint, InputWrap, OptionalBadge, Actions } from "./Formui";
 import { PREFIJOS } from "./constants";
@@ -10,6 +11,7 @@ export default function StepContacto({
   onNext, onBack,
   loading,
 }) {
+  const { t } = useTranslation();
   const inputStyle = (hasError) => ({ borderColor: hasError ? "#e24b4a" : undefined });
 
   return (
@@ -17,15 +19,16 @@ export default function StepContacto({
       <IconCircle><Phone size={24} color="#fff" /></IconCircle>
 
       <h2 className="forms-card__title" style={{ textAlign: "center" }}>
-        Información de contacto
+        {t("recruiterForms.stepContacto.title")}
       </h2>
       <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
-        ¿Cómo pueden comunicarse contigo los candidatos?
+        {t("recruiterForms.stepContacto.subtitle")}
       </p>
 
-      {/* Teléfono */}
       <div className="forms-field">
-        <label className="forms-label">Teléfono de contacto</label>
+        <label className="forms-label">
+          {t("recruiterForms.stepContacto.telefono.label")}
+        </label>
         <div style={{ display: "flex", gap: 8 }}>
           <select
             value={prefijo}
@@ -45,21 +48,20 @@ export default function StepContacto({
               className="forms-input"
               value={telefono}
               onChange={e => setTelefono(e.target.value)}
-              placeholder="7123 4567"
+              placeholder={t("recruiterForms.stepContacto.telefono.placeholder")}
               style={{ flex: 1, ...inputStyle(errors.telefono) }}
             />
           </InputWrap>
         </div>
         {errors.telefono
           ? <FieldError msg={errors.telefono} />
-          : <FieldHint msg="Número directo o de la empresa" />
+          : <FieldHint msg={t("recruiterForms.stepContacto.telefono.hint")} />
         }
       </div>
 
-      {/* Sitio web */}
       <div className="forms-field" style={{ marginTop: 12 }}>
         <label className="forms-label">
-          Sitio web <OptionalBadge />
+          {t("recruiterForms.stepContacto.sitio.label")} <OptionalBadge />
         </label>
         <InputWrap icon={<Globe size={15} />}>
           <input
@@ -67,13 +69,13 @@ export default function StepContacto({
             className="forms-input"
             value={sitio}
             onChange={e => setSitio(e.target.value)}
-            placeholder="https://empresa.com"
+            placeholder={t("recruiterForms.stepContacto.sitio.placeholder")}
             style={inputStyle(errors.sitio)}
           />
         </InputWrap>
         {errors.sitio
           ? <FieldError msg={errors.sitio} />
-          : <FieldHint msg="URL completa incluyendo https://" />
+          : <FieldHint msg={t("recruiterForms.stepContacto.sitio.hint")} />
         }
       </div>
 
@@ -85,9 +87,9 @@ export default function StepContacto({
 
       <Actions
         onNext={onNext}
-        nextLabel="Finalizar registro"
+        nextLabel={t("recruiterForms.stepContacto.submit")}
         onBack={onBack}
-        backLabel="Volver"
+        backLabel={t("recruiterForms.common.back")}
         loading={loading}
       />
     </StepWrapper>

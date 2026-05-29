@@ -63,13 +63,13 @@ function getLogsFromResponse(res) {
   return [];
 }
 
-export default function HistorialDetalle({ usuario, onVolver }) {
+export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = true }) {
   const [logs, setLogs] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
-  const [showHistory, setShowHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(!showIntroPanel);
 
   const [tablaActiva, setTablaActiva] = useState("Todos");
   const [tipoFiltro, setTipoFiltro] = useState("");
@@ -109,7 +109,7 @@ export default function HistorialDetalle({ usuario, onVolver }) {
   };
 
   useEffect(() => {
-    setShowHistory(false);
+    setShowHistory(!showIntroPanel);
     setLogs([]);
     setTotal(0);
     setPage(1);
@@ -118,7 +118,7 @@ export default function HistorialDetalle({ usuario, onVolver }) {
     setTipoFiltro("");
     setFechaInicio("");
     setFechaFin("");
-  }, [usuario?.id, usuario?.id_user]);
+  }, [usuario?.id, usuario?.id_user, showIntroPanel]);
 
   useEffect(() => {
     if (!showHistory) return;
@@ -144,7 +144,7 @@ export default function HistorialDetalle({ usuario, onVolver }) {
   return (
     <div className="historial-detalle">
       <AnimatePresence mode="wait">
-        {!showHistory ? (
+        {!showHistory && showIntroPanel ? (
           /* ─── PANEL DE USUARIO ─── */
           <motion.div
             key="panel"
@@ -242,7 +242,11 @@ export default function HistorialDetalle({ usuario, onVolver }) {
             className="historial-detalle__history"
           >
             {/* Botón volver */}
-            <button type="button" onClick={() => setShowHistory(false)} className="historial-detalle__back">
+            <button
+              type="button"
+              onClick={showIntroPanel ? () => setShowHistory(false) : onVolver}
+              className="historial-detalle__back"
+            >
               <ArrowLeft size={15} />
               Volver
             </button>

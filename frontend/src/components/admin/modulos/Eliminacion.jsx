@@ -96,6 +96,7 @@ export default function Eliminacion() {
       title="Eliminación"
       subtitle="Busca y elimina la información de profesionales y reclutadores registrados."
     >
+      <div className="creacion-nueva-info-panel">
       <div className="edicion-module">
 
         <EdicionSearchBar
@@ -133,7 +134,7 @@ export default function Eliminacion() {
           onEdit={handleDelete}
           module="eliminacion"
         />
-
+      </div>
       </div>
     </AdminModuleLayout>
   );

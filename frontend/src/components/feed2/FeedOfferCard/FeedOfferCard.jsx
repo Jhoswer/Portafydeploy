@@ -1,4 +1,5 @@
-import { Briefcase, Monitor, Award, MapPin, MoreHorizontal, DollarSign, Calendar } from "lucide-react";
+import { useState } from "react";
+import { Briefcase, Monitor, Award, MapPin, DollarSign, Calendar } from "lucide-react";
 import { useOfferCard } from "../../../hooks/useOfferCard";
 import { PostulationModal } from "./PostulationModal";
 import { InfoBadge } from "./InfoBadge";
@@ -6,27 +7,63 @@ import { truncate } from "../../../utils/offerUtils";
 import { PostReactions } from "./PostReaction";
 import { PostHeader } from "./PostHeader";
 import { CommentItem } from "./CommentItem";
+import { ReportPublicationModal } from "../ReportPublicationModal"; 
+import { unshareFeedPost } from "../../../services/feedService";
+import { createPublicationReport } from "../../../services/reportService";
 
 export function FeedOfferCard({ post, onRequireAuth, userCvs = [] }) {
-  console.log("author data:", post.author, "authorId:", post.authorId);
   const {
     modalOpen, setModalOpen,
     alreadyApplied, saved, liked, likes, saves,
     showComments, commentText, setCommentText,
     commentError, comments, commentsCount,
     busy,
-    handleLike, openPostulation, toggleComments, toggleSave, handleShare,
+    handleLike, openPostulation, toggleComments, toggleSave,
     handleApplied, handleSubmitComment,
   } = useOfferCard(post, onRequireAuth);
+
+  const [isUnsharing, setIsUnsharing] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportBusy, setReportBusy] = useState(false);
+  const [reportError, setReportError] = useState("");
+
+  async function handleUnshare() {
+    if (!post.publicationId) return;
+    setIsUnsharing(true);
+    try {
+      await unshareFeedPost(post.publicationId);
+    } catch (err) {
+      console.error("Error al dejar de compartir:", err);
+    } finally {
+      setIsUnsharing(false);
+    }
+  }
+
+  async function handleSubmitReport({ motivo, description }) {
+    setReportBusy(true);
+    setReportError("");
+    try {
+      await createPublicationReport(post.publicationId, { motivo, description });
+      setReportOpen(false);
+    } catch {
+      setReportError("No se pudo enviar el reporte. Intentá de nuevo.");
+    } finally {
+      setReportBusy(false);
+    }
+  }
 
   return (
     <>
       <article className="card">
 
-        {/* Header */}
-        <PostHeader post={post} />
+        <PostHeader
+          post={post}
+          owner={post.ownedByMe}
+          onUnshare={post.ownedByMe ? handleUnshare : undefined}
+          onReport={!post.ownedByMe ? () => setReportOpen(true) : undefined}
+          isUnsharing={isUnsharing}
+        />
 
-        {/* Body */}
         <div className="post-body">
           <div className="post-kind-pill project" style={{ background: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe", marginBottom: 12 }}>
             <Briefcase size={12} />
@@ -76,7 +113,6 @@ export function FeedOfferCard({ post, onRequireAuth, userCvs = [] }) {
           )}
         </div>
 
-        {/* Stats */}
         {(likes > 0 || commentsCount > 0) && (
           <div className="post-stats">
             {likes > 0 && <span>{likes} me gusta</span>}
@@ -87,7 +123,6 @@ export function FeedOfferCard({ post, onRequireAuth, userCvs = [] }) {
 
         <div style={{ height: 1, background: "#f3f4f6", margin: "0 18px" }} />
 
-        {/* Reacciones — componente nuevo */}
         <PostReactions
           liked={liked}
           likes={likes}
@@ -103,39 +138,38 @@ export function FeedOfferCard({ post, onRequireAuth, userCvs = [] }) {
           onApply={openPostulation}
         />
 
-        {/* Comentarios */}
-{showComments && (
-  <div style={{ padding: "0 18px 14px", borderTop: "1px solid #f3f4f6" }}>
-    {comments.length > 0 && (
-      <div style={{ marginBottom: 10 }}>
-        {comments.slice(0, 3).map((c, i) => (
-          <CommentItem key={c.id ?? i} comment={c} />
-        ))}
-      </div>
-    )}
-    {comments.length === 0 && commentsCount === 0 && (
-      <div className="post-comment post-comment--muted" style={{ marginBottom: 10 }}>
-        Sé el primero en comentar.
-      </div>
-    )}
-    <form onSubmit={handleSubmitComment} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      <div style={{ display: "flex", gap: 8 }}>
-        <input
-          value={commentText}
-          onChange={e => setCommentText(e.target.value)}
-          placeholder="Escribe un comentario..."
-          style={{ flex: 1, border: "1px solid #dbeafe", borderRadius: 999, padding: "8px 14px", fontSize: 13, outline: "none", fontFamily: "inherit" }}
-        />
-        <button className="action-btn" type="submit" disabled={busy === "comment"}>
-          {busy === "comment" ? "..." : "Publicar"}
-        </button>
-      </div>
-      {commentError && (
-        <span style={{ fontSize: 12, color: "#dc2626", paddingLeft: 14 }}>{commentError}</span>
-      )}
-    </form>
-  </div>
-)}
+        {showComments && (
+          <div style={{ padding: "0 18px 14px", borderTop: "1px solid #f3f4f6" }}>
+            {comments.length > 0 && (
+              <div style={{ marginBottom: 10 }}>
+                {comments.slice(0, 3).map((c, i) => (
+                  <CommentItem key={c.id ?? i} comment={c} />
+                ))}
+              </div>
+            )}
+            {comments.length === 0 && commentsCount === 0 && (
+              <div className="post-comment post-comment--muted" style={{ marginBottom: 10 }}>
+                Sé el primero en comentar.
+              </div>
+            )}
+            <form onSubmit={handleSubmitComment} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  value={commentText}
+                  onChange={e => setCommentText(e.target.value)}
+                  placeholder="Escribe un comentario..."
+                  style={{ flex: 1, border: "1px solid #dbeafe", borderRadius: 999, padding: "8px 14px", fontSize: 13, outline: "none", fontFamily: "inherit" }}
+                />
+                <button className="action-btn" type="submit" disabled={busy === "comment"}>
+                  {busy === "comment" ? "..." : "Publicar"}
+                </button>
+              </div>
+              {commentError && (
+                <span style={{ fontSize: 12, color: "#dc2626", paddingLeft: 14 }}>{commentError}</span>
+              )}
+            </form>
+          </div>
+        )}
 
       </article>
 
@@ -146,6 +180,16 @@ export function FeedOfferCard({ post, onRequireAuth, userCvs = [] }) {
           onSuccess={handleApplied}
         />
       )}
+
+      <ReportPublicationModal
+        post={post}
+        reportKind="publication"
+        isOpen={reportOpen}
+        isBusy={reportBusy}
+        error={reportError}
+        onClose={() => { setReportOpen(false); setReportError(""); }}
+        onSubmit={handleSubmitReport}
+      />
     </>
   );
 }

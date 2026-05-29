@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Navbar from "../landing/Navbar";
 import DashboardMain from "./DashboardMain";
 import DashboardCalendar from "./DashboardCalendar";
@@ -27,31 +28,32 @@ import {
 import { fetchFeedPosts } from "../../services/feedService";
 
 const SECTIONS = [
-  { key: "main", label: "Principal", icon: LayoutDashboard, color: "#5b7cfa" },
-  { key: "profile", label: "Mi perfil", icon: UserRound, color: "#7fc6f3" },
+  { key: "main", labelKey: "main", icon: LayoutDashboard, color: "#5b7cfa" },
+  { key: "profile", labelKey: "profile", icon: UserRound, color: "#7fc6f3" },
   {
     key: "portfolio",
-    label: "Portafolio",
+    labelKey: "portfolio",
     icon: BriefcaseBusiness,
     color: "#fb923c",
   },
   {
     key: "publications",
-    label: "Mi vitrina",
+    labelKey: "publications",
     icon: Newspaper,
     color: "#2563eb",
   },
-  { key: "cv", label: "Mi CV", icon: FileText, color: "#0d9488" },
-  { key: "analytics", label: "Estadisticas", icon: BarChart3, color: "#7c3aed" },
+  { key: "cv", labelKey: "cv", icon: FileText, color: "#0d9488" },
+  { key: "analytics", labelKey: "analytics", icon: BarChart3, color: "#7c3aed" },
   {
     key: "calendar",
-    label: "Calendario",
+    labelKey: "calendar",
     icon: CalendarDays,
     color: "#22c55e",
   },
 ];
 
 export default function DashboardLayout() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("main");
   const [mountedSections, setMountedSections] = useState(
@@ -126,7 +128,7 @@ export default function DashboardLayout() {
             }}
           >
             <div className="dashboard-rail-card" style={dashboardShell.railCard}>
-              <div style={dashboardShell.sidebarCardTitle}>Panel</div>
+              <div style={dashboardShell.sidebarCardTitle}>{t("appI18n.dashboard.layout.panel")}</div>
 
               <button
                 type="button"
@@ -137,12 +139,12 @@ export default function DashboardLayout() {
                 <span className="dashboard-nav-icon" style={dashboardShell.iconBadge}>
                   <House size={16} />
                 </span>
-                Inicio
+                {t("appI18n.dashboard.layout.home")}
               </button>
             </div>
 
             <div className="dashboard-rail-card" style={dashboardShell.railCard}>
-              <div style={dashboardShell.sidebarCardTitle}>Dashboard</div>
+              <div style={dashboardShell.sidebarCardTitle}>{t("appI18n.dashboard.layout.dashboard")}</div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {SECTIONS.map((section) => {
@@ -177,7 +179,7 @@ export default function DashboardLayout() {
                       >
                         <NavIcon size={16} />
                       </span>
-                      {section.label}
+                      {t(`appI18n.dashboard.layout.${section.labelKey}`)}
                     </button>
                   );
                 })}
@@ -185,7 +187,7 @@ export default function DashboardLayout() {
             </div>
 
             <div className="dashboard-rail-card" style={dashboardShell.railCard}>
-              <div style={dashboardShell.sidebarCardTitle}>Estado</div>
+              <div style={dashboardShell.sidebarCardTitle}>{t("appI18n.dashboard.layout.status")}</div>
               <div
                 className="dashboard-status-pill"
                 style={{
@@ -212,7 +214,7 @@ export default function DashboardLayout() {
                     background: "#2048a8",
                   }}
                 />
-                Activo
+                {t("appI18n.dashboard.layout.active")}
               </div>
               <div
                 style={{
@@ -232,7 +234,7 @@ export default function DashboardLayout() {
                     marginBottom: 4,
                   }}
                 >
-                  Tu dashboard ya esta listo
+                  {t("appI18n.dashboard.layout.readyTitle")}
                 </div>
                 <div
                   style={{
@@ -242,8 +244,7 @@ export default function DashboardLayout() {
                     lineHeight: 1.5,
                   }}
                 >
-                  Desde aqui puedes construir cada seccion sin tocar el feed
-                  principal y mantener tu trabajo aislado.
+                  {t("appI18n.dashboard.layout.readyText")}
                 </div>
               </div>
               <button
@@ -260,7 +261,7 @@ export default function DashboardLayout() {
                 <span className="dashboard-nav-icon" style={{ ...dashboardShell.iconBadge, color: "#2048a8" }}>
                   <Settings size={16} />
                 </span>
-                Configuracion
+                {t("appI18n.dashboard.layout.settings")}
               </button>
             </div>
           </div>

@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Building2, FileText } from "lucide-react";
 import { StepWrapper, IconCircle, FieldError, FieldHint, InputWrap, Actions } from "./Formui";
 
 export default function StepIdentidad({ empresa, setEmpresa, descripcion, setDescripcion, errors, onNext }) {
+  const { t } = useTranslation();
   const inputStyle = (hasError) => ({ borderColor: hasError ? "#e24b4a" : undefined });
 
   return (
@@ -9,40 +11,42 @@ export default function StepIdentidad({ empresa, setEmpresa, descripcion, setDes
       <IconCircle><Building2 size={24} color="#fff" /></IconCircle>
 
       <h2 className="forms-card__title" style={{ textAlign: "center" }}>
-        Identidad básica
+        {t("recruiterForms.stepIdentidad.title")}
       </h2>
       <p className="forms-card__sub" style={{ textAlign: "center", marginBottom: 24 }}>
-        Cuéntanos sobre la empresa que representas.
+        {t("recruiterForms.stepIdentidad.subtitle")}
       </p>
 
-      {/* Nombre */}
       <div className="forms-field">
-        <label className="forms-label">Nombre de la empresa</label>
+        <label className="forms-label">
+          {t("recruiterForms.stepIdentidad.empresa.label")}
+        </label>
         <InputWrap icon={<Building2 size={15} />}>
           <input
             type="text"
             className="forms-input"
             value={empresa}
             onChange={e => setEmpresa(e.target.value)}
-            placeholder="Ej. Acme Corp"
+            placeholder={t("recruiterForms.stepIdentidad.empresa.placeholder")}
             style={inputStyle(errors.empresa)}
           />
         </InputWrap>
         {errors.empresa
           ? <FieldError msg={errors.empresa} />
-          : <FieldHint msg="Nombre legal o comercial de la empresa" />
+          : <FieldHint msg={t("recruiterForms.stepIdentidad.empresa.hint")} />
         }
       </div>
 
-      {/* Descripción */}
       <div className="forms-field" style={{ marginTop: 12 }}>
-        <label className="forms-label">Descripción</label>
+        <label className="forms-label">
+          {t("recruiterForms.stepIdentidad.descripcion.label")}
+        </label>
         <InputWrap icon={<FileText size={15} />} textarea>
           <textarea
             className="forms-input"
             value={descripcion}
             onChange={e => setDescripcion(e.target.value)}
-            placeholder="Describe brevemente a qué se dedica la empresa, su misión y cultura de trabajo..."
+            placeholder={t("recruiterForms.stepIdentidad.descripcion.placeholder")}
             maxLength={300}
             rows={4}
             style={inputStyle(errors.descripcion)}
@@ -50,11 +54,17 @@ export default function StepIdentidad({ empresa, setEmpresa, descripcion, setDes
         </InputWrap>
         {errors.descripcion && <FieldError msg={errors.descripcion} />}
         <p className="forms-char-count">
-          {descripcion.length} / 300
+          {t("recruiterForms.stepIdentidad.descripcion.charCount", {
+            current: descripcion.length,
+            max: 300,
+          })}
         </p>
       </div>
 
-      <Actions onNext={onNext} nextLabel="Continuar" />
+      <Actions
+        onNext={onNext}
+        nextLabel={t("recruiterForms.common.continue")}
+      />
     </StepWrapper>
   );
 }

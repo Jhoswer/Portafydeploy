@@ -12,33 +12,33 @@ import EliminarConfirmModal from "./EliminarConfirmModal";
    Helpers de formato (igual que AdminProfileTable)
 ───────────────────────────────────────────────────────────── */
 const COLUMN_LABELS = {
-  name_cv:          "Nombre CV",
-  archive_pdf:      "PDF",
-  cv_url:           "URL CV",
-  id_profile:       "ID Perfil",
-  id_skill:         "ID Skill",
-  skill_name:       "Habilidad",
-  id_offer:         "ID Oferta",
-  id_postulant:     "ID Postulante",
-  id_cv:            "ID CV",
-  repository_url:   "Repositorio",
-  url_demo:         "Demo",
-  url_photo_main:   "Foto principal",
-  quota_quantity:   "Cupos",
-  closed_at:        "Cierre",
-  salary_min:       "Salario mín.",
-  salary_max:       "Salario máx.",
-  show_salary:      "Ver salario",
+  name_cv: "Nombre CV",
+  archive_pdf: "PDF",
+  cv_url: "URL CV",
+  id_profile: "ID Perfil",
+  id_skill: "ID Skill",
+  skill_name: "Habilidad",
+  id_offer: "ID Oferta",
+  id_postulant: "ID Postulante",
+  id_cv: "ID CV",
+  repository_url: "Repositorio",
+  url_demo: "Demo",
+  url_photo_main: "Foto principal",
+  quota_quantity: "Cupos",
+  closed_at: "Cierre",
+  salary_min: "Salario mín.",
+  salary_max: "Salario máx.",
+  show_salary: "Ver salario",
   id_audience_type: "ID Audiencia",
-  id_commentator:   "ID Comentador",
-  id_publication:   "ID Publicación",
-  id_project:       "ID Proyecto",
-  id_provider:      "ID Proveedor",
-  id_saved:         "ID Guardado",
-  removed_at:       "Eliminado",
+  id_commentator: "ID Comentador",
+  id_publication: "ID Publicación",
+  id_project: "ID Proyecto",
+  id_provider: "ID Proveedor",
+  id_saved: "ID Guardado",
+  removed_at: "Eliminado",
   provider_user_id: "Provider User ID",
-  created_at:       "Creado",
-  updated_at:       "Actualizado",
+  created_at: "Creado",
+  updated_at: "Actualizado",
 };
 
 function labelFor(column) {
@@ -81,10 +81,10 @@ export default function EliminacionProfileTable({
   reloadKey = 0,
   onDeleted,
 }) {
-  const [rows,      setRows]      = useState([]);
-  const [meta,      setMeta]      = useState({});
+  const [rows, setRows] = useState([]);
+  const [meta, setMeta] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [error,     setError]     = useState(null);
+  const [error, setError] = useState(null);
 
   /* Paginación */
   const PAGE_SIZE = 5;
@@ -94,9 +94,9 @@ export default function EliminacionProfileTable({
   const [selectedIds, setSelectedIds] = useState(new Set());
 
   /* Modal de confirmación */
-  const [showConfirm,  setShowConfirm]  = useState(false);
-  const [isDeleting,   setIsDeleting]   = useState(false);
-  const [deleteError,  setDeleteError]  = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   /* ── Carga ── */
   useEffect(() => {
@@ -132,7 +132,7 @@ export default function EliminacionProfileTable({
   }, [pk, meta.columns, rows]);
 
   /* ── Paginación ── */
-  const totalPages   = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const paginatedRows = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
     return rows.slice(start, start + PAGE_SIZE);
@@ -204,7 +204,7 @@ export default function EliminacionProfileTable({
     return items;
   };
 
-  const allSelected  = rows.length > 0 && selectedIds.size === rows.length;
+  const allSelected = rows.length > 0 && selectedIds.size === rows.length;
   const someSelected = selectedIds.size > 0;
   const needsPagination = rows.length > PAGE_SIZE;
 
@@ -267,10 +267,10 @@ export default function EliminacionProfileTable({
           {someSelected && (
             <div
               style={{
-                marginLeft:   needsPagination ? 0 : "auto",
-                display:      "flex",
-                alignItems:   "center",
-                gap:          8,
+                marginLeft: needsPagination ? 0 : "auto",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
               <span style={{ fontSize: 12, color: "#64748b", fontWeight: 500 }}>
@@ -286,18 +286,18 @@ export default function EliminacionProfileTable({
               <button
                 onClick={handleOpenConfirm}
                 style={{
-                  display:      "inline-flex",
-                  alignItems:   "center",
-                  gap:          6,
-                  padding:      "5px 14px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "5px 14px",
                   borderRadius: 7,
-                  border:       "none",
-                  background:   "#dc2626",
-                  color:        "#fff",
-                  fontSize:     12,
-                  fontWeight:   600,
-                  cursor:       "pointer",
-                  boxShadow:    "0 1px 6px rgba(220,38,38,0.28)",
+                  border: "none",
+                  background: "#dc2626",
+                  color: "#fff",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  boxShadow: "0 1px 6px rgba(220,38,38,0.28)",
                 }}
               >
                 <Trash2 size={12} color="#fff" />
@@ -342,18 +342,12 @@ export default function EliminacionProfileTable({
               </thead>
               <tbody>
                 {paginatedRows.map((row, index) => {
-                  const id         = row[pk];
+                  const id = row[pk];
                   const isSelected = selectedIds.has(id);
                   return (
                     <tr
                       key={id ?? `${resource}-${index}`}
-                      className="edicion-tabla__row"
-                      style={{
-                        background:  isSelected ? "#fff5f5" : undefined,
-                        borderLeft:  isSelected ? "3px solid #ef4444" : "3px solid transparent",
-                        transition:  "background 0.12s",
-                        cursor:      "pointer",
-                      }}
+                      className={`edicion-tabla__row${isSelected ? " edicion-tabla__row--selected" : ""}`}
                       onClick={() => toggleRow(id)}
                     >
                       {/* Checkbox de fila */}

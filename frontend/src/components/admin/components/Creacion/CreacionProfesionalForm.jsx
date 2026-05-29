@@ -1,17 +1,11 @@
 // src/components/admin/components/Creacion/CreacionProfesionalForm.jsx
-// Formulario inline de creación de Profesional — usa clases de EdicionModalesTablas.css
 
 import { useState } from "react";
 import {
-  AlertCircle,
-  CheckCircle2,
-  Eye,
-  EyeOff,
-  Lock,
-  Mail,
-  UserCircle2,
-  User,
+  AlertCircle, CheckCircle2, Eye, EyeOff,
+  Lock, Mail, UserCircle2, User, X, ShieldCheck,
 } from "lucide-react";
+import { useThemeContext } from "../../../../context/ThemeContext";
 import "../../../../styles/components/admin/components/Edicion/EdicionModalesTablas.css";
 import CreacionModalConfirmacionAgregarUsuario from "./CreacionModalConfirmacionAgregarUsuario";
 import { crearUsuarioDesdeRegistro } from "../../../../services/adminCreacionService";
@@ -21,27 +15,30 @@ const STRENGTH_COLORS = ["#ef4444", "#f97316", "#eab308", "#22c55e"];
 const STRENGTH_LABELS = ["", "Débil", "Regular", "Regular", "Fuerte"];
 
 function PasswordBar({ password }) {
+  const { isDark } = useThemeContext();
   const strength = Math.min(Math.floor((password || "").length / 3), 4);
   if (!password) return null;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 5 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
       <div style={{ display: "flex", gap: 4, flex: 1 }}>
         {[1, 2, 3, 4].map((level) => (
           <div key={level} style={{
             height: 4, flex: 1, borderRadius: 9999,
-            background: level <= strength ? STRENGTH_COLORS[strength - 1] : "#e2e8f0",
+            background: level <= strength
+              ? STRENGTH_COLORS[strength - 1]
+              : (isDark ? "#334155" : "#e2e8f0"),
             transition: "background 0.3s",
           }} />
         ))}
       </div>
-      <span style={{ fontSize: 11, fontWeight: 600, color: STRENGTH_COLORS[strength - 1] }}>
+      <span style={{ fontSize: 11, fontWeight: 700, color: STRENGTH_COLORS[strength - 1], minWidth: 40 }}>
         {STRENGTH_LABELS[strength]}
       </span>
     </div>
   );
 }
 
-/* ── Mensaje de error de campo ───────────────────────────── */
+/* ── Hint de error ───────────────────────────────────────── */
 function FieldHint({ error }) {
   if (!error) return null;
   return (
@@ -51,7 +48,7 @@ function FieldHint({ error }) {
   );
 }
 
-/* ── Campo de input reutilizable ─────────────────────────── */
+/* ── Input reutilizable ──────────────────────────────────── */
 function InputField({ label, type = "text", value, onChange, placeholder, icon: Icon, error, rightElement, autoComplete, required }) {
   return (
     <div className="edicion-modal__field">
@@ -82,12 +79,12 @@ function InputField({ label, type = "text", value, onChange, placeholder, icon: 
   );
 }
 
-/* ── Construye el resumen para el modal ──────────────────── */
+/* ── Resumen para el modal de confirmación ───────────────── */
 function buildResumen(fields) {
   return [
-    { label: "Nombre",   value: fields.name },
-    { label: "Apellido", value: fields.lastName },
-    { label: "Correo",   value: fields.email },
+    { label: "Nombre",     value: fields.name },
+    { label: "Apellido",   value: fields.lastName },
+    { label: "Correo",     value: fields.email },
     { label: "Contraseña", value: fields.password ? "••••••••" : "" },
   ].filter(({ value }) => value !== "" && value !== null && value !== undefined);
 }
@@ -116,20 +113,14 @@ export default function CreacionProfesionalForm({ onCancel }) {
     const next = {};
     if (!fields.name.trim())     next.name     = "El nombre es obligatorio.";
     if (!fields.lastName.trim()) next.lastName = "El apellido es obligatorio.";
-    if (!fields.email)
-      next.email = "El correo es obligatorio.";
+    if (!fields.email)           next.email    = "El correo es obligatorio.";
     else if (!fields.email.includes("@") || !fields.email.includes("."))
       next.email = "Correo electrónico no válido.";
-    if (!fields.password)
-      next.password = "La contraseña es obligatoria.";
-    else if (fields.password.length < 8)
-      next.password = "Mínimo 8 caracteres.";
-    else if (!/[A-Za-z]/.test(fields.password))
-      next.password = "Debe contener letras.";
-    else if (!/[^A-Za-z0-9]/.test(fields.password))
-      next.password = "Debe contener un símbolo.";
-    if (!fields.confirmPassword)
-      next.confirmPassword = "Confirma la contraseña.";
+    if (!fields.password)        next.password = "La contraseña es obligatoria.";
+    else if (fields.password.length < 8)           next.password = "Mínimo 8 caracteres.";
+    else if (!/[A-Za-z]/.test(fields.password))    next.password = "Debe contener letras.";
+    else if (!/[^A-Za-z0-9]/.test(fields.password)) next.password = "Debe contener un símbolo.";
+    if (!fields.confirmPassword) next.confirmPassword = "Confirma la contraseña.";
     else if (fields.password !== fields.confirmPassword)
       next.confirmPassword = "Las contraseñas no coinciden.";
     if (!acceptTerms) next.terms = "Debes aceptar los términos.";
@@ -137,13 +128,9 @@ export default function CreacionProfesionalForm({ onCancel }) {
     return Object.keys(next).length === 0;
   };
 
-  /* Al hacer submit — valida primero, luego abre el modal */
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()) {
-      setModalError("");
-      setShowModal(true);
-    }
+    if (validate()) { setModalError(""); setShowModal(true); }
   };
 
   const handleConfirm = async () => {
@@ -152,10 +139,8 @@ export default function CreacionProfesionalForm({ onCancel }) {
     try {
       await crearUsuarioDesdeRegistro({
         role: "PROFESIONAL",
-        name: fields.name,
-        lastName: fields.lastName,
-        email: fields.email,
-        password: fields.password,
+        name: fields.name, lastName: fields.lastName,
+        email: fields.email, password: fields.password,
         password_confirmation: fields.confirmPassword,
       });
       setFields({ ...EMPTY });
@@ -177,75 +162,101 @@ export default function CreacionProfesionalForm({ onCancel }) {
 
   return (
     <>
-      <div style={{ width: "100%", padding: "28px 32px 16px" }}>
+      <div className="creacion-profesional-panel">
+
+        {/* ── Franja de acento ── */}
+        <div className="cpf-accent" />
 
         {/* ── Cabecera ── */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
-          <div style={{
-            width: 46, height: 46, borderRadius: 12,
-            background: "#eff6ff", border: "1.5px solid #bfdbfe",
-            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-          }}>
-            <UserCircle2 size={22} color="#3b82f6" />
+        <div className="cpf-header">
+          <div className="cpf-header__icon-wrap">
+            <UserCircle2 size={23} color="#3b82f6" />
           </div>
-          <div>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: 0, letterSpacing: "-0.01em" }}>
-              Nuevo Profesional
-            </h2>
-            <p style={{ fontSize: 12.5, color: "#94a3b8", margin: "3px 0 0", fontWeight: 500 }}>
-              Completa los datos para crear la cuenta
-            </p>
+          <div className="cpf-header__text">
+            <h2 className="cpf-header__title">Nuevo Profesional</h2>
+            <p className="cpf-header__subtitle">Completa los datos para crear la cuenta</p>
           </div>
+          {onCancel && (
+            <button type="button" className="cpf-header__close" onClick={onCancel} title="Cerrar">
+              <X size={15} />
+            </button>
+          )}
         </div>
 
-        {/* ── Error general ── */}
-        {errors.general && (
-          <div className="edicion-modal__error" style={{ marginBottom: 20 }}>{errors.general}</div>
-        )}
-
+        {/* ── Formulario ── */}
         <form onSubmit={handleSubmit} noValidate>
-          <div className="edicion-modal__fields">
 
-            {/* Nombre + Apellido */}
-            <div className="edicion-modal__row">
-              <InputField label="Nombre" value={fields.name} onChange={setField("name")}
-                placeholder="Juan" icon={User} error={errors.name} autoComplete="given-name" required />
-              <InputField label="Apellido" value={fields.lastName} onChange={setField("lastName")}
-                placeholder="Pérez" icon={User} error={errors.lastName} autoComplete="family-name" required />
-            </div>
+          <div className="cpf-body">
 
-            {/* Email */}
-            <InputField label="Correo electrónico" type="email"
-              value={fields.email} onChange={setField("email")}
-              placeholder="juan@correo.com" icon={Mail} error={errors.email}
-              autoComplete="email" required />
-
-            <hr className="edicion-modal__divider" />
-
-            {/* Contraseñas */}
-            <div className="edicion-modal__row">
-              <div>
-                <InputField label="Contraseña" type={showPassword ? "text" : "password"}
-                  value={fields.password} onChange={setField("password")}
-                  placeholder="Mínimo 8 caracteres" icon={Lock} error={errors.password}
-                  autoComplete="new-password" required
-                  rightElement={eyeBtn(showPassword, () => setShowPassword((v) => !v))} />
-                <PasswordBar password={fields.password} />
+            {errors.general && (
+              <div className="edicion-modal__error" style={{ marginBottom: 4 }}>
+                {errors.general}
               </div>
-              <InputField label="Confirmar contraseña" type={showConfirm ? "text" : "password"}
-                value={fields.confirmPassword} onChange={setField("confirmPassword")}
-                placeholder="Repite la contraseña" icon={Lock} error={errors.confirmPassword}
-                autoComplete="new-password" required
-                rightElement={eyeBtn(showConfirm, () => setShowConfirm((v) => !v))} />
+            )}
+
+            {/* Sección: Datos personales */}
+            <div className="cpf-section">
+              <div className="cpf-section__label">
+                <User size={11} />
+                Datos personales
+              </div>
+              <div className="edicion-modal__row">
+                <InputField
+                  label="Nombre" value={fields.name} onChange={setField("name")}
+                  placeholder="Juan" icon={User} error={errors.name}
+                  autoComplete="given-name" required
+                />
+                <InputField
+                  label="Apellido" value={fields.lastName} onChange={setField("lastName")}
+                  placeholder="Pérez" icon={User} error={errors.lastName}
+                  autoComplete="family-name" required
+                />
+              </div>
+              <InputField
+                label="Correo electrónico" type="email"
+                value={fields.email} onChange={setField("email")}
+                placeholder="juan@correo.com" icon={Mail} error={errors.email}
+                autoComplete="email" required
+              />
             </div>
 
-            <hr className="edicion-modal__divider" />
+            {/* Sección: Seguridad */}
+            <div className="cpf-section">
+              <div className="cpf-section__label">
+                <ShieldCheck size={11} />
+                Seguridad
+              </div>
+              <div className="edicion-modal__row">
+                <div>
+                  <InputField
+                    label="Contraseña" type={showPassword ? "text" : "password"}
+                    value={fields.password} onChange={setField("password")}
+                    placeholder="Mínimo 8 caracteres" icon={Lock} error={errors.password}
+                    autoComplete="new-password" required
+                    rightElement={eyeBtn(showPassword, () => setShowPassword((v) => !v))}
+                  />
+                  <PasswordBar password={fields.password} />
+                </div>
+                <InputField
+                  label="Confirmar contraseña" type={showConfirm ? "text" : "password"}
+                  value={fields.confirmPassword} onChange={setField("confirmPassword")}
+                  placeholder="Repite la contraseña" icon={Lock} error={errors.confirmPassword}
+                  autoComplete="new-password" required
+                  rightElement={eyeBtn(showConfirm, () => setShowConfirm((v) => !v))}
+                />
+              </div>
+            </div>
 
             {/* Términos */}
-            <div className="edicion-modal__field">
+            <div className="cpf-terms">
               <label className="edicion-modal__check" style={{ width: "fit-content" }}>
-                <input type="checkbox" checked={acceptTerms}
-                  onChange={(e) => { setAcceptTerms(e.target.checked); setErrors((p) => ({ ...p, terms: undefined })); }} />
+                <input
+                  type="checkbox" checked={acceptTerms}
+                  onChange={(e) => {
+                    setAcceptTerms(e.target.checked);
+                    setErrors((p) => ({ ...p, terms: undefined }));
+                  }}
+                />
                 Acepto los{" "}
                 <span style={{ color: "#3b82f6", textDecoration: "underline", cursor: "pointer" }}>
                   términos y condiciones
@@ -257,21 +268,21 @@ export default function CreacionProfesionalForm({ onCancel }) {
               <FieldHint error={errors.terms} />
             </div>
 
-            {/* Botones */}
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 6 }}>
-              {onCancel && (
-                <button type="button" className="edicion-modal__btn-cancel" onClick={onCancel}>
-                  Cancelar
-                </button>
-              )}
-              <button type="submit" className="edicion-modal__btn-save"
-                style={{ background: "#e43f3f", boxShadow: "0 2px 8px rgba(124,58,237,0.30)" }}>
-                <CheckCircle2 size={14} />
-                Crear Profesional
-              </button>
-            </div>
+          </div>{/* /cpf-body */}
 
+          {/* ── Footer / Botones ── */}
+          <div className="cpf-footer">
+            {onCancel && (
+              <button type="button" className="edicion-modal__btn-cancel" onClick={onCancel}>
+                Cancelar
+              </button>
+            )}
+            <button type="submit" className="cpf-btn-create" disabled={isBusy}>
+              <CheckCircle2 size={14} />
+              Crear Profesional
+            </button>
           </div>
+
         </form>
       </div>
 

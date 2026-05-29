@@ -12,7 +12,6 @@
     "myProfile": "Mi perfil",
     "settings": "Configuración",
     "logout": "Cerrar sesión",
-
     "dashboard": "Panel",
     "saved": "Guardados"
   },
@@ -147,7 +146,7 @@
     "back": "Volver al inicio",
     "title": "Iniciar sesión",
     "welcome": "Bienvenido de nuevo a PortaFy",
-    "continueWith":"Continuar con",
+    "continueWith": "Continuar con",
     "withEmail": "Continuar con correo",
     "continueGoogle": "Continuar con Google",
     "continueLinkedIn": "Continuar con LinkedIn",
@@ -169,78 +168,61 @@
       "connection": "Error de conexión"
     }
   },
-"register": {
-  "back": "Volver al inicio",
-  "title": "Crear cuenta",
-  "subtitle": "Construye tu portafolio profesional hoy mismo",
-
-  "accountType": "Tipo de cuenta",
-  "captchaLabel": "Verificación de seguridad",
-  "continueWith": "Continuar con",
-  "continueEmail": "Continuar con correo",
-
-  "continueGoogle": "Continuar con Google",
-  "continueLinkedIn": "Continuar con LinkedIn",
-  "continueGitHub": "Continuar con GitHub",
-  "orWith": "o con tu correo",
-
-  "name": "Nombre",
-  "namePlaceholder": "Ana",
-  "lastName": "Apellido",
-  "lastNamePlaceholder": "García",
-
-  "company": "Nombre de empresa",
-  "companyPlaceholder": "Acme Inc.",
-
-  "email": "Correo electrónico",
-  "emailPlaceholder": "tu@email.com",
-  "corporateEmail": "Correo corporativo",
-
-  "password": "Contraseña",
-  "passwordPlaceholder": "Mínimo 8 caracteres",
-  "confirmPassword": "Confirmar contraseña",
-  "confirmPasswordPlaceholder": "Repite tu contraseña",
-
-  "terms": "Acepto los",
-  "termsLink": "términos y condiciones",
-  "and": "y la",
-  "privacyLink": "política de privacidad",
-
-  "submit": "Crear cuenta",
-  "hasAccount": "¿Ya tienes cuenta?",
-  "loginLink": "Iniciar sesión",
-
-  "success": "¡Cuenta creada!",
-  "redirecting": "Redirigiendo al login...",
-
-  "strength": {
-    "weak": "Débil",
-    "moderate": "Moderada",
-    "strong": "Fuerte"
+  "register": {
+    "back": "Volver al inicio",
+    "title": "Crear cuenta",
+    "subtitle": "Construye tu portafolio profesional hoy mismo",
+    "accountType": "Tipo de cuenta",
+    "captchaLabel": "Verificación de seguridad",
+    "continueWith": "Continuar con",
+    "continueEmail": "Continuar con correo",
+    "continueGoogle": "Continuar con Google",
+    "continueLinkedIn": "Continuar con LinkedIn",
+    "continueGitHub": "Continuar con GitHub",
+    "orWith": "o con tu correo",
+    "name": "Nombre",
+    "namePlaceholder": "Ana",
+    "lastName": "Apellido",
+    "lastNamePlaceholder": "García",
+    "company": "Nombre de empresa",
+    "companyPlaceholder": "Acme Inc.",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tu@email.com",
+    "corporateEmail": "Correo corporativo",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Mínimo 8 caracteres",
+    "confirmPassword": "Confirmar contraseña",
+    "confirmPasswordPlaceholder": "Repite tu contraseña",
+    "terms": "Acepto los",
+    "termsLink": "términos y condiciones",
+    "and": "y la",
+    "privacyLink": "política de privacidad",
+    "submit": "Crear cuenta",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "loginLink": "Iniciar sesión",
+    "success": "¡Cuenta creada!",
+    "redirecting": "Redirigiendo al login...",
+    "strength": {
+      "weak": "Débil",
+      "moderate": "Moderada",
+      "strong": "Fuerte"
+    },
+    "errors": {
+      "nameRequired": "El nombre es obligatorio",
+      "lastNameRequired": "El apellido es obligatorio",
+      "companyRequired": "El nombre de empresa es obligatorio",
+      "emailRequired": "El correo es obligatorio",
+      "emailInvalid": "Correo inválido",
+      "passwordRequired": "La contraseña es obligatoria",
+      "passwordShort": "Mínimo 8 caracteres",
+      "passwordLetter": "Debe contener al menos una letra",
+      "passwordSymbol": "Debe contener al menos un símbolo",
+      "confirmRequired": "Confirma tu contraseña",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "termsRequired": "Debes aceptar los términos para continuar",
+      "captchaRequired": "Completa el captcha para continuar"
+    }
   },
-
-  "errors": {
-    "nameRequired": "El nombre es obligatorio",
-    "lastNameRequired": "El apellido es obligatorio",
-
-    "companyRequired": "El nombre de empresa es obligatorio",
-
-    "emailRequired": "El correo es obligatorio",
-    "emailInvalid": "Correo inválido",
-
-    "passwordRequired": "La contraseña es obligatoria",
-    "passwordShort": "Mínimo 8 caracteres",
-    "passwordLetter": "Debe contener al menos una letra",
-    "passwordSymbol": "Debe contener al menos un símbolo",
-
-    "confirmRequired": "Confirma tu contraseña",
-    "passwordMismatch": "Las contraseñas no coinciden",
-
-    "termsRequired": "Debes aceptar los términos para continuar",
-    "captchaRequired": "Completa el captcha para continuar"
-  }
-},
-
   "resetPassword": {
     "back": "Volver al login",
     "title": "Nueva contraseña",
@@ -491,104 +473,1175 @@
     "nextPage": "Pagina siguiente",
     "lastPage": "Ultima pagina"
   },
-
-  "companyForms": {
+  "recruiterForms": {
+    "common": {
+      "continue": "Continuar",
+      "back": "Volver",
+      "optional": "opcional"
+    },
     "steps": {
-      "identidad": {
-        "label": "Identidad"
-      },
-      "branding": {
-        "label": "Branding"
-      },
-      "empresa": {
-        "label": "Empresa"
-      },
-      "contacto": {
-        "label": "Contacto"
-      }
+      "identidad": "Identidad",
+      "branding": "Branding",
+      "empresa": "Empresa",
+      "contacto": "Contacto"
     },
     "stepIdentidad": {
-      "titulo": "Identidad básica",
-      "subtitulo": "Cuéntanos sobre la empresa que representas.",
-      "campos": {
-        "empresa": {
-          "label": "Nombre de la empresa",
-          "placeholder": "Ej. Acme Corp",
-          "hint": "Nombre legal o comercial de la empresa"
-        },
-        "descripcion": {
-          "label": "Descripción",
-          "placeholder": "Describe brevemente a qué se dedica la empresa, su misión y cultura de trabajo...",
-          "contador": "{{actual}} / {{maximo}}"
-        }
+      "title": "Identidad básica",
+      "subtitle": "Cuéntanos sobre la empresa que representas.",
+      "empresa": {
+        "label": "Nombre de la empresa",
+        "placeholder": "Ej. Acme Corp",
+        "hint": "Nombre legal o comercial de la empresa"
+      },
+      "descripcion": {
+        "label": "Descripción",
+        "placeholder": "Describe brevemente a qué se dedica la empresa, su misión y cultura de trabajo...",
+        "charCount": "{{current}} / {{max}}"
       }
     },
     "stepBranding": {
-      "titulo": "Branding",
-      "subtitulo": "Sube el logo para que los candidatos reconozcan tu empresa.",
+      "title": "Branding",
+      "subtitle": "Sube el logo para que los candidatos reconozcan tu empresa.",
       "dropzone": {
-        "titulo": "Sube tu logo",
-        "subtitulo": "PNG, JPG · Máximo 5 MB"
+        "heading": "Sube tu logo",
+        "hint": "PNG, JPG · Máximo 5 MB"
       },
-      "acciones": {
-        "cambiar": "Cambiar",
-        "quitar": "Quitar"
+      "preview": {
+        "change": "Cambiar",
+        "remove": "Quitar"
       }
     },
     "stepEmpresa": {
-      "titulo": "Información de la empresa",
-      "subtitulo": "Ayuda a los candidatos a entender el contexto de tu empresa.",
-      "campos": {
-        "rubro": {
-          "label": "Rubro o industria",
-          "placeholder": "Ej. Tecnología, Salud, Finanzas...",
-          "hint": "Empieza a escribir para ver sugerencias"
-        },
-        "pais": {
-          "label": "País",
-          "placeholder": "Seleccionar país"
-        },
-        "ciudad": {
-          "label": "Ciudad",
-          "placeholder": "Seleccionar ciudad",
-          "placeholderSinPais": "Primero selecciona un país",
-          "hint": "Selecciona un país para ver las ciudades disponibles"
-        }
+      "title": "Información de la empresa",
+      "subtitle": "Ayuda a los candidatos a entender el contexto de tu empresa.",
+      "rubro": {
+        "label": "Rubro o industria",
+        "placeholder": "Ej. Tecnología, Salud, Finanzas...",
+        "hint": "Empieza a escribir para ver sugerencias"
+      },
+      "pais": {
+        "label": "País",
+        "placeholder": "Seleccionar país"
+      },
+      "ciudad": {
+        "label": "Ciudad",
+        "placeholder": "Seleccionar ciudad",
+        "placeholderNoPais": "Primero selecciona un país",
+        "hint": "Selecciona un país para ver las ciudades disponibles"
       }
     },
     "stepContacto": {
-      "titulo": "Información de contacto",
-      "subtitulo": "¿Cómo pueden comunicarse contigo los candidatos?",
-      "campos": {
-        "telefono": {
-          "label": "Teléfono de contacto",
-          "placeholder": "7123 4567",
-          "hint": "Número directo o de la empresa"
-        },
-        "sitio": {
-          "label": "Sitio web",
-          "placeholder": "https://empresa.com",
-          "hint": "URL completa incluyendo https://"
-        }
-      }
+      "title": "Información de contacto",
+      "subtitle": "¿Cómo pueden comunicarse contigo los candidatos?",
+      "telefono": {
+        "label": "Teléfono de contacto",
+        "placeholder": "7123 4567",
+        "hint": "Número directo o de la empresa"
+      },
+      "sitio": {
+        "label": "Sitio web",
+        "placeholder": "https://empresa.com",
+        "hint": "URL completa incluyendo https://"
+      },
+      "submit": "Finalizar registro"
     },
     "stepExito": {
-      "titulo": "¡Perfil creado exitosamente!",
-      "subtitulo": "Tu empresa {{empresa}} ya está registrada. Ahora puedes publicar ofertas y encontrar candidatos.",
-      "botonPanel": "Ir al panel"
+      "title": "¡Perfil creado exitosamente!",
+      "subtitle": "Tu empresa <strong>{{empresa}}</strong> ya está registrada. Ahora puedes publicar ofertas y encontrar candidatos.",
+      "cta": "Ir al panel"
+    }
+  },
+  "recruiterValidations": {
+    "empresa": {
+      "required": "El nombre de la empresa es obligatorio",
+      "minLength": "Debe tener al menos 2 caracteres"
     },
-    "comun": {
-      "opcional": "opcional",
-      "continuar": "Continuar",
-      "volver": "Volver",
-      "finalizarRegistro": "Finalizar registro",
-      "errores": {
-        "requerido": "Este campo es obligatorio.",
-        "urlInvalida": "Ingresa una URL válida (ej. https://empresa.com).",
-        "telefonoInvalido": "Ingresa un número de teléfono válido.",
-        "longitudMaxima": "Máximo {{max}} caracteres.",
-        "errorServidor": "Ocurrió un error. Intenta nuevamente."
+    "descripcion": {
+      "required": "La descripción es obligatoria",
+      "minLength": "Escribe al menos 20 caracteres"
+    },
+    "rubro": {
+      "required": "Selecciona o escribe un rubro"
+    },
+    "ciudad": {
+      "required": "La ciudad es obligatoria"
+    },
+    "pais": {
+      "required": "Selecciona un país"
+    },
+    "telefono": {
+      "required": "El teléfono es obligatorio",
+      "invalid": "Número inválido"
+    },
+    "sitio": {
+      "invalid": "Ingresa una URL válida (ej: https://empresa.com)"
+    }
+  },
+  "newConvocatory": {
+    "loading": "Cargando convocatoria...",
+    "header": {
+      "new": "Nueva convocatoria",
+      "edit": "Editar convocatoria",
+      "editSub": "Modifica los campos que deseas actualizar",
+      "editBadge": "Modo edición"
+    },
+    "placeholders": {
+      "title": "Título del puesto *",
+      "area": "Área o rubro (ej. Tecnología, Salud, Construcción...)",
+      "description": "Describe el puesto, responsabilidades y lo que buscas en un candidato...",
+      "city": "Ciudad",
+      "skillInput": "Escribe y presiona Enter...",
+      "salaryMin": "Mínimo",
+      "salaryMax": "Máximo"
+    },
+    "chips": {
+      "type": "Tipo",
+      "modality": "Modalidad",
+      "level": "Nivel",
+      "typeOptions": ["Full-time", "Part-time", "Freelance", "Prácticas"],
+      "modalityOptions": ["Remoto", "Presencial", "Híbrido"],
+      "levelOptions": ["Sin experiencia", "Junior", "Mid", "Senior", "Lead"]
+    },
+    "expand": {
+      "label": "Más detalles",
+      "salary": "Rango salarial",
+      "showSalary": "Mostrar salario públicamente",
+      "deadline": "Fecha límite de postulación",
+      "skills": "Habilidades requeridas"
+    },
+    "actions": {
+      "attachImage": "Adjuntar imagen",
+      "attachPdf": "Adjuntar PDF",
+      "saveDraft": "Guardar borrador",
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "saving": "Guardando...",
+      "saveChanges": "Guardar cambios"
+    },
+    "toast": {
+      "titleRequired": "El título es obligatorio",
+      "noPermission": "No tienes permisos para publicar ofertas de trabajo.",
+      "loadError": "No se pudo cargar la convocatoria",
+      "saveError": "Error al guardar",
+      "draftUpdated": "Borrador actualizado",
+      "draftSaved": "Borrador guardado",
+      "editSuccess": "¡Convocatoria editada con éxito!",
+      "createSuccess": "¡Convocatoria creada con éxito!",
+      "draftUpdatedSub": "Los cambios fueron guardados.",
+      "editSuccessSub": "Los cambios ya son visibles.",
+      "draftSavedSub": "Puedes editarlo y publicarlo cuando quieras.",
+      "createSuccessSub": "Tu oferta ya está visible para los candidatos."
+    }
+  },
+  "audienceModal": {
+    "title": "Audiencia de la convocatoria",
+    "titleProfessional": "Tipo de profesional",
+    "subtitle": "¿Quién puede ver y postularse?",
+    "subtitleProfessional": "Filtra por área y carrera",
+    "options": {
+      "public": {
+        "title": "Todo el mundo",
+        "sub": "Cualquier persona en Portafy puede verla"
+      },
+      "followers": {
+        "title": "Mis seguidores",
+        "sub": "Solo las personas que te siguen"
+      },
+      "professionals": {
+        "title": "Tipo de profesional",
+        "sub": null
       }
+    },
+    "profSummary": {
+      "default": "Filtra por área y carrera",
+      "wholeArea": "Toda el área de {{area}}"
+    },
+    "dropdown": {
+      "areaLabel": "Área",
+      "areaPlaceholder": "Selecciona un área...",
+      "careerLabel": "Carrera",
+      "careerPlaceholder": "Selecciona una carrera...",
+      "careerPlaceholderDisabled": "Primero elige un área"
+    },
+    "done": "Listo",
+    "apply": "Aplicar · {{name}}",
+    "applyDisabled": "Elige un área para continuar"
+  },
+  "misConvocatorias": {
+    "title": "Mis Convocatorias",
+    "subtitle": "Gestiona tus ofertas de trabajo publicadas y borradores.",
+    "newBtn": "Nueva convocatoria",
+    "tabs": {
+      "published": "Publicadas",
+      "drafts": "Borradores",
+      "closed": "Cerradas"
+    },
+    "empty": {
+      "noActive": {
+        "title": "No hay convocatorias activas",
+        "text": "Aún no has publicado ninguna oportunidad de trabajo.",
+        "action": "Crear primera convocatoria"
+      },
+      "noDrafts": {
+        "title": "No tienes borradores",
+        "text": "Tus borradores guardados aparecerán aquí."
+      },
+      "noClosed": {
+        "title": "No hay convocatorias cerradas",
+        "text": "Las convocatorias que cierres aparecerán aquí como historial."
+      }
+    },
+    "toast": {
+      "closed": "Convocatoria cerrada",
+      "opened": "Convocatoria abierta",
+      "published": "Convocatoria publicada",
+      "deleted": "Convocatoria eliminada"
+    },
+    "timeAgo": {
+      "draft": "Borrador"
+    }
+  },
+  "jobCard": {
+    "status": {
+      "Activa": "Activa",
+      "Borrador": "Borrador",
+      "Cerrada": "Cerrada",
+      "Eliminada": "Eliminada"
+    },
+    "noLocation": "Sin ubicación",
+    "publishedOn": "Publicado el {{date}}",
+    "noDate": "Sin fecha",
+    "company": "Empresa",
+    "metrics": {
+      "applicants": "Postulantes",
+      "interviews": "Entrevistas",
+      "hired": "Contratado"
+    },
+    "pipeline": {
+      "new": "Nuevos",
+      "inReview": "En revisión",
+      "interview": "Entrevista",
+      "offer": "Oferta"
+    },
+    "actions": {
+      "viewApplicants": "Ver postulantes",
+      "viewDetail": "Ver detalle"
+    },
+    "menu": {
+      "viewDetail": "Ver detalle",
+      "edit": "Editar",
+      "close": "Cerrar convocatoria",
+      "reopen": "Reabrir convocatoria",
+      "publish": "Publicar",
+      "delete": "Eliminar"
+    },
+    "modal": {
+      "noDescription": "Sin descripción",
+      "statusLabel": "Estado:",
+      "descLabel": "Descripción",
+      "skillsLabel": "Habilidades",
+      "perMonth": "/ mes",
+      "applicants": "postulantes",
+      "views": "vistas",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
+    "deleteModal": {
+      "title": "¿Eliminar convocatoria?",
+      "desc": "se eliminará permanentemente.",
+      "cancel": "Cancelar",
+      "confirm": "Sí, eliminar",
+      "confirming": "Eliminando..."
+    }
+  },
+  "postulantes": {
+    "columns": {
+      "new": "Nuevo",
+      "in_verification": "En revisión",
+      "in_interview": "En entrevista",
+      "accepted": "Aceptado",
+      "refused": "Rechazado"
+    },
+    "loading": "Cargando postulantes...",
+    "back": "Volver",
+    "total_one": "{{count}} postulante en total",
+    "total_other": "{{count}} postulantes en total",
+    "search": "Buscar por nombre, email, carrera...",
+    "empty": {
+      "noResults": "Sin resultados para esa búsqueda",
+      "none": "No hay postulantes aún"
+    },
+    "row": {
+      "viewProfile": "Ver perfil",
+      "contact": "Contactar",
+      "appliedOn": "Postuló el {{date}}"
+    },
+    "kanban": {
+      "dragHere": "Arrastra aquí"
+    },
+    "card": {
+      "cvAttached": "CV adjunto"
+    },
+    "profile": {
+      "viewFull": "Ver perfil completo",
+      "contact": "Contactar",
+      "appliedOn": "Postuló el {{date}}",
+      "cv": "Curriculum Vitae",
+      "cvOpen": "Abrir o descargar CV",
+      "cvRegistered": "CV registrado",
+      "cvInSystem": "El postulante tiene CV en el sistema",
+      "cvNone": "No adjuntó CV",
+      "coverLetter": "Carta de presentación",
+      "about": "Sobre el postulante",
+      "interview": "Entrevista agendada",
+      "virtual": "Virtual",
+      "presencial": "Presencial",
+      "stateLabel": "Estado de la postulación",
+      "refusedReason": "Motivo de rechazo",
+      "noReason": "Sin motivo registrado"
+    },
+    "toast": {
+      "new": "Marcado como Nuevo",
+      "in_verification": "En revisión",
+      "in_interview": "Entrevista agendada ✓",
+      "accepted": "Postulante aceptado ✓",
+      "refused": "Postulante rechazado",
+      "updated": "Estado actualizado",
+      "updateError": "No se pudo actualizar el estado. Intenta de nuevo.",
+      "interviewError": "No se pudo agendar la entrevista. Intenta de nuevo."
+    }
+  },
+  "interviewModal": {
+    "title": "Agendar entrevista",
+    "typeLabel": "Tipo de entrevista",
+    "virtual": "Virtual",
+    "presencial": "Presencial",
+    "dateTime": "Fecha y hora",
+    "linkLabel": "Enlace de la reunión",
+    "linkPlaceholder": "https://meet.google.com/...",
+    "addressLabel": "Dirección",
+    "addressPlaceholder": "Av. Ejemplo 123, Cochabamba",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar entrevista",
+    "errorLink": "Añade el enlace de la entrevista virtual",
+    "errorAddress": "Añade la dirección de la entrevista"
+  },
+  "company": {
+    "header": {
+      "tabs": {
+        "convocatorias": "Convocatorias",
+        "informacion": "Información",
+        "rubro": "Rubro",
+        "contacto": "Contacto",
+        "seguidores": "Seguidores"
+      },
+      "banner": {
+        "change": "Cambiar banner",
+        "edit": "Editar portada"
+      },
+      "fields": {
+        "namePlaceholder": "Nombre de la empresa",
+        "industryPlaceholder": "Industria",
+        "cityPlaceholder": "Ciudad",
+        "websitePlaceholder": "https://empresa.com"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "saving": "Guardando...",
+        "save": "Guardar cambios",
+        "follow": "+ Seguir",
+        "unfollow": "Dejar de seguir",
+        "share": "Compartir",
+        "edit": "Editar perfil",
+        "linkCopied": "✓ Link copiado"
+      },
+      "errors": {
+        "nameRequired": "El nombre es obligatorio.",
+        "saveFailed": "Error al guardar."
+      },
+      "founded": "Fundada {{year}}"
+    },
+    "info": {
+      "title": "Sobre nosotros",
+      "actions": {
+        "edit": "Editar",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando..."
+      },
+      "description": {
+        "placeholder": "Describe tu empresa, qué hace y cuál es su cultura...",
+        "empty": "Sin descripción disponible.",
+        "charCount": "{{count}} / 500"
+      },
+      "general": {
+        "title": "Datos generales",
+        "foundedYear": "Año de fundación:",
+        "foundedYearPlaceholder": "Ej: 2015",
+        "size": "Tamaño:",
+        "sizePlaceholder": "Seleccionar...",
+        "alcance": "Alcance:",
+        "personeria": "Personería:",
+        "schedule": "Horario:",
+        "schedulePlaceholder": "Ej: Lun–Vie 8:00–18:00",
+        "empty": "—"
+      },
+      "errors": {
+        "saveFailed": "Error al guardar."
+      },
+      "size": {
+        "1_10": "1-10 empleados",
+        "11_50": "11-50 empleados",
+        "51_200": "51-200 empleados",
+        "201_500": "201-500 empleados",
+        "500plus": "500+ empleados"
+      },
+      "alcance": {
+        "local": "Local",
+        "regional": "Regional",
+        "nacional": "Nacional",
+        "internacional": "Internacional"
+      },
+      "personeria": {
+        "natural": "Persona Natural",
+        "srl": "Sociedad de Responsabilidad Limitada (SRL)",
+        "sa": "Sociedad Anónima (SA)",
+        "unipersonal": "Unipersonal",
+        "ong": "ONG / Fundación",
+        "cooperativa": "Cooperativa"
+      }
+    },
+    "rubro": {
+      "title": "Rubro e industria",
+      "actions": {
+        "edit": "Editar",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando..."
+      },
+      "fields": {
+        "sector": "Sector principal:",
+        "sectorPlaceholder": "Ej: Tecnología",
+        "specialty": "Especialidad:",
+        "specialtyPlaceholder": "Ej: Desarrollo de software",
+        "segment": "Segmento:",
+        "segmentPlaceholder": "Ej: B2B y sector público",
+        "empty": "—"
+      },
+      "services": {
+        "title": "Servicios principales",
+        "placeholder": "Separados por coma: Desarrollo web, Apps móviles...",
+        "hint": "Separa cada servicio con una coma",
+        "empty": "Sin servicios registrados"
+      },
+      "errors": {
+        "saveFailed": "Error al guardar."
+      }
+    },
+    "contact": {
+      "title": "Contacto",
+      "actions": {
+        "edit": "Editar",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando..."
+      },
+      "location": {
+        "title": "Ubicación",
+        "addressPlaceholder": "Av. Heroínas 456",
+        "cityPlaceholder": "Cochabamba",
+        "addressLabel": "Dirección:",
+        "cityLabel": "Ciudad:",
+        "viewOnMaps": "Ver en Maps",
+        "empty": "Sin dirección registrada"
+      },
+      "fields": {
+        "title": "Datos de contacto",
+        "phonePrefixPlaceholder": "+591",
+        "phonePlaceholder": "Número",
+        "phoneLabel": "Teléfono:",
+        "emailLabel": "Email:",
+        "emailPlaceholder": "contacto@empresa.com",
+        "emailEmpty": "Sin email registrado",
+        "websiteLabel": "Sitio web:",
+        "websitePlaceholder": "https://empresa.com"
+      },
+      "errors": {
+        "saveFailed": "Error al guardar."
+      }
+    },
+    "social": {
+      "title": "Social",
+      "searchPlaceholder": "Buscar",
+      "tabs": {
+        "followers": "Seguidores",
+        "following": "Seguidos"
+      },
+      "summary": {
+        "followers": "{{count}} seguidores",
+        "following": "{{count}} seguidos"
+      },
+      "states": {
+        "loading": "Cargando...",
+        "notFound": "No se encontraron usuarios."
+      },
+      "userFallback": "Usuario",
+      "errors": {
+        "generic": "Error al cargar."
+      }
+    }
+  },
+  "empresa": {
+    "perfil": {
+      "convocatorias_activas": "Convocatorias activas",
+      "convocatorias_destacadas": "Convocatorias destacadas",
+      "sin_convocatorias_publicas": "No hay convocatorias activas.",
+      "sin_convocatorias_propias": "No tienes convocatorias",
+      "cargando": "Cargando...",
+      "error_cargar": "No se pudo cargar la empresa."
+    },
+    "dashboard": {
+      "eyebrow": "Panel de reclutamiento",
+      "bienvenido": "Bienvenido, {{nombre}}",
+      "resumen": "Tienes {{activas}} convocatorias activas y {{revision}} candidatos pendientes de revisión.",
+      "nueva_convocatoria": "+ Nueva convocatoria",
+      "sin_convocatorias": "No tienes convocatorias aún.",
+      "sin_postulantes": "No hay postulantes aún.",
+      "ver_todas": "Ver todas →",
+      "ver_todos": "Ver todos →",
+      "convocatorias_recientes": "Convocatorias recientes",
+      "candidatos_recientes": "Candidatos recientes",
+      "postulantes": "{{count}} postulantes · {{area}}",
+      "visibilidad_titulo": "Visibilidad del perfil empresa",
+      "secciones_visibles": "{{count}} secciones visibles",
+      "perfil_privado": "Perfil privado"
+    },
+    "stats": {
+      "convocatorias_activas": "Convocatorias activas",
+      "candidatos_por_revisar": "Candidatos por revisar",
+      "candidatos_aceptados": "Candidatos aceptados",
+      "total_postulantes": "Total postulantes"
+    },
+    "badges": {
+      "en_curso": "En curso",
+      "pendiente": "Pendiente",
+      "aceptados": "Aceptados",
+      "historico": "Histórico",
+      "activa": "Activa",
+      "borrador": "Borrador",
+      "cerrada": "Cerrada",
+      "en_revision": "En revisión",
+      "aceptado": "Aceptado",
+      "rechazado": "Rechazado"
+    },
+    "visibilidad": {
+      "convocatorias": "Convocatorias",
+      "empresa": "Perfil empresa",
+      "contacto": "Datos de contacto",
+      "redes": "Redes sociales"
+    },
+    "nav": {
+      "empresa": "Empresa",
+      "perfil_empresa": "Perfil empresa",
+      "panel": "Panel",
+      "convocatorias": "Convocatorias",
+      "convocatory": "Convocatorias",
+      "nueva_convocatoria": "Nueva convocatoria",
+      "expandir": "Expandir menú",
+      "colapsar": "Colapsar menú"
+    }
+  },
+  "reporte": {
+    "reportar_publicacion": "Reportar publicacion",
+    "reportar_comentario": "Reportar comentario",
+    "descripcion_modal": "El reporte sera enviado al panel de administracion con el motivo seleccionado.",
+    "tipo_comentario": "Comentario",
+    "tipo_experiencia": "Experiencia",
+    "tipo_proyecto": "Proyecto",
+    "tipo_convocatoria": "Convocatoria",
+    "publicacion_fallback": "Publicacion",
+    "comentario_fallback": "Comentario reportado",
+    "motivo": "Motivo",
+    "detalle_opcional": "Detalle opcional",
+    "placeholder_publicacion": "Describe brevemente que ocurre con esta publicacion...",
+    "placeholder_comentario": "Describe brevemente que ocurre con este comentario...",
+    "cancelar": "Cancelar",
+    "enviar": "Enviar reporte",
+    "enviando": "Enviando...",
+    "cerrar": "Cerrar reporte"
+  },
+  "appI18n": {
+    "common": {
+      "view": "Ver",
+      "loading": "Cargando...",
+      "syncing": "Sincronizando",
+      "refresh": "Actualizar",
+      "save": "Guardar",
+      "saved": "Guardado",
+      "close": "Cerrar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "retry": "Volver a intentar",
+      "portfolioUser": "Usuario Portafy",
+      "verifiedAccount": "Cuenta verificada"
+    },
+    "feed": {
+      "left": {
+        "panel": "Panel",
+        "explore": "Explorar",
+        "activity": "Actividad",
+        "filters": "Filtros",
+        "home": "Inicio",
+        "dashboard": "Dashboard",
+        "search": "Buscar",
+        "saved": "Guardados",
+        "trending": "Tendencias",
+        "all": "Todos",
+        "portfolios": "Portafolios",
+        "jobs": "Convocatorias"
+      },
+      "right": {
+        "suggestedPeople": "Personas sugeridas",
+        "suggestionsEmpty": "Aun no hay perfiles sugeridos.",
+        "loadingProfiles": "Cargando perfiles...",
+        "trending": "Tendencias",
+        "loadingTrending": "Cargando tendencias...",
+        "trendingEmpty": "Aun no hay publicaciones con actividad.",
+        "featuredPublication": "Publicacion destacada",
+        "project": "Proyecto",
+        "experience": "Experiencia",
+        "professionalFallback": "Profesional Portafy"
+      },
+      "header": {
+        "title": "Feed profesional",
+        "trendingTitle": "Tendencias profesionales",
+        "subtitle": "Contenido real compartido desde portafolios y perfiles.",
+        "trendingSubtitle": "Publicaciones populares ordenadas por actividad de la plataforma."
+      },
+      "post": {
+        "projectKind": "Proyecto de portafolio",
+        "experienceKind": "Experiencia profesional",
+        "project": "Proyecto",
+        "experience": "Experiencia",
+        "portfolioProject": "Proyecto de portafolio",
+        "portfolioProjectText": "Proyecto del portafolio profesional.",
+        "technologies": "Tecnologias usadas",
+        "noTechnologies": "Sin tecnologias registradas.",
+        "demo": "Demo",
+        "repository": "Repositorio",
+        "professionalTrajectory": "Trayectoria profesional",
+        "organization": "Organizacion",
+        "period": "Periodo",
+        "noOrganization": "Sin organizacion",
+        "noDates": "Sin fechas",
+        "experienceText": "Experiencia del perfil profesional.",
+        "complete": "Completo",
+        "paused": "Pausado",
+        "inProgress": "En proceso",
+        "academic": "Academica",
+        "freelance": "Freelance",
+        "professional": "Profesional",
+        "follow": "Seguir",
+        "following": "Siguiendo",
+        "like": "Me gusta",
+        "comment": "Comentar",
+        "comments": "Comentarios",
+        "likes": "me gusta",
+        "commentsCount": "comentarios",
+        "savedCount": "guardados",
+        "writeComment": "Escribe un comentario breve...",
+        "sendComment": "Enviar comentario",
+        "loadingComments": "Cargando comentarios...",
+        "viewMoreComments": "Ver mas comentarios",
+        "noComments": "Todavia no hay comentarios visibles.",
+        "firstComment": "Se el primero en comentar.",
+        "commentsUnavailable": "No se pudieron mostrar los comentarios todavia.",
+        "publication": "Publicacion",
+        "moreOptions": "Mas opciones",
+        "removeSharing": "Dejar de compartir",
+        "removing": "Quitando...",
+        "reportPublication": "Reportar publicacion",
+        "reportComment": "Reportar comentario",
+        "commentOptions": "Opciones del comentario",
+        "followers": "seguidores",
+        "followingUsers": "seguidos"
+      },
+      "states": {
+        "loadErrorTitle": "No se pudo cargar el feed",
+        "emptyTitle": "Aun no hay contenido compartido",
+        "emptyText": "Comparte un proyecto o experiencia desde tu perfil para verlo aqui.",
+        "unshareTitle": "Dejar de compartir",
+        "unshareText": "Este contenido se retirara del feed y de tu vitrina. El proyecto o experiencia original seguira guardado en tu portafolio.",
+        "authTitle": "Inicia sesion para interactuar",
+        "authText": "Puedes explorar el feed libremente. Para {{action}}, entra a tu cuenta o crea una nueva.",
+        "keepExploring": "Seguir explorando",
+        "register": "Registrarme",
+        "login": "Iniciar sesion"
+      }
+    },
+    "dashboard": {
+      "layout": {
+        "panel": "Panel",
+        "home": "Inicio",
+        "dashboard": "Dashboard",
+        "main": "Principal",
+        "profile": "Mi perfil",
+        "portfolio": "Portafolio",
+        "publications": "Mi vitrina",
+        "cv": "Mi CV",
+        "analytics": "Estadisticas",
+        "calendar": "Calendario",
+        "status": "Estado",
+        "active": "Activo",
+        "readyTitle": "Tu dashboard ya esta listo",
+        "readyText": "Desde aqui puedes construir cada seccion sin tocar el feed principal y mantener tu trabajo aislado.",
+        "settings": "Configuracion"
+      },
+      "main": {
+        "eyebrow": "Inicio profesional",
+        "title": "Construye una presencia que se entienda en segundos.",
+        "text": "Gestiona tu perfil, mide el alcance de tu portafolio y envia senales de confianza desde un solo lugar.",
+        "improveProfile": "Mejorar mi perfil",
+        "viewStats": "Ver estadisticas",
+        "trustStatus": "Estado de confianza",
+        "verification": "Verificacion",
+        "verificationTitle": "Haz que tu perfil inspire confianza",
+        "suggestions": "Sugerencias",
+        "suggestionsTitle": "Propone una mejora con contexto",
+        "suggestionsText": "Envia ideas sobre perfil, proyectos, experiencia o cualquier parte de PortaFy. El equipo recibe tipo, area y motivo.",
+        "sendSuggestion": "Enviar sugerencia",
+        "suggestionSent": "Sugerencia enviada correctamente.",
+        "verificationLoading": "Verificando estado",
+        "verificationLoadingText": "Estamos revisando si tu cuenta ya fue verificada.",
+        "verified": "Cuenta verificada",
+        "verifiedText": "Tu perfil ya muestra el sello de confianza.",
+        "pending": "Revision pendiente",
+        "pendingText": "Tu solicitud esta esperando revision del equipo.",
+        "rejected": "Requiere ajuste",
+        "rejectedText": "Revisa el motivo y vuelve a enviar tus documentos.",
+        "none": "Sin solicitud",
+        "noneText": "Envia tu documento y activa una senal de confianza en tu perfil.",
+        "checking": "Comprobando estado",
+        "viewRequest": "Ver estado de solicitud",
+        "sendVerification": "Enviar para verificar"
+      }
+    },
+    "analytics": {
+      "title": "Estadisticas profesionales",
+      "subtitle": "Alcance, rendimiento y actividad reciente de tu perfil y portafolio.",
+      "badge": "Perfil profesional",
+      "loadingTitle": "Cargando estadisticas...",
+      "loadingText": "Estamos calculando el alcance visible de tu perfil.",
+      "loadError": "No se pudieron cargar las estadisticas.",
+      "viewVisitors": "Ver usuarios que visitaron mi perfil",
+      "last14Title": "Visitas de los ultimos 14 dias",
+      "last14Text": "Cada barra representa visitas registradas a tu perfil.",
+      "recentActivity": "Actividad reciente",
+      "noVisitsTitle": "Sin visitas todavia",
+      "noVisitsText": "Cuando otros perfiles visiten el tuyo, veras la tendencia aqui.",
+      "noEventsTitle": "Sin eventos recientes",
+      "noEventsText": "Los clicks de contacto, CV y secciones visitadas se iran registrando aqui.",
+      "topProjects": "Proyectos mas vistos",
+      "topProjectsText": "Top 3 segun visitas en perfil y actividad de tus proyectos compartidos.",
+      "inProfile": "En mi perfil",
+      "inProfileText": "Proyectos que otros abrieron desde tu perfil publico.",
+      "inFeed": "En el feed",
+      "inFeedText": "Proyectos compartidos con mejor respuesta en publicaciones.",
+      "visits": "visitas",
+      "points": "puntos",
+      "untitledProject": "Proyecto sin titulo",
+      "notEnoughData": "Sin datos suficientes",
+      "notEnoughDataText": "Aun no hay visitas registradas para armar este ranking.",
+      "cards": {
+        "profile_views": [
+          "Visitas al perfil",
+          "Total de personas que abrieron tu perfil."
+        ],
+        "profile_views_week": [
+          "Ultimos 7 dias",
+          "Visitas recibidas durante la ultima semana."
+        ],
+        "project_views": [
+          "Vistas a proyectos",
+          "Veces que otros revisaron tus proyectos."
+        ],
+        "experience_views": [
+          "Vistas a experiencia",
+          "Interes generado por tus experiencias visibles."
+        ],
+        "contact_clicks": [
+          "Clicks de contacto",
+          "Veces que intentaron contactarte desde tu perfil."
+        ],
+        "cv_clicks": [
+          "Clicks al CV",
+          "Veces que abrieron o intentaron revisar tu CV."
+        ],
+        "portfolio_posts": [
+          "Contenido compartido",
+          "Publicaciones tuyas visibles en el feed y vitrina."
+        ],
+        "portfolio_engagement": [
+          "Interacciones totales",
+          "Suma de likes, comentarios y guardados de tu contenido."
+        ],
+        "engagement_rate": [
+          "Promedio por publicacion",
+          "Interacciones promedio que recibe cada publicacion."
+        ]
+      },
+      "events": {
+        "profile_view": "Visitas al perfil",
+        "project_view": "Vistas a proyectos",
+        "experience_view": "Vistas a experiencia",
+        "contact_click": "Clicks de contacto",
+        "cv_click": "Clicks al CV"
+      }
+    },
+    "profile": {
+      "cover": "Portada",
+      "editProfile": "Editar perfil",
+      "cancel": "Cancelar",
+      "saving": "Guardando...",
+      "follow": "Seguir",
+      "following": "Siguiendo",
+      "processing": "Procesando...",
+      "moreOptions": "Mas opciones",
+      "contact": "Contactar",
+      "viewCv": "Ver CV",
+      "manageCv": "Gestion de CV",
+      "shareProfile": "Compartir perfil",
+      "reportProfile": "Reportar perfil",
+      "locationFallback": "Ubicacion no especificada",
+      "about": "Sobre mi",
+      "editing": "Editando",
+      "aboutPlaceholder": "Cuentale al mundo quien eres profesionalmente",
+      "links": "Enlaces",
+      "skills": "Habilidades",
+      "education": "Formacion profesional",
+      "loadingProfile": "Cargando perfil...",
+      "loadingProfileText": "Estamos reuniendo tu informacion visible.",
+      "loadErrorTitle": "No pudimos cargar tu perfil",
+      "preparing": "Preparando perfil...",
+      "preparingText": "Un momento, estamos conectando con tu perfil.",
+      "retry": "Reintentar carga",
+      "loadingLinks": "Cargando enlaces...",
+      "loadingSkills": "Cargando habilidades...",
+      "loadingEducation": "Cargando formacion...",
+      "tabs": {
+        "showcase": "Vitrina",
+        "projects": "Proyectos",
+        "experience": "Experiencia",
+        "summary": "Resumen"
+      },
+      "stats": {
+        "Seguidores": "Seguidores",
+        "Seguidos": "Seguidos",
+        "Proyectos": "Proyectos",
+        "AÃ±os de exp.": "Anos de exp.",
+        "Años de exp.": "Anos de exp.",
+        "Empresas": "Empresas",
+        "Habilidades": "Habilidades",
+        "Visitas": "Visitas"
+      }
+    },
+    "portfolio": {
+      "active": "Portafolio activo",
+      "completed": "{{percent}}% completado",
+      "records": "{{count}} registros",
+      "smartActivity": "Actividad inteligente",
+      "title": "Lo ultimo que agregaste, convertido en senales utiles.",
+      "text": "Este bloque resume el pulso de tu portafolio: que modulo esta vivo, que pieza se agrego al frente y donde conviene entrar para seguir afinando tu historia profesional.",
+      "progress": "Progreso",
+      "next": "Siguiente",
+      "publication": "Publicacion",
+      "education": "Formacion profesional",
+      "addEducation": "Agrega carreras, diplomados o cursos",
+      "educationText": "Mantiene visible tu trayectoria academica y profesional.",
+      "record": "registro",
+      "recordsPlural": "registros"
+    },
+    "cv": {
+      "title": "Mis CVs",
+      "subtitle": "Gestiona, edita y exporta tus curriculums vitae",
+      "import": "Importar CV",
+      "generateFromProfile": "Generar desde perfil",
+      "strip": "Puedes generar un CV desde los datos de tu perfil, o importar uno existente en PDF o Word.",
+      "loading": "Cargando CVs...",
+      "emptyTitle": "Todavia no tienes CVs",
+      "emptyText": "Importa un CV existente o genera uno nuevo desde tu perfil.",
+      "generate": "Generar CV",
+      "loadError": "No se pudieron cargar los CVs. Intenta de nuevo.",
+      "visibilityError": "No se pudo actualizar la visibilidad.",
+      "deleteError": "No se pudo eliminar el CV."
+    },
+    "showcase": {
+      "sort": {
+        "popular": "Mas populares",
+        "likes": "Mas likes",
+        "newest": "Mas nuevos",
+        "oldest": "Mas antiguos"
+      },
+      "published": "Publicado",
+      "opening": "Abriendo...",
+      "detail": "Detalle",
+      "selectTitle": "Selecciona una publicacion",
+      "selectText": "El detalle y los comentarios apareceran aqui.",
+      "content": "Contenido",
+      "collapse": "Contraer",
+      "viewAll": "Ver todo",
+      "likes": "Likes",
+      "commentsShort": "Coment.",
+      "savedShort": "Guard.",
+      "comments": "Comentarios",
+      "loadingComments": "Cargando comentarios...",
+      "noComments": "Aun no hay comentarios visibles.",
+      "viewMoreComments": "Ver mas comentarios",
+      "eyebrow": "Gestion del feed",
+      "subtitle": "Administra y revisa el rendimiento del contenido que compartiste.",
+      "refreshing": "Actualizando...",
+      "shared": "Compartidos",
+      "likeMetric": "Me gusta",
+      "saved": "Guardados",
+      "sortLabel": "Ordenar vitrina",
+      "summary": "{{count}} compartidos - pagina {{page}} de {{totalPages}}",
+      "loadError": "No se pudo cargar tu vitrina.",
+      "loading": "Cargando vitrina...",
+      "empty": "Aun no tienes contenido compartido desde tu portafolio.",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "adminRequests": {
+      "title": "Solicitudes",
+      "subtitle": "Revision de solicitudes de verificacion de cuenta.",
+      "identity": "Verificacion de identidad",
+      "heroTitle": "Solicitudes de cuenta verificada",
+      "heroText": "Revisa documentos enviados por profesionales y decide si corresponde aprobar la insignia de verificado.",
+      "refresh": "Actualizar",
+      "tabsLabel": "Estado de solicitudes",
+      "tabs": {
+        "pending": "Pendientes",
+        "approved": "Aprobadas",
+        "rejected": "Rechazadas"
+      },
+      "searchPlaceholder": "Buscar por usuario o estado",
+      "metrics": {
+        "current": "En esta vista",
+        "visible": "Coincidencias",
+        "status": "Estado"
+      },
+      "states": {
+        "loadingTitle": "Cargando solicitudes",
+        "loadingText": "Estamos consultando las solicitudes de verificacion.",
+        "errorTitle": "No se pudo cargar",
+        "emptyTitle": "Sin solicitudes",
+        "emptyText": "No hay solicitudes que coincidan con esta vista.",
+        "panel": "Panel",
+        "error": "Error"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "approved": "Aprobada",
+        "rejected": "Rechazada"
+      },
+      "documents": {
+        "pdf": "PDF",
+        "front": "Anverso",
+        "back": "Reverso",
+        "empty": "Sin documentos adjuntos"
+      },
+      "card": {
+        "userFallback": "Usuario Portafy",
+        "userLine": "Usuario #{{id}} - Enviado {{date}}",
+        "noId": "sin id",
+        "reviewed": "Solicitud revisada {{date}}"
+      },
+      "actions": {
+        "approve": "Aprobar",
+        "approving": "Aprobando...",
+        "reject": "Rechazar",
+        "rejectTitle": "Rechazar solicitud",
+        "rejectReason": "Motivo del rechazo",
+        "rejectPlaceholder": "Explica brevemente que debe corregir el usuario.",
+        "cancel": "Cancelar",
+        "rejecting": "Rechazando...",
+        "confirmReject": "Confirmar rechazo",
+        "closeModal": "Cerrar modal"
+      },
+      "errors": {
+        "load": "No se pudieron cargar las solicitudes.",
+        "approve": "No se pudo aprobar la solicitud.",
+        "reject": "No se pudo rechazar la solicitud.",
+        "reasonMin": "Escribe un motivo de al menos 5 caracteres."
+      },
+      "characters": "{{count}}/500 caracteres",
+      "noDate": "sin fecha"
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "back": "Volver",
+    "markAllRead": "Marcar todas como leídas",
+    "loading": "Cargando...",
+    "filter": {
+      "all": "Todos",
+      "unread": "No leídos",
+      "read": "Leídos"
+    },
+    "type": {
+      "all": "Todos los tipos",
+      "like": "Likes",
+      "comment": "Comentarios",
+      "follow": "Seguimientos",
+      "job_offer": "Ofertas",
+      "postulation": "Postulaciones"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageInfo": "Página {{page}} de {{lastPage}}"
+    }
+  },
+
+  "notificationSettings": {
+    "title": "Configuración",
+    "sub": "Elige una categoría y ajusta solo lo necesario.",
+    "saving": "Guardando...",
+    "saveChanges": "✓ Guardar cambios",
+    "loading": "Cargando preferencias...",
+    "categories": {
+      "activity_notifications": {
+        "label": "Actividad Social",
+        "description": "Likes, comentarios y menciones en tus publicaciones"
+      },
+      "portfolio_notifications": {
+        "label": "Portafolios de usuarios seguidos",
+        "description": "Actualizaciones de proyectos y experiencias"
+      },
+      "offer_notifications": {
+        "label": "Nuevas convocatorias",
+        "description": "Ofertas laborales que coincidan con tu perfil"
+      },
+      "support_notifications": {
+        "label": "Mensajes de soporte",
+        "description": "Respuestas y actualizaciones de soporte"
+      },
+      "platform_notifications": {
+        "label": "Notificaciones de la plataforma",
+        "description": "Anuncios y novedades de Portafy"
+      }
+    }
+  },
+  "notificationBell": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar todas como leídas",
+    "viewAll": "Ver todas las notificaciones",
+    "ariaLabel": "Notificaciones",
+    "empty": {
+      "title": "Sin notificaciones",
+      "sub": "Cuando alguien interactúe con tu contenido, aparecerá aquí."
+    },
+    "item": {
+      "markAsRead": "Marcar como leída",
+      "read": "Leída",
+      "defaultText": "Nueva notificación",
+      "altAvatar": "Notificación"
+    },
+    "types": {
+      "like": "Like",
+      "comment": "Comentario",
+      "follow": "Seguimiento",
+      "event": "Evento",
+      "job_offer": "Oferta",
+      "postulation": "Postulación",
+      "job_application": "Aplicación"
+    },
+    "messages": {
+      "like": "{{name}} le dio like a tu publicación",
+      "follow": "{{name}} comenzó a seguirte",
+      "event": "Nuevo evento: {{title}}",
+      "job_offer": "{{company}} publicó una oferta: {{title}}",
+      "postulation": "{{name}} se postuló a: {{title}}",
+      "job_application": "{{name}} se postuló a: {{title}}",
+      "comment": "{{name}} comentó",
+      "commentWithText": "{{name}} comentó: \"{{text}}\"",
+      "default": "Nueva notificación",
+      "fallbackOffer": "la oferta",
+      "fallbackPerson": "Alguien",
+      "fallbackCompany": "Empresa"
+    }
+  },
+  "cv": {
+    "title": "Mis CVs",
+    "subtitle": "Gestiona, edita y exporta tus currículums vitae",
+    "importBtn": "Importar CV",
+    "generateBtn": "Generar desde perfil",
+    "generateBtnShort": "Generar CV",
+    "strip": "Puedes generar un CV desde los datos de tu perfil, o importar uno existente en PDF o Word.",
+    "loading": "Cargando CVs...",
+    "errorLoad": "No se pudieron cargar los CVs. Intenta de nuevo.",
+    "errorVisibility": "No se pudo actualizar la visibilidad.",
+    "errorDelete": "No se pudo eliminar el CV.",
+    "empty": {
+      "title": "Todavía no tenés CVs",
+      "text": "Importá un CV existente o generá uno nuevo desde tu perfil."
+    },
+    "delete": {
+      "title": "¿Eliminar CV?",
+      "body": "Esta acción no se puede deshacer. El CV será eliminado de tu lista.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
+    },
+    "card": {
+      "generated": "Generado",
+      "updated": "Actualizado",
+      "visible": "Visible",
+      "hidden": "Oculto",
+      "edit": "Editar",
+      "download": "Descargar",
+      "delete": "Eliminar",
+      "toggleVisible": "Hacer visible",
+      "toggleHidden": "Ocultar"
+    },
+    "import": {
+      "title": "Importar CV",
+      "subtitle": "Tu CV se procesará con IA y pre-rellenará los formularios automáticamente.",
+      "dropTitle": "Arrastrá tu CV aquí",
+      "dropChange": "Cambiar archivo",
+      "dropSub": "o hacé clic para seleccionar · PDF, Word, TXT · máx 10 MB",
+      "btn": "Importar CV",
+      "processing": "Procesando...",
+      "cancel": "Cancelar",
+      "errorFormat": "Formato no soportado. Sube PDF, Word (.docx) o TXT.",
+      "errorSize": "El archivo supera los 10 MB permitidos.",
+      "errorProcess": "No se pudo procesar el CV. Intenta de nuevo.",
+      "successNoNew": "CV importado. No se encontraron elementos nuevos respecto a tu perfil.",
+      "successNew": "CV importado. Se encontraron {{count}} elemento(s) nuevos."
+    },
+    "editor": {
+      "back": "Volver",
+      "preview": "Vista previa",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "saved": "Guardado",
+      "export": "Exportar PDF",
+      "generating": "Generando...",
+      "previewTitle": "Vista previa",
+      "previewClose": "Cerrar",
+      "previewHint": "Para descargar con el nombre correcto usa Exportar PDF",
+      "templates": "Plantillas",
+      "typography": "Tipografía",
+      "sections": "Secciones",
+      "importedContent": "Contenido importado",
+      "visibility": "Visibilidad",
+      "color": "Color principal",
+      "zoom": "Zoom",
+      "toProfile": "Al perfil",
+      "onlyCv": "Solo CV",
+      "hide": "Ocultar",
+      "allProcessed": "Todo procesado",
+      "clearAll": "Limpiar",
+      "pendingItems": "{{count}} elemento(s) por procesar"
     }
   }
 }

@@ -8,6 +8,7 @@ use App\Models\ProfileView;
 use App\Models\Publication;
 use App\Models\Usuario;
 use App\Support\OfficialSchema;
+use App\Support\ProfileRoleGuard;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,13 @@ class ProfileAnalyticsService
     {
         $viewer = OfficialSchema::ensureProfile($viewerUser);
         $owner = OfficialSchema::ensureProfile($ownerUser);
+
+        if (
+            ProfileRoleGuard::profileIsAdministrative($viewer)
+            || ProfileRoleGuard::profileIsAdministrative($owner)
+        ) {
+            return ['recorded' => false, 'message' => 'Vista administrativa ignorada.'];
+        }
 
         if ((int) $viewer->getKey() === (int) $owner->getKey()) {
             return ['recorded' => false, 'message' => 'Vista propia ignorada.'];
@@ -69,12 +77,19 @@ class ProfileAnalyticsService
         $views = ProfileView::query()
             ->with(['viewer.userRole.user', 'viewer.jobTitle'])
             ->where('id_profile_owner', $owner->getKey())
+            ->whereHas('viewer.userRole.role', function ($query) {
+                $query->whereIn('name', ProfileRoleGuard::PUBLIC_PROFILE_ROLES);
+            })
             ->orderByDesc('viewed_at')
             ->limit(100)
             ->get();
 
         return [
-            'total' => ProfileView::where('id_profile_owner', $owner->getKey())->count(),
+            'total' => ProfileView::where('id_profile_owner', $owner->getKey())
+                ->whereHas('viewer.userRole.role', function ($query) {
+                    $query->whereIn('name', ProfileRoleGuard::PUBLIC_PROFILE_ROLES);
+                })
+                ->count(),
             'items' => $views->map(fn (ProfileView $view) => [
                 'id' => (int) $view->getKey(),
                 'viewed_at' => $view->viewed_at?->toISOString(),

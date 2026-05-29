@@ -7,7 +7,7 @@ import {
   CheckCircle2, ArrowLeft, Plus, X, BookOpen
 } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
-import { completarPerfil, fetchProfile, guardarFormacion } from "../../services/authService";
+import { clearProfileCache, completarPerfil, fetchProfile, guardarFormacion } from "../../services/authService";
 import { LATIN_AMERICA_LOCATIONS, getCitiesForCountry } from "../../data/locations/latinAmericaLocations";
 void motion;
 
@@ -171,6 +171,7 @@ export default function Forms() {
       if (ciudad)   formData.append("ciudad", ciudad);
       if (pais)     formData.append("pais", pais);
       await completarPerfil(formData);
+      clearProfileCache();
 
       for (const f of formaciones) {
         await guardarFormacion(f);

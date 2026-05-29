@@ -1,0 +1,135 @@
+-- ============================================================
+-- FIX PROPUESTO PARA fn_log_auditoria
+-- Objetivo:
+-- 1) No perder id_user_rol en LOG cuando la tabla afectada solo tiene id_profile.
+-- 2) Tener un respaldo por contexto de sesión para tablas administrativas.
+-- 3) Mantener compatibilidad con el esquema actual de LOG y USER_ROLE.
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION fn_log_auditoria()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_id_user_rol   BIGINT;
+    v_profile_id     BIGINT;
+    v_tipo          VARCHAR(10);
+    v_tabla         VARCHAR(255);
+    v_col           TEXT;
+    v_old_val       TEXT;
+    v_new_val       TEXT;
+    v_columnas      TEXT[];
+    v_i             INT;
+    v_session_user  BIGINT;
+BEGIN
+    v_tabla := TG_TABLE_NAME;
+
+    IF TG_OP = 'INSERT' THEN
+        v_tipo := 'create';
+    ELSIF TG_OP = 'UPDATE' THEN
+        v_tipo := 'update';
+    ELSIF TG_OP = 'DELETE' THEN
+        v_tipo := 'delete';
+    END IF;
+
+    /*
+     * 1) Intentar resolver el usuario desde la fila afectada.
+     *    - Primero id_user_rol / id_user_role si existe en la tabla.
+     *    - Luego id_profile y su relación con PROFILE.id_user_rol.
+     */
+    BEGIN
+        IF TG_OP = 'DELETE' THEN
+            v_id_user_rol := NULLIF((row_to_json(OLD) ->> 'id_user_rol'), '')::BIGINT;
+            IF v_id_user_rol IS NULL THEN
+                v_id_user_rol := NULLIF((row_to_json(OLD) ->> 'id_user_role'), '')::BIGINT;
+            END IF;
+
+            v_profile_id := NULLIF((row_to_json(OLD) ->> 'id_profile'), '')::BIGINT;
+        ELSE
+            v_id_user_rol := NULLIF((row_to_json(NEW) ->> 'id_user_rol'), '')::BIGINT;
+            IF v_id_user_rol IS NULL THEN
+                v_id_user_rol := NULLIF((row_to_json(NEW) ->> 'id_user_role'), '')::BIGINT;
+            END IF;
+
+            v_profile_id := NULLIF((row_to_json(NEW) ->> 'id_profile'), '')::BIGINT;
+        END IF;
+    EXCEPTION WHEN OTHERS THEN
+        v_id_user_rol := NULL;
+        v_profile_id := NULL;
+    END;
+
+    IF v_id_user_rol IS NULL AND v_profile_id IS NOT NULL THEN
+        SELECT p.id_user_rol
+        INTO v_id_user_rol
+        FROM "public"."PROFILE" p
+        WHERE p.id_profile = v_profile_id
+        LIMIT 1;
+    END IF;
+
+    /*
+     * 2) Fallback por sesión.
+     *    El backend debe ejecutar algo como:
+     *    SELECT set_config('app.current_user_rol', '<id_user_role>', true);
+     *    antes de hacer operaciones administrativas.
+     */
+    IF v_id_user_rol IS NULL THEN
+        BEGIN
+            v_session_user := NULLIF(current_setting('app.current_user_rol', true), '')::BIGINT;
+            v_id_user_rol := v_session_user;
+        EXCEPTION WHEN OTHERS THEN
+            v_id_user_rol := NULL;
+        END;
+    END IF;
+
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO "public"."LOG"
+            (id_user_rol, modified_table, modified_field, previous_value, new_value, created_at, type)
+        VALUES
+            (v_id_user_rol, v_tabla, NULL, NULL, NULL, NOW(), v_tipo);
+
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO "public"."LOG"
+            (id_user_rol, modified_table, modified_field, previous_value, new_value, created_at, type)
+        VALUES
+            (v_id_user_rol, v_tabla, NULL, NULL, NULL, NOW(), v_tipo);
+
+    ELSIF TG_OP = 'UPDATE' THEN
+        SELECT array_agg(column_name::TEXT)
+        INTO v_columnas
+        FROM information_schema.columns
+        WHERE table_schema = TG_TABLE_SCHEMA
+          AND table_name   = TG_TABLE_NAME;
+
+        FOR v_i IN 1 .. COALESCE(array_length(v_columnas, 1), 0) LOOP
+            v_col := v_columnas[v_i];
+            v_old_val := row_to_json(OLD) ->> v_col;
+            v_new_val := row_to_json(NEW) ->> v_col;
+
+            IF v_old_val IS DISTINCT FROM v_new_val THEN
+                INSERT INTO "public"."LOG"
+                    (id_user_rol, modified_table, modified_field, previous_value, new_value, created_at, type)
+                VALUES
+                    (v_id_user_rol, v_tabla, v_col, v_old_val, v_new_val, NOW(), v_tipo);
+            END IF;
+        END LOOP;
+    END IF;
+
+    IF TG_OP = 'DELETE' THEN
+        RETURN OLD;
+    ELSE
+        RETURN NEW;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================================
+-- IMPORTANTE
+-- ============================================================
+-- Para que tablas como ROLE, COUNTRY, AREA, USER_ROLE, etc.
+-- nunca queden con id_user_rol en NULL, el backend debe setear
+-- el contexto de sesión por conexión antes de ejecutar inserts,
+-- updates o deletes:
+--
+-- SELECT set_config('app.current_user_rol', '<id_user_role>', true);
+--
+-- Si la tabla tiene id_profile, el trigger intentará resolver
+-- PROFILE.id_user_rol automáticamente.
+-- ============================================================

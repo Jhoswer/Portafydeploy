@@ -118,6 +118,16 @@ export async function completarPerfil(formData) {
   });
 }
 
+export function clearProfileCache(userId = null) {
+  if (userId === null) {
+    profileCache.clear();
+    return;
+  }
+
+  profileCache.delete(`self:${userId}`);
+  profileCache.delete(`public:${userId}`);
+}
+
 export async function actualizarPerfil(payload) {
   return apiClient.post("perfil/actualizar", payload, {
     fallbackMessage: "Error al actualizar perfil.",

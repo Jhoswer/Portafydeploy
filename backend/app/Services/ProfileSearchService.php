@@ -8,6 +8,7 @@ use App\Models\Habilidad;
 use App\Models\Proyecto;
 use App\Models\Social;
 use App\Models\Usuario;
+use App\Support\ProfileRoleGuard;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -82,7 +83,7 @@ class ProfileSearchService
         $paginator = $query
             ->with(['profile.jobTitle', 'profile.stateCountry'])
             ->distinct()
-            ->paginate($perPage, ['USER.*'], 'page', $page);
+            ->paginate($perPage, ['USER.*', 'ROLE.name as search_role'], 'page', $page);
 
         $users = $paginator->getCollection();
 
@@ -158,10 +159,13 @@ class ProfileSearchService
 
     private function baseUserQuery(): Builder
     {
-        return Usuario::query()
-            ->select('USER.*')
+        $query = Usuario::query()
+            ->select('USER.*', 'ROLE.name as search_role')
             ->join('USER_ROLE', 'USER_ROLE.id_user', '=', 'USER.id_user')
+            ->join('ROLE', 'ROLE.id_role', '=', 'USER_ROLE.id_role')
             ->join('PROFILE', 'PROFILE.id_user_rol', '=', 'USER_ROLE.id_user_role');
+
+        return ProfileRoleGuard::scopeToPublicProfiles($query);
     }
 
     private function run(Builder $query): array
@@ -185,6 +189,7 @@ class ProfileSearchService
             'lastName' => $user->apellido,
             'photo' => $this->assetUrlService->fromStoragePath($user->foto_perfil),
             'bio' => $user->biografia,
+            'rol' => (string) ($user->search_role ?? $user->rol),
             'skills' => $skills->pluck('nombre')->values(),
         ];
     }
@@ -346,6 +351,7 @@ class ProfileSearchService
             'nombre' => $user->nombre,
             'apellido' => $user->apellido,
             'email' => $user->email,
+            'rol' => (string) ($user->search_role ?? $user->rol),
             'biografia' => $user->biografia,
             'ubicacion' => $user->ubicacion,
             'foto_perfil' => $this->assetUrlService->fromStoragePath($user->foto_perfil),
@@ -453,6 +459,7 @@ class ProfileSearchService
             'nombre' => $user->nombre,
             'apellido' => $user->apellido,
             'email' => $user->email,
+            'rol' => (string) ($user->search_role ?? $user->rol),
             'biografia' => $user->biografia,
             'ubicacion' => $user->ubicacion,
             'foto_perfil' => $this->assetUrlService->fromStoragePath($user->foto_perfil),

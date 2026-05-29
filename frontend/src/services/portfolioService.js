@@ -7,6 +7,7 @@ const ENDPOINTS = {
   experience: "experience",
   projects: "projects",
   social: "socials",
+  education: "formacion",
 };
 
 const OVERVIEW_CACHE_TTL_MS = 15000;
@@ -105,6 +106,16 @@ function mapValidationErrors(endpoint, errors) {
       nombre_plataforma: "platform",
       url: "url",
       url_plataforma: "url",
+    },
+    education: {
+      nivel_formacion: "level",
+      tipo_formacion: "level",
+      institucion: "institution",
+      nombre_programa: "program",
+      nombre_carrera: "program",
+      fecha_inicio: "startDate",
+      fecha_fin: "endDate",
+      actualmente: "isCurrent",
     },
   };
 
@@ -386,6 +397,32 @@ function mapSocial(item) {
   };
 }
 
+function mapEducation(item) {
+  return normalizeEducationList([item])[0] ?? {
+    id: String(item?.id ?? item?.id_university_career ?? Date.now()),
+    program: item?.nombre_programa || item?.nombre_carrera || item?.careerName || "",
+    institution: item?.institucion || "",
+    level: item?.nivel_formacion || item?.tipo_formacion || "",
+    startDate: item?.fecha_inicio || "",
+    endDate: item?.fecha_fin || "",
+    isCurrent: Boolean(item?.actualmente || item?.isCurrent || !item?.fecha_fin),
+  };
+}
+
+function buildEducationPayload(draft) {
+  return {
+    nivel_formacion: draft.level || "otro",
+    tipo_formacion: draft.level || "otro",
+    institucion: draft.institution,
+    nombre_programa: draft.program,
+    nombre_carrera: draft.program,
+    fecha_inicio: draft.startDate || null,
+    fecha_fin: draft.isCurrent ? null : draft.endDate || null,
+    actualmente: Boolean(draft.isCurrent),
+    isCurrent: Boolean(draft.isCurrent),
+  };
+}
+
 export function normalizeOverviewPayload(data = {}) {
   const socialsPayload = data.socials || {};
 
@@ -406,6 +443,7 @@ export function normalizeOverviewPayload(data = {}) {
         ? data.posts
         : [],
     formacion: normalizeEducationList(data.formacion),
+    education: normalizeEducationList(data.formacion),
   };
 }
 
@@ -467,6 +505,7 @@ export async function fetchPortfolioSection(sectionKey) {
     if (sectionKey === "experience") value = data.map(mapExperience);
     if (sectionKey === "projects") value = data.map(mapProject);
     if (sectionKey === "social") value = (data.links || []).map((item) => mapSocial(item));
+    if (sectionKey === "education") value = normalizeEducationList(data.formaciones || data.formacion || []);
 
     sectionCache.set(sectionKey, {
       value,
@@ -554,6 +593,15 @@ export async function createPortfolioItem(sectionKey, draft) {
     );
   }
 
+  if (sectionKey === "education") {
+    clearPortfolioOverviewCache();
+    const response = await request(endpoint, {
+      method: "POST",
+      body: JSON.stringify(buildEducationPayload(draft)),
+    });
+    return mapEducation(response.formacion ?? response);
+  }
+
   return null;
 }
 
@@ -624,8 +672,18 @@ export async function updatePortfolioItem(sectionKey, itemId, draft) {
     );
   }
 
+  if (sectionKey === "education") {
+    clearPortfolioOverviewCache();
+    const response = await request(`${endpoint}/${itemId}`, {
+      method: "PUT",
+      body: JSON.stringify(buildEducationPayload(draft)),
+    });
+    return mapEducation(response.formacion ?? response);
+  }
+
   return null;
 }
+
 
 export async function deletePortfolioItem(sectionKey, itemId) {
   await request(`${ENDPOINTS[sectionKey]}/${itemId}`, {

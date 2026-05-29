@@ -19,6 +19,8 @@ import {
   X,
 } from "lucide-react";
 import { FeedPublicationMedia } from "./FeedPublicationMedia";
+import { isAdministrativeRole } from "../../services/searchService";
+import { useTranslation } from "react-i18next";
 
 function ThumbsUp() {
   return <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>;
@@ -47,8 +49,9 @@ function formatCompactCount(value) {
 }
 
 function VerifiedMark({ size = 15 }) {
+  const { t } = useTranslation();
   return (
-    <span className="post-verified-mark" title="Cuenta verificada" aria-label="Cuenta verificada">
+    <span className="post-verified-mark" title={t("appI18n.common.verifiedAccount")} aria-label={t("appI18n.common.verifiedAccount")}>
       <ShieldCheck size={size} />
     </span>
   );
@@ -74,9 +77,10 @@ function useCloseOnOutside(open, onClose) {
 }
 
 function ProfileHoverCard({ post }) {
+  const { t } = useTranslation();
   const title = post.authorTitle && post.authorTitle !== "Profesional"
     ? post.authorTitle
-    : "Profesional Portafy";
+    : t("appI18n.feed.right.professionalFallback");
 
   return (
     <div className="post-author-hover" role="status">
@@ -95,8 +99,8 @@ function ProfileHoverCard({ post }) {
         </div>
       </div>
       <div className="post-author-hover__stats">
-        <span><UsersRound size={14} /> {formatCompactCount(post.authorFollowers)} seguidores</span>
-        <span>{formatCompactCount(post.authorFollowing)} seguidos</span>
+        <span><UsersRound size={14} /> {formatCompactCount(post.authorFollowers)} {t("appI18n.feed.post.followers")}</span>
+        <span>{formatCompactCount(post.authorFollowing)} {t("appI18n.feed.post.followingUsers")}</span>
       </div>
     </div>
   );
@@ -132,20 +136,23 @@ function AuthorIdentity({ post, onOpenProfile }) {
   );
 }
 
-function normalizeProjectStatus(status) {
+function normalizeProjectStatus(status, t) {
   const value = String(status || "").trim().toLowerCase();
-  if (["completo", "completado", "complete", "done", "finalizado"].includes(value)) return "Completo";
-  if (["pausado", "paused", "pause"].includes(value)) return "Pausado";
-  return "En proceso";
+  if (["completo", "completado", "complete", "done", "finalizado"].includes(value)) return t("appI18n.feed.post.complete");
+  if (["pausado", "paused", "pause"].includes(value)) return t("appI18n.feed.post.paused");
+  return t("appI18n.feed.post.inProgress");
 }
 
 function ProjectStatusBadge({ status }) {
-  const normalized = normalizeProjectStatus(status);
-  const config = normalized === "Completo"
-    ? { Icon: CheckCircle2, cls: "complete", label: "Completo" }
-    : normalized === "Pausado"
-      ? { Icon: PauseCircle, cls: "paused", label: "Pausado" }
-      : { Icon: CircleDashed, cls: "progress", label: "En proceso" };
+  const { t } = useTranslation();
+  const complete = t("appI18n.feed.post.complete");
+  const paused = t("appI18n.feed.post.paused");
+  const normalized = normalizeProjectStatus(status, t);
+  const config = normalized === complete
+    ? { Icon: CheckCircle2, cls: "complete", label: complete }
+    : normalized === paused
+      ? { Icon: PauseCircle, cls: "paused", label: paused }
+      : { Icon: CircleDashed, cls: "progress", label: t("appI18n.feed.post.inProgress") };
   const Icon = config.Icon;
 
   return (
@@ -173,15 +180,15 @@ function formatDate(value) {
   return new Intl.DateTimeFormat("es", { month: "short", year: "numeric" }).format(date);
 }
 
-function experienceTypeLabel(experience = {}) {
+function experienceTypeLabel(experience = {}, t) {
   const value = String(experience.typeLabel || experience.type || "").toLowerCase();
-  if (value.includes("academ")) return "Academica";
+  if (value.includes("academ")) return t("appI18n.feed.post.academic");
   if (value.includes("freelance")) return "Freelance";
-  return "Profesional";
+  return t("appI18n.feed.post.professional");
 }
 
-function experienceIcon(experience = {}) {
-  return experienceTypeLabel(experience) === "Academica"
+function experienceIcon(experience = {}, t) {
+  return experienceTypeLabel(experience, t) === t("appI18n.feed.post.academic")
     ? <GraduationCap size={16} />
     : <BriefcaseBusiness size={16} />;
 }
@@ -205,9 +212,10 @@ function shouldShowIntro(post) {
 }
 
 function PostMeta({ post }) {
+  const { t } = useTranslation();
   return (
     <div className="post-meta-row">
-      <span className="post-meta-chip post-meta-chip--role">{post.authorTitle || "Profesional Portafy"}</span>
+      <span className="post-meta-chip post-meta-chip--role">{post.authorTitle || t("appI18n.feed.right.professionalFallback")}</span>
       {post.posted ? <span className="post-meta-chip">{post.posted}</span> : null}
     </div>
   );
@@ -231,6 +239,7 @@ const postMenuItemStyle = {
 };
 
 function DefaultPostOptionsMenu({ owner = false, onUnshare = null, onReport = null, isUnsharing = false }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useCloseOnOutside(open, () => setOpen(false));
 
@@ -247,7 +256,7 @@ function DefaultPostOptionsMenu({ owner = false, onUnshare = null, onReport = nu
       <button
         className="post-more"
         type="button"
-        aria-label="Mas opciones"
+        aria-label={t("appI18n.feed.post.moreOptions")}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
@@ -266,7 +275,7 @@ function DefaultPostOptionsMenu({ owner = false, onUnshare = null, onReport = nu
               style={{ ...postMenuItemStyle, color: "#b42318", opacity: isUnsharing ? 0.68 : 1 }}
             >
               <PauseCircle size={15} />
-              {isUnsharing ? "Quitando..." : "Dejar de compartir"}
+              {isUnsharing ? t("appI18n.feed.post.removing") : t("appI18n.feed.post.removeSharing")}
             </button>
           ) : (
             <button
@@ -278,7 +287,7 @@ function DefaultPostOptionsMenu({ owner = false, onUnshare = null, onReport = nu
               style={{ ...postMenuItemStyle, color: "#b42318" }}
             >
               <Flag size={15} />
-              Reportar publicacion
+              {t("appI18n.feed.post.reportPublication")}
             </button>
           )}
         </div>
@@ -288,6 +297,7 @@ function DefaultPostOptionsMenu({ owner = false, onUnshare = null, onReport = nu
 }
 
 function ProjectPublicationDetails({ post }) {
+  const { t } = useTranslation();
   const project = post.project || {};
   const tags = post.tags?.length ? post.tags : [];
 
@@ -297,16 +307,16 @@ function ProjectPublicationDetails({ post }) {
         <div className="post-showcase__head">
           <span className="post-showcase__icon"><Code2 size={18} /></span>
           <div>
-            <div className="post-showcase__eyebrow">Proyecto</div>
-            <h3 className="post-showcase__title">{project.title || "Proyecto de portafolio"}</h3>
+            <div className="post-showcase__eyebrow">{t("appI18n.feed.post.project")}</div>
+            <h3 className="post-showcase__title">{project.title || t("appI18n.feed.post.portfolioProject")}</h3>
           </div>
           <ProjectStatusBadge status={project.status} />
         </div>
 
-        <p className="post-showcase__text">{project.description || "Proyecto del portafolio profesional."}</p>
+        <p className="post-showcase__text">{project.description || t("appI18n.feed.post.portfolioProjectText")}</p>
 
         <div className="post-tech-panel">
-          <div className="post-tech-panel__label">Tecnologias usadas</div>
+          <div className="post-tech-panel__label">{t("appI18n.feed.post.technologies")}</div>
           {tags.length ? (
             <div className="post-tags post-tags--inside">
               {tags.map((tag) => (
@@ -314,7 +324,7 @@ function ProjectPublicationDetails({ post }) {
               ))}
             </div>
           ) : (
-            <span className="post-empty-note">Sin tecnologias registradas.</span>
+            <span className="post-empty-note">{t("appI18n.feed.post.noTechnologies")}</span>
           )}
         </div>
 
@@ -323,14 +333,14 @@ function ProjectPublicationDetails({ post }) {
             {project.demoUrl ? (
               <a href={project.demoUrl} target="_blank" rel="noreferrer" className="post-resource-link">
                 <ExternalLink size={14} />
-                Demo
+                {t("appI18n.feed.post.demo")}
                 <span>{externalHost(project.demoUrl)}</span>
               </a>
             ) : null}
             {project.repoUrl ? (
               <a href={project.repoUrl} target="_blank" rel="noreferrer" className="post-resource-link">
                 <ExternalLink size={14} />
-                Repositorio
+                {t("appI18n.feed.post.repository")}
                 <span>{externalHost(project.repoUrl)}</span>
               </a>
             ) : null}
@@ -346,6 +356,7 @@ function ProjectPublicationDetails({ post }) {
 }
 
 function ExperiencePublicationDetails({ post }) {
+  const { t } = useTranslation();
   const experience = post.experience || {};
   const dateRange = [formatDate(experience.startDate), experience.isCurrent ? "Presente" : formatDate(experience.endDate)]
     .filter(Boolean)
@@ -355,28 +366,28 @@ function ExperiencePublicationDetails({ post }) {
     <section className="post-showcase post-showcase--experience">
       <div className="post-showcase__main">
         <div className="post-showcase__head">
-          <span className="post-showcase__icon">{experienceIcon(experience)}</span>
+          <span className="post-showcase__icon">{experienceIcon(experience, t)}</span>
           <div>
-            <div className="post-showcase__eyebrow">Experiencia</div>
-            <h3 className="post-showcase__title">{experience.title || "Trayectoria profesional"}</h3>
+            <div className="post-showcase__eyebrow">{t("appI18n.feed.post.experience")}</div>
+            <h3 className="post-showcase__title">{experience.title || t("appI18n.feed.post.professionalTrajectory")}</h3>
           </div>
-          <span className="post-experience-type">{experienceTypeLabel(experience)}</span>
+          <span className="post-experience-type">{experienceTypeLabel(experience, t)}</span>
         </div>
 
         <div className="post-experience-grid">
           <div className="post-info-tile">
             <Building2 size={16} />
-            <span>Organizacion</span>
-            <strong>{experience.company || "Sin organizacion"}</strong>
+            <span>{t("appI18n.feed.post.organization")}</span>
+            <strong>{experience.company || t("appI18n.feed.post.noOrganization")}</strong>
           </div>
           <div className="post-info-tile">
             <CalendarDays size={16} />
-            <span>Periodo</span>
-            <strong>{dateRange || "Sin fechas"}</strong>
+            <span>{t("appI18n.feed.post.period")}</span>
+            <strong>{dateRange || t("appI18n.feed.post.noDates")}</strong>
           </div>
         </div>
 
-        <p className="post-showcase__text">{experience.description || "Experiencia del perfil profesional."}</p>
+        <p className="post-showcase__text">{experience.description || t("appI18n.feed.post.experienceText")}</p>
       </div>
     </section>
   );
@@ -392,6 +403,7 @@ function CommentAvatar({ comment }) {
 }
 
 function CommentOptionsMenu({ comment, canReport = false, onReportComment }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useCloseOnOutside(open, () => setOpen(false));
 
@@ -402,7 +414,7 @@ function CommentOptionsMenu({ comment, canReport = false, onReportComment }) {
       <button
         type="button"
         className="post-comment-menu__trigger"
-        aria-label="Opciones del comentario"
+        aria-label={t("appI18n.feed.post.commentOptions")}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
@@ -418,7 +430,7 @@ function CommentOptionsMenu({ comment, canReport = false, onReportComment }) {
             }}
           >
             <Flag size={14} />
-            Reportar comentario
+            {t("appI18n.feed.post.reportComment")}
           </button>
         </div>
       ) : null}
@@ -465,6 +477,7 @@ function CommentItem({ comment, showDate = true, onOpenProfile, currentUserId = 
 }
 
 export function PostCommentsModal({ post, isLoading = false, onClose, onOpenProfile, currentUserId = null, onReportComment }) {
+  const { t } = useTranslation();
   if (!post) return null;
 
   const comments = Array.isArray(post.commentsList) ? post.commentsList : [];
@@ -480,10 +493,10 @@ export function PostCommentsModal({ post, isLoading = false, onClose, onOpenProf
       >
         <header className="post-comments-modal__header">
           <div>
-            <span>Comentarios</span>
-            <h3 id="post-comments-modal-title">{post.project?.title || post.experience?.title || "Publicacion"}</h3>
+            <span>{t("appI18n.feed.post.comments")}</span>
+            <h3 id="post-comments-modal-title">{post.project?.title || post.experience?.title || t("appI18n.feed.post.publication")}</h3>
           </div>
-          <button type="button" onClick={onClose} aria-label="Cerrar comentarios">
+          <button type="button" onClick={onClose} aria-label={t("appI18n.common.close")}>
             <X size={18} />
           </button>
         </header>
@@ -492,7 +505,7 @@ export function PostCommentsModal({ post, isLoading = false, onClose, onOpenProf
           {post.description ? <p>{post.description}</p> : null}
         </div>
         <div className="post-comments-modal__list">
-          {isLoading ? <div className="post-comment post-comment--muted">Cargando comentarios...</div> : null}
+          {isLoading ? <div className="post-comment post-comment--muted">{t("appI18n.feed.post.loadingComments")}</div> : null}
           {!isLoading && comments.length ? comments.map((comment) => (
             <CommentItem
               key={comment.id}
@@ -503,7 +516,7 @@ export function PostCommentsModal({ post, isLoading = false, onClose, onOpenProf
             />
           )) : null}
           {!isLoading && !comments.length ? (
-            <div className="post-comment post-comment--muted">Todavia no hay comentarios visibles.</div>
+            <div className="post-comment post-comment--muted">{t("appI18n.feed.post.noComments")}</div>
           ) : null}
         </div>
       </section>
@@ -541,34 +554,36 @@ export function FeedPostCard({
   isFollowAuthorBusy = false,
   onReportComment = null,
 }) {
+  const { t } = useTranslation();
   const isExperiencePost = post.sourceType === "experience";
-  const kindLabel = isExperiencePost ? "Experiencia profesional" : "Proyecto de portafolio";
+  const kindLabel = isExperiencePost ? t("appI18n.feed.post.experienceKind") : t("appI18n.feed.post.projectKind");
   const showIntro = shouldShowIntro(post);
   const shownComments = Array.isArray(post.commentsList) ? post.commentsList.slice(0, 3) : [];
   const hiddenComments = Math.max(0, Number(post.comments || 0) - shownComments.length);
   const canViewMoreComments = Boolean(onViewAllComments && (hiddenComments > 0 || (post.commentsList?.length || 0) > shownComments.length));
   const canFollowAuthor = Boolean(onFollowAuthor && post.authorId && currentUserId && String(post.authorId) !== String(currentUserId));
+  const authorIsAdmin = isAdministrativeRole(post.authorRole);
   const authorIsFollowing = Boolean(isFollowingAuthor ?? post.authorIsFollowing);
 
   return (
     <article className="card">
       <div className="post-header">
         <AuthorIdentity post={post} onOpenProfile={onOpenProfile} />
-        {canFollowAuthor ? (
+        {canFollowAuthor && !authorIsAdmin ? (
           <button
             type="button"
             className={`post-follow-author${authorIsFollowing ? " following" : ""}${isFollowAuthorBusy ? " pending" : ""}`}
             onClick={onFollowAuthor}
             aria-pressed={authorIsFollowing}
             aria-busy={isFollowAuthorBusy}
-            title={authorIsFollowing ? "Siguiendo" : "Seguir"}
+            title={authorIsFollowing ? t("appI18n.feed.post.following") : t("appI18n.feed.post.follow")}
           >
             {authorIsFollowing ? (
               <UserCheck size={15} />
             ) : (
               <UserPlus size={15} />
             )}
-            <span>{authorIsFollowing ? "Siguiendo" : "Seguir"}</span>
+            <span>{authorIsFollowing ? t("appI18n.feed.post.following") : t("appI18n.feed.post.follow")}</span>
           </button>
         ) : null}
         {moreMenu ? moreMenu : <DefaultPostOptionsMenu owner={post.ownedByMe} onUnshare={onUnshare} onReport={onReport} isUnsharing={isUnsharing} />}
@@ -586,12 +601,12 @@ export function FeedPostCard({
       </div>
 
       <div className="post-stats">
-        {post.likes} me gusta - {post.comments} comentarios - {post.saves || 0} guardados
+        {post.likes} {t("appI18n.feed.post.likes")} - {post.comments} {t("appI18n.feed.post.commentsCount")} - {post.saves || 0} {t("appI18n.feed.post.savedCount")}
       </div>
 
       {isCommentingOpen ? (
         <div className="post-comments">
-          {isLoadingComments ? <div className="post-comment post-comment--muted">Cargando comentarios...</div> : null}
+          {isLoadingComments ? <div className="post-comment post-comment--muted">{t("appI18n.feed.post.loadingComments")}</div> : null}
           {!isLoadingComments && shownComments.length ? shownComments.map((comment) => (
             <CommentItem
               key={comment.id}
@@ -603,11 +618,11 @@ export function FeedPostCard({
           )) : null}
           {!isLoadingComments && canViewMoreComments ? (
             <button className="post-comments-more" type="button" onClick={onViewAllComments} disabled={isLoadingAllComments}>
-              {isLoadingAllComments ? "Cargando..." : `Ver mas comentarios${hiddenComments > 0 ? ` (${hiddenComments})` : ""}`}
+              {isLoadingAllComments ? t("appI18n.common.loading") : `${t("appI18n.feed.post.viewMoreComments")}${hiddenComments > 0 ? ` (${hiddenComments})` : ""}`}
             </button>
           ) : null}
-          {!isLoadingComments && !post.commentsList?.length && post.comments > 0 ? <div className="post-comment post-comment--muted">No se pudieron mostrar los comentarios todavia.</div> : null}
-          {!isLoadingComments && post.comments === 0 ? <div className="post-comment post-comment--muted">Se el primero en comentar.</div> : null}
+          {!isLoadingComments && !post.commentsList?.length && post.comments > 0 ? <div className="post-comment post-comment--muted">{t("appI18n.feed.post.commentsUnavailable")}</div> : null}
+          {!isLoadingComments && post.comments === 0 ? <div className="post-comment post-comment--muted">{t("appI18n.feed.post.firstComment")}</div> : null}
         </div>
       ) : post.commentsList?.length ? (
         <div className="post-comments post-comments--preview">
@@ -623,7 +638,7 @@ export function FeedPostCard({
           ))}
           {canViewMoreComments ? (
             <button className="post-comments-more" type="button" onClick={onViewAllComments} disabled={isLoadingAllComments}>
-              {isLoadingAllComments ? "Cargando..." : "Ver mas comentarios"}
+              {isLoadingAllComments ? t("appI18n.common.loading") : t("appI18n.feed.post.viewMoreComments")}
             </button>
           ) : null}
         </div>
@@ -632,13 +647,13 @@ export function FeedPostCard({
       <div className="post-actions">
         <button className={`action-btn${post.likedByMe ? " liked" : ""}`} type="button" onClick={onLike} aria-pressed={post.likedByMe} aria-busy={isLiking} disabled={!canReact}>
           <ThumbsUp />
-          Me gusta
+          {t("appI18n.feed.post.like")}
         </button>
         <button className={`action-btn${isCommentingOpen ? " commenting" : ""}`} type="button" onClick={onToggleComment} aria-expanded={isCommentingOpen} disabled={!canComment}>
-          <Chat /> Comentar
+          <Chat /> {t("appI18n.feed.post.comment")}
         </button>
         <button className={`action-btn${post.savedByMe ? " saved" : ""}`} type="button" onClick={onSave} aria-pressed={post.savedByMe} aria-busy={isSaving}>
-          <Bookmark /> {post.savedByMe ? "Guardado" : "Guardar"}
+          <Bookmark /> {post.savedByMe ? t("appI18n.common.saved") : t("appI18n.common.save")}
         </button>
       </div>
 
@@ -647,7 +662,7 @@ export function FeedPostCard({
           <input
             value={commentDraft}
             onChange={(event) => onCommentDraftChange(event.target.value)}
-            placeholder="Escribe un comentario breve..."
+            placeholder={t("appI18n.feed.post.writeComment")}
             maxLength={commentMaxLength}
             className="post-comment-composer__input"
             aria-invalid={Boolean(commentError)}
@@ -660,8 +675,8 @@ export function FeedPostCard({
             className="post-comment-composer__send"
             type="submit"
             disabled={!canComment || isCommenting || !String(commentDraft || "").trim()}
-            aria-label="Enviar comentario"
-            title="Enviar comentario"
+            aria-label={t("appI18n.feed.post.sendComment")}
+            title={t("appI18n.feed.post.sendComment")}
           >
             <Send size={17} />
           </button>

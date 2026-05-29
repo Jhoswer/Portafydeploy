@@ -12,7 +12,6 @@
     "myProfile": "Meu perfil",
     "settings": "Configurações",
     "logout": "Sair",
-
     "dashboard": "Painel",
     "saved": "Salvos"
   },
@@ -211,7 +210,7 @@
       "termsRequired": "Você deve aceitar os termos para continuar",
       "captchaRequired": "Complete o captcha para continuar",
       "passwordLetter_pt": "A senha deve conter pelo menos uma letra",
-  "passwordSymbol_pt": "A senha deve conter pelo menos um símbolo"
+      "passwordSymbol_pt": "A senha deve conter pelo menos um símbolo"
     }
   },
   "resetPassword": {
@@ -499,5 +498,725 @@
     "previousPage": "Pagina anterior",
     "nextPage": "Pagina seguinte",
     "lastPage": "Ultima pagina"
+  },
+  "recruiterForms": {
+    "common": {
+      "continue": "Continuar",
+      "back": "Voltar",
+      "optional": "opcional"
+    },
+    "steps": {
+      "identidad": "Identidade",
+      "branding": "Branding",
+      "empresa": "Empresa",
+      "contacto": "Contato"
+    },
+    "stepIdentidad": {
+      "title": "Identidade básica",
+      "subtitle": "Conte-nos sobre a empresa que você representa.",
+      "empresa": {
+        "label": "Nome da empresa",
+        "placeholder": "Ex. Acme Corp",
+        "hint": "Nome legal ou comercial da empresa"
+      },
+      "descripcion": {
+        "label": "Descrição",
+        "placeholder": "Descreva brevemente o que a empresa faz, sua missão e cultura de trabalho...",
+        "charCount": "{{current}} / {{max}}"
+      }
+    },
+    "stepBranding": {
+      "title": "Branding",
+      "subtitle": "Envie seu logotipo para que os candidatos reconheçam sua empresa.",
+      "dropzone": {
+        "heading": "Envie seu logotipo",
+        "hint": "PNG, JPG · Máximo 5 MB"
+      },
+      "preview": {
+        "change": "Alterar",
+        "remove": "Remover"
+      }
+    },
+    "stepEmpresa": {
+      "title": "Informações da empresa",
+      "subtitle": "Ajude os candidatos a entender o contexto da sua empresa.",
+      "rubro": {
+        "label": "Setor ou indústria",
+        "placeholder": "Ex. Tecnologia, Saúde, Finanças...",
+        "hint": "Comece a digitar para ver sugestões"
+      },
+      "pais": {
+        "label": "País",
+        "placeholder": "Selecionar país"
+      },
+      "ciudad": {
+        "label": "Cidade",
+        "placeholder": "Selecionar cidade",
+        "placeholderNoPais": "Selecione um país primeiro",
+        "hint": "Selecione um país para ver as cidades disponíveis"
+      }
+    },
+    "stepContacto": {
+      "title": "Informações de contato",
+      "subtitle": "Como os candidatos podem entrar em contato com você?",
+      "telefono": {
+        "label": "Telefone de contato",
+        "placeholder": "7123 4567",
+        "hint": "Número direto ou da empresa"
+      },
+      "sitio": {
+        "label": "Site",
+        "placeholder": "https://empresa.com",
+        "hint": "URL completa incluindo https://"
+      },
+      "submit": "Finalizar cadastro"
+    },
+    "stepExito": {
+      "title": "Perfil criado com sucesso!",
+      "subtitle": "Sua empresa <strong>{{empresa}}</strong> já está cadastrada. Agora você pode publicar vagas e encontrar candidatos.",
+      "cta": "Ir para o painel"
+    }
+  },
+  "recruiterValidations": {
+    "empresa": {
+      "required": "O nome da empresa é obrigatório",
+      "minLength": "Deve ter pelo menos 2 caracteres"
+    },
+    "descripcion": {
+      "required": "A descrição é obrigatória",
+      "minLength": "Escreva pelo menos 20 caracteres"
+    },
+    "rubro": {
+      "required": "Selecione ou escreva um setor"
+    },
+    "ciudad": {
+      "required": "A cidade é obrigatória"
+    },
+    "pais": {
+      "required": "Selecione um país"
+    },
+    "telefono": {
+      "required": "O telefone é obrigatório",
+      "invalid": "Número inválido"
+    },
+    "sitio": {
+      "invalid": "Insira uma URL válida (ex: https://empresa.com)"
+    }
+  },
+  "newConvocatory": {
+    "loading": "Carregando vaga...",
+    "header": {
+      "new": "Nova vaga",
+      "edit": "Editar vaga",
+      "editSub": "Modifique os campos que deseja atualizar",
+      "editBadge": "Modo edição"
+    },
+    "placeholders": {
+      "title": "Título da vaga *",
+      "area": "Área ou setor (ex. Tecnologia, Saúde, Construção...)",
+      "description": "Descreva a função, responsabilidades e o que você busca em um candidato...",
+      "city": "Cidade",
+      "skillInput": "Digite e pressione Enter...",
+      "salaryMin": "Mínimo",
+      "salaryMax": "Máximo"
+    },
+    "chips": {
+      "type": "Tipo",
+      "modality": "Modalidade",
+      "level": "Nível",
+      "typeOptions": [
+        "Tempo integral",
+        "Meio período",
+        "Freelance",
+        "Estágio"
+      ],
+      "modalityOptions": [
+        "Remoto",
+        "Presencial",
+        "Híbrido"
+      ],
+      "levelOptions": [
+        "Sem experiência",
+        "Júnior",
+        "Pleno",
+        "Sênior",
+        "Lead"
+      ]
+    },
+    "expand": {
+      "label": "Mais detalhes",
+      "salary": "Faixa salarial",
+      "showSalary": "Mostrar salário publicamente",
+      "deadline": "Data limite de candidatura",
+      "skills": "Habilidades necessárias"
+    },
+    "actions": {
+      "attachImage": "Anexar imagem",
+      "attachPdf": "Anexar PDF",
+      "saveDraft": "Salvar rascunho",
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "saving": "Salvando...",
+      "saveChanges": "Salvar alterações"
+    },
+    "toast": {
+      "titleRequired": "O título é obrigatório",
+      "noPermission": "Você não tem permissão para publicar ofertas de emprego.",
+      "loadError": "Não foi possível carregar a vaga",
+      "saveError": "Erro ao salvar",
+      "draftUpdated": "Rascunho atualizado",
+      "draftSaved": "Rascunho salvo",
+      "editSuccess": "Vaga editada com sucesso!",
+      "createSuccess": "Vaga criada com sucesso!",
+      "draftUpdatedSub": "As alterações foram salvas.",
+      "editSuccessSub": "As alterações já estão visíveis.",
+      "draftSavedSub": "Você pode editá-lo e publicá-lo quando quiser.",
+      "createSuccessSub": "Sua vaga já está visível para os candidatos."
+    }
+  },
+  "audienceModal": {
+    "title": "Público da vaga",
+    "titleProfessional": "Tipo de profissional",
+    "subtitle": "Quem pode ver e se candidatar?",
+    "subtitleProfessional": "Filtre por área e carreira",
+    "options": {
+      "public": {
+        "title": "Todos",
+        "sub": "Qualquer pessoa no Portafy pode ver"
+      },
+      "followers": {
+        "title": "Meus seguidores",
+        "sub": "Somente pessoas que te seguem"
+      },
+      "professionals": {
+        "title": "Tipo de profissional",
+        "sub": null
+      }
+    },
+    "profSummary": {
+      "default": "Filtre por área e carreira",
+      "wholeArea": "Toda a área de {{area}}"
+    },
+    "dropdown": {
+      "areaLabel": "Área",
+      "areaPlaceholder": "Selecione uma área...",
+      "careerLabel": "Carreira",
+      "careerPlaceholder": "Selecione uma carreira...",
+      "careerPlaceholderDisabled": "Primeiro escolha uma área"
+    },
+    "done": "Pronto",
+    "apply": "Aplicar · {{name}}",
+    "applyDisabled": "Escolha uma área para continuar"
+  },
+  "misConvocatorias": {
+    "title": "Minhas Vagas",
+    "subtitle": "Gerencie suas ofertas de emprego publicadas e rascunhos.",
+    "newBtn": "Nova vaga",
+    "tabs": {
+      "published": "Publicadas",
+      "drafts": "Rascunhos",
+      "closed": "Encerradas"
+    },
+    "empty": {
+      "noActive": {
+        "title": "Sem vagas ativas",
+        "text": "Você ainda não publicou nenhuma oportunidade de trabalho.",
+        "action": "Criar primeira vaga"
+      },
+      "noDrafts": {
+        "title": "Sem rascunhos",
+        "text": "Seus rascunhos salvos aparecerão aqui."
+      },
+      "noClosed": {
+        "title": "Sem vagas encerradas",
+        "text": "As vagas que você encerrar aparecerão aqui como histórico."
+      }
+    },
+    "toast": {
+      "closed": "Vaga encerrada",
+      "opened": "Vaga reaberta",
+      "published": "Vaga publicada",
+      "deleted": "Vaga excluída"
+    },
+    "timeAgo": {
+      "draft": "Rascunho"
+    }
+  },
+  "jobCard": {
+    "status": {
+      "Activa": "Ativa",
+      "Borrador": "Rascunho",
+      "Cerrada": "Encerrada",
+      "Eliminada": "Excluída"
+    },
+    "noLocation": "Sem localização",
+    "publishedOn": "Publicado em {{date}}",
+    "noDate": "Sem data",
+    "company": "Empresa",
+    "metrics": {
+      "applicants": "Candidatos",
+      "interviews": "Entrevistas",
+      "hired": "Contratado"
+    },
+    "pipeline": {
+      "new": "Novos",
+      "inReview": "Em revisão",
+      "interview": "Entrevista",
+      "offer": "Oferta"
+    },
+    "actions": {
+      "viewApplicants": "Ver candidatos",
+      "viewDetail": "Ver detalhe"
+    },
+    "menu": {
+      "viewDetail": "Ver detalhe",
+      "edit": "Editar",
+      "close": "Encerrar vaga",
+      "reopen": "Reabrir vaga",
+      "publish": "Publicar",
+      "delete": "Excluir"
+    },
+    "modal": {
+      "noDescription": "Sem descrição",
+      "statusLabel": "Status:",
+      "descLabel": "Descrição",
+      "skillsLabel": "Habilidades",
+      "perMonth": "/ mês",
+      "applicants": "candidatos",
+      "views": "visualizações",
+      "edit": "Editar",
+      "delete": "Excluir"
+    },
+    "deleteModal": {
+      "title": "Excluir vaga?",
+      "desc": "será excluída permanentemente.",
+      "cancel": "Cancelar",
+      "confirm": "Sim, excluir",
+      "confirming": "Excluindo..."
+    }
+  },
+  "postulantes": {
+    "columns": {
+      "new": "Novo",
+      "in_verification": "Em revisão",
+      "in_interview": "Em entrevista",
+      "accepted": "Aceito",
+      "refused": "Recusado"
+    },
+    "loading": "Carregando candidatos...",
+    "back": "Voltar",
+    "total_one": "{{count}} candidato no total",
+    "total_other": "{{count}} candidatos no total",
+    "search": "Buscar por nome, e-mail, carreira...",
+    "empty": {
+      "noResults": "Sem resultados para essa busca",
+      "none": "Ainda não há candidatos"
+    },
+    "row": {
+      "viewProfile": "Ver perfil",
+      "contact": "Contatar",
+      "appliedOn": "Candidatou em {{date}}"
+    },
+    "kanban": {
+      "dragHere": "Arraste aqui"
+    },
+    "card": {
+      "cvAttached": "CV anexado"
+    },
+    "profile": {
+      "viewFull": "Ver perfil completo",
+      "contact": "Contatar",
+      "appliedOn": "Candidatou em {{date}}",
+      "cv": "Currículo",
+      "cvOpen": "Abrir ou baixar currículo",
+      "cvRegistered": "Currículo registrado",
+      "cvInSystem": "O candidato tem currículo no sistema",
+      "cvNone": "Não anexou currículo",
+      "coverLetter": "Carta de apresentação",
+      "about": "Sobre o candidato",
+      "interview": "Entrevista agendada",
+      "virtual": "Virtual",
+      "presencial": "Presencial",
+      "stateLabel": "Status da candidatura",
+      "refusedReason": "Motivo da recusa",
+      "noReason": "Sem motivo registrado"
+    },
+    "toast": {
+      "new": "Marcado como Novo",
+      "in_verification": "Em revisão",
+      "in_interview": "Entrevista agendada ✓",
+      "accepted": "Candidato aceito ✓",
+      "refused": "Candidato recusado",
+      "updated": "Status atualizado",
+      "updateError": "Não foi possível atualizar o status. Tente novamente.",
+      "interviewError": "Não foi possível agendar a entrevista. Tente novamente."
+    }
+  },
+  "interviewModal": {
+    "title": "Agendar entrevista",
+    "typeLabel": "Tipo de entrevista",
+    "virtual": "Virtual",
+    "presencial": "Presencial",
+    "dateTime": "Data e hora",
+    "linkLabel": "Link da reunião",
+    "linkPlaceholder": "https://meet.google.com/...",
+    "addressLabel": "Endereço",
+    "addressPlaceholder": "Rua Exemplo 123, Cidade",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar entrevista",
+    "errorLink": "Adicione o link da entrevista virtual",
+    "errorAddress": "Adicione o endereço da entrevista"
+  },
+  "company": {
+    "header": {
+      "tabs": {
+        "convocatorias": "Convocatórias",
+        "informacion": "Informações",
+        "rubro": "Setor",
+        "contacto": "Contato",
+        "seguidores": "Seguidores"
+      },
+      "banner": {
+        "change": "Alterar banner",
+        "edit": "Editar capa"
+      },
+      "fields": {
+        "namePlaceholder": "Nome da empresa",
+        "industryPlaceholder": "Indústria",
+        "cityPlaceholder": "Cidade",
+        "websitePlaceholder": "https://empresa.com"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "saving": "Salvando...",
+        "save": "Salvar alterações",
+        "follow": "+ Seguir",
+        "unfollow": "Deixar de seguir",
+        "share": "Compartilhar",
+        "edit": "Editar perfil",
+        "linkCopied": "✓ Link copiado"
+      },
+      "errors": {
+        "nameRequired": "O nome é obrigatório.",
+        "saveFailed": "Erro ao salvar."
+      },
+      "founded": "Fundada em {{year}}"
+    },
+    "info": {
+      "title": "Sobre nós",
+      "actions": {
+        "edit": "Editar",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "saving": "Salvando..."
+      },
+      "description": {
+        "placeholder": "Descreva sua empresa, o que ela faz e sua cultura...",
+        "empty": "Nenhuma descrição disponível.",
+        "charCount": "{{count}} / 500"
+      },
+      "general": {
+        "title": "Informações gerais",
+        "foundedYear": "Ano de fundação:",
+        "foundedYearPlaceholder": "Ex: 2015",
+        "size": "Tamanho:",
+        "sizePlaceholder": "Selecionar...",
+        "alcance": "Alcance:",
+        "personeria": "Pessoa jurídica:",
+        "schedule": "Horário:",
+        "schedulePlaceholder": "Ex: Seg–Sex 8:00–18:00",
+        "empty": "—"
+      },
+      "errors": {
+        "saveFailed": "Erro ao salvar."
+      },
+      "size": {
+        "1_10": "1-10 funcionários",
+        "11_50": "11-50 funcionários",
+        "51_200": "51-200 funcionários",
+        "201_500": "201-500 funcionários",
+        "500plus": "500+ funcionários"
+      },
+      "alcance": {
+        "local": "Local",
+        "regional": "Regional",
+        "nacional": "Nacional",
+        "internacional": "Internacional"
+      },
+      "personeria": {
+        "natural": "Pessoa Física",
+        "srl": "Sociedade de Responsabilidade Limitada (LTDA)",
+        "sa": "Sociedade Anônima (SA)",
+        "unipersonal": "Empresa Individual",
+        "ong": "ONG / Fundação",
+        "cooperativa": "Cooperativa"
+      }
+    },
+    "rubro": {
+      "title": "Setor e indústria",
+      "actions": {
+        "edit": "Editar",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "saving": "Salvando..."
+      },
+      "fields": {
+        "sector": "Setor principal:",
+        "sectorPlaceholder": "Ex: Tecnologia",
+        "specialty": "Especialidade:",
+        "specialtyPlaceholder": "Ex: Desenvolvimento de software",
+        "segment": "Segmento:",
+        "segmentPlaceholder": "Ex: B2B e setor público",
+        "empty": "—"
+      },
+      "services": {
+        "title": "Principais serviços",
+        "placeholder": "Separados por vírgula: Desenvolvimento web, Apps móveis...",
+        "hint": "Separe cada serviço com uma vírgula",
+        "empty": "Nenhum serviço registrado"
+      },
+      "errors": {
+        "saveFailed": "Erro ao salvar."
+      }
+    },
+    "contact": {
+      "title": "Contato",
+      "actions": {
+        "edit": "Editar",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "saving": "Salvando..."
+      },
+      "location": {
+        "title": "Localização",
+        "addressPlaceholder": "Av. Heroínas 456",
+        "cityPlaceholder": "Cochabamba",
+        "addressLabel": "Endereço:",
+        "cityLabel": "Cidade:",
+        "viewOnMaps": "Ver no Maps",
+        "empty": "Nenhum endereço registrado"
+      },
+      "fields": {
+        "title": "Informações de contato",
+        "phonePrefixPlaceholder": "+591",
+        "phonePlaceholder": "Número",
+        "phoneLabel": "Telefone:",
+        "emailLabel": "Email:",
+        "emailPlaceholder": "contato@empresa.com",
+        "emailEmpty": "Nenhum email registrado",
+        "websiteLabel": "Site:",
+        "websitePlaceholder": "https://empresa.com"
+      },
+      "errors": {
+        "saveFailed": "Erro ao salvar."
+      }
+    },
+    "social": {
+      "title": "Social",
+      "searchPlaceholder": "Pesquisar",
+      "tabs": {
+        "followers": "Seguidores",
+        "following": "Seguindo"
+      },
+      "summary": {
+        "followers": "{{count}} seguidores",
+        "following": "{{count}} seguindo"
+      },
+      "states": {
+        "loading": "Carregando...",
+        "notFound": "Nenhum usuário encontrado."
+      },
+      "userFallback": "Usuário",
+      "errors": {
+        "generic": "Erro ao carregar."
+      }
+    }
+  },
+
+
+  "notifications": {
+    "title": "Notificações",
+    "back": "Voltar",
+    "markAllRead": "Marcar todas como lidas",
+    "loading": "Carregando...",
+    "filter": {
+      "all": "Todos",
+      "unread": "Não lidos",
+      "read": "Lidos"
+    },
+    "type": {
+      "all": "Todos os tipos",
+      "like": "Curtidas",
+      "comment": "Comentários",
+      "follow": "Seguimentos",
+      "job_offer": "Vagas",
+      "postulation": "Candidaturas"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próximo",
+      "pageInfo": "Página {{page}} de {{lastPage}}"
+    }
+  },
+"notificationSettings": {
+  "title": "Configurações",
+  "sub": "Escolha uma categoria e ajuste apenas o necessário.",
+  "saving": "Salvando...",
+  "saveChanges": "✓ Salvar alterações",
+  "loading": "Carregando preferências...",
+  "categories": {
+    "activity_notifications": {
+      "label": "Atividade Social",
+      "description": "Curtidas, comentários e menções nas suas publicações"
+    },
+    "portfolio_notifications": {
+      "label": "Portfólios de usuários seguidos",
+      "description": "Atualizações de projetos e experiências"
+    },
+    "offer_notifications": {
+      "label": "Novas vagas",
+      "description": "Ofertas de emprego compatíveis com seu perfil"
+    },
+    "support_notifications": {
+      "label": "Mensagens de suporte",
+      "description": "Respostas e atualizações de suporte"
+    },
+    "platform_notifications": {
+      "label": "Notificações da plataforma",
+      "description": "Anúncios e novidades do Portafy"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "back": "Voltar",
+    "markAllRead": "Marcar todas como lidas",
+    "loading": "Carregando...",
+    "filter": {
+      "all": "Todos",
+      "unread": "Não lidos",
+      "read": "Lidos"
+    },
+    "type": {
+      "all": "Todos os tipos",
+      "like": "Curtidas",
+      "comment": "Comentários",
+      "follow": "Seguimentos",
+      "job_offer": "Vagas",
+      "postulation": "Candidaturas"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próximo",
+      "pageInfo": "Página {{page}} de {{lastPage}}"
+    }
+  },
+"notificationSettings": {
+  "title": "Configurações",
+  "sub": "Escolha uma categoria e ajuste apenas o necessário.",
+  "saving": "Salvando...",
+  "saveChanges": "✓ Salvar alterações",
+  "loading": "Carregando preferências...",
+  "categories": {
+    "activity_notifications": {
+      "label": "Atividade Social",
+      "description": "Curtidas, comentários e menções nas suas publicações"
+    },
+    "portfolio_notifications": {
+      "label": "Portfólios de usuários seguidos",
+      "description": "Atualizações de projetos e experiências"
+    },
+    "offer_notifications": {
+      "label": "Novas vagas",
+      "description": "Ofertas de emprego compatíveis com seu perfil"
+    },
+    "support_notifications": {
+      "label": "Mensagens de suporte",
+      "description": "Respostas e atualizações de suporte"
+    },
+    "platform_notifications": {
+      "label": "Notificações da plataforma",
+      "description": "Anúncios e novidades do Portafy"
+    }
+  }
+},
+"notificationBell": {
+  "title": "Notificações",
+  "markAllRead": "Marcar todas como lidas",
+  "viewAll": "Ver todas as notificações",
+  "ariaLabel": "Notificações",
+  "empty": {
+    "title": "Sem notificações",
+    "sub": "Quando alguém interagir com seu conteúdo, aparecerá aqui."
+  },
+  "item": {
+    "markAsRead": "Marcar como lida",
+    "read": "Lida",
+    "defaultText": "Nova notificação",
+    "altAvatar": "Notificação"
+  },
+  "types": {
+    "like": "Curtida",
+    "comment": "Comentário",
+    "follow": "Seguimento",
+    "event": "Evento",
+    "job_offer": "Vaga",
+    "postulation": "Candidatura",
+    "job_application": "Candidatura"
+  },
+  "messages": {
+    "like": "{{name}} curtiu sua publicação",
+    "follow": "{{name}} começou a te seguir",
+    "event": "Novo evento: {{title}}",
+    "job_offer": "{{company}} publicou uma vaga: {{title}}",
+    "postulation": "{{name}} se candidatou a: {{title}}",
+    "job_application": "{{name}} se candidatou a: {{title}}",
+    "comment": "{{name}} comentou",
+    "commentWithText": "{{name}} comentou: \"{{text}}\"",
+    "default": "Nova notificação",
+    "fallbackOffer": "a vaga",
+    "fallbackPerson": "Alguém",
+    "fallbackCompany": "Empresa"
+  }
+},
+"notificationBell": {
+  "title": "Notificações",
+  "markAllRead": "Marcar todas como lidas",
+  "viewAll": "Ver todas as notificações",
+  "ariaLabel": "Notificações",
+  "empty": {
+    "title": "Sem notificações",
+    "sub": "Quando alguém interagir com seu conteúdo, aparecerá aqui."
+  },
+  "item": {
+    "markAsRead": "Marcar como lida",
+    "read": "Lida",
+    "defaultText": "Nova notificação",
+    "altAvatar": "Notificação"
+  },
+  "types": {
+    "like": "Curtida",
+    "comment": "Comentário",
+    "follow": "Seguimento",
+    "event": "Evento",
+    "job_offer": "Vaga",
+    "postulation": "Candidatura",
+    "job_application": "Candidatura"
+  },
+  "messages": {
+    "like": "{{name}} curtiu sua publicação",
+    "follow": "{{name}} começou a te seguir",
+    "event": "Novo evento: {{title}}",
+    "job_offer": "{{company}} publicou uma vaga: {{title}}",
+    "postulation": "{{name}} se candidatou a: {{title}}",
+    "job_application": "{{name}} se candidatou a: {{title}}",
+    "comment": "{{name}} comentou",
+    "commentWithText": "{{name}} comentou: \"{{text}}\"",
+    "default": "Nova notificação",
+    "fallbackOffer": "a vaga",
+    "fallbackPerson": "Alguém",
+    "fallbackCompany": "Empresa"
   }
 }
+}
+}
+

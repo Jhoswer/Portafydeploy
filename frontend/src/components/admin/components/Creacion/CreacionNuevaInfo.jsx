@@ -65,7 +65,8 @@ export default function CreacionNuevaInfo({ onSelectUser }) {
   const totalFound = users.length;
 
   return (
-    <div className="edicion-module">
+    <div className="creacion-nueva-info-panel">
+      <div className="edicion-module">
 
       <EdicionSearchBar
         query={query}
@@ -106,7 +107,7 @@ export default function CreacionNuevaInfo({ onSelectUser }) {
         module="creacion"
         onEdit={onSelectUser}
       />
-
+    </div>
     </div>
   );
 }

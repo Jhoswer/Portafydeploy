@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Activity,
   BarChart3,
@@ -19,18 +20,19 @@ import { ProfileViewsModal } from "./profile/ProfileTrustModals";
 import { profileUi as ui } from "../../styles/components/dashboard/profileStyles";
 
 const SUMMARY_CARDS = [
-  { key: "profile_views", label: "Visitas al perfil", icon: Eye, color: "#2563eb", help: "Total de personas que abrieron tu perfil." },
-  { key: "profile_views_week", label: "Ultimos 7 dias", icon: Activity, color: "#0d9488", help: "Visitas recibidas durante la ultima semana." },
-  { key: "project_views", label: "Vistas a proyectos", icon: BriefcaseBusiness, color: "#7c3aed", help: "Veces que otros revisaron tus proyectos." },
-  { key: "experience_views", label: "Vistas a experiencia", icon: UserRound, color: "#ea580c", help: "Interes generado por tus experiencias visibles." },
-  { key: "contact_clicks", label: "Clicks de contacto", icon: Mail, color: "#dc2626", help: "Veces que intentaron contactarte desde tu perfil." },
-  { key: "cv_clicks", label: "Clicks al CV", icon: MousePointerClick, color: "#0891b2", help: "Veces que abrieron o intentaron revisar tu CV." },
-  { key: "portfolio_posts", label: "Contenido compartido", icon: Newspaper, color: "#4f46e5", help: "Publicaciones tuyas visibles en el feed y vitrina." },
-  { key: "portfolio_engagement", label: "Interacciones totales", icon: TrendingUp, color: "#16a34a", help: "Suma de likes, comentarios y guardados de tu contenido." },
-  { key: "engagement_rate", label: "Promedio por publicacion", icon: BarChart3, color: "#9333ea", help: "Interacciones promedio que recibe cada publicacion." },
+  { key: "profile_views", icon: Eye, color: "#2563eb" },
+  { key: "profile_views_week", icon: Activity, color: "#0d9488" },
+  { key: "project_views", icon: BriefcaseBusiness, color: "#7c3aed" },
+  { key: "experience_views", icon: UserRound, color: "#ea580c" },
+  { key: "contact_clicks", icon: Mail, color: "#dc2626" },
+  { key: "cv_clicks", icon: MousePointerClick, color: "#0891b2" },
+  { key: "portfolio_posts", icon: Newspaper, color: "#4f46e5" },
+  { key: "portfolio_engagement", icon: TrendingUp, color: "#16a34a" },
+  { key: "engagement_rate", icon: BarChart3, color: "#9333ea" },
 ];
 
 export default function DashboardAnalytics() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
   const [profileViews, setProfileViews] = useState([]);
@@ -59,7 +61,7 @@ export default function DashboardAnalytics() {
       })
       .catch((err) => {
         if (cancelled) return;
-        setError(err.message || "No se pudieron cargar las analiticas.");
+        setError(err.message || t("appI18n.analytics.loadError"));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -68,7 +70,7 @@ export default function DashboardAnalytics() {
     return () => {
       cancelled = true;
     };
-  }, [attempt]);
+  }, [attempt, t]);
 
   const series = useMemo(() => analytics?.series || [], [analytics?.series]);
   const maxSeriesValue = useMemo(
@@ -80,8 +82,8 @@ export default function DashboardAnalytics() {
     return (
       <div style={ui.section}>
         <State
-          title="Cargando analiticas..."
-          text="Estamos calculando el alcance visible de tu perfil."
+          title={t("appI18n.analytics.loadingTitle")}
+          text={t("appI18n.analytics.loadingText")}
           icon={<Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} />}
         />
       </div>
@@ -92,12 +94,12 @@ export default function DashboardAnalytics() {
     return (
       <div style={ui.section}>
         <State
-          title="No se pudo cargar"
+          title={t("appI18n.analytics.loadError")}
           text={error}
           action={
             <button type="button" onClick={() => { setLoading(true); setError(""); setAttempt((value) => value + 1); }} style={retryButtonStyle}>
               <RefreshCw size={15} />
-              Volver a intentar
+              {t("appI18n.common.retry")}
             </button>
           }
         />
@@ -113,12 +115,12 @@ export default function DashboardAnalytics() {
       <section style={{ ...ui.section, padding: 22 }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
           <div>
-            <h1 style={titleStyle}>Estadisticas profesionales</h1>
-            <p style={{ ...ui.muted, margin: "6px 0 0" }}>Alcance, rendimiento y actividad reciente de tu perfil y portafolio.</p>
+            <h1 style={titleStyle}>{t("appI18n.analytics.title")}</h1>
+            <p style={{ ...ui.muted, margin: "6px 0 0" }}>{t("appI18n.analytics.subtitle")}</p>
           </div>
           <div style={badgeStyle}>
             <BarChart3 size={16} />
-            Perfil profesional
+            {t("appI18n.analytics.badge")}
           </div>
         </div>
       </section>
@@ -127,6 +129,7 @@ export default function DashboardAnalytics() {
         {SUMMARY_CARDS.map((card) => {
           const Icon = card.icon;
           const isProfileViews = card.key === "profile_views";
+          const [label, help] = t(`appI18n.analytics.cards.${card.key}`, { returnObjects: true });
           return (
             <article key={card.key} className="dashboard-metric-card" style={metricCardStyle}>
               <button
@@ -139,15 +142,15 @@ export default function DashboardAnalytics() {
                   cursor: isProfileViews ? "pointer" : "default",
                 }}
                 onClick={isProfileViews ? () => setShowProfileViews(true) : undefined}
-                aria-label={isProfileViews ? "Ver usuarios que visitaron mi perfil" : undefined}
+                aria-label={isProfileViews ? t("appI18n.analytics.viewVisitors") : undefined}
               >
                 <Icon size={18} />
               </button>
               <div>
                 <div style={metricValueStyle}>{Number(summary[card.key] || 0)}</div>
-                <div style={metricLabelStyle}>{card.label}</div>
+                <div style={metricLabelStyle}>{label}</div>
               </div>
-              <div className="dashboard-metric-card__hint" role="tooltip">{card.help}</div>
+              <div className="dashboard-metric-card__hint" role="tooltip">{help}</div>
             </article>
           );
         })}
@@ -156,8 +159,8 @@ export default function DashboardAnalytics() {
       <section style={{ ...ui.section, padding: 22 }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center", marginBottom: 18 }}>
           <div>
-            <h2 style={sectionTitleStyle}>Visitas de los ultimos 14 dias</h2>
-            <p style={{ ...ui.muted, margin: "4px 0 0" }}>Cada barra representa visitas registradas a tu perfil.</p>
+            <h2 style={sectionTitleStyle}>{t("appI18n.analytics.last14Title")}</h2>
+            <p style={{ ...ui.muted, margin: "4px 0 0" }}>{t("appI18n.analytics.last14Text")}</p>
           </div>
         </div>
 
@@ -170,47 +173,47 @@ export default function DashboardAnalytics() {
               </div>
             ))
           ) : (
-            <State title="Sin visitas todavia" text="Cuando otros perfiles visiten el tuyo, veras la tendencia aqui." compact />
+            <State title={t("appI18n.analytics.noVisitsTitle")} text={t("appI18n.analytics.noVisitsText")} compact />
           )}
         </div>
       </section>
 
       <section style={{ ...ui.section, padding: 22 }}>
-        <h2 style={sectionTitleStyle}>Actividad reciente</h2>
+        <h2 style={sectionTitleStyle}>{t("appI18n.analytics.recentActivity")}</h2>
         <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
           {topEvents.length ? (
             topEvents.map((event, index) => (
               <div key={`${event.type}-${index}`} style={eventRowStyle}>
                 <span style={eventDotStyle} />
-                <span style={{ fontWeight: 800 }}>{eventLabel(event.type)}</span>
+                <span style={{ fontWeight: 800 }}>{eventLabel(event.type, t)}</span>
                 <span style={{ marginLeft: "auto", color: "var(--muted)", fontWeight: 800 }}>{event.total}</span>
               </div>
             ))
           ) : (
-            <State title="Sin eventos recientes" text="Los clicks de contacto, CV y secciones visitadas se iran registrando aqui." compact />
+            <State title={t("appI18n.analytics.noEventsTitle")} text={t("appI18n.analytics.noEventsText")} compact />
           )}
         </div>
       </section>
 
       <section style={{ ...ui.section, padding: 22 }}>
         <div style={{ marginBottom: 16 }}>
-          <h2 style={sectionTitleStyle}>Proyectos mas vistos</h2>
-          <p style={{ ...ui.muted, margin: "4px 0 0" }}>Top 3 segun visitas en perfil y actividad de tus proyectos compartidos.</p>
+          <h2 style={sectionTitleStyle}>{t("appI18n.analytics.topProjects")}</h2>
+          <p style={{ ...ui.muted, margin: "4px 0 0" }}>{t("appI18n.analytics.topProjectsText")}</p>
         </div>
         <div style={topProjectsGridStyle}>
           <TopProjectsList
-            title="En mi perfil"
-            text="Proyectos que otros abrieron desde tu perfil publico."
+            title={t("appI18n.analytics.inProfile")}
+            text={t("appI18n.analytics.inProfileText")}
             items={analytics?.top_projects_profile || []}
             valueKey="views"
-            valueLabel="visitas"
+            valueLabel={t("appI18n.analytics.visits")}
           />
           <TopProjectsList
-            title="En el feed"
-            text="Proyectos compartidos con mejor respuesta en publicaciones."
+            title={t("appI18n.analytics.inFeed")}
+            text={t("appI18n.analytics.inFeedText")}
             items={analytics?.top_projects_feed || []}
             valueKey="score"
-            valueLabel="puntos"
+            valueLabel={t("appI18n.analytics.points")}
           />
         </div>
       </section>
@@ -242,18 +245,12 @@ function State({ title, text, compact = false, action = null, icon = null }) {
   );
 }
 
-function eventLabel(type) {
-  const labels = {
-    profile_view: "Visitas al perfil",
-    project_view: "Vistas a proyectos",
-    experience_view: "Vistas a experiencia",
-    contact_click: "Clicks de contacto",
-    cv_click: "Clicks al CV",
-  };
-  return labels[type] || type;
+function eventLabel(type, t) {
+  return t(`appI18n.analytics.events.${type}`, type);
 }
 
 function TopProjectsList({ title, text, items, valueKey, valueLabel }) {
+  const { t } = useTranslation();
   return (
     <article style={topProjectPanelStyle}>
       <div>
@@ -266,7 +263,7 @@ function TopProjectsList({ title, text, items, valueKey, valueLabel }) {
             <div key={`${title}-${item.id || index}`} style={topProjectRowStyle}>
               <span style={topProjectRankStyle}>{index + 1}</span>
               <span style={{ minWidth: 0 }}>
-                <strong style={topProjectNameStyle}>{item.title || "Proyecto sin titulo"}</strong>
+                <strong style={topProjectNameStyle}>{item.title || t("appI18n.analytics.untitledProject")}</strong>
                 <span style={topProjectMetaStyle}>
                   {Number(item[valueKey] || 0)} {valueLabel}
                 </span>
@@ -274,7 +271,7 @@ function TopProjectsList({ title, text, items, valueKey, valueLabel }) {
             </div>
           ))
         ) : (
-          <State title="Sin datos suficientes" text="Aun no hay visitas registradas para armar este ranking." compact />
+          <State title={t("appI18n.analytics.notEnoughData")} text={t("appI18n.analytics.notEnoughDataText")} compact />
         )}
       </div>
     </article>

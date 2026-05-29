@@ -1,0 +1,186 @@
+/* ============================================================
+   company-social — Seguidores / Seguidos
+   ============================================================ */
+
+/* ── Contenedor principal ─────────────────────────────────── */
+.company-social {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Encabezado ───────────────────────────────────────────── */
+.company-social__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(205, 225, 245, 0.4);
+}
+
+.company-social__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-title);
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+/* ── Tabs seguidores / seguidos ───────────────────────────── */
+.company-social__tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--color-bg-subtle, rgba(205, 225, 245, 0.18));
+  border-radius: var(--radius-m, 8px);
+  padding: 3px;
+}
+
+.company-social__tabs button {
+  flex: 1;
+  padding: 7px 0;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-ui);
+  color: var(--color-muted-text);
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius-m, 8px) - 2px);
+  cursor: pointer;
+  transition: background var(--ease), color var(--ease);
+}
+
+.company-social__tabs button:hover {
+  color: var(--color-text);
+  background: rgba(205, 225, 245, 0.3);
+}
+
+.company-social__tabs button.active {
+  background: var(--color-white);
+  color: var(--color-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Contenido de la lista ────────────────────────────────── */
+.company-social__content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Resumen (total seguidores) ───────────────────────────── */
+.company-social__summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-muted-text);
+  font-family: var(--font-ui);
+}
+
+/* ── Estados vacío / cargando / error ────────────────────── */
+.company-social__empty {
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+  padding: 20px 0 8px;
+  margin: 0;
+}
+
+.company-social__error {
+  font-size: 13px;
+  color: var(--color-red);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ── Grid de usuarios ─────────────────────────────────────── */
+.company-social__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Tarjeta de usuario ───────────────────────────────────── */
+.company-social__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-m, 8px);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.company-social__user:hover {
+  background: rgba(205, 225, 245, 0.18);
+  border-color: rgba(205, 225, 245, 0.5);
+}
+
+.company-social__user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(205, 225, 245, 0.5);
+}
+
+.company-social__user div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.company-social__user strong {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.company-social__user span {
+  font-size: 12px;
+  color: var(--color-muted-text);
+  font-family: var(--font-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Dark mode ────────────────────────────────────────────── */
+.dark .company-social__top {
+  border-bottom-color: rgba(162, 214, 249, 0.08);
+}
+
+.dark .company-social__tabs {
+  background: rgba(162, 214, 249, 0.06);
+}
+
+.dark .company-social__tabs button:hover {
+  background: rgba(162, 214, 249, 0.1);
+}
+
+.dark .company-social__tabs button.active {
+  background: rgba(162, 214, 249, 0.12);
+  box-shadow: none;
+}
+
+.dark .company-social__user:hover {
+  background: rgba(162, 214, 249, 0.06);
+  border-color: rgba(162, 214, 249, 0.1);
+}
+
+.dark .company-social__user img {
+  border-color: rgba(162, 214, 249, 0.15);
+}

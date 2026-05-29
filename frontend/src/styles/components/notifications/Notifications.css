@@ -347,3 +347,18 @@
   background: rgba(255, 255, 255, .06);
   border-color: rgba(255, 255, 255, .12);
 }
+
+
+.pf-notif-page__filters {
+  display: flex;
+  flex-direction: column;   
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pf-notif-page__filter-group,
+.pf-notif-page__type-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

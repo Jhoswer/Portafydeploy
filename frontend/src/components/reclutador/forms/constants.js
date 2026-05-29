@@ -1,18 +1,14 @@
-/* ============================================================
-   src/components/recruiter/forms/constants.js
-   ============================================================ */
-
 export const RUBROS = [
   "Tecnología", "Salud", "Finanzas", "Educación", "Comercio",
   "Manufactura", "Construcción", "Logística", "Marketing", "Legal",
   "Recursos Humanos", "Consultoría", "Energía", "Agro", "Turismo", "Medios",
 ];
 
-export const STEPS = [
-  { label: "Identidad" },
-  { label: "Branding"  },
-  { label: "Empresa"   },
-  { label: "Contacto"  },
+export const getSteps = (t) => [
+  { label: t("recruiterForms.steps.identidad") },
+  { label: t("recruiterForms.steps.branding")  },
+  { label: t("recruiterForms.steps.empresa")   },
+  { label: t("recruiterForms.steps.contacto")  },
 ];
 
 export const MAX_LOGO_BYTES = 5 * 1024 * 1024;
@@ -29,7 +25,6 @@ export const PREFIJOS = [
   { flag: "🇺🇸", code: "+1",   label: "EE.UU."     },
 ];
 
-/* ── Países con sus ciudades principales ─────────────────── */
 export const PAISES_CIUDADES = {
   "Argentina":       ["Buenos Aires", "Córdoba", "Rosario", "Mendoza", "La Plata", "San Miguel de Tucumán", "Mar del Plata", "Salta", "Santa Fe", "San Juan"],
   "Bolivia":         ["La Paz", "Cochabamba", "Santa Cruz de la Sierra", "Oruro", "Potosí", "Sucre", "Tarija", "Trinidad", "Cobija", "Riberalta"],
@@ -46,5 +41,4 @@ export const PAISES_CIUDADES = {
   "Estados Unidos":  ["Nueva York", "Los Ángeles", "Chicago", "Houston", "Phoenix", "Filadelfia", "San Antonio", "San Diego", "Dallas", "San José"],
 };
 
-/* Lista de países para el selector */
 export const PAISES = Object.keys(PAISES_CIUDADES);
