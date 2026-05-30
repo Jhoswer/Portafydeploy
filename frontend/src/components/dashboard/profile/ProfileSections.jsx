@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   BriefcaseBusiness,
   Building2,
@@ -409,8 +410,11 @@ export function SkillChip({ skill }) {
 }
 
 export function ProjectCard({ project, onShare, sharing = false, shared = false, onViewed = null }) {
+  const { t } = useTranslation();
   const cover = assetUrl(project.cover);
-  const shareLabel = sharing ? (shared ? "Quitando..." : "Compartiendo...") : shared ? "Compartido" : "Compartir";
+  const shareLabel = sharing
+    ? (shared ? t("appI18n.profile.shareRemoving") : t("appI18n.profile.shareSharing"))
+    : shared ? t("appI18n.profile.shared") : t("appI18n.profile.shareAction");
   const badge = project.status === "Completo"
     ? { color: "#16a34a", background: "rgba(74,222,128,.16)", border: "1px solid rgba(74,222,128,.24)" }
     : project.status === "Pausado"
@@ -458,7 +462,7 @@ export function ProjectCard({ project, onShare, sharing = false, shared = false,
       </div>
       <div style={{ display: "grid", gap: 10, padding: 16 }}>
         <div style={{ fontFamily: "var(--f-title)", fontSize: "1.05rem", fontWeight: 800, color: "var(--text)" }}>{project.title}</div>
-        <div style={ui.body}>{project.description || "Proyecto sin descripcion."}</div>
+        <div style={ui.body}>{project.description || t("appI18n.profile.projectNoDescription")}</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{project.tags?.slice(0, 5).map((tag) => <span key={`${project.id}-${tag}`} style={ui.chip}>{tag}</span>)}</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -473,7 +477,10 @@ export function ProjectCard({ project, onShare, sharing = false, shared = false,
 }
 
 export function ExperienceItem({ item, last, onShare, sharing = false, shared = false }) {
-  const shareLabel = sharing ? (shared ? "Quitando..." : "Compartiendo...") : shared ? "Compartida" : "Compartir";
+  const { t } = useTranslation();
+  const shareLabel = sharing
+    ? (shared ? t("appI18n.profile.shareRemoving") : t("appI18n.profile.shareSharing"))
+    : shared ? t("appI18n.profile.sharedFemale") : t("appI18n.profile.shareAction");
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "28px minmax(0, 1fr)", gap: 12 }}>
@@ -490,7 +497,7 @@ export function ExperienceItem({ item, last, onShare, sharing = false, shared = 
             <div style={ui.muted}>{item.company}</div>
           </div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
-            <div style={ui.muted}>{`${formatDate(item.startDate)} - ${item.isCurrent ? "Presente" : formatDate(item.endDate) || "Sin definir"}`}</div>
+            <div style={ui.muted}>{`${formatDate(item.startDate)} - ${item.isCurrent ? t("appI18n.portfolio.detail.present") : formatDate(item.endDate) || t("appI18n.portfolio.detail.undefined")}`}</div>
             {onShare ? (
               <button
                 type="button"
@@ -518,14 +525,15 @@ export function ExperienceItem({ item, last, onShare, sharing = false, shared = 
             ) : null}
           </div>
         </div>
-        <div style={ui.body}>{item.description || "Experiencia sin descripcion detallada."}</div>
+        <div style={ui.body}>{item.description || t("appI18n.profile.experienceNoDescription")}</div>
       </div>
     </div>
   );
 }
 
 export function EducationItem({ item }) {
-  const period = [formatDate(item.startDate), item.isCurrent ? "Presente" : formatDate(item.endDate)]
+  const { t } = useTranslation();
+  const period = [formatDate(item.startDate), item.isCurrent ? t("appI18n.portfolio.detail.present") : formatDate(item.endDate)]
     .filter(Boolean)
     .join(" - ");
 
@@ -547,7 +555,7 @@ export function EducationItem({ item }) {
       </span>
       <span style={{ minWidth: 0, display: "grid", gap: 4 }}>
         <span style={{ fontFamily: "var(--f-ui)", fontSize: ".9rem", fontWeight: 900, color: "var(--text)", overflowWrap: "anywhere" }}>
-          {item.program || item.level || "Formacion profesional"}
+          {item.program || item.level || t("appI18n.profile.education")}
         </span>
         {item.institution ? (
           <span style={{ fontFamily: "var(--f-body)", fontSize: ".78rem", color: "var(--body)", overflowWrap: "anywhere" }}>

@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { ImageUp, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CalendarDays,
   CheckCircle2,
@@ -206,6 +207,7 @@ export function SkillLevelPicker({ value, onChange }) {
 }
 
 export function CatalogTagsField({ value, selectedCategory, options, placeholder, errorMessage, onChange }) {
+  const { t } = useTranslation();
   const canUseCatalog = selectedCategory && selectedCategory !== "Otra";
   const useManualOnly = selectedCategory === "Otra";
 
@@ -228,7 +230,7 @@ export function CatalogTagsField({ value, selectedCategory, options, placeholder
             }}
             style={selectWithError(errorMessage)}
           >
-            <option value="">Selecciona una tecnologia</option>
+            <option value="">{t("appI18n.portfolio.controls.selectTechnology")}</option>
             {options.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -240,7 +242,7 @@ export function CatalogTagsField({ value, selectedCategory, options, placeholder
 
       {useManualOnly ? (
         <ManualValueAdder
-          buttonLabel="Agregar"
+          buttonLabel={t("appI18n.portfolio.addButton")}
           placeholder={placeholder}
           errorMessage={errorMessage}
           onAdd={addTag}
@@ -258,7 +260,7 @@ export function CatalogTagsField({ value, selectedCategory, options, placeholder
             </span>
           ))
         ) : (
-          <span style={helperText}>Todavia no agregaste tecnologias.</span>
+          <span style={helperText}>{t("appI18n.portfolio.detail.noTechnologies")}</span>
         )}
       </div>
       {errorMessage ? <FieldError message={errorMessage} /> : null}
@@ -267,6 +269,7 @@ export function CatalogTagsField({ value, selectedCategory, options, placeholder
 }
 
 export function CatalogSelectField({ value, selectedCategory, options, placeholder, errorMessage, onChange }) {
+  const { t } = useTranslation();
   const showCatalog = selectedCategory && selectedCategory !== "Otra";
   const showManualInput = selectedCategory === "Otra";
 
@@ -274,7 +277,7 @@ export function CatalogSelectField({ value, selectedCategory, options, placehold
     <div style={fieldCardWithError(errorMessage)}>
       {showCatalog ? (
         <select value={options.includes(value) ? value : ""} onChange={(event) => onChange(event.target.value)} style={selectWithError(errorMessage)}>
-          <option value="">Selecciona una habilidad</option>
+          <option value="">{t("appI18n.portfolio.controls.selectSkill")}</option>
           {options.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -561,6 +564,7 @@ export function InteractiveIconButton({ children, onClick, tone = "default", dis
 }
 
 export function ConfirmModal({ title, description, confirmLabel, tone, onCancel, onConfirm, isBusy = false }) {
+  const { t } = useTranslation();
   return (
     <div style={modalOverlay}>
       <div style={modalCard}>
@@ -568,7 +572,7 @@ export function ConfirmModal({ title, description, confirmLabel, tone, onCancel,
         <div style={modalText}>{description}</div>
         <div style={detailActions}>
           <InteractiveButton variant="ghost" onClick={onCancel} disabled={isBusy}>
-            Cancelar
+            {t("appI18n.common.cancel")}
           </InteractiveButton>
           <InteractiveButton variant={tone === "danger" ? "danger" : "primary"} onClick={onConfirm} loading={isBusy}>
             {confirmLabel}
@@ -653,7 +657,7 @@ export function useViewport() {
   return width;
 }
 
-export function renderSocialPlatformField({ field, value, onDraftChange }) {
+export function renderSocialPlatformField({ field, value, onDraftChange, t }) {
   const selectValue = SOCIAL_PLATFORM_LIBRARY.includes(value) ? value : value ? "Otra" : "";
   return (
     <div style={fieldCard}>
@@ -662,7 +666,7 @@ export function renderSocialPlatformField({ field, value, onDraftChange }) {
         onChange={(event) => onDraftChange(field.key, event.target.value === "Otra" ? "" : event.target.value)}
         style={{ ...input, cursor: "pointer" }}
       >
-        <option value="">Selecciona una opcion</option>
+        <option value="">{t("appI18n.portfolio.controls.selectOption")}</option>
         {field.options.map((option) => (
           <option key={option} value={option}>
             {option}
@@ -675,7 +679,7 @@ export function renderSocialPlatformField({ field, value, onDraftChange }) {
           type="text"
           value={value}
           onChange={(event) => onDraftChange(field.key, event.target.value)}
-          placeholder="Escribe la plataforma"
+          placeholder={t("appI18n.portfolio.controls.writePlatform")}
           style={input}
         />
       ) : null}

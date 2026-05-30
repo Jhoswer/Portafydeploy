@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { AlertTriangle, Flag, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getPublicationReportReasons } from "../../services/reportService";
 
 export function ReportPublicationModal({
@@ -12,6 +13,7 @@ export function ReportPublicationModal({
   onClose,
   onSubmit,
 }) {
+  const { t } = useTranslation();
   const reasons = useMemo(() => getPublicationReportReasons(), []);
   const [motivo, setMotivo] = useState(reasons[0]?.key || "");
   const [description, setDescription] = useState("");
@@ -20,16 +22,16 @@ export function ReportPublicationModal({
 
   const isCommentReport = reportKind === "comment";
   const typeLabel = isCommentReport
-    ? "Comentario"
+    ? t("reporte.tipo_comentario")
     : post.sourceType === "experience"
-      ? "Experiencia"
+      ? t("reporte.tipo_experiencia")
       : post.sourceType === "offer"
-        ? "Convocatoria"
-        : "Proyecto";
+        ? t("reporte.tipo_convocatoria")
+        : t("reporte.tipo_proyecto");
 
   const title = isCommentReport
-    ? (comment?.text || "Comentario reportado")
-    : (post.title || post.project?.title || post.experience?.title || "Publicacion");
+    ? (comment?.text || t("reporte.comentario_fallback"))
+    : (post.title || post.project?.title || post.experience?.title || t("reporte.publicacion_fallback"));
   function handleSubmit(event) {
     event.preventDefault();
     onSubmit?.({
@@ -46,7 +48,7 @@ export function ReportPublicationModal({
           type="button"
           onClick={onClose}
           disabled={isBusy}
-          aria-label="Cerrar reporte"
+          aria-label={t("reporte.cerrar")}
         >
           <X size={18} />
         </button>
@@ -55,9 +57,9 @@ export function ReportPublicationModal({
           <Flag size={20} />
         </span>
 
-        <h3>{isCommentReport ? "Reportar comentario" : "Reportar publicacion"}</h3>
+        <h3>{isCommentReport ? t("reporte.reportar_comentario") : t("reporte.reportar_publicacion")}</h3>
         <p>
-          El reporte sera enviado al panel de administracion con el motivo seleccionado.
+          {t("reporte.descripcion_modal")}
         </p>
 
         <div className="feed-report-modal__target">
@@ -67,7 +69,7 @@ export function ReportPublicationModal({
         </div>
 
         <label className="feed-report-modal__field">
-          <span>Motivo</span>
+          <span>{t("reporte.motivo")}</span>
           <select value={motivo} onChange={(event) => setMotivo(event.target.value)} disabled={isBusy}>
             {reasons.map((reason) => (
               <option key={reason.key} value={reason.key}>{reason.label}</option>
@@ -76,11 +78,11 @@ export function ReportPublicationModal({
         </label>
 
         <label className="feed-report-modal__field">
-          <span>Detalle opcional</span>
+          <span>{t("reporte.detalle_opcional")}</span>
           <textarea
             value={description}
             onChange={(event) => setDescription(event.target.value.slice(0, 255))}
-            placeholder={`Describe brevemente que ocurre con ${isCommentReport ? "este comentario" : "esta publicacion"}...`}
+            placeholder={isCommentReport ? t("reporte.placeholder_comentario") : t("reporte.placeholder_publicacion")}
             rows={4}
             disabled={isBusy}
           />
@@ -91,10 +93,10 @@ export function ReportPublicationModal({
 
         <div className="feed-report-modal__actions">
           <button type="button" onClick={onClose} disabled={isBusy}>
-            Cancelar
+            {t("reporte.cancelar")}
           </button>
           <button type="submit" disabled={isBusy || !motivo}>
-            {isBusy ? "Enviando..." : "Enviar reporte"}
+            {isBusy ? t("reporte.enviando") : t("reporte.enviar")}
           </button>
         </div>
       </form>

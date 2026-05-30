@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import config from "../../config";
+import { useTranslation } from "react-i18next";
 import {
   detailBlock,
   detailLabel,
@@ -50,25 +51,26 @@ export function getItemTitle(activeKey, item) {
   return item.title;
 }
 
-export function getItemSubtitle(activeKey, item) {
+export function getItemSubtitle(activeKey, item, t) {
   if (activeKey === "projects") return item.status;
   if (activeKey === "experience") return `${item.type} · ${item.company}`;
   if (activeKey === "skills") return item.category ? `${item.category} · ${item.level}` : item.level;
   if (activeKey === "social") return compactUrl(item.url);
-  if (activeKey === "education") return [item.institution, formatEducationLevel(item.level)].filter(Boolean).join(" · ");
+  if (activeKey === "education") return [item.institution, formatEducationLevel(item.level, t)].filter(Boolean).join(" · ");
   return "";
 }
 
 export function DetailContent({ activeKey, item }) {
+  const { t } = useTranslation();
   if (activeKey === "projects") {
     return (
       <>
         <ProjectCoverBlock cover={item.cover} title={item.title} />
-        <InfoBlock label="Descripcion" text={item.description} />
-        <InfoBlock label="Categoria tecnica" text={item.techCategory || "Sin categoria"} />
-        <TagsBlock label="Tecnologias" tags={item.tags} />
-        <InfoBlock label="Repositorio URL" text={item.repoUrl || "Sin repositorio"} />
-        <InfoBlock label="Demo URL" text={item.demoUrl || "Sin demo URL"} />
+        <InfoBlock label={t("appI18n.portfolio.fields.description")} text={item.description} />
+        <InfoBlock label={t("appI18n.portfolio.fields.techCategory")} text={item.techCategory || t("appI18n.portfolio.detail.noCategory")} />
+        <TagsBlock label={t("appI18n.portfolio.fields.tags")} tags={item.tags} />
+        <InfoBlock label={t("appI18n.portfolio.fields.repoUrl")} text={item.repoUrl || t("appI18n.portfolio.detail.noRepository")} />
+        <InfoBlock label={t("appI18n.portfolio.fields.demoUrl")} text={item.demoUrl || t("appI18n.portfolio.detail.noDemo")} />
       </>
     );
   }
@@ -76,12 +78,12 @@ export function DetailContent({ activeKey, item }) {
   if (activeKey === "experience") {
     return (
       <>
-        <InfoBlock label="Tipo" text={item.type || "Profesional"} />
-        <InfoBlock label="Area" text={item.roleArea || "Sin area"} />
-        <InfoBlock label="Descripcion" text={item.description} />
+        <InfoBlock label={t("appI18n.portfolio.fields.type")} text={item.type || t("appI18n.feed.post.professional")} />
+        <InfoBlock label={t("appI18n.portfolio.fields.roleArea")} text={item.roleArea || t("appI18n.portfolio.detail.noArea")} />
+        <InfoBlock label={t("appI18n.portfolio.fields.description")} text={item.description} />
         <InfoBlock
-          label="Fechas"
-          text={`${formatDateLabel(item.startDate)} - ${item.isCurrent ? "Actualidad" : formatDateLabel(item.endDate) || "Sin definir"}`}
+          label={t("appI18n.portfolio.detail.dates")}
+          text={`${formatDateLabel(item.startDate)} - ${item.isCurrent ? t("appI18n.portfolio.detail.current") : formatDateLabel(item.endDate) || t("appI18n.portfolio.detail.undefined")}`}
         />
       </>
     );
@@ -90,11 +92,11 @@ export function DetailContent({ activeKey, item }) {
   if (activeKey === "skills") {
     return (
       <>
-        <InfoBlock label="Categoria" text={item.category || "Sin categoria"} />
-        <InfoBlock label="Descripcion" text={item.description || "Sin descripcion"} />
-        <InfoBlock label="Nivel" text={item.level} />
+        <InfoBlock label={t("appI18n.portfolio.fields.category")} text={item.category || t("appI18n.portfolio.detail.noCategory")} />
+        <InfoBlock label={t("appI18n.portfolio.fields.description")} text={item.description || t("appI18n.portfolio.detail.noDescription")} />
+        <InfoBlock label={t("appI18n.portfolio.fields.level")} text={item.level} />
         <div style={detailBlock}>
-          <div style={detailLabel}>Visual</div>
+          <div style={detailLabel}>{t("appI18n.portfolio.detail.visual")}</div>
           <SkillDots level={item.level} />
         </div>
       </>
@@ -104,12 +106,12 @@ export function DetailContent({ activeKey, item }) {
   if (activeKey === "education") {
     return (
       <>
-        <InfoBlock label="Programa" text={item.program || "Sin programa"} />
-        <InfoBlock label="Institucion" text={item.institution || "Sin institucion"} />
-        <InfoBlock label="Tipo" text={formatEducationLevel(item.level) || "Sin tipo"} />
+        <InfoBlock label={t("appI18n.portfolio.fields.program")} text={item.program || t("appI18n.portfolio.detail.noProgram")} />
+        <InfoBlock label={t("appI18n.portfolio.fields.institution")} text={item.institution || t("appI18n.portfolio.detail.noInstitution")} />
+        <InfoBlock label={t("appI18n.portfolio.fields.type")} text={formatEducationLevel(item.level, t) || t("appI18n.portfolio.detail.noType")} />
         <InfoBlock
-          label="Fechas"
-          text={`${formatDateLabel(item.startDate) || "Sin inicio"} - ${item.isCurrent ? "Presente" : formatDateLabel(item.endDate) || "Sin definir"}`}
+          label={t("appI18n.portfolio.detail.dates")}
+          text={`${formatDateLabel(item.startDate) || t("appI18n.portfolio.detail.noStart")} - ${item.isCurrent ? t("appI18n.portfolio.detail.present") : formatDateLabel(item.endDate) || t("appI18n.portfolio.detail.undefined")}`}
         />
       </>
     );
@@ -150,15 +152,16 @@ export function DetailContent({ activeKey, item }) {
           </div>
         </div>
         <span style={{ fontFamily: "var(--f-ui)", fontSize: ".72rem", fontWeight: 850, color: "var(--blue-mid)", padding: "5px 8px", borderRadius: 999, background: "rgba(79,140,255,.10)" }}>
-          Activo
+          {t("appI18n.portfolio.detail.active")}
         </span>
       </div>
-      <InfoBlock label="Destino" text={compactUrl(item.url) || "Sin URL"} />
+      <InfoBlock label={t("appI18n.portfolio.detail.destination")} text={compactUrl(item.url) || t("appI18n.portfolio.detail.noUrl")} />
     </>
   );
 }
 
 export function FormContent({ activeMeta, draft, extraData, fieldErrors, onDraftChange, onExtraChange }) {
+  const { t } = useTranslation();
   const visibleFields = activeMeta.fields.filter((field, index) => {
     if (activeMeta.key !== "skills") return true;
     if (field.key === "description") return false;
@@ -172,8 +175,8 @@ export function FormContent({ activeMeta, draft, extraData, fieldErrors, onDraft
         <div style={{ display: "grid", gap: 12 }}>
           {activeMeta.extraFields.map((field) => (
             <label key={field.key} style={{ display: "grid", gap: 6 }}>
-              <span style={fieldLabel}>{field.label}</span>
-              {renderExtraField(field, extraData[field.key] ?? "", fieldErrors?.[field.key], onExtraChange)}
+              <span style={fieldLabel}>{t(`appI18n.portfolio.fields.${field.key}`, field.label)}</span>
+              {renderExtraField(field, extraData[field.key] ?? "", fieldErrors?.[field.key], onExtraChange, t)}
             </label>
           ))}
         </div>
@@ -181,23 +184,24 @@ export function FormContent({ activeMeta, draft, extraData, fieldErrors, onDraft
 
       {visibleFields.map((field) => (
         <label key={field.key} style={{ display: "grid", gap: 6 }}>
-          <span style={fieldLabel}>{field.label}</span>
-          {renderField(field, draft[field.key], draft, fieldErrors?.[field.key], onDraftChange, activeMeta, extraData)}
+          <span style={fieldLabel}>{t(`appI18n.portfolio.fields.${field.key}`, field.label)}</span>
+          {renderField(field, draft[field.key], draft, fieldErrors?.[field.key], onDraftChange, activeMeta, extraData, t)}
         </label>
       ))}
     </div>
   );
 }
 
-function renderExtraField(field, value, errorMessage, onExtraChange) {
+function renderExtraField(field, value, errorMessage, onExtraChange, t) {
+  const placeholder = t(`appI18n.portfolio.placeholders.extra.${field.key}`, field.placeholder || "");
   if (field.type === "file") {
     return (
       <FileUploadField
         accept=".pdf"
-        helperLabel="Adjunta un archivo"
+        helperLabel={t("appI18n.portfolio.controls.uploadFile")}
         helperTextValue={displayFileValue(value, "")}
-        emptyLabel="Aun no seleccionaste un archivo."
-        buttonLabel="Elegir archivo"
+        emptyLabel={t("appI18n.portfolio.controls.noFile")}
+        buttonLabel={t("appI18n.portfolio.controls.chooseFile")}
         errorMessage={errorMessage}
         onChange={(nextFile) => onExtraChange(field.key, nextFile)}
       />
@@ -210,7 +214,7 @@ function renderExtraField(field, value, errorMessage, onExtraChange) {
         type={field.type === "url" ? "url" : "text"}
         value={value}
         onChange={(event) => onExtraChange(field.key, event.target.value)}
-        placeholder={field.placeholder}
+        placeholder={placeholder}
         style={inputWithError(errorMessage)}
       />
       {errorMessage ? <FieldError message={errorMessage} /> : null}
@@ -218,7 +222,8 @@ function renderExtraField(field, value, errorMessage, onExtraChange) {
   );
 }
 
-function renderField(field, value, draft, errorMessage, onDraftChange, activeMeta, extraData = {}) {
+function renderField(field, value, draft, errorMessage, onDraftChange, activeMeta, extraData = {}, t) {
+  const placeholder = t(`appI18n.portfolio.placeholders.${activeMeta.key}.${field.key}`, field.placeholder || "");
   if (field.type === "textarea") {
     const isLockedDescription = field.key === "description" && (activeMeta.key === "experience" || activeMeta.key === "projects");
     return (
@@ -227,7 +232,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
           rows={4}
           value={value}
           onChange={(event) => onDraftChange(field.key, event.target.value)}
-          placeholder={field.placeholder}
+          placeholder={placeholder}
           style={{
             ...textareaWithError(errorMessage),
             resize: isLockedDescription ? "none" : "vertical",
@@ -254,13 +259,13 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
     }
 
     if (field.key === "platform") {
-      return renderSocialPlatformField({ field, value, onDraftChange });
+      return renderSocialPlatformField({ field, value, onDraftChange, t });
     }
 
     return (
       <>
         <select value={value} onChange={(event) => onDraftChange(field.key, event.target.value)} style={selectWithError(errorMessage)}>
-          <option value="">{field.placeholder || "Selecciona una opcion"}</option>
+          <option value="">{placeholder || t("appI18n.portfolio.controls.selectOption")}</option>
           {options.map((option) => (
             <option key={option.value ?? option} value={option.value ?? option}>
               {option.label ?? option}
@@ -277,7 +282,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
       <>
         <label style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--body)", fontFamily: "var(--f-ui)" }}>
           <input type="checkbox" checked={Boolean(value)} onChange={(event) => onDraftChange(field.key, event.target.checked)} />
-          {field.label || "Sigo actualmente en este lugar"}
+          {t(`appI18n.portfolio.fields.${field.key}`, field.label || "")}
         </label>
         {errorMessage ? <FieldError message={errorMessage} /> : null}
       </>
@@ -301,7 +306,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
         value={Array.isArray(value) ? value : []}
         selectedCategory={selectedCategory}
         options={options}
-        placeholder={field.placeholder}
+        placeholder={placeholder}
         errorMessage={errorMessage}
         onChange={(nextValue) => onDraftChange(field.key, nextValue)}
       />
@@ -316,7 +321,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
         value={value}
         selectedCategory={selectedCategory}
         options={options}
-        placeholder={field.placeholder}
+        placeholder={placeholder}
         errorMessage={errorMessage}
         onChange={(nextValue) => onDraftChange(field.key, nextValue)}
       />
@@ -327,10 +332,10 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
     return (
       <FileUploadField
         accept="image/*"
-        helperLabel="Sube una portada para mostrar mejor tu proyecto"
         helperTextValue={displayFileValue(value, "")}
-        emptyLabel="Sin portada seleccionada. Opcional, maximo 2 MB."
-        buttonLabel="Subir portada"
+        helperLabel={t("appI18n.portfolio.controls.projectCoverHelper")}
+        emptyLabel={t("appI18n.portfolio.controls.projectCoverEmpty")}
+        buttonLabel={t("appI18n.portfolio.controls.uploadCover")}
         errorMessage={errorMessage}
         onChange={(nextFile) => onDraftChange(field.key, nextFile)}
       />
@@ -343,7 +348,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
         type={field.type === "url" ? "url" : "text"}
         value={value}
         onChange={(event) => onDraftChange(field.key, event.target.value)}
-        placeholder={field.placeholder}
+        placeholder={placeholder}
         maxLength={field.maxLength}
         style={inputWithError(errorMessage)}
       />
@@ -362,6 +367,7 @@ function InfoBlock({ label, text }) {
 }
 
 function ProjectCoverBlock({ cover, title }) {
+  const { t } = useTranslation();
   const coverSrc = assetUrl(cover);
 
   return (
@@ -396,7 +402,7 @@ function ProjectCoverBlock({ cover, title }) {
             whiteSpace: "nowrap",
           }}
         >
-          {coverSrc ? `Portada de ${title}` : "Sin portada personalizada"}
+          {coverSrc ? t("appI18n.portfolio.detail.coverOf", { title }) : t("appI18n.portfolio.detail.noCover")}
         </div>
       </div>
     </div>
@@ -404,6 +410,7 @@ function ProjectCoverBlock({ cover, title }) {
 }
 
 function TagsBlock({ label, tags }) {
+  const { t } = useTranslation();
   return (
     <div style={detailBlock}>
       <div style={detailLabel}>{label}</div>
@@ -415,7 +422,7 @@ function TagsBlock({ label, tags }) {
             </span>
           ))
         ) : (
-          <span style={detailText}>Sin tecnologias</span>
+          <span style={detailText}>{t("appI18n.portfolio.detail.noTechnologies")}</span>
         )}
       </div>
     </div>
@@ -444,19 +451,7 @@ function formatDateLabel(value) {
   return normalized;
 }
 
-function formatEducationLevel(value) {
+function formatEducationLevel(value, t) {
   const normalized = String(value || "").trim().toLowerCase();
-  const labels = {
-    tecnico: "Tecnico",
-    tecnologo: "Tecnologo",
-    licenciatura: "Licenciatura",
-    ingenieria: "Ingenieria",
-    maestria: "Maestria",
-    doctorado: "Doctorado",
-    curso: "Curso",
-    diplomado: "Diplomado",
-    otro: "Otro",
-  };
-
-  return labels[normalized] || value || "";
+  return t(`appI18n.portfolio.educationLevels.${normalized}`, value || "");
 }

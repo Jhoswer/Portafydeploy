@@ -75,6 +75,19 @@
   overflow: hidden;
 }
 
+.ro-header__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary, #0c2140);
+  margin: 0;
+}
+
+.ro-header__subtitle {
+  font-size: 12px;
+  color: var(--text-muted, #6b7f99);
+  margin: 2px 0 0;
+}
+
 .ro-card__avatar-img {
   width: 100%;
   height: 100%;
@@ -183,14 +196,6 @@
 
 .ro-user-card__avatar--reporter { background: #4b5563; }
 
-.ro-card__avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  display: block;
-}
-
 .ro-user-card__info {
   display: flex;
   flex-direction: column;
@@ -294,6 +299,15 @@
 .ro-detail-row__value { font-weight: 600; color: var(--text-primary, #0c2140); margin-left: auto; text-align: right; }
 
 /* ── Historial ── */
+.ro-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .ro-history-item {
   display: flex;
   align-items: center;
@@ -310,8 +324,10 @@
   flex-shrink: 0;
 }
 
-.ro-history-item__dot--red  { background: #c62525; }
-.ro-history-item__dot--gray { background: #d1d5db; }
+.ro-history-item__dot--red    { background: #c62525; }
+.ro-history-item__dot--gray   { background: #d1d5db; }
+.ro-history-item__dot--green  { background: #16a34a; }
+.ro-history-item__dot--orange { background: #f97316; }
 
 .ro-history-item__bd {
   font-size: 12px;
@@ -321,8 +337,6 @@
 
 /* ══════════════════════════════════════
    PIE — ACCIONES
-   Izquierda: Eliminar | Ignorar   (negativas)
-   Derecha:   Aceptar | En ejecución | Redirigir | Cerrar
 ══════════════════════════════════════ */
 .ro-footer {
   display: flex;
@@ -363,7 +377,6 @@
     box-shadow var(--ease, 0.15s);
 }
 
-/* ── Eliminar — rojo sólido ── */
 .ro-action-btn--delete {
   background: #c62525;
   color: #fff;
@@ -375,7 +388,6 @@
   box-shadow: 0 2px 10px rgba(198, 37, 37, 0.28);
 }
 
-/* ── Ignorar — gris outline ── */
 .ro-action-btn--ignore {
   background: transparent;
   color: #6b7280;
@@ -387,7 +399,6 @@
   color: #374151;
 }
 
-/* ── Aceptar — verde sólido ── */
 .ro-action-btn--accept {
   background: #16a34a;
   color: #fff;
@@ -399,7 +410,6 @@
   box-shadow: 0 2px 10px rgba(22, 163, 74, 0.25);
 }
 
-/* ── En ejecución — ámbar outline ── */
 .ro-action-btn--inprogress {
   background: #fffbeb;
   color: #b45309;
@@ -411,7 +421,6 @@
   color: #92400e;
 }
 
-/* ── Redirigir — azul outline ── */
 .ro-action-btn--redirect {
   background: transparent;
   color: #1d4ed8;
@@ -422,7 +431,6 @@
   border-color: #1d4ed8;
 }
 
-/* ── Cerrar — ghost neutro ── */
 .ro-action-btn--close {
   background: transparent;
   color: var(--text-muted, #6b7280);
@@ -432,6 +440,19 @@
   background: var(--bg, #f3f4f6);
   color: var(--text-primary, #374151);
   border-color: var(--color-card-border, #e5e7eb);
+}
+
+/* ── Badge abierto ── */
+.rp-badge--open {
+  background-color: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+}
+
+/* ── Error en aside ── */
+.ro-section__empty--error {
+  color: #dc2626;
+  font-size: 0.8rem;
 }
 
 /* ══════════════════════════════════════
@@ -474,30 +495,199 @@
   }
 }
 
-/* Badge "Abierto" en verde */
-.rp-badge--open {
-  background-color: #d1fae5;
-  color: #065f46;
-  font-weight: 600;
+/* ============================================================
+   DARK MODE
+   Patrón: html.dark .clase { ... }
+   ============================================================ */
+
+/* ── Overlay ── */
+html.dark .ro-overlay {
+  background: rgba(0, 0, 0, 0.65);
 }
 
-/* Lista de historial */
-.ro-history-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+/* ── Modal ── */
+html.dark .ro-modal {
+  background: #1e293b;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.50);
 }
 
-/* Dot naranja para "aceptados en contra" */
-.ro-history-item__dot--orange {
-  background-color: #f97316;
+/* ── Cabecera ── */
+html.dark .ro-header {
+  border-bottom-color: #334155;
+  background: #1e293b;
 }
 
-/* Error en aside */
-.ro-section__empty--error {
-  color: #dc2626;
-  font-size: 0.8rem;
+html.dark .ro-header__title    { color: #f1f5f9; }
+html.dark .ro-header__subtitle { color: #475569; }
+
+html.dark .ro-close-btn {
+  color: #64748b;
+}
+
+html.dark .ro-close-btn:hover {
+  background: rgba(198, 37, 37, 0.18);
+  color: #f87171;
+}
+
+/* ── Cuerpo principal ── */
+html.dark .ro-main {
+  background: #1e293b;
+  border-right-color: #334155;
+}
+
+html.dark .ro-section__label { color: #475569; }
+
+html.dark .ro-section__text {
+  background: #0f172a;
+  color: #94a3b8;
+  border-left-color: #ef4444;
+}
+
+html.dark .ro-section__empty        { color: #475569; }
+html.dark .ro-section__empty--error { color: #fca5a5; }
+
+/* ── Tarjetas de usuario ── */
+html.dark .ro-user-card {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+html.dark .ro-user-card--reporter {
+  border-left-color: #475569;
+}
+
+html.dark .ro-user-card__avatar--reporter {
+  background: #334155;
+}
+
+html.dark .ro-user-card__name { color: #f1f5f9; }
+html.dark .ro-user-card__id   { color: #475569; }
+
+html.dark .ro-profile-link {
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.30);
+}
+
+html.dark .ro-profile-link:hover {
+  background: rgba(59, 130, 246, 0.10);
+  border-color: #3b82f6;
+}
+
+/* ── Evidencia ── */
+html.dark .ro-evidence-link {
+  background: rgba(29, 78, 216, 0.10);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+}
+
+html.dark .ro-evidence-link:hover {
+  background: rgba(29, 78, 216, 0.18);
+  border-color: #3b82f6;
+}
+
+/* ── Aside ── */
+html.dark .ro-aside {
+  background: #0f172a;
+}
+
+html.dark .ro-detail-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+html.dark .ro-detail-card__title { color: #475569; }
+
+html.dark .ro-detail-row            { border-bottom-color: #334155; }
+html.dark .ro-detail-row__icon      { color: #475569; }
+html.dark .ro-detail-row__label     { color: #475569; }
+html.dark .ro-detail-row__value     { color: #cbd5e1; }
+
+/* ── Historial ── */
+html.dark .ro-history-item     { color: #94a3b8; }
+html.dark .ro-history-item__bd { color: #475569; }
+
+html.dark .ro-history-item__dot--gray { background: #475569; }
+
+/* ── Badge abierto ── */
+html.dark .rp-badge--open {
+  background: rgba(6, 95, 70, 0.22);
+  color: #6ee7b7;
+}
+
+/* ── Footer ── */
+html.dark .ro-footer {
+  background: #1e293b;
+  border-top-color: #334155;
+}
+
+/* ── Botones de acción ── */
+html.dark .ro-action-btn--delete {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+html.dark .ro-action-btn--delete:hover {
+  background: #991b1b;
+  border-color: #991b1b;
+  box-shadow: 0 2px 10px rgba(185, 28, 28, 0.35);
+}
+
+html.dark .ro-action-btn--ignore {
+  color: #64748b;
+  border-color: #334155;
+}
+
+html.dark .ro-action-btn--ignore:hover {
+  background: #334155;
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
+html.dark .ro-action-btn--accept {
+  background: #15803d;
+  border-color: #15803d;
+}
+
+html.dark .ro-action-btn--accept:hover {
+  background: #166534;
+  border-color: #166534;
+}
+
+html.dark .ro-action-btn--inprogress {
+  background: rgba(180, 83, 9, 0.14);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.28);
+}
+
+html.dark .ro-action-btn--inprogress:hover {
+  background: rgba(180, 83, 9, 0.22);
+  border-color: rgba(251, 191, 36, 0.45);
+  color: #fde68a;
+}
+
+html.dark .ro-action-btn--redirect {
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.28);
+}
+
+html.dark .ro-action-btn--redirect:hover {
+  background: rgba(29, 78, 216, 0.12);
+  border-color: #3b82f6;
+}
+
+html.dark .ro-action-btn--close {
+  color: #475569;
+}
+
+html.dark .ro-action-btn--close:hover {
+  background: #334155;
+  color: #94a3b8;
+  border-color: #475569;
+}
+
+/* ── Responsive dark ── */
+@media (max-width: 680px) {
+  html.dark .ro-main {
+    border-bottom-color: #334155;
+  }
 }

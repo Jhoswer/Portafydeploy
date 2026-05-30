@@ -1,4 +1,5 @@
 import { ArrowLeft, CheckCircle2, PencilLine, Plus, Sparkles, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   breadcrumb,
   breadcrumbCurrent,
@@ -48,6 +49,7 @@ import {
 } from "../../../features/dashboard-portfolio/portfolioWorkspaceContent";
 
 export default function PortfolioWorkspace(props) {
+  const { t } = useTranslation();
   const {
     activeMeta,
     activeItems,
@@ -76,6 +78,12 @@ export default function PortfolioWorkspace(props) {
   const viewport = useViewport();
   const isTablet = viewport < 1080;
   const isMobile = viewport < 760;
+  const sectionTitle = t(`appI18n.portfolio.sections.${activeMeta.key}.title`, activeMeta.title);
+  const sectionSingular = t(`appI18n.portfolio.sections.${activeMeta.key}.singular`, activeMeta.singular);
+  const recordsLabel = t(
+    activeItems.length === 1 ? "appI18n.portfolio.recordCount" : "appI18n.portfolio.recordsCount",
+    { count: activeItems.length }
+  );
 
   const shellStyle = {
     ...workspaceShell,
@@ -127,10 +135,10 @@ export default function PortfolioWorkspace(props) {
             <div style={breadcrumb}>
               <button type="button" onClick={onBack} style={breadcrumbLink} className="portfolio-breadcrumb-link">
                 <ArrowLeft size={15} />
-                Volver al portafolio
+                {t("appI18n.portfolio.back")}
               </button>
               <span style={breadcrumbSep}>/</span>
-              <span style={breadcrumbCurrent}>Mis {activeMeta.title.toLowerCase()}</span>
+              <span style={breadcrumbCurrent}>{t("appI18n.portfolio.mySection", { section: sectionTitle.toLowerCase() })}</span>
               <style>{`
                 .portfolio-breadcrumb-link:hover {
                   transform: translateX(-2px);
@@ -167,27 +175,27 @@ export default function PortfolioWorkspace(props) {
                 >
                   <div style={{ minWidth: 0 }}>
                     <div style={{ ...eyebrow, marginBottom: 6, color: "rgba(232,240,255,.58)" }}>
-                      Estacion activa / {activeMeta.title}
+                      {t("appI18n.portfolio.activeStation", { section: sectionTitle })}
                     </div>
                     <h1 style={{ ...title, marginBottom: 0, fontSize: isMobile ? "1.35rem" : "1.78rem", color: "#fff", letterSpacing: "-0.055em" }}>
-                      Gestion de {activeMeta.title.toLowerCase()}
+                      {t("appI18n.portfolio.manage", { section: sectionTitle.toLowerCase() })}
                     </h1>
                   </div>
 
                   <InteractiveButton variant="primary" onClick={onCreate} compact disabled={isBusy}>
                     <Plus size={14} />
-                    Agregar {activeMeta.singular}
+                    {t("appI18n.portfolio.add", { singular: sectionSingular })}
                   </InteractiveButton>
                 </div>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <span style={{ ...statPill, background: "rgba(255,255,255,.10)", border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.82)" }}>
                     <CheckCircle2 size={14} color="var(--blue-mid)" />
-                    {activeItems.length} {activeItems.length === 1 ? "registro" : "registros"}
+                    {recordsLabel}
                   </span>
                   <span style={{ ...statPill, background: "rgba(255,255,255,.10)", border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.82)" }}>
                     <Sparkles size={14} color="var(--blue-mid)" />
-                    {activeMeta.singular} editable
+                    {t("appI18n.portfolio.editable", { singular: sectionSingular })}
                   </span>
                   {syncMessage ? (
                     <span style={{ ...statPill, background: "rgba(255,255,255,.10)", border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.82)" }}>
@@ -200,9 +208,9 @@ export default function PortfolioWorkspace(props) {
 
             <div style={listHeader}>
               <div>
-                <div style={panelEyebrow}>Listado</div>
+                <div style={panelEyebrow}>{t("appI18n.portfolio.list")}</div>
                 <div style={panelTitle}>
-                  {activeItems.length} {activeItems.length === 1 ? "registro" : "registros"}
+                  {recordsLabel}
                 </div>
               </div>
             </div>
@@ -225,7 +233,7 @@ export default function PortfolioWorkspace(props) {
                             {activeMeta.key === "projects" ? (
                               <ProjectStatusPill status={item.status} compact />
                             ) : (
-                              <div style={itemSubtitle}>{getItemSubtitle(activeMeta.key, item)}</div>
+                              <div style={itemSubtitle}>{getItemSubtitle(activeMeta.key, item, t)}</div>
                             )}
                             {activeMeta.key === "skills" && <SkillDots level={item.level} />}
                           </button>
@@ -252,12 +260,12 @@ export default function PortfolioWorkspace(props) {
                   <>
                     <div style={detailHeader}>
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={panelEyebrow}>Vista</div>
+                        <div style={panelEyebrow}>{t("appI18n.portfolio.view")}</div>
                         <div style={detailTitle}>{getItemTitle(activeMeta.key, selectedItem)}</div>
                         {activeMeta.key === "projects" ? (
                           <ProjectStatusPill status={selectedItem.status} />
                         ) : (
-                          <div style={detailMeta}>{getItemSubtitle(activeMeta.key, selectedItem)}</div>
+                          <div style={detailMeta}>{getItemSubtitle(activeMeta.key, selectedItem, t)}</div>
                         )}
                       </div>
 
@@ -269,11 +277,11 @@ export default function PortfolioWorkspace(props) {
                     <div style={detailActions}>
                       <InteractiveButton variant="secondary" onClick={() => onEdit(selectedItem)} disabled={isBusy}>
                         <PencilLine size={15} />
-                        Editar
+                        {t("appI18n.portfolio.edit")}
                       </InteractiveButton>
                       <InteractiveButton variant="danger" onClick={() => onDelete(selectedItem.id)} disabled={isBusy}>
                         <Trash2 size={15} />
-                        Eliminar
+                        {t("appI18n.portfolio.delete")}
                       </InteractiveButton>
                     </div>
                   </>
@@ -281,11 +289,13 @@ export default function PortfolioWorkspace(props) {
                   <>
                     <div style={detailHeader}>
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={panelEyebrow}>{mode === "edit" ? "Edicion" : "Nuevo registro"}</div>
+                        <div style={panelEyebrow}>{mode === "edit" ? t("appI18n.portfolio.edition") : t("appI18n.portfolio.newRecord")}</div>
                         <div style={detailTitle}>
-                          {mode === "edit" ? `Editar ${activeMeta.singular}` : `Agregar ${activeMeta.singular}`}
+                          {mode === "edit"
+                            ? t("appI18n.portfolio.editItem", { singular: sectionSingular })
+                            : t("appI18n.portfolio.addItem", { singular: sectionSingular })}
                         </div>
-                        <div style={detailMeta}>Completa solo esta seccion, sin seguir un flujo pesado.</div>
+                        <div style={detailMeta}>{t("appI18n.portfolio.formHint")}</div>
                         {fieldErrors?._form ? <div style={{ ...helperText, color: "#d53638", marginTop: 6 }}>{fieldErrors._form}</div> : null}
                       </div>
                     </div>
@@ -301,12 +311,12 @@ export default function PortfolioWorkspace(props) {
 
                     <div style={detailActions}>
                       <InteractiveButton variant="ghost" onClick={onCancel} disabled={isBusy}>
-                        Cancelar
+                        {t("appI18n.common.cancel")}
                       </InteractiveButton>
                       <InteractiveButton variant="primary" onClick={onSave} loading={isBusy}>
                         {isBusy
-                          ? (mode === "edit" ? "Guardando cambios" : "Guardando registro")
-                          : (mode === "edit" ? "Guardar cambios" : "Agregar")}
+                          ? (mode === "edit" ? t("appI18n.portfolio.savingChanges") : t("appI18n.portfolio.savingRecord"))
+                          : (mode === "edit" ? t("appI18n.portfolio.saveTitle") : t("appI18n.portfolio.addButton"))}
                       </InteractiveButton>
                     </div>
                   </>

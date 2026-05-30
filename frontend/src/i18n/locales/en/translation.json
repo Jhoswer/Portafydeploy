@@ -125,7 +125,14 @@
       },
       "Company": {
         "heading": "Company",
-        "links": ["About", "Careers", "Press", "Contact", "Privacy", "Terms"]
+        "links": [
+          "About",
+          "Careers",
+          "Press",
+          "Contact",
+          "Privacy",
+          "Terms"
+        ]
       }
     },
     "rights": "All rights reserved",
@@ -512,7 +519,6 @@
     "nextPage": "Next page",
     "lastPage": "Last page"
   },
-
   "cv": {
     "title": "My CVs",
     "subtitle": "Manage, edit and export your résumés",
@@ -586,7 +592,6 @@
       "pendingItems": "{{count}} item(s) to process"
     }
   },
-
   "recruiterForms": {
     "common": {
       "continue": "Continue",
@@ -1144,164 +1149,961 @@
       "pageInfo": "Page {{page}} of {{lastPage}}"
     }
   },
-"notificationSettings": {
-  "title": "Settings",
-  "sub": "Choose a category and adjust only what you need.",
-  "saving": "Saving...",
-  "saveChanges": "✓ Save changes",
-  "loading": "Loading preferences...",
-  "categories": {
-    "activity_notifications": {
-      "label": "Social Activity",
-      "description": "Likes, comments and mentions on your posts"
+  "notificationSettings": {
+    "title": "Settings",
+    "sub": "Choose a category and adjust only what you need.",
+    "saving": "Saving...",
+    "saveChanges": "✓ Save changes",
+    "loading": "Loading preferences...",
+    "categories": {
+      "activity_notifications": {
+        "label": "Social Activity",
+        "description": "Likes, comments and mentions on your posts"
+      },
+      "portfolio_notifications": {
+        "label": "Followed users' portfolios",
+        "description": "Project and experience updates"
+      },
+      "offer_notifications": {
+        "label": "New job postings",
+        "description": "Job offers matching your profile"
+      },
+      "support_notifications": {
+        "label": "Support messages",
+        "description": "Support replies and updates"
+      },
+      "platform_notifications": {
+        "label": "Platform notifications",
+        "description": "Portafy announcements and news"
+      }
     },
-    "portfolio_notifications": {
-      "label": "Followed users' portfolios",
-      "description": "Project and experience updates"
+    "notifications": {
+      "title": "Notifications",
+      "back": "Back",
+      "markAllRead": "Mark all as read",
+      "loading": "Loading...",
+      "filter": {
+        "all": "All",
+        "unread": "Unread",
+        "read": "Read"
+      },
+      "type": {
+        "all": "All types",
+        "like": "Likes",
+        "comment": "Comments",
+        "follow": "Following",
+        "job_offer": "Job offers",
+        "postulation": "Applications"
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "pageInfo": "Page {{page}} of {{lastPage}}"
+      }
     },
-    "offer_notifications": {
-      "label": "New job postings",
-      "description": "Job offers matching your profile"
+    "notificationSettings": {
+      "title": "Settings",
+      "sub": "Choose a category and adjust only what you need.",
+      "saving": "Saving...",
+      "saveChanges": "✓ Save changes",
+      "loading": "Loading preferences...",
+      "categories": {
+        "activity_notifications": {
+          "label": "Social Activity",
+          "description": "Likes, comments and mentions on your posts"
+        },
+        "portfolio_notifications": {
+          "label": "Followed users' portfolios",
+          "description": "Project and experience updates"
+        },
+        "offer_notifications": {
+          "label": "New job postings",
+          "description": "Job offers matching your profile"
+        },
+        "support_notifications": {
+          "label": "Support messages",
+          "description": "Support replies and updates"
+        },
+        "platform_notifications": {
+          "label": "Platform notifications",
+          "description": "Portafy announcements and news"
+        }
+      }
     },
-    "support_notifications": {
-      "label": "Support messages",
-      "description": "Support replies and updates"
-    },
-    "platform_notifications": {
-      "label": "Platform notifications",
-      "description": "Portafy announcements and news"
+    "notificationBell": {
+      "title": "Notifications",
+      "markAllRead": "Mark all as read",
+      "viewAll": "View all notifications",
+      "ariaLabel": "Notifications",
+      "empty": {
+        "title": "No notifications",
+        "sub": "When someone interacts with your content, it will appear here."
+      },
+      "item": {
+        "markAsRead": "Mark as read",
+        "read": "Read",
+        "defaultText": "New notification",
+        "altAvatar": "Notification"
+      },
+      "types": {
+        "like": "Like",
+        "comment": "Comment",
+        "follow": "Follow",
+        "event": "Event",
+        "job_offer": "Job offer",
+        "postulation": "Application",
+        "job_application": "Application"
+      },
+      "messages": {
+        "like": "{{name}} liked your post",
+        "follow": "{{name}} started following you",
+        "event": "New event: {{title}}",
+        "job_offer": "{{company}} posted a job offer: {{title}}",
+        "postulation": "{{name}} applied to: {{title}}",
+        "job_application": "{{name}} applied to: {{title}}",
+        "comment": "{{name}} commented",
+        "commentWithText": "{{name}} commented: \"{{text}}\"",
+        "default": "New notification",
+        "fallbackOffer": "the offer",
+        "fallbackPerson": "Someone",
+        "fallbackCompany": "Company"
+      }
     }
   },
-  "notifications": {
+  "notificationBell": {
     "title": "Notifications",
-    "back": "Back",
     "markAllRead": "Mark all as read",
-    "loading": "Loading...",
-    "filter": {
-      "all": "All",
-      "unread": "Unread",
-      "read": "Read"
+    "viewAll": "View all notifications",
+    "ariaLabel": "Notifications",
+    "empty": {
+      "title": "No notifications",
+      "sub": "When someone interacts with your content, it will appear here."
     },
-    "type": {
-      "all": "All types",
-      "like": "Likes",
-      "comment": "Comments",
-      "follow": "Following",
-      "job_offer": "Job offers",
-      "postulation": "Applications"
+    "item": {
+      "markAsRead": "Mark as read",
+      "read": "Read",
+      "defaultText": "New notification",
+      "altAvatar": "Notification"
     },
-    "pagination": {
+    "types": {
+      "like": "Like",
+      "comment": "Comment",
+      "follow": "Follow",
+      "event": "Event",
+      "job_offer": "Job offer",
+      "postulation": "Application",
+      "job_application": "Application"
+    },
+    "messages": {
+      "like": "{{name}} liked your post",
+      "follow": "{{name}} started following you",
+      "event": "New event: {{title}}",
+      "job_offer": "{{company}} posted a job offer: {{title}}",
+      "postulation": "{{name}} applied to: {{title}}",
+      "job_application": "{{name}} applied to: {{title}}",
+      "comment": "{{name}} commented",
+      "commentWithText": "{{name}} commented: \"{{text}}\"",
+      "default": "New notification",
+      "fallbackOffer": "the offer",
+      "fallbackPerson": "Someone",
+      "fallbackCompany": "Company"
+    }
+  },
+  "appI18n": {
+    "calendar": {
+      "eyebrow": "Calendar",
+      "title": "Visual profile agenda",
+      "description": "Reserve blocks to improve your profile, upload projects, review links and keep your progress visible.",
+      "monthlyView": "Monthly view",
+      "smartReminders": "Space for smart reminders",
+      "selectDay": "Select a day and see the detail next to it",
+      "detail": "Detail",
+      "freeDay": "Free day",
+      "noTime": "No time assigned",
+      "emptyPlan": "Use this space to plan a specific profile improvement or prepare a new project.",
+      "usefulIdea": "Useful idea",
+      "usefulIdeaText": "Reminders to update your CV before applying or sharing your portfolio.",
+      "nextStep": "Next step",
+      "nextStepText": "Later we could add drag-and-drop events, goals and visual alerts here.",
+      "noDate": "No date",
+      "months": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "weekDays": [
+        "M",
+        "T",
+        "W",
+        "T",
+        "F",
+        "S",
+        "S"
+      ],
+      "dateLabel": "{{month}} {{day}}, {{year}}",
+      "events": {
+        "updateProfile": {
+          "title": "Update profile",
+          "detail": "Review headline, photo and bio before publishing changes.",
+          "tag": "Profile"
+        },
+        "uploadCase": {
+          "title": "Upload case study",
+          "detail": "Publish the UX project with cover, technologies and demo link.",
+          "tag": "Project"
+        },
+        "reviewSkills": {
+          "title": "Review skills",
+          "detail": "Sort skills by seniority and keep only the main ones visible.",
+          "tag": "Skills"
+        },
+        "connectCv": {
+          "title": "Connect CV",
+          "detail": "Verify the PDF, social links and public portfolio.",
+          "tag": "Social"
+        }
+      }
+    },
+    "portfolio": {
+      "syncingDb": "Syncing with the database...",
+      "loadError": "The portfolio could not be loaded right now.",
+      "fixFields": "Fix the highlighted fields to continue.",
+      "saveError": "The record could not be saved right now.",
+      "deleteError": "The record could not be deleted",
+      "deleteTitle": "Delete record",
+      "deleteDescription": "{{item}} will be deleted. This action cannot be undone.",
+      "deleteFallback": "this record",
+      "deleteConfirm": "Yes, delete",
+      "saveTitle": "Save changes",
+      "saveDescription": "This record will be updated with the form information. Confirm if you want to continue.",
+      "saveConfirm": "Yes, save",
+      "back": "Back to portfolio",
+      "mySection": "My {{section}}",
+      "activeStation": "Active station / {{section}}",
+      "manage": "Manage {{section}}",
+      "add": "Add {{singular}}",
+      "editable": "editable {{singular}}",
+      "list": "List",
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "edition": "Editing",
+      "newRecord": "New record",
+      "editItem": "Edit {{singular}}",
+      "addItem": "Add {{singular}}",
+      "formHint": "Complete only this section, without following a heavy flow.",
+      "savingChanges": "Saving changes",
+      "savingRecord": "Saving record",
+      "addButton": "Add",
+      "recordsCount": "{{count}} records",
+      "recordCount": "{{count}} record",
+      "sections": {
+        "projects": {
+          "title": "Projects",
+          "singular": "project",
+          "description": "Manage featured projects, repositories, technologies and visual pieces."
+        },
+        "experience": {
+          "title": "Experience",
+          "singular": "experience",
+          "description": "Manage work or academic experience in a light, independent way."
+        },
+        "social": {
+          "title": "Social",
+          "singular": "link",
+          "description": "Organize professional links and networks with predefined platforms."
+        },
+        "skills": {
+          "title": "Skills",
+          "singular": "skill",
+          "description": "Separate technical and soft skills to keep the record lightweight."
+        },
+        "education": {
+          "title": "Professional education",
+          "singular": "education item",
+          "description": "Register degrees, diplomas, courses, masters and other relevant studies."
+        }
+      },
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "techCategory": "Technical category",
+        "tags": "Technologies",
+        "repoUrl": "Repository URL",
+        "demoUrl": "Demo URL",
+        "status": "Project status",
+        "cover": "Project cover",
+        "type": "Type",
+        "roleArea": "Area",
+        "company": "Company / institution / client",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "isCurrent": "Current",
+        "category": "Category",
+        "name": "Skill name",
+        "level": "Level",
+        "platform": "Platform",
+        "url": "URL",
+        "program": "Program or degree",
+        "institution": "Institution"
+      },
+      "detail": {
+        "noCategory": "No category",
+        "noRepository": "No repository",
+        "noDemo": "No demo URL",
+        "noArea": "No area",
+        "dates": "Dates",
+        "current": "Current",
+        "present": "Present",
+        "undefined": "Undefined",
+        "visual": "Visual",
+        "noDescription": "No description",
+        "noProgram": "No program",
+        "noInstitution": "No institution",
+        "noType": "No type",
+        "noStart": "No start date",
+        "destination": "Destination",
+        "noUrl": "No URL",
+        "active": "Active",
+        "noCover": "No custom cover",
+        "coverOf": "Cover for {{title}}",
+        "noTechnologies": "No technologies"
+      },
+      "controls": {
+        "selectTechnology": "Select a technology",
+        "selectSkill": "Select a skill",
+        "selectOption": "Select an option",
+        "writePlatform": "Write the platform",
+        "dateHint": "Use the calendar to choose a date more intuitively.",
+        "uploadFile": "Attach a file",
+        "noFile": "No file selected yet.",
+        "chooseFile": "Choose file",
+        "projectCoverHelper": "Upload a cover to better present your project",
+        "projectCoverEmpty": "No cover selected. Optional, max 2 MB.",
+        "uploadCover": "Upload cover"
+      },
+      "validation": {
+        "experienceType": "Select the experience type.",
+        "area": "Select the area.",
+        "role": "Complete the role.",
+        "company": "Complete the company or institution.",
+        "description": "Add a short description.",
+        "startDate": "Select the start date.",
+        "endDate": "Select the end date or mark that you are still there.",
+        "projectTitle": "Complete the project title.",
+        "projectDescription": "Add a short project description.",
+        "techCategory": "Select a technical category.",
+        "tags": "Add at least one technology.",
+        "projectStatus": "Select the project status.",
+        "coverType": "The cover must be a valid image.",
+        "coverSize": "The cover must not exceed 2 MB.",
+        "category": "Select a category.",
+        "skill": "Select or write a skill.",
+        "level": "Select the level.",
+        "platform": "Select or write a platform.",
+        "url": "Complete the link URL.",
+        "educationLevel": "Select the education type.",
+        "program": "Complete the program or degree.",
+        "max140": "Maximum 140 characters.",
+        "safeText": "Use only letters, numbers and basic symbols.",
+        "institution": "Complete the institution.",
+        "max120": "Maximum 120 characters.",
+        "safeInstitution": "The institution contains invalid characters.",
+        "endDateCurrent": "Select the end date or mark that it is still current.",
+        "dateOrder": "The end date cannot be before the start date.",
+        "form": "Required fields are missing."
+      },
+      "overview": {
+        "latest": "Latest {{item}}",
+        "station": "Station 0{{number}}",
+        "addFirst": "Add your first {{item}}",
+        "recordsIn": "{{count}} records in {{section}}",
+        "noContent": "No content in this module yet.",
+        "inOrbit": "In orbit",
+        "notStarted": "Not launched",
+        "item": "{{count}} item",
+        "items": "{{count}} items"
+      },
+      "placeholders": {
+        "projects": {
+          "title": "Project name",
+          "description": "Short project summary",
+          "tags": "Select technologies from the category or add one manually",
+          "repoUrl": "https://github.com/user/project",
+          "demoUrl": "https://demo.com",
+          "cover": "Upload an optional cover"
+        },
+        "experience": {
+          "title": "Select a role or type another one",
+          "company": "Company, institution or client name",
+          "description": "Impact, tasks or achievements"
+        },
+        "skills": {
+          "name": "Select a skill or type another one manually",
+          "description": "Describe the skill",
+          "category": "Frontend / Soft skill / Backend"
+        },
+        "social": {
+          "url": "https://..."
+        },
+        "education": {
+          "program": "Systems Engineering / QA Diploma",
+          "institution": "University or institution"
+        },
+        "extra": {
+          "cvUrl": "https://..."
+        }
+      },
+      "educationLevels": {
+        "tecnico": "Technical degree",
+        "tecnologo": "Technologist",
+        "licenciatura": "Bachelor degree",
+        "ingenieria": "Engineering degree",
+        "maestria": "Master degree",
+        "doctorado": "Doctorate",
+        "curso": "Course",
+        "diplomado": "Diploma",
+        "otro": "Other"
+      }
+    },
+    "profileTrust": {
+      "close": "Close",
+      "connectionsPublic": "Public view of connections",
+      "connectionsManage": "Manage your connections",
+      "loadingList": "Loading list...",
+      "emptyUsers": "No users to show.",
+      "unfollow": "Unfollow",
+      "followBack": "Follow back",
+      "following": "Following",
+      "unfollowTitle": "Unfollow",
+      "unfollowSubtitle": "Are you sure you want to unfollow {{name}}?",
+      "thisUser": "this user",
+      "processing": "Processing...",
+      "confirm": "Confirm",
+      "viewsTitle": "Profile views",
+      "viewsSubtitle": "Users who recently visited your profile",
+      "loadingViews": "Loading views...",
+      "emptyViews": "No profile views registered yet.",
+      "user": "User",
+      "suggestTitle": "Send suggestion",
+      "suggestSubtitle": "Your idea will be reviewed from the administration panel",
+      "suggestName": "Suggestion name",
+      "suggestDetail": "Reason or detail",
+      "chars": "{{count}}/255 characters",
+      "sending": "Sending...",
+      "verifyTitle": "Verify account",
+      "verifySubtitle": "Complete the process to get the verified badge",
+      "steps": [
+        "Document",
+        "Review",
+        "Result"
+      ],
+      "pending": "Your request is pending. Wait for the administration review.",
+      "approved": "Account approved. The badge can now be shown on your profile.",
+      "rejected": "Request rejected: {{reason}}",
+      "noReason": "No justification registered.",
+      "front": "Document front",
+      "back": "Document back",
+      "imageHint": "JPG, PNG or WEBP",
+      "pdf": "Full document in PDF",
+      "pdfHint": "Optional if you upload front and back",
+      "uploadHint": "Upload a PDF or both document images. Max 4 MB per image, 6 MB PDF.",
+      "sendRequest": "Send request",
+      "reportTitle": "Report profile",
+      "reportSubtitle": "The report about {{name}} will be sent to administration",
+      "optionalDetail": "Optional detail",
+      "sendReport": "Send report",
+      "validation": {
+        "frontBack": "If you choose images, attach front and back.",
+        "pdfType": "The full document must be a PDF.",
+        "pdfSize": "The PDF exceeds the 6 MB limit.",
+        "imageType": "The {{label}} must be JPG, PNG or WEBP.",
+        "imageSize": "The {{label}} exceeds the 4 MB limit.",
+        "frontLabel": "front",
+        "backLabel": "back"
+      }
+    },
+    "profile": {
+      "shareRemoving": "Removing...",
+      "shareSharing": "Sharing...",
+      "shared": "Shared",
+      "sharedFemale": "Shared",
+      "shareAction": "Share",
+      "projectNoDescription": "Project without description.",
+      "experienceNoDescription": "Experience without detailed description.",
+      "cover": "Cover",
+      "editProfile": "Edit profile",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "follow": "Follow",
+      "following": "Following",
+      "processing": "Processing...",
+      "moreOptions": "More options",
+      "contact": "Contact",
+      "viewCv": "View CV",
+      "manageCv": "CV management",
+      "shareProfile": "Share profile",
+      "reportProfile": "Report profile",
+      "locationFallback": "Location not specified",
+      "about": "About me",
+      "editing": "Editing",
+      "aboutPlaceholder": "Tell the world who you are professionally",
+      "links": "Links",
+      "skills": "Skills",
+      "education": "Professional education",
+      "loadingProfile": "Loading profile...",
+      "loadingProfileText": "We are gathering your visible information.",
+      "loadErrorTitle": "We could not load your profile",
+      "preparing": "Preparing profile...",
+      "preparingText": "One moment, we are connecting to your profile.",
+      "retry": "Retry loading",
+      "loadingLinks": "Loading links...",
+      "loadingSkills": "Loading skills...",
+      "loadingEducation": "Loading education...",
+      "tabs": {
+        "showcase": "Showcase",
+        "projects": "Projects",
+        "experience": "Experience",
+        "summary": "Summary"
+      },
+      "stats": {
+        "Seguidores": "Followers",
+        "Seguidos": "Following",
+        "Proyectos": "Projects",
+        "A??os de exp.": "Years exp.",
+        "A?os de exp.": "Years exp.",
+        "Empresas": "Companies",
+        "Habilidades": "Skills",
+        "Visitas": "Visits"
+      },
+      "errors": {
+        "commentReport": "Could not send the comment report.",
+        "loadProfile": "Could not load the profile.",
+        "unshare": "Could not stop sharing",
+        "invalidImage": "Select a valid image.",
+        "updateProfile": "Could not update the profile.",
+        "copy": "Could not copy",
+        "loadList": "Could not load the list.",
+        "followProfile": "Could not follow this profile.",
+        "unfollowProfile": "Could not unfollow this profile.",
+        "unfollow": "Could not unfollow.",
+        "report": "Could not send the report.",
+        "shareProject": "Could not share the project",
+        "shareExperience": "Could not share the experience"
+      },
+      "messages": {
+        "projectShared": "Project shared in the feed",
+        "experienceShared": "Experience shared in the feed",
+        "reportSent": "Report sent to the administration team"
+      },
+      "empty": {
+        "bio": {
+          "public": "This profile does not have a public bio yet.",
+          "own": "Add a bio to enrich your public profile."
+        },
+        "links": {
+          "public": "This profile does not show professional links yet.",
+          "own": "You have not added professional links yet."
+        },
+        "skills": {
+          "public": "This profile does not show skills yet.",
+          "own": "You have not registered skills yet."
+        },
+        "education": {
+          "public": "This profile does not show professional education yet.",
+          "own": "You have not registered professional education yet."
+        },
+        "projectsTitle": {
+          "public": "No projects yet",
+          "own": "You do not have projects yet"
+        },
+        "projectsText": {
+          "public": "When this profile publishes portfolio projects, they will appear here.",
+          "own": "Projects you add to your portfolio will appear here."
+        },
+        "experienceTitle": {
+          "public": "No experience yet",
+          "own": "You do not have experience yet"
+        },
+        "experienceText": {
+          "public": "When this profile adds professional experience, it will appear here.",
+          "own": "Your experience loaded from portfolio will appear here."
+        },
+        "feedTitle": {
+          "public": "The showcase is empty",
+          "own": "Your showcase is empty"
+        },
+        "feedText": {
+          "public": "When this profile shares projects or experiences, they will appear here and in the feed.",
+          "own": "Share a project or experience to show it on your profile and in the feed."
+        }
+      },
+      "loadingSections": {
+        "projectsTitle": "Loading projects...",
+        "projectsText": "We only load this section to keep the profile lightweight.",
+        "experienceTitle": "Loading experience...",
+        "experienceText": "This tab loads on demand so the profile stays fast.",
+        "showcaseTitle": "Loading showcase...",
+        "showcaseText": "Reviewing the content you shared."
+      },
+      "summary": {
+        "strengths": "Strengths",
+        "strengthsText": "{{skills}} skills registered across {{categories}} categories.",
+        "noSkills": "You have not registered skills yet.",
+        "portfolio": "Portfolio",
+        "portfolioText": "{{count}} projects already strengthen your professional presentation.",
+        "noProjects": "Your portfolio does not have visible projects yet.",
+        "path": "Career path",
+        "pathText": "{{count}} experiences help tell your path better.",
+        "noExperience": "You have not registered experience for this view yet."
+      },
+      "unshare": {
+        "title": "Stop sharing",
+        "description": "This content will be removed from the feed and your showcase. The original project or experience will remain saved in your portfolio.",
+        "confirm": "Stop sharing"
+      },
+      "relations": {
+        "followers": "Followers",
+        "following": "Following"
+      }
+    },
+    "common": {
+      "view": "View",
+      "loading": "Loading...",
+      "syncing": "Syncing",
+      "refresh": "Refresh",
+      "save": "Save",
+      "saved": "Saved",
+      "close": "Close",
+      "cancel": "Cancel",
+      "send": "Send",
+      "retry": "Try again",
+      "portfolioUser": "PortaFy user",
+      "verifiedAccount": "Verified account"
+    },
+    "feed": {
+      "left": {
+        "panel": "Panel",
+        "explore": "Explore",
+        "activity": "Activity",
+        "filters": "Filters",
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "search": "Search",
+        "saved": "Saved",
+        "trending": "Trending",
+        "all": "All",
+        "portfolios": "Portfolios",
+        "jobs": "Job posts"
+      },
+      "right": {
+        "suggestedPeople": "Suggested people",
+        "suggestionsEmpty": "No suggested profiles yet.",
+        "loadingProfiles": "Loading profiles...",
+        "trending": "Trending",
+        "loadingTrending": "Loading trends...",
+        "trendingEmpty": "No active publications yet.",
+        "featuredPublication": "Featured publication",
+        "project": "Project",
+        "experience": "Experience",
+        "professionalFallback": "PortaFy professional"
+      },
+      "header": {
+        "title": "Professional feed",
+        "trendingTitle": "Professional trends",
+        "subtitle": "Real content shared from portfolios and profiles.",
+        "trendingSubtitle": "Popular posts ordered by platform activity."
+      },
+      "post": {
+        "projectKind": "Portfolio project",
+        "experienceKind": "Professional experience",
+        "project": "Project",
+        "experience": "Experience",
+        "portfolioProject": "Portfolio project",
+        "portfolioProjectText": "Professional portfolio project.",
+        "technologies": "Technologies used",
+        "noTechnologies": "No technologies registered.",
+        "demo": "Demo",
+        "repository": "Repository",
+        "professionalTrajectory": "Professional path",
+        "organization": "Organization",
+        "period": "Period",
+        "noOrganization": "No organization",
+        "noDates": "No dates",
+        "experienceText": "Professional profile experience.",
+        "complete": "Complete",
+        "paused": "Paused",
+        "inProgress": "In progress",
+        "academic": "Academic",
+        "freelance": "Freelance",
+        "professional": "Professional",
+        "follow": "Follow",
+        "following": "Following",
+        "like": "Like",
+        "comment": "Comment",
+        "comments": "Comments",
+        "likes": "likes",
+        "commentsCount": "comments",
+        "savedCount": "saved",
+        "writeComment": "Write a short comment...",
+        "sendComment": "Send comment",
+        "loadingComments": "Loading comments...",
+        "viewMoreComments": "View more comments",
+        "noComments": "No visible comments yet.",
+        "firstComment": "Be the first to comment.",
+        "commentsUnavailable": "Comments could not be shown yet.",
+        "publication": "Publication",
+        "moreOptions": "More options",
+        "removeSharing": "Stop sharing",
+        "removing": "Removing...",
+        "reportPublication": "Report publication",
+        "reportComment": "Report comment",
+        "commentOptions": "Comment options",
+        "followers": "followers",
+        "followingUsers": "following"
+      },
+      "states": {
+        "loadErrorTitle": "Could not load the feed",
+        "emptyTitle": "No shared content yet",
+        "emptyText": "Share a project or experience from your profile to see it here.",
+        "unshareTitle": "Stop sharing",
+        "unshareText": "This content will be removed from the feed and your showcase. The original project or experience will remain in your portfolio.",
+        "authTitle": "Log in to interact",
+        "authText": "You can explore the feed freely. To {{action}}, log in or create an account.",
+        "keepExploring": "Keep exploring",
+        "register": "Sign up",
+        "login": "Log in"
+      }
+    },
+    "dashboard": {
+      "layout": {
+        "panel": "Panel",
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "main": "Main",
+        "profile": "My profile",
+        "portfolio": "Portfolio",
+        "publications": "My showcase",
+        "cv": "My CV",
+        "analytics": "Statistics",
+        "calendar": "Calendar",
+        "status": "Status",
+        "active": "Active",
+        "readyTitle": "Your dashboard is ready",
+        "readyText": "From here you can build each section without touching the main feed and keep your work isolated.",
+        "settings": "Settings"
+      },
+      "main": {
+        "eyebrow": "Professional home",
+        "title": "Build a presence people understand in seconds.",
+        "text": "Manage your profile, measure your portfolio reach and send trust signals from one place.",
+        "improveProfile": "Improve my profile",
+        "viewStats": "View statistics",
+        "trustStatus": "Trust status",
+        "verification": "Verification",
+        "verificationTitle": "Make your profile feel trustworthy",
+        "suggestions": "Suggestions",
+        "suggestionsTitle": "Suggest an improvement with context",
+        "suggestionsText": "Send ideas about profiles, projects, experience or any PortaFy area. The team receives type, area and reason.",
+        "sendSuggestion": "Send suggestion",
+        "suggestionSent": "Suggestion sent successfully.",
+        "verificationLoading": "Checking status",
+        "verificationLoadingText": "We are checking whether your account is already verified.",
+        "verified": "Verified account",
+        "verifiedText": "Your profile already shows the trust badge.",
+        "pending": "Pending review",
+        "pendingText": "Your request is waiting for team review.",
+        "rejected": "Needs adjustment",
+        "rejectedText": "Review the reason and send your documents again.",
+        "none": "No request",
+        "noneText": "Send your document and activate a trust signal on your profile.",
+        "checking": "Checking status",
+        "viewRequest": "View request status",
+        "sendVerification": "Submit for verification"
+      }
+    },
+    "analytics": {
+      "title": "Professional statistics",
+      "subtitle": "Reach, performance and recent activity from your profile and portfolio.",
+      "badge": "Professional profile",
+      "loadingTitle": "Loading statistics...",
+      "loadingText": "We are calculating your visible profile reach.",
+      "loadError": "Statistics could not be loaded.",
+      "viewVisitors": "View users who visited my profile",
+      "last14Title": "Visits from the last 14 days",
+      "last14Text": "Each bar represents visits recorded on your profile.",
+      "recentActivity": "Recent activity",
+      "noVisitsTitle": "No visits yet",
+      "noVisitsText": "When other profiles visit yours, you will see the trend here.",
+      "noEventsTitle": "No recent events",
+      "noEventsText": "Contact clicks, CV clicks and visited sections will be recorded here.",
+      "topProjects": "Most viewed projects",
+      "topProjectsText": "Top 3 based on profile visits and shared project activity.",
+      "inProfile": "On my profile",
+      "inProfileText": "Projects opened by others from your public profile.",
+      "inFeed": "In the feed",
+      "inFeedText": "Shared projects with the strongest publication response.",
+      "visits": "visits",
+      "points": "points",
+      "untitledProject": "Untitled project",
+      "notEnoughData": "Not enough data",
+      "notEnoughDataText": "There are no recorded visits yet to build this ranking.",
+      "cards": {
+        "profile_views": [
+          "Profile visits",
+          "Total people who opened your profile."
+        ],
+        "profile_views_week": [
+          "Last 7 days",
+          "Visits received during the last week."
+        ],
+        "project_views": [
+          "Project views",
+          "Times others reviewed your projects."
+        ],
+        "experience_views": [
+          "Experience views",
+          "Interest generated by your visible experiences."
+        ],
+        "contact_clicks": [
+          "Contact clicks",
+          "Times people tried to contact you from your profile."
+        ],
+        "cv_clicks": [
+          "CV clicks",
+          "Times people opened or tried to review your CV."
+        ],
+        "portfolio_posts": [
+          "Shared content",
+          "Your posts visible in the feed and showcase."
+        ],
+        "portfolio_engagement": [
+          "Total interactions",
+          "Sum of likes, comments and saves on your content."
+        ],
+        "engagement_rate": [
+          "Average per post",
+          "Average interactions each post receives."
+        ]
+      },
+      "events": {
+        "profile_view": "Profile visits",
+        "project_view": "Project views",
+        "experience_view": "Experience views",
+        "contact_click": "Contact clicks",
+        "cv_click": "CV clicks"
+      }
+    },
+    "showcase": {
+      "sort": {
+        "popular": "Most popular",
+        "likes": "Most liked",
+        "newest": "Newest",
+        "oldest": "Oldest"
+      },
+      "published": "Published",
+      "opening": "Opening...",
+      "detail": "Detail",
+      "selectTitle": "Select a publication",
+      "selectText": "Details and comments will appear here.",
+      "content": "Content",
+      "collapse": "Collapse",
+      "viewAll": "View all",
+      "likes": "Likes",
+      "commentsShort": "Comm.",
+      "savedShort": "Saved",
+      "comments": "Comments",
+      "loadingComments": "Loading comments...",
+      "noComments": "No visible comments yet.",
+      "viewMoreComments": "View more comments",
+      "eyebrow": "Feed management",
+      "subtitle": "Manage and review the performance of the content you shared.",
+      "refreshing": "Refreshing...",
+      "shared": "Shared",
+      "likeMetric": "Likes",
+      "saved": "Saved",
+      "sortLabel": "Sort showcase",
+      "summary": "{{count}} shared - page {{page}} of {{totalPages}}",
+      "loadError": "Could not load your showcase.",
+      "loading": "Loading showcase...",
+      "empty": "You have not shared content from your portfolio yet.",
       "previous": "Previous",
-      "next": "Next",
-      "pageInfo": "Page {{page}} of {{lastPage}}"
+      "next": "Next"
+    },
+    "adminRequests": {
+      "title": "Requests",
+      "subtitle": "Account verification request review.",
+      "identity": "Identity verification",
+      "heroTitle": "Verified account requests",
+      "heroText": "Review documents sent by professionals and decide whether to approve the verified badge.",
+      "refresh": "Refresh",
+      "tabsLabel": "Request status",
+      "tabs": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "searchPlaceholder": "Search by user or status",
+      "metrics": {
+        "current": "In this view",
+        "visible": "Matches",
+        "status": "Status"
+      },
+      "states": {
+        "loadingTitle": "Loading requests",
+        "loadingText": "We are checking verification requests.",
+        "errorTitle": "Could not load",
+        "emptyTitle": "No requests",
+        "emptyText": "No requests match this view.",
+        "panel": "Panel",
+        "error": "Error"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "documents": {
+        "pdf": "PDF",
+        "front": "Front",
+        "back": "Back",
+        "empty": "No attached documents"
+      },
+      "card": {
+        "userFallback": "PortaFy user",
+        "userLine": "User #{{id}} - Sent {{date}}",
+        "noId": "no id",
+        "reviewed": "Request reviewed {{date}}"
+      },
+      "actions": {
+        "approve": "Approve",
+        "approving": "Approving...",
+        "reject": "Reject",
+        "rejectTitle": "Reject request",
+        "rejectReason": "Rejection reason",
+        "rejectPlaceholder": "Briefly explain what the user needs to fix.",
+        "cancel": "Cancel",
+        "rejecting": "Rejecting...",
+        "confirmReject": "Confirm rejection",
+        "closeModal": "Close modal"
+      },
+      "errors": {
+        "load": "Requests could not be loaded.",
+        "approve": "The request could not be approved.",
+        "reject": "The request could not be rejected.",
+        "reasonMin": "Write a reason of at least 5 characters."
+      },
+      "characters": "{{count}}/500 characters",
+      "noDate": "no date"
     }
-  },
-"notificationSettings": {
-  "title": "Settings",
-  "sub": "Choose a category and adjust only what you need.",
-  "saving": "Saving...",
-  "saveChanges": "✓ Save changes",
-  "loading": "Loading preferences...",
-  "categories": {
-    "activity_notifications": {
-      "label": "Social Activity",
-      "description": "Likes, comments and mentions on your posts"
-    },
-    "portfolio_notifications": {
-      "label": "Followed users' portfolios",
-      "description": "Project and experience updates"
-    },
-    "offer_notifications": {
-      "label": "New job postings",
-      "description": "Job offers matching your profile"
-    },
-    "support_notifications": {
-      "label": "Support messages",
-      "description": "Support replies and updates"
-    },
-    "platform_notifications": {
-      "label": "Platform notifications",
-      "description": "Portafy announcements and news"
-    }
-  }
-},
-"notificationBell": {
-  "title": "Notifications",
-  "markAllRead": "Mark all as read",
-  "viewAll": "View all notifications",
-  "ariaLabel": "Notifications",
-  "empty": {
-    "title": "No notifications",
-    "sub": "When someone interacts with your content, it will appear here."
-  },
-  "item": {
-    "markAsRead": "Mark as read",
-    "read": "Read",
-    "defaultText": "New notification",
-    "altAvatar": "Notification"
-  },
-  "types": {
-    "like": "Like",
-    "comment": "Comment",
-    "follow": "Follow",
-    "event": "Event",
-    "job_offer": "Job offer",
-    "postulation": "Application",
-    "job_application": "Application"
-  },
-  "messages": {
-    "like": "{{name}} liked your post",
-    "follow": "{{name}} started following you",
-    "event": "New event: {{title}}",
-    "job_offer": "{{company}} posted a job offer: {{title}}",
-    "postulation": "{{name}} applied to: {{title}}",
-    "job_application": "{{name}} applied to: {{title}}",
-    "comment": "{{name}} commented",
-    "commentWithText": "{{name}} commented: \"{{text}}\"",
-    "default": "New notification",
-    "fallbackOffer": "the offer",
-    "fallbackPerson": "Someone",
-    "fallbackCompany": "Company"
-  }
-  }
-},
-"notificationBell": {
-  "title": "Notifications",
-  "markAllRead": "Mark all as read",
-  "viewAll": "View all notifications",
-  "ariaLabel": "Notifications",
-  "empty": {
-    "title": "No notifications",
-    "sub": "When someone interacts with your content, it will appear here."
-  },
-  "item": {
-    "markAsRead": "Mark as read",
-    "read": "Read",
-    "defaultText": "New notification",
-    "altAvatar": "Notification"
-  },
-  "types": {
-    "like": "Like",
-    "comment": "Comment",
-    "follow": "Follow",
-    "event": "Event",
-    "job_offer": "Job offer",
-    "postulation": "Application",
-    "job_application": "Application"
-  },
-  "messages": {
-    "like": "{{name}} liked your post",
-    "follow": "{{name}} started following you",
-    "event": "New event: {{title}}",
-    "job_offer": "{{company}} posted a job offer: {{title}}",
-    "postulation": "{{name}} applied to: {{title}}",
-    "job_application": "{{name}} applied to: {{title}}",
-    "comment": "{{name}} commented",
-    "commentWithText": "{{name}} commented: \"{{text}}\"",
-    "default": "New notification",
-    "fallbackOffer": "the offer",
-    "fallbackPerson": "Someone",
-    "fallbackCompany": "Company"
-  }
   }
 }

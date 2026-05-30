@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Check, Eye, FileText, Image, Loader2, Send, ShieldCheck, UploadCloud, UserMinus, UserPlus, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getPublicationReportReasons } from "../../../services/reportService";
 import {
   SUGGESTION_AREAS,
@@ -31,6 +32,7 @@ const modal = {
 };
 
 function ModalShell({ title, subtitle, icon, children, onClose, busy = false }) {
+  const { t } = useTranslation();
   return (
     <div style={backdrop} onMouseDown={busy ? undefined : onClose}>
       <section style={modal} onMouseDown={(event) => event.stopPropagation()}>
@@ -42,7 +44,7 @@ function ModalShell({ title, subtitle, icon, children, onClose, busy = false }) 
               {subtitle ? <span style={ui.muted}>{subtitle}</span> : null}
             </span>
           </div>
-          <button type="button" aria-label="Cerrar" onClick={onClose} disabled={busy} style={ui.icon}>
+          <button type="button" aria-label={t("appI18n.profileTrust.close")} onClick={onClose} disabled={busy} style={ui.icon}>
             <X size={16} />
           </button>
         </div>
@@ -53,6 +55,7 @@ function ModalShell({ title, subtitle, icon, children, onClose, busy = false }) 
 }
 
 function UserRow({ user, readonly, onFollow, onUnfollow, onOpenProfile, compact = false }) {
+  const { t } = useTranslation();
   const [hovered, setHovered] = useState(false);
   const canAct = !readonly && !user.is_me;
   const following = Boolean(user.is_following);
@@ -77,10 +80,10 @@ function UserRow({ user, readonly, onFollow, onUnfollow, onOpenProfile, compact 
           onMouseLeave={() => setHovered(false)}
           onClick={() => (following ? onUnfollow(user) : onFollow(user))}
           style={{ ...ui.secondary, gridColumn: compact ? "1 / -1" : undefined, justifySelf: compact ? "stretch" : "end", justifyContent: "center", padding: "8px 10px", color: following && hovered ? "#dc2626" : "#2048a8" }}
-          title={following ? "Dejar de seguir" : "Seguir tambien"}
+          title={following ? t("appI18n.profileTrust.unfollow") : t("appI18n.profileTrust.followBack")}
         >
           {following ? <UserMinus size={14} /> : <UserPlus size={14} />}
-          {following ? (hovered ? "Dejar de seguir" : "Siguiendo") : "Seguir tambien"}
+          {following ? (hovered ? t("appI18n.profileTrust.unfollow") : t("appI18n.profileTrust.following")) : t("appI18n.profileTrust.followBack")}
         </button>
       ) : null}
     </div>
@@ -88,12 +91,13 @@ function UserRow({ user, readonly, onFollow, onUnfollow, onOpenProfile, compact 
 }
 
 export function RelationListModal({ title, type, readonly, loading, items, onClose, onFollow, onAskUnfollow, onOpenProfile }) {
+  const { t } = useTranslation();
   const isNarrow = useModalViewport() < 520;
 
   return (
-    <ModalShell title={title} subtitle={readonly ? "Vista publica de conexiones" : "Administra tus conexiones"} icon={<UserPlus size={17} />} onClose={onClose}>
-      {loading ? <div style={ui.muted}>Cargando lista...</div> : null}
-      {!loading && !items.length ? <div style={ui.muted}>No hay usuarios para mostrar.</div> : null}
+    <ModalShell title={title} subtitle={readonly ? t("appI18n.profileTrust.connectionsPublic") : t("appI18n.profileTrust.connectionsManage")} icon={<UserPlus size={17} />} onClose={onClose}>
+      {loading ? <div style={ui.muted}>{t("appI18n.profileTrust.loadingList")}</div> : null}
+      {!loading && !items.length ? <div style={ui.muted}>{t("appI18n.profileTrust.emptyUsers")}</div> : null}
       <div style={{ maxHeight: "58vh", overflowY: "auto", paddingRight: 4 }}>
         {items.map((user) => (
           <UserRow
@@ -112,13 +116,14 @@ export function RelationListModal({ title, type, readonly, loading, items, onClo
 }
 
 export function ConfirmUnfollowModal({ user, busy, error, onCancel, onConfirm }) {
+  const { t } = useTranslation();
   return (
-    <ModalShell title="Dejar de seguir" subtitle={`Estas seguro de dejar de seguir a ${user?.name || "este usuario"}?`} icon={<AlertTriangle size={17} />} onClose={onCancel} busy={busy}>
+    <ModalShell title={t("appI18n.profileTrust.unfollowTitle")} subtitle={t("appI18n.profileTrust.unfollowSubtitle", { name: user?.name || t("appI18n.profileTrust.thisUser") })} icon={<AlertTriangle size={17} />} onClose={onCancel} busy={busy}>
       {error ? <div style={{ ...ui.muted, color: "#dc2626", marginBottom: 12 }}>{error}</div> : null}
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-        <button type="button" onClick={onCancel} disabled={busy} style={ui.secondary}>Cancelar</button>
+        <button type="button" onClick={onCancel} disabled={busy} style={ui.secondary}>{t("appI18n.common.cancel")}</button>
         <button type="button" onClick={onConfirm} disabled={busy} style={{ ...ui.primary, background: "#dc2626" }}>
-          {busy ? "Procesando..." : "Confirmar"}
+          {busy ? t("appI18n.profileTrust.processing") : t("appI18n.profileTrust.confirm")}
         </button>
       </div>
     </ModalShell>
@@ -126,15 +131,16 @@ export function ConfirmUnfollowModal({ user, busy, error, onCancel, onConfirm })
 }
 
 export function ProfileViewsModal({ views, loading, onClose, onOpenProfile }) {
+  const { t } = useTranslation();
   return (
-    <ModalShell title="Visualizaciones del perfil" subtitle="Usuarios que visitaron tu perfil recientemente" icon={<Eye size={17} />} onClose={onClose}>
-      {loading ? <div style={ui.muted}>Cargando visualizaciones...</div> : null}
-      {!loading && !views.length ? <div style={ui.muted}>Aun no hay visualizaciones registradas.</div> : null}
+    <ModalShell title={t("appI18n.profileTrust.viewsTitle")} subtitle={t("appI18n.profileTrust.viewsSubtitle")} icon={<Eye size={17} />} onClose={onClose}>
+      {loading ? <div style={ui.muted}>{t("appI18n.profileTrust.loadingViews")}</div> : null}
+      {!loading && !views.length ? <div style={ui.muted}>{t("appI18n.profileTrust.emptyViews")}</div> : null}
       {views.map((item) => (
         <button key={item.id} type="button" onClick={() => onOpenProfile(item.viewer)} style={{ width: "100%", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 12, alignItems: "center", padding: "11px 0", border: 0, borderBottom: "1px solid rgba(162,214,249,.16)", background: "transparent", textAlign: "left", cursor: "pointer" }}>
           {item.viewer?.photo ? <img src={item.viewer.photo} alt="" style={{ width: 42, height: 42, borderRadius: "50%", objectFit: "cover" }} /> : <span style={{ ...ui.avatarAction, position: "static", boxShadow: "none" }}>US</span>}
           <span>
-            <div style={{ fontFamily: "var(--f-ui)", fontWeight: 850, color: "var(--text)" }}>{item.viewer?.name || "Usuario"}</div>
+            <div style={{ fontFamily: "var(--f-ui)", fontWeight: 850, color: "var(--text)" }}>{item.viewer?.name || t("appI18n.profileTrust.user")}</div>
             <div style={ui.muted}>{item.viewer?.title || "Profesional Portafy"}</div>
           </span>
           <span style={ui.muted}>{item.viewed_ago}</span>
@@ -145,6 +151,7 @@ export function ProfileViewsModal({ views, loading, onClose, onOpenProfile }) {
 }
 
 export function SuggestionModal({ busy, error, onClose, onSubmit }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState({ type: "idea", area: "perfil", title: "", description: "" });
   const validation = useMemo(() => validateSuggestion(form), [form]);
 
@@ -155,7 +162,7 @@ export function SuggestionModal({ busy, error, onClose, onSubmit }) {
   };
 
   return (
-    <ModalShell title="Enviar sugerencia" subtitle="Tu idea sera revisada desde el panel de administracion" icon={<Send size={17} />} onClose={onClose} busy={busy}>
+    <ModalShell title={t("appI18n.profileTrust.suggestTitle")} subtitle={t("appI18n.profileTrust.suggestSubtitle")} icon={<Send size={17} />} onClose={onClose} busy={busy}>
       <form onSubmit={submit} style={{ display: "grid", gap: 12 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
           <select value={form.type} onChange={(event) => setForm((prev) => ({ ...prev, type: event.target.value }))} style={ui.input}>
@@ -165,13 +172,13 @@ export function SuggestionModal({ busy, error, onClose, onSubmit }) {
             {SUGGESTION_AREAS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
           </select>
         </div>
-        <input value={form.title} maxLength={120} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder="Nombre de la sugerencia" style={ui.input} />
-        <textarea value={form.description} maxLength={255} onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))} placeholder="Motivo o detalle" rows={5} style={ui.textarea} />
+        <input value={form.title} maxLength={120} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder={t("appI18n.profileTrust.suggestName")} style={ui.input} />
+        <textarea value={form.description} maxLength={255} onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))} placeholder={t("appI18n.profileTrust.suggestDetail")} rows={5} style={ui.textarea} />
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-          <span style={{ ...ui.muted, color: error || validation ? "#dc2626" : "var(--muted)" }}>{error || validation || `${form.description.length}/255 caracteres`}</span>
+          <span style={{ ...ui.muted, color: error || validation ? "#dc2626" : "var(--muted)" }}>{error || validation || t("appI18n.profileTrust.chars", { count: form.description.length })}</span>
           <span style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
-            <button type="button" onClick={onClose} disabled={busy} style={ui.secondary}>Cancelar</button>
-            <button type="submit" disabled={busy || Boolean(validation)} style={ui.primary}>{busy ? "Enviando..." : "Enviar"}</button>
+            <button type="button" onClick={onClose} disabled={busy} style={ui.secondary}>{t("appI18n.common.cancel")}</button>
+            <button type="submit" disabled={busy || Boolean(validation)} style={ui.primary}>{busy ? t("appI18n.profileTrust.sending") : t("appI18n.common.send")}</button>
           </span>
         </div>
       </form>
@@ -180,13 +187,14 @@ export function SuggestionModal({ busy, error, onClose, onSubmit }) {
 }
 
 export function VerificationModal({ status, busy, error, onClose, onSubmit }) {
+  const { t } = useTranslation();
   const [front, setFront] = useState(null);
   const [back, setBack] = useState(null);
   const [pdf, setPdf] = useState(null);
   const currentStatus = status?.status || "none";
   const finalStep = currentStatus === "approved" || currentStatus === "rejected";
   const pending = currentStatus === "pending";
-  const validationError = validateVerificationFiles({ front, back, pdf });
+  const validationError = validateVerificationFiles({ front, back, pdf }, t);
   const canSubmit = !validationError && (pdf || (front && back));
 
   const submit = (event) => {
@@ -200,32 +208,32 @@ export function VerificationModal({ status, busy, error, onClose, onSubmit }) {
   };
 
   return (
-    <ModalShell title="Verificar cuenta" subtitle="Completa el proceso para obtener la insignia de verificado" icon={<ShieldCheck size={17} />} onClose={onClose} busy={busy}>
+    <ModalShell title={t("appI18n.profileTrust.verifyTitle")} subtitle={t("appI18n.profileTrust.verifySubtitle")} icon={<ShieldCheck size={17} />} onClose={onClose} busy={busy}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 8, marginBottom: 16 }}>
-        {["Documento", "Revision", "Resultado"].map((label, index) => (
+        {t("appI18n.profileTrust.steps", { returnObjects: true }).map((label, index) => (
           <div key={label} style={{ ...ui.subtleCard, borderColor: index === 0 && !pending && !finalStep ? "#2048a8" : "rgba(205,225,245,.76)" }}>
             <strong style={{ fontFamily: "var(--f-ui)", fontSize: ".78rem" }}>{index + 1}. {label}</strong>
           </div>
         ))}
       </div>
-      {pending ? <div style={ui.body}>Tu solicitud esta pendiente. Espera la revision de administracion.</div> : null}
-      {currentStatus === "approved" ? <div style={ui.body}><Check size={16} /> Cuenta aprobada. La insignia ya puede mostrarse en tu perfil.</div> : null}
-      {currentStatus === "rejected" ? <div style={ui.body}>Solicitud rechazada: {status?.rejection_reason || "Sin justificativo registrado."}</div> : null}
+      {pending ? <div style={ui.body}>{t("appI18n.profileTrust.pending")}</div> : null}
+      {currentStatus === "approved" ? <div style={ui.body}><Check size={16} /> {t("appI18n.profileTrust.approved")}</div> : null}
+      {currentStatus === "rejected" ? <div style={ui.body}>{t("appI18n.profileTrust.rejected", { reason: status?.rejection_reason || t("appI18n.profileTrust.noReason") })}</div> : null}
       {!pending && !finalStep ? (
         <form onSubmit={submit} style={{ display: "grid", gap: 12 }}>
           <div style={{ display: "grid", gap: 10 }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 10 }}>
               <FileUploadBox
-                label="Documento anverso"
-                hint="JPG, PNG o WEBP"
+                label={t("appI18n.profileTrust.front")}
+                hint={t("appI18n.profileTrust.imageHint")}
                 file={front}
                 accept="image/png,image/jpeg,image/webp"
                 icon={<Image size={17} />}
                 onChange={setFront}
               />
               <FileUploadBox
-                label="Documento reverso"
-                hint="JPG, PNG o WEBP"
+                label={t("appI18n.profileTrust.back")}
+                hint={t("appI18n.profileTrust.imageHint")}
                 file={back}
                 accept="image/png,image/jpeg,image/webp"
                 icon={<Image size={17} />}
@@ -234,8 +242,8 @@ export function VerificationModal({ status, busy, error, onClose, onSubmit }) {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
               <FileUploadBox
-                label="Documento completo en PDF"
-                hint="Opcional si subes anverso y reverso"
+                label={t("appI18n.profileTrust.pdf")}
+                hint={t("appI18n.profileTrust.pdfHint")}
                 file={pdf}
                 accept="application/pdf"
                 icon={<FileText size={17} />}
@@ -244,11 +252,11 @@ export function VerificationModal({ status, busy, error, onClose, onSubmit }) {
             </div>
           </div>
           <span style={{ ...ui.muted, color: error || validationError || !canSubmit ? "#dc2626" : "var(--muted)" }}>
-            {error || validationError || "Sube un PDF o ambas imagenes del documento. Maximo 4 MB por imagen, 6 MB PDF."}
+            {error || validationError || t("appI18n.profileTrust.uploadHint")}
           </span>
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, flexWrap: "wrap" }}>
-            <button type="button" onClick={onClose} disabled={busy} style={ui.secondary}>Cancelar</button>
-            <button type="submit" disabled={busy || !canSubmit} style={ui.primary}>{busy ? "Enviando..." : "Enviar solicitud"}</button>
+            <button type="button" onClick={onClose} disabled={busy} style={ui.secondary}>{t("appI18n.common.cancel")}</button>
+            <button type="submit" disabled={busy || !canSubmit} style={ui.primary}>{busy ? t("appI18n.profileTrust.sending") : t("appI18n.profileTrust.sendRequest")}</button>
           </div>
         </form>
       ) : null}
@@ -325,24 +333,24 @@ function formatFileSize(bytes = 0) {
   return `${Math.max(1, Math.round(bytes / 1024))} KB`;
 }
 
-function validateVerificationFiles({ front, back, pdf }) {
+function validateVerificationFiles({ front, back, pdf }, t) {
   const maxImage = 4 * 1024 * 1024;
   const maxPdf = 6 * 1024 * 1024;
   const imageTypes = ["image/jpeg", "image/png", "image/webp"];
 
-  for (const [file, label] of [[front, "anverso"], [back, "reverso"]]) {
+  for (const [file, label] of [[front, t("appI18n.profileTrust.validation.frontLabel")], [back, t("appI18n.profileTrust.validation.backLabel")]]) {
     if (!file) continue;
-    if (!imageTypes.includes(file.type)) return `El ${label} debe ser JPG, PNG o WEBP.`;
-    if (file.size > maxImage) return `El ${label} supera el maximo de 4 MB.`;
+    if (!imageTypes.includes(file.type)) return t("appI18n.profileTrust.validation.imageType", { label });
+    if (file.size > maxImage) return t("appI18n.profileTrust.validation.imageSize", { label });
   }
 
   if (pdf) {
-    if (pdf.type !== "application/pdf") return "El documento completo debe ser PDF.";
-    if (pdf.size > maxPdf) return "El PDF supera el maximo de 6 MB.";
+    if (pdf.type !== "application/pdf") return t("appI18n.profileTrust.validation.pdfType");
+    if (pdf.size > maxPdf) return t("appI18n.profileTrust.validation.pdfSize");
   }
 
   if (!pdf && (front || back) && !(front && back)) {
-    return "Si eliges imagenes, adjunta anverso y reverso.";
+    return t("appI18n.profileTrust.validation.frontBack");
   }
 
   return "";
@@ -363,6 +371,7 @@ function useModalViewport() {
 }
 
 export function ReportProfileModal({ targetName, busy, error, onClose, onSubmit }) {
+  const { t } = useTranslation();
   const reasons = getPublicationReportReasons();
   const [motivo, setMotivo] = useState(reasons[0]?.key || "spam");
   const [description, setDescription] = useState("");
@@ -374,16 +383,16 @@ export function ReportProfileModal({ targetName, busy, error, onClose, onSubmit 
   };
 
   return (
-    <ModalShell title="Reportar perfil" subtitle={`El reporte sobre ${targetName} sera enviado a administracion`} icon={<AlertTriangle size={17} />} onClose={onClose} busy={busy}>
+    <ModalShell title={t("appI18n.profileTrust.reportTitle")} subtitle={t("appI18n.profileTrust.reportSubtitle", { name: targetName })} icon={<AlertTriangle size={17} />} onClose={onClose} busy={busy}>
       <form onSubmit={submit} style={{ display: "grid", gap: 12 }}>
         <select value={motivo} onChange={(event) => setMotivo(event.target.value)} style={ui.input}>
           {reasons.map((reason) => <option key={reason.key} value={reason.key}>{reason.label}</option>)}
         </select>
-        <textarea value={description} maxLength={255} onChange={(event) => setDescription(event.target.value)} placeholder="Detalle opcional" rows={4} style={ui.textarea} />
+        <textarea value={description} maxLength={255} onChange={(event) => setDescription(event.target.value)} placeholder={t("appI18n.profileTrust.optionalDetail")} rows={4} style={ui.textarea} />
         {error ? <div style={{ ...ui.muted, color: "#dc2626" }}>{error}</div> : null}
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-          <button type="button" onClick={onClose} disabled={busy} style={ui.secondary}>Cancelar</button>
-          <button type="submit" disabled={busy} style={ui.primary}>{busy ? "Enviando..." : "Enviar reporte"}</button>
+          <button type="button" onClick={onClose} disabled={busy} style={ui.secondary}>{t("appI18n.common.cancel")}</button>
+          <button type="submit" disabled={busy} style={ui.primary}>{busy ? t("appI18n.profileTrust.sending") : t("appI18n.profileTrust.sendReport")}</button>
         </div>
       </form>
     </ModalShell>

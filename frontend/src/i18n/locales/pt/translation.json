@@ -1032,8 +1032,6 @@
       }
     }
   },
-
-
   "notifications": {
     "title": "Notificações",
     "back": "Voltar",
@@ -1058,165 +1056,921 @@
       "pageInfo": "Página {{page}} de {{lastPage}}"
     }
   },
-"notificationSettings": {
-  "title": "Configurações",
-  "sub": "Escolha uma categoria e ajuste apenas o necessário.",
-  "saving": "Salvando...",
-  "saveChanges": "✓ Salvar alterações",
-  "loading": "Carregando preferências...",
-  "categories": {
-    "activity_notifications": {
-      "label": "Atividade Social",
-      "description": "Curtidas, comentários e menções nas suas publicações"
+  "notificationSettings": {
+    "title": "Configurações",
+    "sub": "Escolha uma categoria e ajuste apenas o necessário.",
+    "saving": "Salvando...",
+    "saveChanges": "✓ Salvar alterações",
+    "loading": "Carregando preferências...",
+    "categories": {
+      "activity_notifications": {
+        "label": "Atividade Social",
+        "description": "Curtidas, comentários e menções nas suas publicações"
+      },
+      "portfolio_notifications": {
+        "label": "Portfólios de usuários seguidos",
+        "description": "Atualizações de projetos e experiências"
+      },
+      "offer_notifications": {
+        "label": "Novas vagas",
+        "description": "Ofertas de emprego compatíveis com seu perfil"
+      },
+      "support_notifications": {
+        "label": "Mensagens de suporte",
+        "description": "Respostas e atualizações de suporte"
+      },
+      "platform_notifications": {
+        "label": "Notificações da plataforma",
+        "description": "Anúncios e novidades do Portafy"
+      }
     },
-    "portfolio_notifications": {
-      "label": "Portfólios de usuários seguidos",
-      "description": "Atualizações de projetos e experiências"
+    "notifications": {
+      "title": "Notificações",
+      "back": "Voltar",
+      "markAllRead": "Marcar todas como lidas",
+      "loading": "Carregando...",
+      "filter": {
+        "all": "Todos",
+        "unread": "Não lidos",
+        "read": "Lidos"
+      },
+      "type": {
+        "all": "Todos os tipos",
+        "like": "Curtidas",
+        "comment": "Comentários",
+        "follow": "Seguimentos",
+        "job_offer": "Vagas",
+        "postulation": "Candidaturas"
+      },
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Próximo",
+        "pageInfo": "Página {{page}} de {{lastPage}}"
+      }
     },
-    "offer_notifications": {
-      "label": "Novas vagas",
-      "description": "Ofertas de emprego compatíveis com seu perfil"
+    "notificationSettings": {
+      "title": "Configurações",
+      "sub": "Escolha uma categoria e ajuste apenas o necessário.",
+      "saving": "Salvando...",
+      "saveChanges": "✓ Salvar alterações",
+      "loading": "Carregando preferências...",
+      "categories": {
+        "activity_notifications": {
+          "label": "Atividade Social",
+          "description": "Curtidas, comentários e menções nas suas publicações"
+        },
+        "portfolio_notifications": {
+          "label": "Portfólios de usuários seguidos",
+          "description": "Atualizações de projetos e experiências"
+        },
+        "offer_notifications": {
+          "label": "Novas vagas",
+          "description": "Ofertas de emprego compatíveis com seu perfil"
+        },
+        "support_notifications": {
+          "label": "Mensagens de suporte",
+          "description": "Respostas e atualizações de suporte"
+        },
+        "platform_notifications": {
+          "label": "Notificações da plataforma",
+          "description": "Anúncios e novidades do Portafy"
+        }
+      }
     },
-    "support_notifications": {
-      "label": "Mensagens de suporte",
-      "description": "Respostas e atualizações de suporte"
-    },
-    "platform_notifications": {
-      "label": "Notificações da plataforma",
-      "description": "Anúncios e novidades do Portafy"
+    "notificationBell": {
+      "title": "Notificações",
+      "markAllRead": "Marcar todas como lidas",
+      "viewAll": "Ver todas as notificações",
+      "ariaLabel": "Notificações",
+      "empty": {
+        "title": "Sem notificações",
+        "sub": "Quando alguém interagir com seu conteúdo, aparecerá aqui."
+      },
+      "item": {
+        "markAsRead": "Marcar como lida",
+        "read": "Lida",
+        "defaultText": "Nova notificação",
+        "altAvatar": "Notificação"
+      },
+      "types": {
+        "like": "Curtida",
+        "comment": "Comentário",
+        "follow": "Seguimento",
+        "event": "Evento",
+        "job_offer": "Vaga",
+        "postulation": "Candidatura",
+        "job_application": "Candidatura"
+      },
+      "messages": {
+        "like": "{{name}} curtiu sua publicação",
+        "follow": "{{name}} começou a te seguir",
+        "event": "Novo evento: {{title}}",
+        "job_offer": "{{company}} publicou uma vaga: {{title}}",
+        "postulation": "{{name}} se candidatou a: {{title}}",
+        "job_application": "{{name}} se candidatou a: {{title}}",
+        "comment": "{{name}} comentou",
+        "commentWithText": "{{name}} comentou: \"{{text}}\"",
+        "default": "Nova notificação",
+        "fallbackOffer": "a vaga",
+        "fallbackPerson": "Alguém",
+        "fallbackCompany": "Empresa"
+      }
     }
   },
-  "notifications": {
-    "title": "Notificações",
-    "back": "Voltar",
-    "markAllRead": "Marcar todas como lidas",
-    "loading": "Carregando...",
-    "filter": {
-      "all": "Todos",
-      "unread": "Não lidos",
-      "read": "Lidos"
+  "appI18n": {
+    "calendar": {
+      "eyebrow": "Calendario",
+      "title": "Agenda visual do perfil",
+      "description": "Reserve blocos para melhorar seu perfil, subir projetos, revisar links e manter seu progresso visivel.",
+      "monthlyView": "Vista mensal",
+      "smartReminders": "Espaco para lembretes inteligentes",
+      "selectDay": "Selecione um dia e veja o detalhe ao lado",
+      "detail": "Detalhe",
+      "freeDay": "Dia livre",
+      "noTime": "Sem horario definido",
+      "emptyPlan": "Use este espaco para planejar uma melhoria pontual do perfil ou preparar um novo projeto.",
+      "usefulIdea": "Ideia util",
+      "usefulIdeaText": "Lembretes para atualizar o CV antes de se candidatar ou compartilhar seu portfolio.",
+      "nextStep": "Proximo passo",
+      "nextStepText": "Mais adiante poderiamos adicionar eventos arrastaveis, metas e alertas visuais.",
+      "noDate": "Sem data",
+      "months": [
+        "Janeiro",
+        "Fevereiro",
+        "Marco",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
+      ],
+      "weekDays": [
+        "S",
+        "T",
+        "Q",
+        "Q",
+        "S",
+        "S",
+        "D"
+      ],
+      "dateLabel": "{{day}} de {{month}} de {{year}}",
+      "events": {
+        "updateProfile": {
+          "title": "Atualizar perfil",
+          "detail": "Revise titulo, foto e biografia antes de publicar mudancas.",
+          "tag": "Perfil"
+        },
+        "uploadCase": {
+          "title": "Subir estudo de caso",
+          "detail": "Publique o projeto UX com capa, tecnologias e link demo.",
+          "tag": "Projeto"
+        },
+        "reviewSkills": {
+          "title": "Revisar habilidades",
+          "detail": "Ordene skills por senioridade e deixe visiveis apenas as principais.",
+          "tag": "Skills"
+        },
+        "connectCv": {
+          "title": "Conectar CV",
+          "detail": "Verifique o PDF, links sociais e portfolio publico.",
+          "tag": "Social"
+        }
+      }
     },
-    "type": {
-      "all": "Todos os tipos",
-      "like": "Curtidas",
-      "comment": "Comentários",
-      "follow": "Seguimentos",
-      "job_offer": "Vagas",
-      "postulation": "Candidaturas"
+    "portfolio": {
+      "syncingDb": "Sincronizando com o banco de dados...",
+      "loadError": "Nao foi possivel carregar o portfolio neste momento.",
+      "fixFields": "Corrija os campos marcados para continuar.",
+      "saveError": "Nao foi possivel salvar o registro neste momento.",
+      "deleteError": "Nao foi possivel excluir o registro",
+      "deleteTitle": "Excluir registro",
+      "deleteDescription": "{{item}} sera excluido. Esta acao nao pode ser desfeita.",
+      "deleteFallback": "este registro",
+      "deleteConfirm": "Sim, excluir",
+      "saveTitle": "Salvar mudancas",
+      "saveDescription": "Este registro sera atualizado com as informacoes do formulario. Confirme se deseja continuar.",
+      "saveConfirm": "Sim, salvar",
+      "back": "Voltar ao portfolio",
+      "mySection": "Meus {{section}}",
+      "activeStation": "Estacao ativa / {{section}}",
+      "manage": "Gestao de {{section}}",
+      "add": "Adicionar {{singular}}",
+      "editable": "{{singular}} editavel",
+      "list": "Listado",
+      "view": "Vista",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "edition": "Edicao",
+      "newRecord": "Novo registro",
+      "editItem": "Editar {{singular}}",
+      "addItem": "Adicionar {{singular}}",
+      "formHint": "Complete apenas esta secao, sem seguir um fluxo pesado.",
+      "savingChanges": "Salvando mudancas",
+      "savingRecord": "Salvando registro",
+      "addButton": "Adicionar",
+      "recordsCount": "{{count}} registros",
+      "recordCount": "{{count}} registro",
+      "sections": {
+        "projects": {
+          "title": "Projetos",
+          "singular": "projeto",
+          "description": "Gerencie projetos em destaque, repositórios, tecnologias e peças visuais."
+        },
+        "experience": {
+          "title": "Experiencia",
+          "singular": "experiencia",
+          "description": "Administre experiência profissional ou acadêmica de forma leve e independente."
+        },
+        "social": {
+          "title": "Social",
+          "singular": "link",
+          "description": "Organize links profissionais e redes com plataformas predefinidas."
+        },
+        "skills": {
+          "title": "Habilidades",
+          "singular": "habilidade",
+          "description": "Separe habilidades técnicas e comportamentais para manter o registro leve."
+        },
+        "education": {
+          "title": "Formacao profissional",
+          "singular": "formacao",
+          "description": "Registre carreiras, diplomas, cursos, mestrados e outros estudos relevantes."
+        }
+      },
+      "fields": {
+        "title": "Titulo",
+        "description": "Descricao",
+        "techCategory": "Categoria tecnica",
+        "tags": "Tecnologias",
+        "repoUrl": "Repositorio URL",
+        "demoUrl": "Demo URL",
+        "status": "Estado do projeto",
+        "cover": "Capa do projeto",
+        "type": "Tipo",
+        "roleArea": "Area",
+        "company": "Empresa / instituicao / cliente",
+        "startDate": "Data inicio",
+        "endDate": "Data fim",
+        "isCurrent": "Atualmente",
+        "category": "Categoria",
+        "name": "Nome da habilidade",
+        "level": "Nivel",
+        "platform": "Plataforma",
+        "url": "URL",
+        "program": "Programa ou carreira",
+        "institution": "Instituicao"
+      },
+      "detail": {
+        "noCategory": "Sem categoria",
+        "noRepository": "Sem repositorio",
+        "noDemo": "Sem demo URL",
+        "noArea": "Sem area",
+        "dates": "Datas",
+        "current": "Atualidade",
+        "present": "Presente",
+        "undefined": "Sem definir",
+        "visual": "Visual",
+        "noDescription": "Sem descricao",
+        "noProgram": "Sem programa",
+        "noInstitution": "Sem instituicao",
+        "noType": "Sem tipo",
+        "noStart": "Sem inicio",
+        "destination": "Destino",
+        "noUrl": "Sem URL",
+        "active": "Ativo",
+        "noCover": "Sem capa personalizada",
+        "coverOf": "Capa de {{title}}",
+        "noTechnologies": "Sem tecnologias"
+      },
+      "controls": {
+        "selectTechnology": "Selecione uma tecnologia",
+        "selectSkill": "Selecione uma habilidade",
+        "selectOption": "Selecione uma opcao",
+        "writePlatform": "Escreva a plataforma",
+        "dateHint": "Use o calendario para escolher uma data de forma mais intuitiva.",
+        "uploadFile": "Anexe um arquivo",
+        "noFile": "Ainda nao selecionou um arquivo.",
+        "chooseFile": "Escolher arquivo",
+        "projectCoverHelper": "Suba uma capa para mostrar melhor seu projeto",
+        "projectCoverEmpty": "Sem capa selecionada. Opcional, maximo 2 MB.",
+        "uploadCover": "Subir capa"
+      },
+      "validation": {
+        "experienceType": "Selecione o tipo de experiencia.",
+        "area": "Selecione a area.",
+        "role": "Complete o cargo.",
+        "company": "Complete a empresa ou instituicao.",
+        "description": "Adicione uma descricao breve.",
+        "startDate": "Selecione a data de inicio.",
+        "endDate": "Selecione a data de fim ou marque que ainda continua.",
+        "projectTitle": "Complete o titulo do projeto.",
+        "projectDescription": "Adicione uma descricao breve do projeto.",
+        "techCategory": "Selecione uma categoria tecnica.",
+        "tags": "Adicione pelo menos uma tecnologia.",
+        "projectStatus": "Selecione o estado do projeto.",
+        "coverType": "A capa deve ser uma imagem valida.",
+        "coverSize": "A capa nao deve superar 2 MB.",
+        "category": "Selecione uma categoria.",
+        "skill": "Selecione ou escreva uma habilidade.",
+        "level": "Selecione o nivel.",
+        "platform": "Selecione ou escreva uma plataforma.",
+        "url": "Complete a URL do link.",
+        "educationLevel": "Selecione o tipo de formacao.",
+        "program": "Complete o programa ou carreira.",
+        "max140": "Maximo 140 caracteres.",
+        "safeText": "Use apenas letras, numeros e sinais basicos.",
+        "institution": "Complete a instituicao.",
+        "max120": "Maximo 120 caracteres.",
+        "safeInstitution": "A instituicao contem caracteres invalidos.",
+        "endDateCurrent": "Selecione a data de fim ou marque que segue vigente.",
+        "dateOrder": "A data de fim nao pode ser anterior ao inicio.",
+        "form": "Faltam campos obrigatorios."
+      },
+      "overview": {
+        "latest": "Último",
+        "station": "Estacao 0{{number}}",
+        "addFirst": "Adicione seu primeiro {{item}}",
+        "recordsIn": "{{count}} registros em {{section}}",
+        "noContent": "Ainda não há conteúdo nesta seção.",
+        "inOrbit": "Em orbita",
+        "notStarted": "Sem iniciar",
+        "item": "{{count}} item",
+        "items": "{{count}} itens"
+      },
+      "placeholders": {
+        "projects": {
+          "title": "Nome do projeto",
+          "description": "Resumo curto do projeto",
+          "tags": "Selecione tecnologias da categoria ou adicione uma manualmente",
+          "repoUrl": "https://github.com/usuario/projeto",
+          "demoUrl": "https://demo.com",
+          "cover": "Envie uma capa opcional"
+        },
+        "experience": {
+          "title": "Selecione um cargo ou escreva outro",
+          "company": "Nome da empresa, instituicao ou cliente",
+          "description": "Impacto, tarefas ou conquistas"
+        },
+        "skills": {
+          "name": "Selecione uma habilidade ou escreva outra manualmente",
+          "description": "Descreva a habilidade",
+          "category": "Frontend / Soft skill / Backend"
+        },
+        "social": {
+          "url": "https://..."
+        },
+        "education": {
+          "program": "Engenharia de Sistemas / Diplomado em QA",
+          "institution": "Universidade ou instituição"
+        },
+        "extra": {
+          "cvUrl": "https://..."
+        }
+      },
+      "educationLevels": {
+        "tecnico": "Tecnico",
+        "tecnologo": "Tecnologo",
+        "licenciatura": "Licenciatura",
+        "ingenieria": "Engenharia",
+        "maestria": "Mestrado",
+        "doctorado": "Doutorado",
+        "curso": "Curso",
+        "diplomado": "Diplomado",
+        "otro": "Outro"
+      }
     },
-    "pagination": {
+    "profileTrust": {
+      "close": "Fechar",
+      "connectionsPublic": "Vista publica de conexoes",
+      "connectionsManage": "Gerencie suas conexoes",
+      "loadingList": "Carregando lista...",
+      "emptyUsers": "Nao ha usuarios para mostrar.",
+      "unfollow": "Deixar de seguir",
+      "followBack": "Seguir tambem",
+      "following": "Seguindo",
+      "unfollowTitle": "Deixar de seguir",
+      "unfollowSubtitle": "Tem certeza de que deseja deixar de seguir {{name}}?",
+      "thisUser": "este usuario",
+      "processing": "Processando...",
+      "confirm": "Confirmar",
+      "viewsTitle": "Visualizacoes do perfil",
+      "viewsSubtitle": "Usuarios que visitaram seu perfil recentemente",
+      "loadingViews": "Carregando visualizacoes...",
+      "emptyViews": "Ainda nao ha visualizacoes registradas.",
+      "user": "Usuario",
+      "suggestTitle": "Enviar sugestao",
+      "suggestSubtitle": "Sua ideia sera revisada no painel de administracao",
+      "suggestName": "Nome da sugestao",
+      "suggestDetail": "Motivo ou detalhe",
+      "chars": "{{count}}/255 caracteres",
+      "sending": "Enviando...",
+      "verifyTitle": "Verificar conta",
+      "verifySubtitle": "Complete o processo para obter a insignia de verificado",
+      "steps": [
+        "Documento",
+        "Revisao",
+        "Resultado"
+      ],
+      "pending": "Sua solicitacao esta pendente. Aguarde a revisao da administracao.",
+      "approved": "Conta aprovada. A insignia ja pode ser exibida no seu perfil.",
+      "rejected": "Solicitacao rejeitada: {{reason}}",
+      "noReason": "Sem justificativa registrada.",
+      "front": "Documento frente",
+      "back": "Documento verso",
+      "imageHint": "JPG, PNG ou WEBP",
+      "pdf": "Documento completo em PDF",
+      "pdfHint": "Opcional se subir frente e verso",
+      "uploadHint": "Suba um PDF ou ambas imagens do documento. Maximo 4 MB por imagem, 6 MB PDF.",
+      "sendRequest": "Enviar solicitacao",
+      "reportTitle": "Reportar perfil",
+      "reportSubtitle": "O relatorio sobre {{name}} sera enviado a administracao",
+      "optionalDetail": "Detalhe opcional",
+      "sendReport": "Enviar relatorio",
+      "validation": {
+        "frontBack": "Se escolher imagens, anexe frente e verso.",
+        "pdfType": "O documento completo deve ser PDF.",
+        "pdfSize": "O PDF supera o maximo de 6 MB.",
+        "imageType": "O {{label}} deve ser JPG, PNG ou WEBP.",
+        "imageSize": "O {{label}} supera o maximo de 4 MB.",
+        "frontLabel": "frente",
+        "backLabel": "verso"
+      }
+    },
+    "profile": {
+      "shareRemoving": "Removendo...",
+      "shareSharing": "Compartilhando...",
+      "shared": "Compartilhado",
+      "sharedFemale": "Compartilhada",
+      "shareAction": "Compartilhar",
+      "projectNoDescription": "Projeto sem descricao.",
+      "experienceNoDescription": "Experiencia sem descricao detalhada.",
+      "cover": "Capa",
+      "editProfile": "Editar perfil",
+      "cancel": "Cancelar",
+      "saving": "Salvando...",
+      "follow": "Seguir",
+      "following": "Seguindo",
+      "processing": "Processando...",
+      "moreOptions": "Mais opcoes",
+      "contact": "Contatar",
+      "viewCv": "Ver CV",
+      "manageCv": "Gestao de CV",
+      "shareProfile": "Compartilhar perfil",
+      "reportProfile": "Reportar perfil",
+      "locationFallback": "Localizacao nao especificada",
+      "about": "Sobre mim",
+      "editing": "Editando",
+      "aboutPlaceholder": "Conte ao mundo quem voce e profissionalmente",
+      "links": "Links",
+      "skills": "Habilidades",
+      "education": "Formacao profissional",
+      "loadingProfile": "Carregando perfil...",
+      "loadingProfileText": "Estamos reunindo suas informacoes visiveis.",
+      "loadErrorTitle": "Nao conseguimos carregar seu perfil",
+      "preparing": "Preparando perfil...",
+      "preparingText": "Um momento, estamos conectando com seu perfil.",
+      "retry": "Tentar carregar novamente",
+      "loadingLinks": "Carregando links...",
+      "loadingSkills": "Carregando habilidades...",
+      "loadingEducation": "Carregando formacao...",
+      "tabs": {
+        "showcase": "Vitrine",
+        "projects": "Projetos",
+        "experience": "Experiencia",
+        "summary": "Resumo"
+      },
+      "stats": {
+        "Seguidores": "Seguidores",
+        "Seguidos": "Seguindo",
+        "Proyectos": "Projetos",
+        "Anos de exp.": "Anos de exp.",
+        "Empresas": "Empresas",
+        "Habilidades": "Habilidades",
+        "Visitas": "Visitas"
+      },
+      "errors": {
+        "commentReport": "Nao foi possivel enviar o reporte do comentario.",
+        "loadProfile": "Nao foi possivel carregar o perfil.",
+        "unshare": "Nao foi possivel deixar de compartilhar",
+        "invalidImage": "Selecione uma imagem valida.",
+        "updateProfile": "Nao foi possivel atualizar o perfil.",
+        "copy": "Nao foi possivel copiar",
+        "loadList": "Nao foi possivel carregar a lista.",
+        "followProfile": "Nao foi possivel seguir este perfil.",
+        "unfollowProfile": "Nao foi possivel deixar de seguir este perfil.",
+        "unfollow": "Nao foi possivel deixar de seguir.",
+        "report": "Nao foi possivel enviar o reporte.",
+        "shareProject": "Nao foi possivel compartilhar o projeto",
+        "shareExperience": "Nao foi possivel compartilhar a experiencia"
+      },
+      "messages": {
+        "projectShared": "Projeto compartilhado no feed",
+        "experienceShared": "Experiencia compartilhada no feed",
+        "reportSent": "Reporte enviado para a equipe de administracao"
+      },
+      "empty": {
+        "bio": {
+          "public": "Este perfil ainda nao tem biografia publica.",
+          "own": "Adicione uma biografia para enriquecer seu perfil publico."
+        },
+        "links": {
+          "public": "Este perfil ainda nao mostra links profissionais.",
+          "own": "Voce ainda nao adicionou links profissionais."
+        },
+        "skills": {
+          "public": "Este perfil ainda nao mostra habilidades.",
+          "own": "Voce ainda nao registrou habilidades."
+        },
+        "education": {
+          "public": "Este perfil ainda nao mostra formacao profissional.",
+          "own": "Voce ainda nao registrou formacao profissional."
+        },
+        "projectsTitle": {
+          "public": "Ainda nao ha projetos",
+          "own": "Voce ainda nao tem projetos"
+        },
+        "projectsText": {
+          "public": "Quando este perfil publicar projetos no portfolio, eles aparecerao aqui.",
+          "own": "Quando voce carregar projetos no portfolio, eles aparecerao aqui."
+        },
+        "experienceTitle": {
+          "public": "Ainda nao ha experiencia",
+          "own": "Voce ainda nao tem experiencia"
+        },
+        "experienceText": {
+          "public": "Quando este perfil adicionar experiencia profissional, ela aparecera aqui.",
+          "own": "Sua experiencia carregada no portfolio aparecera aqui."
+        },
+        "feedTitle": {
+          "public": "A vitrine esta vazia",
+          "own": "Sua vitrine esta vazia"
+        },
+        "feedText": {
+          "public": "Quando este perfil compartilhar projetos ou experiencias, eles aparecerao aqui e no feed.",
+          "own": "Compartilhe um projeto ou experiencia para mostra-lo no seu perfil e no feed."
+        }
+      },
+      "loadingSections": {
+        "projectsTitle": "Carregando projetos...",
+        "projectsText": "Carregamos apenas esta secao para manter o perfil leve.",
+        "experienceTitle": "Carregando experiencia...",
+        "experienceText": "Esta aba carrega sob demanda para nao pesar o perfil.",
+        "showcaseTitle": "Carregando vitrine...",
+        "showcaseText": "Revisando o conteudo que voce compartilhou."
+      },
+      "summary": {
+        "strengths": "Fortalezas",
+        "strengthsText": "{{skills}} habilidades registradas em {{categories}} categorias.",
+        "noSkills": "Voce ainda nao registrou habilidades.",
+        "portfolio": "Portfolio",
+        "portfolioText": "{{count}} projetos ja fortalecem sua apresentacao profissional.",
+        "noProjects": "Seu portfolio ainda nao tem projetos visiveis.",
+        "path": "Trajetoria",
+        "pathText": "{{count}} experiencias ajudam a contar melhor sua trajetoria.",
+        "noExperience": "Voce ainda nao registrou experiencia para esta vista."
+      },
+      "unshare": {
+        "title": "Deixar de compartilhar",
+        "description": "Este conteudo sera removido do feed e da sua vitrine. O projeto ou experiencia original continuar? salvo no seu portfolio.",
+        "confirm": "Deixar de compartilhar"
+      },
+      "relations": {
+        "followers": "Seguidores",
+        "following": "Seguindo"
+      }
+    },
+    "common": {
+      "view": "Ver",
+      "loading": "Carregando...",
+      "syncing": "Sincronizando",
+      "refresh": "Atualizar",
+      "save": "Salvar",
+      "saved": "Salvo",
+      "close": "Fechar",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "retry": "Tentar novamente",
+      "portfolioUser": "Usuario PortaFy",
+      "verifiedAccount": "Conta verificada"
+    },
+    "feed": {
+      "left": {
+        "panel": "Painel",
+        "explore": "Explorar",
+        "activity": "Atividade",
+        "filters": "Filtros",
+        "home": "Inicio",
+        "dashboard": "Painel",
+        "search": "Buscar",
+        "saved": "Salvos",
+        "trending": "Tendencias",
+        "all": "Todos",
+        "portfolios": "Portfolios",
+        "jobs": "Vagas"
+      },
+      "right": {
+        "suggestedPeople": "Pessoas sugeridas",
+        "suggestionsEmpty": "Ainda nao ha perfis sugeridos.",
+        "loadingProfiles": "Carregando perfis...",
+        "trending": "Tendencias",
+        "loadingTrending": "Carregando tendencias...",
+        "trendingEmpty": "Ainda nao ha publicacoes com atividade.",
+        "featuredPublication": "Publicacao destacada",
+        "project": "Projeto",
+        "experience": "Experiencia",
+        "professionalFallback": "Profissional PortaFy"
+      },
+      "header": {
+        "title": "Feed profissional",
+        "trendingTitle": "Tendencias profissionais",
+        "subtitle": "Conteudo real compartilhado de portfolios e perfis.",
+        "trendingSubtitle": "Publicacoes populares ordenadas pela atividade da plataforma."
+      },
+      "post": {
+        "projectKind": "Projeto de portfolio",
+        "experienceKind": "Experiencia profissional",
+        "project": "Projeto",
+        "experience": "Experiencia",
+        "portfolioProject": "Projeto de portfolio",
+        "portfolioProjectText": "Projeto do portfolio profissional.",
+        "technologies": "Tecnologias usadas",
+        "noTechnologies": "Sem tecnologias registradas.",
+        "demo": "Demo",
+        "repository": "Repositorio",
+        "professionalTrajectory": "Trajetoria profissional",
+        "organization": "Organizacao",
+        "period": "Periodo",
+        "noOrganization": "Sem organizacao",
+        "noDates": "Sem datas",
+        "experienceText": "Experiencia do perfil profissional.",
+        "complete": "Completo",
+        "paused": "Pausado",
+        "inProgress": "Em andamento",
+        "academic": "Academica",
+        "freelance": "Freelance",
+        "professional": "Profissional",
+        "follow": "Seguir",
+        "following": "Seguindo",
+        "like": "Curtir",
+        "comment": "Comentar",
+        "comments": "Comentarios",
+        "likes": "curtidas",
+        "commentsCount": "comentarios",
+        "savedCount": "salvos",
+        "writeComment": "Escreva um comentario curto...",
+        "sendComment": "Enviar comentario",
+        "loadingComments": "Carregando comentarios...",
+        "viewMoreComments": "Ver mais comentarios",
+        "noComments": "Ainda nao ha comentarios visiveis.",
+        "firstComment": "Seja o primeiro a comentar.",
+        "commentsUnavailable": "Ainda nao foi possivel mostrar os comentarios.",
+        "publication": "Publicacao",
+        "moreOptions": "Mais opcoes",
+        "removeSharing": "Deixar de compartilhar",
+        "removing": "Removendo...",
+        "reportPublication": "Reportar publicacao",
+        "reportComment": "Reportar comentario",
+        "commentOptions": "Opcoes do comentario",
+        "followers": "seguidores",
+        "followingUsers": "seguidos"
+      },
+      "states": {
+        "loadErrorTitle": "Nao foi possivel carregar o feed",
+        "emptyTitle": "Ainda nao ha conteudo compartilhado",
+        "emptyText": "Compartilhe um projeto ou experiencia do seu perfil para ve-lo aqui.",
+        "unshareTitle": "Deixar de compartilhar",
+        "unshareText": "Este conteudo sera removido do feed e da sua vitrine. O projeto ou experiencia original continuar? salvo no seu portfolio.",
+        "authTitle": "Entre para interagir",
+        "authText": "Voce pode explorar o feed livremente. Para {{action}}, entre na sua conta ou crie uma nova.",
+        "keepExploring": "Continuar explorando",
+        "register": "Registrar-me",
+        "login": "Entrar"
+      }
+    },
+    "dashboard": {
+      "layout": {
+        "panel": "Painel",
+        "home": "Inicio",
+        "dashboard": "Painel",
+        "main": "Principal",
+        "profile": "Meu perfil",
+        "portfolio": "Portfolio",
+        "publications": "Minha vitrine",
+        "cv": "Meu CV",
+        "analytics": "Estatísticas",
+        "calendar": "Calendário",
+        "status": "Estado",
+        "active": "Ativo",
+        "readyTitle": "Seu painel já está pronto",
+        "readyText": "Daqui você pode construir cada seção sem tocar no feed principal e manter seu trabalho isolado.",
+        "settings": "Configuracao"
+      },
+      "main": {
+        "eyebrow": "Inicio profissional",
+        "title": "Construa uma presenca entendida em segundos.",
+        "text": "Gerencie seu perfil, meca o alcance do seu portfolio e envie sinais de confianca em um so lugar.",
+        "improveProfile": "Melhorar meu perfil",
+        "viewStats": "Ver estatísticas",
+        "trustStatus": "Estado de confianca",
+        "verification": "Verificacao",
+        "verificationTitle": "Faça seu perfil transmitir confiança",
+        "suggestions": "Sugestaes",
+        "suggestionsTitle": "Proponha uma melhoria com contexto",
+        "suggestionsText": "Envie ideias sobre perfil, projetos, experiencia ou qualquer parte do PortaFy. A equipe recebe tipo, area e motivo.",
+        "sendSuggestion": "Enviar sugestao",
+        "suggestionSent": "Sugestao enviada corretamente.",
+        "verificationLoading": "Verificando estado",
+        "verificationLoadingText": "Estamos verificando se sua conta ja foi verificada.",
+        "verified": "Conta verificada",
+        "verifiedText": "Seu perfil ja mostra o selo de confianca.",
+        "pending": "Revisao pendente",
+        "pendingText": "Sua solicitacao aguarda revisao da equipe.",
+        "rejected": "Precisa de ajuste",
+        "rejectedText": "Revise o motivo e envie seus documentos novamente.",
+        "none": "Sem solicitacao",
+        "noneText": "Envie seu documento e ative um sinal de confianca no seu perfil.",
+        "checking": "Comprovando estado",
+        "viewRequest": "Ver estado da solicitacao",
+        "sendVerification": "Enviar para verificacao"
+      }
+    },
+    "analytics": {
+      "title": "Estatísticas",
+      "subtitle": "Alcance, desempenho e atividade recente do seu perfil e portfolio.",
+      "badge": "Perfil profissional",
+      "loadingTitle": "Carregando estatísticas...",
+      "loadingText": "Estamos calculando o alcance visivel do seu perfil.",
+      "loadError": "Não foi possível carregar as estatísticas.",
+      "viewVisitors": "Ver usuarios que visitaram meu perfil",
+      "last14Title": "Visitas dos Ultimos 14 dias",
+      "last14Text": "Cada barra representa visitas registradas no seu perfil.",
+      "recentActivity": "Atividade recente",
+      "noVisitsTitle": "Sem visitas ainda",
+      "noVisitsText": "Quando outros perfis visitarem o seu, voce vera a tendencia aqui.",
+      "noEventsTitle": "Sem eventos recentes",
+      "noEventsText": "Cliques de contato, CV e secoes visitadas serao registrados aqui.",
+      "topProjects": "Projetos mais vistos",
+      "topProjectsText": "Top 3 segundo visitas no perfil e atividade dos seus projetos compartilhados.",
+      "inProfile": "No meu perfil",
+      "inProfileText": "Projetos abertos por outras pessoas a partir do seu perfil publico.",
+      "inFeed": "No feed",
+      "inFeedText": "Projetos compartilhados com melhor resposta nas publicacoes.",
+      "visits": "visitas",
+      "points": "pontos",
+      "untitledProject": "Projeto sem titulo",
+      "notEnoughData": "Sem dados suficientes",
+      "notEnoughDataText": "Ainda nao ha visitas registradas para montar este ranking.",
+      "cards": {
+        "profile_views": [
+          "Visitas ao perfil",
+          "Total de pessoas que abriram seu perfil."
+        ],
+        "profile_views_week": [
+          "Ultimos 7 dias",
+          "Visitas recebidas durante a ?ltima semana."
+        ],
+        "project_views": [
+          "Vistas a projetos",
+          "Vezes que outros revisaram seus projetos."
+        ],
+        "experience_views": [
+          "Vistas a experiencias",
+          "Interesse gerado por suas experiencias visiveis."
+        ],
+        "contact_clicks": [
+          "Cliques de contato",
+          "Vezes que tentaram contatar voce pelo perfil."
+        ],
+        "cv_clicks": [
+          "Cliques no CV",
+          "Vezes que abriram ou tentaram revisar seu CV."
+        ],
+        "portfolio_posts": [
+          "Conteudo compartilhado",
+          "Publicacoes suas visiveis no feed e vitrine."
+        ],
+        "portfolio_engagement": [
+          "Interacoes totais",
+          "Soma de curtidas, comentarios e salvos do seu conteudo."
+        ],
+        "engagement_rate": [
+          "Media por publicacao",
+          "Interacoes medias recebidas por publicacao."
+        ]
+      },
+      "events": {
+        "profile_view": "Visitas ao perfil",
+        "project_view": "Vistas a projetos",
+        "experience_view": "Vistas a experiencias",
+        "contact_click": "Cliques de contato",
+        "cv_click": "Cliques no CV"
+      }
+    },
+    "showcase": {
+      "sort": {
+        "popular": "Mais populares",
+        "likes": "Mais curtidas",
+        "newest": "Mais novos",
+        "oldest": "Mais antigos"
+      },
+      "published": "Publicado",
+      "opening": "Abrindo...",
+      "detail": "Detalhe",
+      "selectTitle": "Selecione uma publicacao",
+      "selectText": "O detalhe e os comentarios aparecerao aqui.",
+      "content": "Conteudo",
+      "collapse": "Recolher",
+      "viewAll": "Ver tudo",
+      "likes": "Curtidas",
+      "commentsShort": "Coment.",
+      "savedShort": "Salvos",
+      "comments": "Comentarios",
+      "loadingComments": "Carregando comentarios...",
+      "noComments": "Ainda nao ha comentarios visiveis.",
+      "viewMoreComments": "Ver mais comentarios",
+      "eyebrow": "Gestao do feed",
+      "subtitle": "Administre e revise o desempenho do conteudo que voce compartilhou.",
+      "refreshing": "Atualizando...",
+      "shared": "Compartilhados",
+      "likeMetric": "Curtidas",
+      "saved": "Salvos",
+      "sortLabel": "Ordenar vitrine",
+      "summary": "{{count}} compartilhados - pagina {{page}} de {{totalPages}}",
+      "loadError": "Nao foi possivel carregar sua vitrine.",
+      "loading": "Carregando vitrine...",
+      "empty": "Ainda nao ha conteudo compartilhado do seu portfolio.",
       "previous": "Anterior",
-      "next": "Próximo",
-      "pageInfo": "Página {{page}} de {{lastPage}}"
+      "next": "Proximo"
+    },
+    "adminRequests": {
+      "title": "Solicitacoes",
+      "subtitle": "Revisao de solicitacoes de verificacao de conta.",
+      "identity": "Verificacao de identidade",
+      "heroTitle": "Solicitacoes de conta verificada",
+      "heroText": "Revise documentos enviados por profissionais e decida se corresponde aprovar o selo de verificado.",
+      "refresh": "Atualizar",
+      "tabsLabel": "Estado das solicitacoes",
+      "tabs": {
+        "pending": "Pendentes",
+        "approved": "Aprovadas",
+        "rejected": "Rejeitadas"
+      },
+      "searchPlaceholder": "Buscar por usuario ou estado",
+      "metrics": {
+        "current": "Nesta vista",
+        "visible": "Coincidencias",
+        "status": "Estado"
+      },
+      "states": {
+        "loadingTitle": "Carregando solicitacoes",
+        "loadingText": "Estamos consultando as solicitacoes de verificacao.",
+        "errorTitle": "Nao foi possivel carregar",
+        "emptyTitle": "Sem solicitacoes",
+        "emptyText": "Nao ha solicitacoes que coincidam com esta vista.",
+        "panel": "Painel",
+        "error": "Erro"
+      },
+      "status": {
+        "pending": "Pendente",
+        "approved": "Aprovada",
+        "rejected": "Rejeitada"
+      },
+      "documents": {
+        "pdf": "PDF",
+        "front": "Frente",
+        "back": "Verso",
+        "empty": "Sem documentos anexados"
+      },
+      "card": {
+        "userFallback": "Usuario PortaFy",
+        "userLine": "Usuario #{{id}} - Enviado {{date}}",
+        "noId": "sem id",
+        "reviewed": "Solicitacao revisada {{date}}"
+      },
+      "actions": {
+        "approve": "Aprovar",
+        "approving": "Aprovando...",
+        "reject": "Rejeitar",
+        "rejectTitle": "Rejeitar solicitacao",
+        "rejectReason": "Motivo da rejeicao",
+        "rejectPlaceholder": "Explique brevemente o que o usuario deve corrigir.",
+        "cancel": "Cancelar",
+        "rejecting": "Rejeitando...",
+        "confirmReject": "Confirmar rejeicao",
+        "closeModal": "Fechar modal"
+      },
+      "errors": {
+        "load": "Nao foi possivel carregar as solicitacoes.",
+        "approve": "Nao foi possivel aprovar a solicitacao.",
+        "reject": "Nao foi possivel rejeitar a solicitacao.",
+        "reasonMin": "Escreva um motivo de pelo menos 5 caracteres."
+      },
+      "characters": "{{count}}/500 caracteres",
+      "noDate": "sem data"
     }
-  },
-"notificationSettings": {
-  "title": "Configurações",
-  "sub": "Escolha uma categoria e ajuste apenas o necessário.",
-  "saving": "Salvando...",
-  "saveChanges": "✓ Salvar alterações",
-  "loading": "Carregando preferências...",
-  "categories": {
-    "activity_notifications": {
-      "label": "Atividade Social",
-      "description": "Curtidas, comentários e menções nas suas publicações"
-    },
-    "portfolio_notifications": {
-      "label": "Portfólios de usuários seguidos",
-      "description": "Atualizações de projetos e experiências"
-    },
-    "offer_notifications": {
-      "label": "Novas vagas",
-      "description": "Ofertas de emprego compatíveis com seu perfil"
-    },
-    "support_notifications": {
-      "label": "Mensagens de suporte",
-      "description": "Respostas e atualizações de suporte"
-    },
-    "platform_notifications": {
-      "label": "Notificações da plataforma",
-      "description": "Anúncios e novidades do Portafy"
-    }
-  }
-},
-"notificationBell": {
-  "title": "Notificações",
-  "markAllRead": "Marcar todas como lidas",
-  "viewAll": "Ver todas as notificações",
-  "ariaLabel": "Notificações",
-  "empty": {
-    "title": "Sem notificações",
-    "sub": "Quando alguém interagir com seu conteúdo, aparecerá aqui."
-  },
-  "item": {
-    "markAsRead": "Marcar como lida",
-    "read": "Lida",
-    "defaultText": "Nova notificação",
-    "altAvatar": "Notificação"
-  },
-  "types": {
-    "like": "Curtida",
-    "comment": "Comentário",
-    "follow": "Seguimento",
-    "event": "Evento",
-    "job_offer": "Vaga",
-    "postulation": "Candidatura",
-    "job_application": "Candidatura"
-  },
-  "messages": {
-    "like": "{{name}} curtiu sua publicação",
-    "follow": "{{name}} começou a te seguir",
-    "event": "Novo evento: {{title}}",
-    "job_offer": "{{company}} publicou uma vaga: {{title}}",
-    "postulation": "{{name}} se candidatou a: {{title}}",
-    "job_application": "{{name}} se candidatou a: {{title}}",
-    "comment": "{{name}} comentou",
-    "commentWithText": "{{name}} comentou: \"{{text}}\"",
-    "default": "Nova notificação",
-    "fallbackOffer": "a vaga",
-    "fallbackPerson": "Alguém",
-    "fallbackCompany": "Empresa"
-  }
-},
-"notificationBell": {
-  "title": "Notificações",
-  "markAllRead": "Marcar todas como lidas",
-  "viewAll": "Ver todas as notificações",
-  "ariaLabel": "Notificações",
-  "empty": {
-    "title": "Sem notificações",
-    "sub": "Quando alguém interagir com seu conteúdo, aparecerá aqui."
-  },
-  "item": {
-    "markAsRead": "Marcar como lida",
-    "read": "Lida",
-    "defaultText": "Nova notificação",
-    "altAvatar": "Notificação"
-  },
-  "types": {
-    "like": "Curtida",
-    "comment": "Comentário",
-    "follow": "Seguimento",
-    "event": "Evento",
-    "job_offer": "Vaga",
-    "postulation": "Candidatura",
-    "job_application": "Candidatura"
-  },
-  "messages": {
-    "like": "{{name}} curtiu sua publicação",
-    "follow": "{{name}} começou a te seguir",
-    "event": "Novo evento: {{title}}",
-    "job_offer": "{{company}} publicou uma vaga: {{title}}",
-    "postulation": "{{name}} se candidatou a: {{title}}",
-    "job_application": "{{name}} se candidatou a: {{title}}",
-    "comment": "{{name}} comentou",
-    "commentWithText": "{{name}} comentou: \"{{text}}\"",
-    "default": "Nova notificação",
-    "fallbackOffer": "a vaga",
-    "fallbackPerson": "Alguém",
-    "fallbackCompany": "Empresa"
   }
 }
-}
-}
-

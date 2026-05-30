@@ -598,9 +598,24 @@
       "type": "Tipo",
       "modality": "Modalidad",
       "level": "Nivel",
-      "typeOptions": ["Full-time", "Part-time", "Freelance", "Prácticas"],
-      "modalityOptions": ["Remoto", "Presencial", "Híbrido"],
-      "levelOptions": ["Sin experiencia", "Junior", "Mid", "Senior", "Lead"]
+      "typeOptions": [
+        "Full-time",
+        "Part-time",
+        "Freelance",
+        "Prácticas"
+      ],
+      "modalityOptions": [
+        "Remoto",
+        "Presencial",
+        "Híbrido"
+      ],
+      "levelOptions": [
+        "Sin experiencia",
+        "Junior",
+        "Mid",
+        "Senior",
+        "Lead"
+      ]
     },
     "expand": {
       "label": "Más detalles",
@@ -1343,6 +1358,103 @@
         "Empresas": "Empresas",
         "Habilidades": "Habilidades",
         "Visitas": "Visitas"
+      },
+      "shareRemoving": "Quitando...",
+      "shareSharing": "Compartiendo...",
+      "shared": "Compartido",
+      "sharedFemale": "Compartida",
+      "shareAction": "Compartir",
+      "projectNoDescription": "Proyecto sin descripcion.",
+      "experienceNoDescription": "Experiencia sin descripcion detallada.",
+      "errors": {
+        "commentReport": "No se pudo enviar el reporte de comentario.",
+        "loadProfile": "No se pudo cargar el perfil.",
+        "unshare": "No se pudo dejar de compartir",
+        "invalidImage": "Selecciona una imagen valida.",
+        "updateProfile": "No se pudo actualizar el perfil.",
+        "copy": "No se pudo copiar",
+        "loadList": "No se pudo cargar la lista.",
+        "followProfile": "No se pudo seguir este perfil.",
+        "unfollowProfile": "No se pudo dejar de seguir este perfil.",
+        "unfollow": "No se pudo dejar de seguir.",
+        "report": "No se pudo enviar el reporte.",
+        "shareProject": "No se pudo compartir el proyecto",
+        "shareExperience": "No se pudo compartir la experiencia"
+      },
+      "messages": {
+        "projectShared": "Proyecto compartido en el feed",
+        "experienceShared": "Experiencia compartida en el feed",
+        "reportSent": "Reporte enviado al equipo de administracion"
+      },
+      "empty": {
+        "bio": {
+          "public": "Este perfil aun no tiene una biografia publica.",
+          "own": "Agrega una biografia para enriquecer tu perfil publico."
+        },
+        "links": {
+          "public": "Este perfil aun no muestra enlaces profesionales.",
+          "own": "Aun no agregaste enlaces profesionales."
+        },
+        "skills": {
+          "public": "Este perfil aun no muestra habilidades.",
+          "own": "Aun no registraste habilidades."
+        },
+        "education": {
+          "public": "Este perfil aun no muestra formacion profesional.",
+          "own": "Aun no registraste formacion profesional."
+        },
+        "projectsTitle": {
+          "public": "Aun no hay proyectos",
+          "own": "Aun no tienes proyectos"
+        },
+        "projectsText": {
+          "public": "Cuando este perfil publique proyectos en su portafolio se mostraran aqui.",
+          "own": "Cuando cargues proyectos en portafolio se mostraran aqui."
+        },
+        "experienceTitle": {
+          "public": "Aun no hay experiencia",
+          "own": "Aun no tienes experiencia"
+        },
+        "experienceText": {
+          "public": "Cuando este perfil agregue experiencia profesional se mostrara aqui.",
+          "own": "Tu experiencia cargada desde portafolio se vera aqui."
+        },
+        "feedTitle": {
+          "public": "La vitrina esta vacia",
+          "own": "Tu vitrina esta vacia"
+        },
+        "feedText": {
+          "public": "Cuando este perfil comparta proyectos o experiencias apareceran aqui y en el feed.",
+          "own": "Comparte un proyecto o experiencia para mostrarlo en tu perfil y en el feed."
+        }
+      },
+      "loadingSections": {
+        "projectsTitle": "Cargando proyectos...",
+        "projectsText": "Traemos solo esta seccion para mantener el perfil liviano.",
+        "experienceTitle": "Cargando experiencia...",
+        "experienceText": "Esta pestana se carga bajo demanda para no hacer pesado el perfil.",
+        "showcaseTitle": "Cargando vitrina...",
+        "showcaseText": "Revisando el contenido que compartiste."
+      },
+      "summary": {
+        "strengths": "Fortalezas",
+        "strengthsText": "{{skills}} habilidades registradas en {{categories}} categorias.",
+        "noSkills": "Aun no registraste habilidades.",
+        "portfolio": "Portafolio",
+        "portfolioText": "{{count}} proyectos ya fortalecen tu presentacion profesional.",
+        "noProjects": "Tu portafolio aun no tiene proyectos visibles.",
+        "path": "Trayectoria",
+        "pathText": "{{count}} experiencias ayudan a contar mejor tu recorrido.",
+        "noExperience": "Todavia no registraste experiencia para esta vista."
+      },
+      "unshare": {
+        "title": "Dejar de compartir",
+        "description": "Este contenido se retirara del feed y de tu vitrina. El proyecto o experiencia original seguira guardado en tu portafolio.",
+        "confirm": "Dejar de compartir"
+      },
+      "relations": {
+        "followers": "Seguidores",
+        "following": "Seguidos"
       }
     },
     "portfolio": {
@@ -1359,7 +1471,207 @@
       "addEducation": "Agrega carreras, diplomados o cursos",
       "educationText": "Mantiene visible tu trayectoria academica y profesional.",
       "record": "registro",
-      "recordsPlural": "registros"
+      "recordsPlural": "registros",
+      "syncingDb": "Sincronizando con la base de datos...",
+      "loadError": "No se pudo cargar el portafolio en este momento.",
+      "fixFields": "Corrige los campos marcados para continuar.",
+      "saveError": "No se pudo guardar el registro en este momento.",
+      "deleteError": "No se pudo eliminar el registro",
+      "deleteTitle": "Eliminar registro",
+      "deleteDescription": "Se eliminara {{item}}. Esta accion no se puede deshacer.",
+      "deleteFallback": "este registro",
+      "deleteConfirm": "Si, eliminar",
+      "saveTitle": "Guardar cambios",
+      "saveDescription": "Se actualizara este registro con la informacion del formulario. Confirma si deseas continuar.",
+      "saveConfirm": "Si, guardar",
+      "back": "Volver al portafolio",
+      "mySection": "Mis {{section}}",
+      "activeStation": "Estacion activa / {{section}}",
+      "manage": "Gestion de {{section}}",
+      "add": "Agregar {{singular}}",
+      "editable": "{{singular}} editable",
+      "list": "Listado",
+      "view": "Vista",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "edition": "Edicion",
+      "newRecord": "Nuevo registro",
+      "editItem": "Editar {{singular}}",
+      "addItem": "Agregar {{singular}}",
+      "formHint": "Completa solo esta seccion, sin seguir un flujo pesado.",
+      "savingChanges": "Guardando cambios",
+      "savingRecord": "Guardando registro",
+      "addButton": "Agregar",
+      "recordsCount": "{{count}} registros",
+      "recordCount": "{{count}} registro",
+      "sections": {
+        "projects": {
+          "title": "Proyectos",
+          "singular": "proyecto",
+          "description": "Gestiona proyectos destacados, repositorios, tecnologias y piezas visuales."
+        },
+        "experience": {
+          "title": "Experiencia",
+          "singular": "experiencia",
+          "description": "Administra experiencia laboral o academica de forma ligera e independiente."
+        },
+        "social": {
+          "title": "Social",
+          "singular": "enlace",
+          "description": "Organiza enlaces profesionales y redes con plataformas predefinidas."
+        },
+        "skills": {
+          "title": "Habilidades",
+          "singular": "habilidad",
+          "description": "Separa habilidades tecnicas y blandas para mantener el registro liviano."
+        },
+        "education": {
+          "title": "Formacion profesional",
+          "singular": "formacion",
+          "description": "Registra carreras, diplomados, cursos, maestrias y otros estudios relevantes."
+        }
+      },
+      "fields": {
+        "title": "Titulo",
+        "description": "Descripcion",
+        "techCategory": "Categoria tecnica",
+        "tags": "Tecnologias",
+        "repoUrl": "Repositorio URL",
+        "demoUrl": "Demo URL",
+        "status": "Estado del proyecto",
+        "cover": "Portada del proyecto",
+        "type": "Tipo",
+        "roleArea": "Area",
+        "company": "Empresa / institucion / cliente",
+        "startDate": "Fecha inicio",
+        "endDate": "Fecha fin",
+        "isCurrent": "Actualmente",
+        "category": "Categoria",
+        "name": "Nombre de la habilidad",
+        "level": "Nivel",
+        "platform": "Plataforma",
+        "url": "URL",
+        "program": "Programa o carrera",
+        "institution": "Institucion"
+      },
+      "detail": {
+        "noCategory": "Sin categoria",
+        "noRepository": "Sin repositorio",
+        "noDemo": "Sin demo URL",
+        "noArea": "Sin area",
+        "dates": "Fechas",
+        "current": "Actualidad",
+        "present": "Presente",
+        "undefined": "Sin definir",
+        "visual": "Visual",
+        "noDescription": "Sin descripcion",
+        "noProgram": "Sin programa",
+        "noInstitution": "Sin institucion",
+        "noType": "Sin tipo",
+        "noStart": "Sin inicio",
+        "destination": "Destino",
+        "noUrl": "Sin URL",
+        "active": "Activo",
+        "noCover": "Sin portada personalizada",
+        "coverOf": "Portada de {{title}}",
+        "noTechnologies": "Sin tecnologias"
+      },
+      "controls": {
+        "selectTechnology": "Selecciona una tecnologia",
+        "selectSkill": "Selecciona una habilidad",
+        "selectOption": "Selecciona una opcion",
+        "writePlatform": "Escribe la plataforma",
+        "dateHint": "Usa el calendario para elegir una fecha de forma mas intuitiva.",
+        "uploadFile": "Adjunta un archivo",
+        "noFile": "Aun no seleccionaste un archivo.",
+        "chooseFile": "Elegir archivo",
+        "projectCoverHelper": "Sube una portada para mostrar mejor tu proyecto",
+        "projectCoverEmpty": "Sin portada seleccionada. Opcional, maximo 2 MB.",
+        "uploadCover": "Subir portada"
+      },
+      "validation": {
+        "experienceType": "Selecciona el tipo de experiencia.",
+        "area": "Selecciona el area.",
+        "role": "Completa el cargo.",
+        "company": "Completa la empresa o institucion.",
+        "description": "Agrega una descripcion breve.",
+        "startDate": "Selecciona la fecha de inicio.",
+        "endDate": "Selecciona la fecha de fin o marca que sigues ahi.",
+        "projectTitle": "Completa el titulo del proyecto.",
+        "projectDescription": "Agrega una descripcion breve del proyecto.",
+        "techCategory": "Selecciona una categoria tecnica.",
+        "tags": "Agrega al menos una tecnologia.",
+        "projectStatus": "Selecciona el estado del proyecto.",
+        "coverType": "La portada debe ser una imagen valida.",
+        "coverSize": "La portada no debe superar 2 MB.",
+        "category": "Selecciona una categoria.",
+        "skill": "Selecciona o escribe una habilidad.",
+        "level": "Selecciona el nivel.",
+        "platform": "Selecciona o escribe una plataforma.",
+        "url": "Completa la URL del enlace.",
+        "educationLevel": "Selecciona el tipo de formacion.",
+        "program": "Completa el programa o carrera.",
+        "max140": "Maximo 140 caracteres.",
+        "safeText": "Usa solo letras, numeros y signos basicos.",
+        "institution": "Completa la institucion.",
+        "max120": "Maximo 120 caracteres.",
+        "safeInstitution": "La institucion contiene caracteres no validos.",
+        "endDateCurrent": "Selecciona la fecha de fin o marca que sigue vigente.",
+        "dateOrder": "La fecha de fin no puede ser anterior al inicio.",
+        "form": "Faltan campos obligatorios por completar."
+      },
+      "overview": {
+        "latest": "Ultimo {{item}}",
+        "station": "Estacion 0{{number}}",
+        "addFirst": "Agrega tu primer {{item}}",
+        "recordsIn": "{{count}} registros en {{section}}",
+        "noContent": "Aun no hay contenido en este modulo.",
+        "inOrbit": "En orbita",
+        "notStarted": "Sin despegar",
+        "item": "{{count}} item",
+        "items": "{{count}} items"
+      },
+      "placeholders": {
+        "projects": {
+          "title": "Nombre del proyecto",
+          "description": "Resumen corto del proyecto",
+          "tags": "Selecciona tecnologias de la categoria o agrega una manualmente",
+          "repoUrl": "https://github.com/usuario/proyecto",
+          "demoUrl": "https://demo.com",
+          "cover": "Sube una portada opcional"
+        },
+        "experience": {
+          "title": "Selecciona un cargo o escribe otro",
+          "company": "Nombre de empresa o institucion",
+          "description": "Impacto, tareas o logros"
+        },
+        "skills": {
+          "name": "Selecciona una habilidad o escribe otra manualmente",
+          "description": "Describe la habilidad",
+          "category": "Frontend / Soft skill / Backend"
+        },
+        "social": {
+          "url": "https://..."
+        },
+        "education": {
+          "program": "Ingenieria de Sistemas / Diplomado en QA",
+          "institution": "Universidad o institucion"
+        },
+        "extra": {
+          "cvUrl": "https://..."
+        }
+      },
+      "educationLevels": {
+        "tecnico": "Tecnico",
+        "tecnologo": "Tecnologo",
+        "licenciatura": "Licenciatura",
+        "ingenieria": "Ingenieria",
+        "maestria": "Maestria",
+        "doctorado": "Doctorado",
+        "curso": "Curso",
+        "diplomado": "Diplomado",
+        "otro": "Otro"
+      }
     },
     "cv": {
       "title": "Mis CVs",
@@ -1476,6 +1788,126 @@
       },
       "characters": "{{count}}/500 caracteres",
       "noDate": "sin fecha"
+    },
+    "calendar": {
+      "eyebrow": "Calendario",
+      "title": "Agenda visual del perfil",
+      "description": "Reserva bloques para mejorar tu perfil, subir proyectos, revisar enlaces y mantener visible tu avance.",
+      "monthlyView": "Vista mensual",
+      "smartReminders": "Espacio para recordatorios inteligentes",
+      "selectDay": "Selecciona un dia y mira el detalle al lado",
+      "detail": "Detalle",
+      "freeDay": "Dia libre",
+      "noTime": "Sin hora asignada",
+      "emptyPlan": "Usa este espacio para planear una mejora puntual del perfil o preparar un nuevo proyecto.",
+      "usefulIdea": "Idea util",
+      "usefulIdeaText": "Recordatorios para actualizar el CV antes de postular o compartir tu portafolio.",
+      "nextStep": "Siguiente paso",
+      "nextStepText": "Mas adelante aqui podriamos sumar arrastrar eventos, metas y alertas visuales.",
+      "noDate": "Sin fecha",
+      "months": [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ],
+      "weekDays": [
+        "L",
+        "M",
+        "X",
+        "J",
+        "V",
+        "S",
+        "D"
+      ],
+      "dateLabel": "{{day}} de {{month}} de {{year}}",
+      "events": {
+        "updateProfile": {
+          "title": "Actualizar perfil",
+          "detail": "Revisa titular, foto y biografia antes de publicar cambios.",
+          "tag": "Perfil"
+        },
+        "uploadCase": {
+          "title": "Subir caso de estudio",
+          "detail": "Publica el proyecto UX con portada, tecnologias y enlace demo.",
+          "tag": "Proyecto"
+        },
+        "reviewSkills": {
+          "title": "Revisar habilidades",
+          "detail": "Ordena skills por seniority y deja visibles solo las principales.",
+          "tag": "Skills"
+        },
+        "connectCv": {
+          "title": "Conectar CV",
+          "detail": "Verifica el PDF, los enlaces sociales y el portafolio publico.",
+          "tag": "Social"
+        }
+      }
+    },
+    "profileTrust": {
+      "close": "Cerrar",
+      "connectionsPublic": "Vista publica de conexiones",
+      "connectionsManage": "Administra tus conexiones",
+      "loadingList": "Cargando lista...",
+      "emptyUsers": "No hay usuarios para mostrar.",
+      "unfollow": "Dejar de seguir",
+      "followBack": "Seguir tambien",
+      "following": "Siguiendo",
+      "unfollowTitle": "Dejar de seguir",
+      "unfollowSubtitle": "Estas seguro de dejar de seguir a {{name}}?",
+      "thisUser": "este usuario",
+      "processing": "Procesando...",
+      "confirm": "Confirmar",
+      "viewsTitle": "Visualizaciones del perfil",
+      "viewsSubtitle": "Usuarios que visitaron tu perfil recientemente",
+      "loadingViews": "Cargando visualizaciones...",
+      "emptyViews": "Aun no hay visualizaciones registradas.",
+      "user": "Usuario",
+      "suggestTitle": "Enviar sugerencia",
+      "suggestSubtitle": "Tu idea sera revisada desde el panel de administracion",
+      "suggestName": "Nombre de la sugerencia",
+      "suggestDetail": "Motivo o detalle",
+      "chars": "{{count}}/255 caracteres",
+      "sending": "Enviando...",
+      "verifyTitle": "Verificar cuenta",
+      "verifySubtitle": "Completa el proceso para obtener la insignia de verificado",
+      "steps": [
+        "Documento",
+        "Revision",
+        "Resultado"
+      ],
+      "pending": "Tu solicitud esta pendiente. Espera la revision de administracion.",
+      "approved": "Cuenta aprobada. La insignia ya puede mostrarse en tu perfil.",
+      "rejected": "Solicitud rechazada: {{reason}}",
+      "noReason": "Sin justificativo registrado.",
+      "front": "Documento anverso",
+      "back": "Documento reverso",
+      "imageHint": "JPG, PNG o WEBP",
+      "pdf": "Documento completo en PDF",
+      "pdfHint": "Opcional si subes anverso y reverso",
+      "uploadHint": "Sube un PDF o ambas imagenes del documento. Maximo 4 MB por imagen, 6 MB PDF.",
+      "sendRequest": "Enviar solicitud",
+      "reportTitle": "Reportar perfil",
+      "reportSubtitle": "El reporte sobre {{name}} sera enviado a administracion",
+      "optionalDetail": "Detalle opcional",
+      "sendReport": "Enviar reporte",
+      "validation": {
+        "frontBack": "Si eliges imagenes, adjunta anverso y reverso.",
+        "pdfType": "El documento completo debe ser PDF.",
+        "pdfSize": "El PDF supera el maximo de 6 MB.",
+        "imageType": "El {{label}} debe ser JPG, PNG o WEBP.",
+        "imageSize": "El {{label}} supera el maximo de 4 MB.",
+        "frontLabel": "anverso",
+        "backLabel": "reverso"
+      }
     }
   },
   "notifications": {
@@ -1502,7 +1934,6 @@
       "pageInfo": "Página {{page}} de {{lastPage}}"
     }
   },
-
   "notificationSettings": {
     "title": "Configuración",
     "sub": "Elige una categoría y ajusta solo lo necesario.",

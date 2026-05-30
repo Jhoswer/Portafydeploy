@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Bookmark, ChevronLeft, ChevronRight, Eye, FileText, MessageCircle, Newspaper, RefreshCw, Sparkles, ThumbsUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { fetchFeedPost, fetchMyFeedPosts } from "../../../services/feedService";
 import { dashboardShell } from "../../../styles/components/dashboardShell";
 import {
@@ -15,12 +16,7 @@ import * as styles from "../../../styles/components/dashboard/publicationStyles"
 const INITIAL_COMMENTS = 3;
 const NEXT_COMMENTS = 5;
 const PAGE_SIZE = 6;
-const SORT_OPTIONS = [
-  { value: "popular", label: "Mas populares" },
-  { value: "likes", label: "Mas likes" },
-  { value: "newest", label: "Mas nuevos" },
-  { value: "oldest", label: "Mas antiguos" },
-];
+const SORT_OPTIONS = ["popular", "likes", "newest", "oldest"];
 
 function publicationScore(post = {}) {
   return Number(post.likes || 0) * 3 + countComments(post) * 2 + Number(post.saves || 0) * 2;
@@ -41,6 +37,7 @@ function MetricCard({ icon: Icon, label, value }) {
 }
 
 function KindPill({ post, active = false }) {
+  const { t } = useTranslation();
   return (
     <span
       style={{
@@ -60,12 +57,13 @@ function KindPill({ post, active = false }) {
       }}
     >
       <Sparkles size={11} />
-      {getPublicationKind(post)}
+      {getPublicationKind(post) === "Proyecto" ? t("appI18n.feed.post.project") : t("appI18n.feed.post.experience")}
     </span>
   );
 }
 
 function PublicationCard({ post, active, loading, onSelect }) {
+  const { t } = useTranslation();
   const comments = countComments(post);
 
   return (
@@ -82,7 +80,7 @@ function PublicationCard({ post, active, loading, onSelect }) {
             </div>
           </div>
           <span style={{ ...dashboardShell.badge, padding: "6px 9px", fontSize: ".7rem" }}>
-            {post.posted || "Publicado"}
+            {post.posted || t("appI18n.showcase.published")}
           </span>
         </div>
 
@@ -98,7 +96,7 @@ function PublicationCard({ post, active, loading, onSelect }) {
           <span style={{ ...dashboardShell.badge, padding: "6px 9px", fontSize: ".72rem" }}><Bookmark size={12} />{post.saves || 0}</span>
           <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--f-ui)", fontSize: ".74rem", fontWeight: 850, color: active ? "#2048a8" : "var(--muted)" }}>
             <Eye size={13} />
-            {loading ? "Abriendo..." : "Detalle"}
+            {loading ? t("appI18n.showcase.opening") : t("appI18n.showcase.detail")}
           </span>
         </div>
       </div>
@@ -114,16 +112,17 @@ function PublicationCard({ post, active, loading, onSelect }) {
 }
 
 function CommentItem({ comment }) {
+  const { t } = useTranslation();
   return (
     <div style={styles.commentCard}>
       {comment.authorAvatar ? (
-        <img src={comment.authorAvatar} alt={comment.author || "Usuario Portafy"} style={styles.avatar} />
+        <img src={comment.authorAvatar} alt={comment.author || t("appI18n.common.portfolioUser")} style={styles.avatar} />
       ) : (
         <div style={styles.avatar}>{initials(comment.author)}</div>
       )}
       <div style={{ minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
-          <strong style={{ fontFamily: "var(--f-ui)", color: "var(--text)", fontSize: ".84rem" }}>{comment.author || "Usuario Portafy"}</strong>
+          <strong style={{ fontFamily: "var(--f-ui)", color: "var(--text)", fontSize: ".84rem" }}>{comment.author || t("appI18n.common.portfolioUser")}</strong>
           {comment.posted ? <span style={{ fontFamily: "var(--f-ui)", fontSize: ".72rem", color: "var(--muted)", fontWeight: 700 }}>{comment.posted}</span> : null}
         </div>
         <p style={{ ...dashboardShell.body, fontSize: ".84rem", marginTop: 4 }}>{comment.text}</p>
@@ -133,6 +132,7 @@ function CommentItem({ comment }) {
 }
 
 function PublicationDetail({ post, visibleComments, loadingComments, onShowMore, isCompact }) {
+  const { t } = useTranslation();
   const [expandedPostId, setExpandedPostId] = useState(null);
   const [contentNeedsToggle, setContentNeedsToggle] = useState(false);
   const contentRef = useRef(null);
@@ -171,8 +171,8 @@ function PublicationDetail({ post, visibleComments, loadingComments, onShowMore,
           <Eye size={17} />
         </div>
         <div>
-          <h3 style={{ margin: 0, fontFamily: "var(--f-title)", color: "var(--text)", fontSize: "1rem" }}>Selecciona una publicacion</h3>
-          <p style={{ ...dashboardShell.body, marginTop: 6 }}>El detalle y los comentarios apareceran aqui.</p>
+          <h3 style={{ margin: 0, fontFamily: "var(--f-title)", color: "var(--text)", fontSize: "1rem" }}>{t("appI18n.showcase.selectTitle")}</h3>
+          <p style={{ ...dashboardShell.body, marginTop: 6 }}>{t("appI18n.showcase.selectText")}</p>
         </div>
       </aside>
     );
@@ -201,11 +201,11 @@ function PublicationDetail({ post, visibleComments, loadingComments, onShowMore,
             <div style={styles.contentHeader}>
               <span style={styles.contentLabel}>
                 <FileText size={13} />
-                Contenido
+                {t("appI18n.showcase.content")}
               </span>
               {contentNeedsToggle ? (
                 <button type="button" onClick={() => setExpandedPostId((current) => (current === post.publicationId ? null : post.publicationId))} style={styles.contentToggle}>
-                  {contentExpanded ? "Contraer" : "Ver todo"}
+                  {contentExpanded ? t("appI18n.showcase.collapse") : t("appI18n.showcase.viewAll")}
                 </button>
               ) : null}
             </div>
@@ -217,27 +217,27 @@ function PublicationDetail({ post, visibleComments, loadingComments, onShowMore,
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: isCompact ? "repeat(auto-fit, minmax(110px, 1fr))" : "repeat(3, minmax(0, 1fr))", gap: 8 }}>
-        <MetricCard icon={ThumbsUp} label="Likes" value={post.likes || 0} />
-        <MetricCard icon={MessageCircle} label="Coment." value={totalComments} />
-        <MetricCard icon={Bookmark} label="Guard." value={post.saves || 0} />
+        <MetricCard icon={ThumbsUp} label={t("appI18n.showcase.likes")} value={post.likes || 0} />
+        <MetricCard icon={MessageCircle} label={t("appI18n.showcase.commentsShort")} value={totalComments} />
+        <MetricCard icon={Bookmark} label={t("appI18n.showcase.savedShort")} value={post.saves || 0} />
       </div>
 
       <div style={{ display: "grid", gap: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
-          <h4 style={{ margin: 0, fontFamily: "var(--f-title)", fontSize: ".98rem", color: "var(--text)" }}>Comentarios</h4>
+          <h4 style={{ margin: 0, fontFamily: "var(--f-title)", fontSize: ".98rem", color: "var(--text)" }}>{t("appI18n.showcase.comments")}</h4>
           <span style={{ ...dashboardShell.badge, padding: "6px 9px", fontSize: ".72rem" }}>{totalComments}</span>
         </div>
 
-        {loadingComments ? <p style={dashboardShell.body}>Cargando comentarios...</p> : null}
+        {loadingComments ? <p style={dashboardShell.body}>{t("appI18n.showcase.loadingComments")}</p> : null}
         {!loadingComments && shownComments.length ? (
           <div style={styles.commentsScroll(isCompact)}>
             {shownComments.map((comment) => <CommentItem key={comment.id} comment={comment} />)}
           </div>
         ) : null}
-        {!loadingComments && !totalComments ? <p style={dashboardShell.body}>Aun no hay comentarios visibles.</p> : null}
+        {!loadingComments && !totalComments ? <p style={dashboardShell.body}>{t("appI18n.showcase.noComments")}</p> : null}
         {!loadingComments && hasMore ? (
           <button type="button" onClick={onShowMore} style={{ ...dashboardShell.secondaryButton, justifyContent: "center" }}>
-            Ver mas comentarios
+            {t("appI18n.showcase.viewMoreComments")}
           </button>
         ) : null}
       </div>
@@ -251,6 +251,7 @@ function needsFullDetail(post) {
 }
 
 export default function DashboardPublications() {
+  const { t } = useTranslation();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -267,7 +268,7 @@ export default function DashboardPublications() {
     const onResize = () => setWidth(window.innerWidth);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, []);
+  }, [t]);
 
   const summary = useMemo(() => ({
     posts: posts.length,
@@ -319,12 +320,12 @@ export default function DashboardPublications() {
       setPosts(items);
       setSelectedId((current) => current ?? items[0]?.publicationId ?? null);
     } catch (loadError) {
-      setError(loadError.message || "No se pudo cargar tu vitrina.");
+      setError(loadError.message || t("appI18n.showcase.loadError"));
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadPosts();
@@ -358,43 +359,43 @@ export default function DashboardPublications() {
     <div style={styles.shell}>
       <div style={styles.toolbar}>
         <div>
-          <div style={dashboardShell.eyebrow}>Gestion del feed</div>
-          <p style={{ ...dashboardShell.body, marginTop: 4 }}>Administra y revisa el rendimiento del contenido que compartiste.</p>
+          <div style={dashboardShell.eyebrow}>{t("appI18n.showcase.eyebrow")}</div>
+          <p style={{ ...dashboardShell.body, marginTop: 4 }}>{t("appI18n.showcase.subtitle")}</p>
         </div>
         <button type="button" onClick={() => loadPosts({ silent: true, force: true })} disabled={loading || refreshing} style={dashboardShell.secondaryButton}>
           <RefreshCw size={14} />
-          {refreshing ? "Actualizando..." : "Actualizar"}
+          {refreshing ? t("appI18n.showcase.refreshing") : t("appI18n.common.refresh")}
         </button>
       </div>
 
       <div style={styles.metricGrid}>
-        <MetricCard icon={Newspaper} label="Compartidos" value={summary.posts} />
-        <MetricCard icon={ThumbsUp} label="Me gusta" value={summary.likes} />
-        <MetricCard icon={MessageCircle} label="Comentarios" value={summary.comments} />
-        <MetricCard icon={Bookmark} label="Guardados" value={summary.saves} />
+        <MetricCard icon={Newspaper} label={t("appI18n.showcase.shared")} value={summary.posts} />
+        <MetricCard icon={ThumbsUp} label={t("appI18n.showcase.likeMetric")} value={summary.likes} />
+        <MetricCard icon={MessageCircle} label={t("appI18n.showcase.comments")} value={summary.comments} />
+        <MetricCard icon={Bookmark} label={t("appI18n.showcase.saved")} value={summary.saves} />
       </div>
 
       {!loading && !error && posts.length ? (
         <div style={styles.filterBar}>
           <label style={styles.sortField}>
-            <span>Ordenar vitrina</span>
+            <span>{t("appI18n.showcase.sortLabel")}</span>
             <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} style={styles.sortSelect}>
               {SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
+                <option key={option} value={option}>{t(`appI18n.showcase.sort.${option}`)}</option>
               ))}
             </select>
           </label>
           <div style={styles.pageSummary}>
-            {sortedPosts.length} compartidos - pagina {page} de {totalPages}
+            {t("appI18n.showcase.summary", { count: sortedPosts.length, page, totalPages })}
           </div>
         </div>
       ) : null}
 
       {error ? <section style={{ ...dashboardShell.surfaceCard, padding: 18 }}><p style={dashboardShell.body}>{error}</p></section> : null}
-      {loading ? <section style={{ ...dashboardShell.surfaceCard, padding: 18 }}><p style={dashboardShell.body}>Cargando vitrina...</p></section> : null}
+      {loading ? <section style={{ ...dashboardShell.surfaceCard, padding: 18 }}><p style={dashboardShell.body}>{t("appI18n.showcase.loading")}</p></section> : null}
       {!loading && !error && !posts.length ? (
         <section style={{ ...dashboardShell.surfaceCard, padding: 24, textAlign: "center" }}>
-          <p style={{ ...dashboardShell.body, margin: 0 }}>Aun no tienes contenido compartido desde tu portafolio.</p>
+          <p style={{ ...dashboardShell.body, margin: 0 }}>{t("appI18n.showcase.empty")}</p>
         </section>
       ) : null}
 
@@ -414,11 +415,11 @@ export default function DashboardPublications() {
               <div style={styles.pagination}>
                 <button type="button" onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={page === 1} style={styles.pageButton(page === 1)}>
                   <ChevronLeft size={14} />
-                  Anterior
+                  {t("appI18n.showcase.previous")}
                 </button>
                 <span style={styles.pageCounter}>{page}/{totalPages}</span>
                 <button type="button" onClick={() => setPage((value) => Math.min(totalPages, value + 1))} disabled={page === totalPages} style={styles.pageButton(page === totalPages)}>
-                  Siguiente
+                  {t("appI18n.showcase.next")}
                   <ChevronRight size={14} />
                 </button>
               </div>

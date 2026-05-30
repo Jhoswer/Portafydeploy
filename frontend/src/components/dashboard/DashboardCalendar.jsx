@@ -1,52 +1,29 @@
 import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight, Clock3, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { dashboardShell } from "../../styles/components/dashboardShell";
 
 const calendarEvents = {
   "2026-04-04": {
-    title: "Actualizar perfil",
+    titleKey: "updateProfile",
     time: "09:30",
-    detail: "Revisa titular, foto y biografia antes de publicar cambios.",
-    tag: "Perfil",
   },
   "2026-04-11": {
-    title: "Subir caso de estudio",
+    titleKey: "uploadCase",
     time: "15:00",
-    detail: "Publica el proyecto UX con portada, tecnologias y enlace demo.",
-    tag: "Proyecto",
   },
   "2026-04-15": {
-    title: "Revisar habilidades",
+    titleKey: "reviewSkills",
     time: "11:45",
-    detail: "Ordena skills por seniority y deja visibles solo las principales.",
-    tag: "Skills",
   },
   "2026-04-23": {
-    title: "Conectar CV",
+    titleKey: "connectCv",
     time: "18:10",
-    detail: "Verifica el PDF, los enlaces sociales y el portafolio publico.",
-    tag: "Social",
   },
 };
 
-const monthNames = [
-  "Enero",
-  "Febrero",
-  "Marzo",
-  "Abril",
-  "Mayo",
-  "Junio",
-  "Julio",
-  "Agosto",
-  "Septiembre",
-  "Octubre",
-  "Noviembre",
-  "Diciembre",
-];
-
-const weekDays = ["L", "M", "X", "J", "V", "S", "D"];
-
 export default function DashboardCalendar() {
+  const { t } = useTranslation();
   const [currentMonth, setCurrentMonth] = useState(new Date(2026, 3, 1));
   const [selectedDate, setSelectedDate] = useState("2026-04-15");
   const viewport = useViewport();
@@ -54,24 +31,27 @@ export default function DashboardCalendar() {
   const isMobile = viewport < 720;
   const calendar = useMemo(() => buildCalendar(currentMonth), [currentMonth]);
   const selectedEvent = calendarEvents[selectedDate];
+  const monthNames = t("appI18n.calendar.months", { returnObjects: true });
+  const weekDays = t("appI18n.calendar.weekDays", { returnObjects: true });
+  const selectedEventKey = selectedEvent?.titleKey;
 
   return (
     <div style={{ display: "grid", gap: 20 }}>
       <section style={{ ...heroCard, padding: isMobile ? "20px 18px" : heroCard.padding }}>
         <div style={{ display: "grid", gap: 10 }}>
-          <div style={eyebrow}>Calendario</div>
-          <h1 style={title}>Agenda visual del perfil</h1>
+          <div style={eyebrow}>{t("appI18n.calendar.eyebrow")}</div>
+          <h1 style={title}>{t("appI18n.calendar.title")}</h1>
           <p style={description}>
-            Reserva bloques para mejorar tu perfil, subir proyectos, revisar enlaces y mantener visible tu avance.
+            {t("appI18n.calendar.description")}
           </p>
           <div style={badgeRow}>
             <span style={softBadge}>
               <CalendarDays size={14} color="currentColor" />
-              Vista mensual
+              {t("appI18n.calendar.monthlyView")}
             </span>
             <span style={softBadge}>
               <Sparkles size={14} color="currentColor" />
-              Espacio para recordatorios inteligentes
+              {t("appI18n.calendar.smartReminders")}
             </span>
           </div>
         </div>
@@ -93,7 +73,7 @@ export default function DashboardCalendar() {
               <div style={calendarMonth}>
                 {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
               </div>
-              <div style={calendarMeta}>Selecciona un dia y mira el detalle al lado</div>
+              <div style={calendarMeta}>{t("appI18n.calendar.selectDay")}</div>
             </div>
 
             <button type="button" onClick={() => setCurrentMonth(moveMonth(currentMonth, 1))} style={monthButton}>
@@ -130,34 +110,34 @@ export default function DashboardCalendar() {
         </article>
 
         <article style={sideCard}>
-          <div style={eyebrow}>Detalle</div>
-          <div style={focusTitle}>{selectedEvent ? selectedEvent.title : "Dia libre"}</div>
-          <div style={focusDate}>{formatDateLabel(selectedDate)}</div>
+          <div style={eyebrow}>{t("appI18n.calendar.detail")}</div>
+          <div style={focusTitle}>{selectedEventKey ? t(`appI18n.calendar.events.${selectedEventKey}.title`) : t("appI18n.calendar.freeDay")}</div>
+          <div style={focusDate}>{formatDateLabel(selectedDate, monthNames, t)}</div>
 
           <div style={timelineBlock}>
             <div style={timelineHeader}>
               <Clock3 size={15} color="currentColor" />
-              <span>{selectedEvent ? selectedEvent.time : "Sin hora asignada"}</span>
+              <span>{selectedEvent ? selectedEvent.time : t("appI18n.calendar.noTime")}</span>
             </div>
             <p style={timelineText}>
-              {selectedEvent
-                ? selectedEvent.detail
-                : "Usa este espacio para planear una mejora puntual del perfil o preparar un nuevo proyecto."}
+              {selectedEventKey
+                ? t(`appI18n.calendar.events.${selectedEventKey}.detail`)
+                : t("appI18n.calendar.emptyPlan")}
             </p>
           </div>
 
           <div style={tipsGrid}>
             <div style={tipCard}>
-              <div style={tipTitle}>Idea util</div>
-              <div style={tipText}>Recordatorios para actualizar el CV antes de postular o compartir tu portafolio.</div>
+              <div style={tipTitle}>{t("appI18n.calendar.usefulIdea")}</div>
+              <div style={tipText}>{t("appI18n.calendar.usefulIdeaText")}</div>
             </div>
             <div style={tipCard}>
-              <div style={tipTitle}>Siguiente paso</div>
-              <div style={tipText}>Mas adelante aqui podriamos sumar arrastrar eventos, metas y alertas visuales.</div>
+              <div style={tipTitle}>{t("appI18n.calendar.nextStep")}</div>
+              <div style={tipText}>{t("appI18n.calendar.nextStepText")}</div>
             </div>
           </div>
 
-          {selectedEvent?.tag ? <span style={softBadge}>{selectedEvent.tag}</span> : null}
+          {selectedEventKey ? <span style={softBadge}>{t(`appI18n.calendar.events.${selectedEventKey}.tag`)}</span> : null}
         </article>
       </section>
     </div>
@@ -200,10 +180,10 @@ function moveMonth(date, offset) {
   return new Date(date.getFullYear(), date.getMonth() + offset, 1);
 }
 
-function formatDateLabel(dateKey) {
-  if (!dateKey) return "Sin fecha";
+function formatDateLabel(dateKey, monthNames, t) {
+  if (!dateKey) return t("appI18n.calendar.noDate");
   const [year, month, day] = dateKey.split("-").map(Number);
-  return `${day} de ${monthNames[month - 1]} de ${year}`;
+  return t("appI18n.calendar.dateLabel", { day, month: monthNames[month - 1], year });
 }
 
 const heroCard = {

@@ -31,7 +31,10 @@ export default function PortfolioOverview({ overviewCards, progress, recentHighl
   const isTablet = viewport < 1080;
   const isMobile = viewport < 720;
   const totalItems = overviewCards.reduce((total, cardData) => total + cardData.count, 0) + (educationSummary?.count ?? 0);
-  const nextSection = overviewCards.find((cardData) => cardData.count === 0)?.title ?? t("appI18n.portfolio.publication");
+  const nextSectionKey = overviewCards.find((cardData) => cardData.count === 0)?.key;
+  const nextSection = nextSectionKey
+    ? t(`appI18n.portfolio.sections.${nextSectionKey}.title`)
+    : t("appI18n.portfolio.publication");
   const stageStyle = {
     ...overviewStage,
     gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : overviewStage.gridTemplateColumns,
@@ -222,7 +225,7 @@ function EducationSummaryCard({ summary, isMobile, onOpenSection }) {
   const Icon = summary.icon;
   const latest = summary.latest;
   const period = latest
-    ? [latest.startDate ? latest.startDate.slice(0, 4) : "", latest.isCurrent ? "Presente" : latest.endDate ? latest.endDate.slice(0, 4) : ""]
+    ? [latest.startDate ? latest.startDate.slice(0, 4) : "", latest.isCurrent ? t("appI18n.portfolio.detail.present") : latest.endDate ? latest.endDate.slice(0, 4) : ""]
         .filter(Boolean)
         .join(" - ")
     : "";
@@ -334,9 +337,12 @@ function EducationSummaryCard({ summary, isMobile, onOpenSection }) {
 }
 
 function RecentHighlight({ highlight, index, onOpenSection }) {
+  const { t } = useTranslation();
   const [hovered, setHovered] = useState(false);
   const Icon = highlight.icon;
   const hasLatest = Boolean(highlight.latestTitle);
+  const sectionTitle = t(`appI18n.portfolio.sections.${highlight.key}.title`, highlight.title);
+  const singular = t(`appI18n.portfolio.sections.${highlight.key}.singular`, highlight.singular);
 
   return (
     <button
@@ -388,7 +394,7 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
             color: "var(--muted)",
           }}
         >
-          {hasLatest ? `Ultimo ${highlight.singular}` : `Estacion 0${index + 1}`}
+          {hasLatest ? t("appI18n.portfolio.overview.latest", { item: singular }) : t("appI18n.portfolio.overview.station", { number: index + 1 })}
         </span>
         <span
           style={{
@@ -401,7 +407,7 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
             whiteSpace: "nowrap",
           }}
         >
-          {hasLatest ? highlight.latestTitle : `Agrega tu primer ${highlight.singular}`}
+          {hasLatest ? highlight.latestTitle : t("appI18n.portfolio.overview.addFirst", { item: singular })}
         </span>
         <span
           style={{
@@ -413,7 +419,9 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
             whiteSpace: "nowrap",
           }}
         >
-          {hasLatest ? highlight.latestSubtitle || `${highlight.count} registros en ${highlight.title}` : "Aun no hay contenido en este modulo."}
+          {hasLatest
+            ? highlight.latestSubtitle || t("appI18n.portfolio.overview.recordsIn", { count: highlight.count, section: sectionTitle })
+            : t("appI18n.portfolio.overview.noContent")}
         </span>
       </span>
 
@@ -437,10 +445,13 @@ function RecentHighlight({ highlight, index, onOpenSection }) {
 }
 
 function OverviewCard({ cardData, index, isMobile, onOpenSection }) {
+  const { t } = useTranslation();
   const [hovered, setHovered] = useState(false);
-  const { key, title: heading, icon: Icon, color, description: text, count } = cardData;
+  const { key, icon: Icon, color, count } = cardData;
+  const heading = t(`appI18n.portfolio.sections.${key}.title`, cardData.title);
+  const text = t(`appI18n.portfolio.sections.${key}.description`, cardData.description);
   const completionSignal = Math.min(100, Math.max(18, count ? 42 + count * 12 : 18));
-  const microStatus = count ? "En orbita" : "Sin despegar";
+  const microStatus = count ? t("appI18n.portfolio.overview.inOrbit") : t("appI18n.portfolio.overview.notStarted");
 
   return (
     <button
@@ -520,13 +531,13 @@ function OverviewCard({ cardData, index, isMobile, onOpenSection }) {
               color: "var(--muted)",
             }}
           >
-            estacion 0{index + 1}
+            {t("appI18n.portfolio.overview.station", { number: index + 1 })}
           </span>
         </div>
 
         <span style={portfolioCountPill}>
           <Orbit size={13} />
-          {count} {count === 1 ? "item" : "items"}
+          {t(count === 1 ? "appI18n.portfolio.overview.item" : "appI18n.portfolio.overview.items", { count })}
         </span>
       </div>
 

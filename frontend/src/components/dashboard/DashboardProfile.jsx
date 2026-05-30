@@ -414,13 +414,13 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     try {
       await createCommentReport(pendingReportComment.id, payload);
       setPendingReportComment(null);
-      setShareMessage("Reporte enviado al equipo de administracion");
+      setShareMessage(t("appI18n.profile.messages.reportSent"));
     } catch (err) {
-      setCommentReportError(err.message || "No se pudo enviar el reporte de comentario.");
+      setCommentReportError(err.message || t("appI18n.profile.errors.commentReport"));
     } finally {
       setCommentReportBusyId(null);
     }
-  }, [commentReportBusyId, pendingReportComment]);
+  }, [commentReportBusyId, pendingReportComment, t]);
 
   /* function tryParseCache(key) {
     try {
@@ -528,7 +528,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
       } catch (loadError) {
         if (cancelled) return;
         if (!dashboardProfileViewCache.value) {
-          setError(loadError.message || "No se pudo cargar el perfil.");
+          setError(loadError.message || t("appI18n.profile.errors.loadProfile"));
         }
       } finally {
         setLoading(false);
@@ -564,6 +564,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     isPublicProfile,
     profileLoadAttempt,
     readOnly,
+    t,
     userId,
   ]);
 
@@ -688,7 +689,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
       setProfilePosts(previousPosts);
       setSharedProjectIds(previousProjectIds);
       setSharedExperienceIds(previousExperienceIds);
-      setShareMessage(shareError.message || "No se pudo dejar de compartir");
+      setShareMessage(shareError.message || t("appI18n.profile.errors.unshare"));
       setTimeout(() => setShareMessage(""), 2200);
     } finally {
       setUnsharingPublicationId(null);
@@ -730,30 +731,16 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
   const publicUrl = `${window.location.origin}/perfil-profesional${userId ? `?usuario=${userId}` : ""}`;
   const showContact = !isPublicProfile || isContactPublic(shownProfile);
   const profileCopy = {
-    bioFallback: isPublicProfile
-      ? "Este perfil aun no tiene una biografia publica."
-      : "Agrega una biografia para enriquecer tu perfil publico.",
-    linksEmpty: isPublicProfile
-      ? "Este perfil aun no muestra enlaces profesionales."
-      : "Aun no agregaste enlaces profesionales.",
-    skillsEmpty: isPublicProfile
-      ? "Este perfil aun no muestra habilidades."
-      : "Aun no registraste habilidades.",
-    educationEmpty: isPublicProfile
-      ? "Este perfil aun no muestra formacion profesional."
-      : "Aun no registraste formacion profesional.",
-    projectsEmptyTitle: isPublicProfile ? "Aun no hay proyectos" : "Aun no tienes proyectos",
-    projectsEmptyText: isPublicProfile
-      ? "Cuando este perfil publique proyectos en su portafolio se mostraran aqui."
-      : "Cuando cargues proyectos en portafolio se mostraran aqui.",
-    experienceEmptyTitle: isPublicProfile ? "Aun no hay experiencia" : "Aun no tienes experiencia",
-    experienceEmptyText: isPublicProfile
-      ? "Cuando este perfil agregue experiencia profesional se mostrara aqui."
-      : "Tu experiencia cargada desde portafolio se vera aqui.",
-    feedEmptyTitle: isPublicProfile ? "La vitrina esta vacia" : "Tu vitrina esta vacia",
-    feedEmptyText: isPublicProfile
-      ? "Cuando este perfil comparta proyectos o experiencias apareceran aqui y en el feed."
-      : "Comparte un proyecto o experiencia para mostrarlo en tu perfil y en el feed.",
+    bioFallback: t(`appI18n.profile.empty.bio.${isPublicProfile ? "public" : "own"}`),
+    linksEmpty: t(`appI18n.profile.empty.links.${isPublicProfile ? "public" : "own"}`),
+    skillsEmpty: t(`appI18n.profile.empty.skills.${isPublicProfile ? "public" : "own"}`),
+    educationEmpty: t(`appI18n.profile.empty.education.${isPublicProfile ? "public" : "own"}`),
+    projectsEmptyTitle: t(`appI18n.profile.empty.projectsTitle.${isPublicProfile ? "public" : "own"}`),
+    projectsEmptyText: t(`appI18n.profile.empty.projectsText.${isPublicProfile ? "public" : "own"}`),
+    experienceEmptyTitle: t(`appI18n.profile.empty.experienceTitle.${isPublicProfile ? "public" : "own"}`),
+    experienceEmptyText: t(`appI18n.profile.empty.experienceText.${isPublicProfile ? "public" : "own"}`),
+    feedEmptyTitle: t(`appI18n.profile.empty.feedTitle.${isPublicProfile ? "public" : "own"}`),
+    feedEmptyText: t(`appI18n.profile.empty.feedText.${isPublicProfile ? "public" : "own"}`),
   };
 
   const resetEditState = () => {
@@ -784,7 +771,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setFormError("Selecciona una imagen valida.");
+      setFormError(t("appI18n.profile.errors.invalidImage"));
       event.target.value = "";
       return;
     }
@@ -863,7 +850,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
       setSaveMessage("Perfil actualizado correctamente.");
       setTimeout(() => setSaveMessage(""), 2200);
     } catch (saveError) {
-      setFormError(saveError.message || "No se pudo actualizar el perfil.");
+      setFormError(saveError.message || t("appI18n.profile.errors.updateProfile"));
     } finally {
       setSaving(false);
     }
@@ -875,7 +862,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
       setShareMessage("Enlace copiado");
       setTimeout(() => setShareMessage(""), 1600);
     } catch {
-      setShareMessage("No se pudo copiar");
+      setShareMessage(t("appI18n.profile.errors.copy"));
       setTimeout(() => setShareMessage(""), 1600);
     }
   };
@@ -892,7 +879,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
       const payload = await fetchRelations(targetUserId, type);
       setRelations(payload.items || []);
     } catch (err) {
-      setRelationError(err.message || "No se pudo cargar la lista.");
+      setRelationError(err.message || t("appI18n.profile.errors.loadList"));
       setRelations([]);
     } finally {
       setRelationsLoading(false);
@@ -972,7 +959,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     } catch (err) {
       setFollowState({ isFollowing: false, busy: false });
       updateProfileFollowMetrics(false);
-      setProfileFollowError(err.message || "No se pudo seguir este perfil.");
+      setProfileFollowError(err.message || t("appI18n.profile.errors.followProfile"));
     }
   };
 
@@ -993,7 +980,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     } catch (err) {
       setFollowState({ isFollowing: true, busy: false });
       updateProfileFollowMetrics(true);
-      setProfileFollowError(err.message || "No se pudo dejar de seguir este perfil.");
+      setProfileFollowError(err.message || t("appI18n.profile.errors.unfollowProfile"));
     }
   };
 
@@ -1014,7 +1001,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
       ));
       setPendingUnfollowUser(null);
     } catch (err) {
-      setRelationError(err.message || "No se pudo dejar de seguir.");
+      setRelationError(err.message || t("appI18n.profile.errors.unfollow"));
     } finally {
       setRelationBusy(false);
     }
@@ -1027,10 +1014,10 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     try {
       await createProfileReport(userId, payload);
       setReportProfileOpen(false);
-      setShareMessage("Reporte enviado al equipo de administracion");
+      setShareMessage(t("appI18n.profile.messages.reportSent"));
       setTimeout(() => setShareMessage(""), 1800);
     } catch (err) {
-      setReportError(err.message || "No se pudo enviar el reporte.");
+      setReportError(err.message || t("appI18n.profile.errors.report"));
     } finally {
       setReportBusy(false);
     }
@@ -1086,10 +1073,10 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
       if (post) {
         setProfilePosts((prev) => upsertPublication(prev, post));
       }
-      setShareMessage("Proyecto compartido en el feed");
+      setShareMessage(t("appI18n.profile.messages.projectShared"));
       setTimeout(() => setShareMessage(""), 1800);
     } catch (shareError) {
-      setShareMessage(shareError.message || "No se pudo compartir el proyecto");
+      setShareMessage(shareError.message || t("appI18n.profile.errors.shareProject"));
       setTimeout(() => setShareMessage(""), 2200);
     } finally {
       setSharingProjectId("");
@@ -1119,11 +1106,11 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
       if (post) {
         setProfilePosts((prev) => upsertPublication(prev, post));
       }
-      setShareMessage("Experiencia compartida en el feed");
+      setShareMessage(t("appI18n.profile.messages.experienceShared"));
       setTimeout(() => setShareMessage(""), 1800);
     } catch (shareError) {
       setShareMessage(
-        shareError.message || "No se pudo compartir la experiencia",
+        shareError.message || t("appI18n.profile.errors.shareExperience"),
       );
       setTimeout(() => setShareMessage(""), 2200);
     } finally {
@@ -1393,8 +1380,8 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
               >
                 {sectionLoading.projects && !projects.length ? (
                   <StateBox
-                    title="Cargando proyectos..."
-                    text="Traemos solo esta seccion para mantener el perfil liviano."
+                    title={t("appI18n.profile.loadingSections.projectsTitle")}
+                    text={t("appI18n.profile.loadingSections.projectsText")}
                   />
                 ) : null}
                 {projects.length ? (
@@ -1422,8 +1409,8 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
               <div style={{ display: "grid", gap: 18 }}>
                 {sectionLoading.experience && !experience.length ? (
                   <StateBox
-                    title="Cargando experiencia..."
-                    text="Esta pestaña se carga bajo demanda para no hacer pesado el perfil."
+                    title={t("appI18n.profile.loadingSections.experienceTitle")}
+                    text={t("appI18n.profile.loadingSections.experienceText")}
                   />
                 ) : null}
                 {experience.length ? (
@@ -1451,8 +1438,8 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
               <div style={{ display: "grid", gap: 14 }}>
                 {sectionLoading.feed && !profilePosts.length ? (
                   <StateBox
-                    title="Cargando vitrina..."
-                    text="Revisando el contenido que compartiste."
+                    title={t("appI18n.profile.loadingSections.showcaseTitle")}
+                    text={t("appI18n.profile.loadingSections.showcaseText")}
                   />
                 ) : null}
                 {profilePosts.length ? (
@@ -1516,27 +1503,30 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
                 }}
               >
                 <SummaryCard
-                  title="Fortalezas"
+                  title={t("appI18n.profile.summary.strengths")}
                   text={
                     skills.length
-                      ? `${skills.length} habilidades registradas en ${Object.keys(groupedSkills).length} categorias.`
-                      : "Aun no registraste habilidades."
+                      ? t("appI18n.profile.summary.strengthsText", {
+                          skills: skills.length,
+                          categories: Object.keys(groupedSkills).length,
+                        })
+                      : t("appI18n.profile.summary.noSkills")
                   }
                 />
                 <SummaryCard
-                  title="Portafolio"
+                  title={t("appI18n.profile.summary.portfolio")}
                   text={
                     projects.length
-                      ? `${projects.length} proyectos ya fortalecen tu presentacion profesional.`
-                      : "Tu portafolio aun no tiene proyectos visibles."
+                      ? t("appI18n.profile.summary.portfolioText", { count: projects.length })
+                      : t("appI18n.profile.summary.noProjects")
                   }
                 />
                 <SummaryCard
-                  title="Trayectoria"
+                  title={t("appI18n.profile.summary.path")}
                   text={
                     experience.length
-                      ? `${experience.length} experiencias ayudan a contar mejor tu recorrido.`
-                      : "Todavia no registraste experiencia para esta vista."
+                      ? t("appI18n.profile.summary.pathText", { count: experience.length })
+                      : t("appI18n.profile.summary.noExperience")
                   }
                 />
               </div>
@@ -1548,9 +1538,9 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
 
       {pendingUnsharePost ? (
         <ConfirmModal
-          title="Dejar de compartir"
-          description="Este contenido se retirara del feed y de tu vitrina. El proyecto o experiencia original seguira guardado en tu portafolio."
-          confirmLabel="Dejar de compartir"
+          title={t("appI18n.profile.unshare.title")}
+          description={t("appI18n.profile.unshare.description")}
+          confirmLabel={t("appI18n.profile.unshare.confirm")}
           tone="danger"
           onCancel={() => setPendingUnsharePost(null)}
           onConfirm={() => unsharePublication(pendingUnsharePost)}
@@ -1560,7 +1550,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
 
       {relationModal ? (
         <RelationListModal
-          title={relationModal === "followers" ? "Seguidores" : "Seguidos"}
+          title={relationModal === "followers" ? t("appI18n.profile.relations.followers") : t("appI18n.profile.relations.following")}
           type={relationModal}
           readonly={!canEdit}
           loading={relationsLoading}

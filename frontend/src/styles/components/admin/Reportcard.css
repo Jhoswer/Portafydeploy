@@ -1,7 +1,6 @@
 /* ============================================================
    src/styles/components/admin/reportCard.css
    Estilos de la tarjeta individual de reporte.
-   Sigue el patrón de .search-card y .ex-card del sistema.
    ============================================================ */
 
 /* ── Tarjeta ── */
@@ -44,9 +43,9 @@
   display: block;
 }
 
-.report-avatar--critico  { background: #c62525; }
+.report-avatar--critico   { background: #c62525; }
 .report-avatar--pendiente { background: #b45309; }
-.report-avatar--abierto  { background: #1d4ed8; }
+.report-avatar--abierto   { background: #1d4ed8; }
 
 /* ── Cuerpo ── */
 .rp-card__body {
@@ -126,7 +125,8 @@
   border: 1.5px solid var(--color-border, #d0d9e8);
   background: transparent;
   cursor: pointer;
-  transition: background var(--ease, 0.15s), border-color var(--ease, 0.15s), color var(--ease, 0.15s);
+  transition: background var(--ease, 0.15s), border-color var(--ease, 0.15s),
+    color var(--ease, 0.15s);
 }
 
 .rp-btn--open {
@@ -162,7 +162,7 @@
   color: #fff;
 }
 
-/* ── Responsive: Pantallas pequeñas (1024px) ──────────────── */
+/* ── Responsive ── */
 @media (max-width: 1024px) {
   .rp-card {
     gap: 10px;
@@ -175,17 +175,9 @@
     font-size: 12px;
   }
 
-  .rp-card__title {
-    font-size: 13px;
-  }
-
-  .rp-card__desc {
-    font-size: 12px;
-  }
-
-  .rp-card__meta {
-    font-size: 11px;
-  }
+  .rp-card__title { font-size: 13px; }
+  .rp-card__desc  { font-size: 12px; }
+  .rp-card__meta  { font-size: 11px; }
 
   .rp-btn {
     font-size: 11px;
@@ -193,7 +185,6 @@
   }
 }
 
-/* ── Responsive: Tablets (768px) ──────────────────────────── */
 @media (max-width: 768px) {
   .rp-card {
     gap: 8px;
@@ -215,4 +206,90 @@
     font-size: 10px;
     padding: 3px 8px;
   }
+}
+
+/* ============================================================
+   DARK MODE
+   Patrón: html.dark .clase { ... }
+   ============================================================ */
+
+/* ── Tarjeta ── */
+html.dark .rp-card {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+html.dark .rp-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Textos ── */
+html.dark .rp-card__title { color: #f1f5f9; }
+html.dark .rp-card__meta  { color: #475569; }
+html.dark .rp-card__desc  { color: #94a3b8; }
+
+/* ── Badges ── */
+html.dark .badge--critico {
+  background: rgba(198, 37, 37, 0.18);
+  color: #fca5a5;
+}
+
+html.dark .badge--pendiente {
+  background: rgba(180, 83, 9, 0.18);
+  color: #fcd34d;
+}
+
+html.dark .badge--abierto {
+  background: rgba(29, 78, 216, 0.18);
+  color: #93c5fd;
+}
+
+html.dark .rp-badge--gray {
+  background: rgba(51, 65, 85, 0.60);
+  color: #94a3b8;
+}
+
+html.dark .rp-badge--open {
+  background: rgba(6, 95, 70, 0.22);
+  color: #6ee7b7;
+}
+
+/* ── Botones ── */
+html.dark .rp-btn {
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+html.dark .rp-btn--open {
+  color: #93c5fd;
+  border-color: #334155;
+}
+
+html.dark .rp-btn--open:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
+
+html.dark .rp-btn--ignore {
+  color: #64748b;
+  border-color: #334155;
+}
+
+html.dark .rp-btn--ignore:hover {
+  background: #334155;
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
+html.dark .rp-btn--delete {
+  color: #f87171;
+  border-color: rgba(198, 37, 37, 0.40);
+}
+
+html.dark .rp-btn--delete:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #fff;
 }

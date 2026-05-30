@@ -133,3 +133,68 @@
     width: 100%;
   }
 }
+
+/* ============================================================
+   DARK MODE
+   Patrón: html.dark .clase { ... }
+   ============================================================ */
+
+/* ── Backdrop ── */
+html.dark .adm-report-modal__backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+/* ── Modal ── */
+html.dark .adm-report-modal {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.50);
+}
+
+/* ── Botón cerrar ── */
+html.dark .adm-report-modal__close {
+  background: rgba(51, 65, 85, 0.60);
+  color: #94a3b8;
+}
+
+html.dark .adm-report-modal__close:hover:not(:disabled) {
+  background: rgba(51, 65, 85, 0.90);
+  color: #f1f5f9;
+}
+
+/* ── Ícono (colores inyectados inline en el JSX;
+   aquí sólo se adapta el fallback del CSS base) ── */
+html.dark .adm-report-modal__icon {
+  background: linear-gradient(135deg, rgba(180, 83, 9, 0.18) 0%, rgba(251, 191, 36, 0.12) 100%);
+  color: #fbbf24;
+}
+
+/* ── Textos ── */
+html.dark .adm-report-modal__title        { color: #f1f5f9; }
+html.dark .adm-report-modal__text         { color: #94a3b8; }
+html.dark .adm-report-modal__text--secondary { color: #475569; }
+
+/* ── Error ── */
+html.dark .adm-report-modal__error {
+  background: rgba(190, 18, 60, 0.14);
+  color: #fda4af;
+}
+
+/* ── Botón ghost ── */
+html.dark .adm-report-modal__button--ghost {
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border-color: #334155;
+}
+
+html.dark .adm-report-modal__button--ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: #475569;
+  color: #f1f5f9;
+}
+
+/* ── Botón danger ── */
+html.dark .adm-report-modal__button--danger {
+  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+  box-shadow: 0 14px 28px rgba(185, 28, 28, 0.30);
+}

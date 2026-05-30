@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 export function FeedPublicationMedia({ post }) {
   if (post.sourceType === "experience") {
     return <ExperienceMedia post={post} />;
@@ -7,6 +9,7 @@ export function FeedPublicationMedia({ post }) {
 }
 
 function ProjectMedia({ post }) {
+  const { t } = useTranslation();
   if (post.image) {
     return (
       <div
@@ -24,19 +27,20 @@ function ProjectMedia({ post }) {
   return (
     <div className="project-cover-fallback">
       <div className="project-cover-fallback__mark">{(post.project?.title || "P").slice(0, 1)}</div>
-      <div className="project-cover-fallback__title">{post.project?.title || "Proyecto de portafolio"}</div>
+      <div className="project-cover-fallback__title">{post.project?.title || t("appI18n.feed.post.portfolioProject")}</div>
     </div>
   );
 }
 
 function ExperienceMedia({ post }) {
+  const { t } = useTranslation();
   const experience = post.experience || {};
 
   return (
     <div className="dash-mockup" style={{ padding: 22 }}>
       <div style={{ display: "grid", gap: 10 }}>
-        <div style={{ fontWeight: 900, color: "#0f172a", fontSize: 20 }}>{experience.title || "Trayectoria destacada"}</div>
-        <div style={{ color: "#475569", fontWeight: 700 }}>{experience.company || "Empresa / organizacion"}</div>
+        <div style={{ fontWeight: 900, color: "#0f172a", fontSize: 20 }}>{experience.title || t("appI18n.feed.post.professionalTrajectory")}</div>
+        <div style={{ color: "#475569", fontWeight: 700 }}>{experience.company || t("appI18n.feed.post.noOrganization")}</div>
       </div>
     </div>
   );

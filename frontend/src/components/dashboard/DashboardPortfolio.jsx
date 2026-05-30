@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import PortfolioOverview from "./portfolio/PortfolioOverview";
 import PortfolioWorkspace from "./portfolio/PortfolioWorkspace";
 import {
@@ -20,7 +21,7 @@ import { getItemSubtitle, getItemTitle } from "../../features/dashboard-portfoli
 const MAX_PROJECT_COVER_SIZE_BYTES = 2 * 1024 * 1024;
 const PORTFOLIO_UPDATED_EVENT = "portfolio:updated";
 const MAIN_SECTION_KEYS = ["experience", "projects", "social", "skills"];
-const SAFE_EDUCATION_TEXT = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,:&()\/'-]+$/;
+const SAFE_EDUCATION_TEXT = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,:&()/'-]+$/;
 const SAFE_INSTITUTION_TEXT = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,&()'-]+$/;
 
 function isBlank(value) {
@@ -29,68 +30,69 @@ function isBlank(value) {
   return !value;
 }
 
-function validateSectionDraft(sectionKey, draft) {
+function validateSectionDraft(sectionKey, draft, t) {
   const errors = {};
 
   if (sectionKey === "experience") {
-    if (isBlank(draft.type)) errors.type = "Selecciona el tipo de experiencia.";
-    if (isBlank(draft.roleArea)) errors.roleArea = "Selecciona el area.";
-    if (isBlank(draft.title)) errors.title = "Completa el cargo.";
-    if (isBlank(draft.company)) errors.company = "Completa la empresa o institucion.";
-    if (isBlank(draft.description)) errors.description = "Agrega una descripcion breve.";
-    if (isBlank(draft.startDate)) errors.startDate = "Selecciona la fecha de inicio.";
-    if (!draft.isCurrent && isBlank(draft.endDate)) errors.endDate = "Selecciona la fecha de fin o marca que sigues ahi.";
+    if (isBlank(draft.type)) errors.type = t("appI18n.portfolio.validation.experienceType");
+    if (isBlank(draft.roleArea)) errors.roleArea = t("appI18n.portfolio.validation.area");
+    if (isBlank(draft.title)) errors.title = t("appI18n.portfolio.validation.role");
+    if (isBlank(draft.company)) errors.company = t("appI18n.portfolio.validation.company");
+    if (isBlank(draft.description)) errors.description = t("appI18n.portfolio.validation.description");
+    if (isBlank(draft.startDate)) errors.startDate = t("appI18n.portfolio.validation.startDate");
+    if (!draft.isCurrent && isBlank(draft.endDate)) errors.endDate = t("appI18n.portfolio.validation.endDate");
   }
 
   if (sectionKey === "projects") {
-    if (isBlank(draft.title)) errors.title = "Completa el titulo del proyecto.";
-    if (isBlank(draft.description)) errors.description = "Agrega una descripcion breve del proyecto.";
-    if (isBlank(draft.techCategory)) errors.techCategory = "Selecciona una categoria tecnica.";
-    if (isBlank(draft.tags)) errors.tags = "Agrega al menos una tecnologia.";
-    if (isBlank(draft.status)) errors.status = "Selecciona el estado del proyecto.";
+    if (isBlank(draft.title)) errors.title = t("appI18n.portfolio.validation.projectTitle");
+    if (isBlank(draft.description)) errors.description = t("appI18n.portfolio.validation.projectDescription");
+    if (isBlank(draft.techCategory)) errors.techCategory = t("appI18n.portfolio.validation.techCategory");
+    if (isBlank(draft.tags)) errors.tags = t("appI18n.portfolio.validation.tags");
+    if (isBlank(draft.status)) errors.status = t("appI18n.portfolio.validation.projectStatus");
     if (draft.cover instanceof File) {
       if (!draft.cover.type.startsWith("image/")) {
-        errors.cover = "La portada debe ser una imagen valida.";
+        errors.cover = t("appI18n.portfolio.validation.coverType");
       } else if (draft.cover.size > MAX_PROJECT_COVER_SIZE_BYTES) {
-        errors.cover = "La portada no debe superar 2 MB.";
+        errors.cover = t("appI18n.portfolio.validation.coverSize");
       }
     }
   }
 
   if (sectionKey === "skills") {
-    if (isBlank(draft.category)) errors.category = "Selecciona una categoria.";
-    if (isBlank(draft.name)) errors.name = "Selecciona o escribe una habilidad.";
-    if (isBlank(draft.level)) errors.level = "Selecciona el nivel.";
+    if (isBlank(draft.category)) errors.category = t("appI18n.portfolio.validation.category");
+    if (isBlank(draft.name)) errors.name = t("appI18n.portfolio.validation.skill");
+    if (isBlank(draft.level)) errors.level = t("appI18n.portfolio.validation.level");
   }
 
   if (sectionKey === "social") {
-    if (isBlank(draft.platform)) errors.platform = "Selecciona o escribe una plataforma.";
-    if (isBlank(draft.url)) errors.url = "Completa la URL del enlace.";
+    if (isBlank(draft.platform)) errors.platform = t("appI18n.portfolio.validation.platform");
+    if (isBlank(draft.url)) errors.url = t("appI18n.portfolio.validation.url");
   }
 
   if (sectionKey === "education") {
-    if (isBlank(draft.level)) errors.level = "Selecciona el tipo de formacion.";
-    if (isBlank(draft.program)) errors.program = "Completa el programa o carrera.";
-    if (!isBlank(draft.program) && draft.program.length > 140) errors.program = "Maximo 140 caracteres.";
-    if (!isBlank(draft.program) && !SAFE_EDUCATION_TEXT.test(draft.program)) errors.program = "Usa solo letras, numeros y signos basicos.";
-    if (isBlank(draft.institution)) errors.institution = "Completa la institucion.";
-    if (!isBlank(draft.institution) && draft.institution.length > 120) errors.institution = "Maximo 120 caracteres.";
-    if (!isBlank(draft.institution) && !SAFE_INSTITUTION_TEXT.test(draft.institution)) errors.institution = "La institucion contiene caracteres no validos.";
-    if (isBlank(draft.startDate)) errors.startDate = "Selecciona la fecha de inicio.";
-    if (!draft.isCurrent && isBlank(draft.endDate)) errors.endDate = "Selecciona la fecha de fin o marca que sigue vigente.";
+    if (isBlank(draft.level)) errors.level = t("appI18n.portfolio.validation.educationLevel");
+    if (isBlank(draft.program)) errors.program = t("appI18n.portfolio.validation.program");
+    if (!isBlank(draft.program) && draft.program.length > 140) errors.program = t("appI18n.portfolio.validation.max140");
+    if (!isBlank(draft.program) && !SAFE_EDUCATION_TEXT.test(draft.program)) errors.program = t("appI18n.portfolio.validation.safeText");
+    if (isBlank(draft.institution)) errors.institution = t("appI18n.portfolio.validation.institution");
+    if (!isBlank(draft.institution) && draft.institution.length > 120) errors.institution = t("appI18n.portfolio.validation.max120");
+    if (!isBlank(draft.institution) && !SAFE_INSTITUTION_TEXT.test(draft.institution)) errors.institution = t("appI18n.portfolio.validation.safeInstitution");
+    if (isBlank(draft.startDate)) errors.startDate = t("appI18n.portfolio.validation.startDate");
+    if (!draft.isCurrent && isBlank(draft.endDate)) errors.endDate = t("appI18n.portfolio.validation.endDateCurrent");
     if (draft.startDate && draft.endDate && !draft.isCurrent && draft.endDate < draft.startDate) {
-      errors.endDate = "La fecha de fin no puede ser anterior al inicio.";
+      errors.endDate = t("appI18n.portfolio.validation.dateOrder");
     }
   }
 
   if (Object.keys(errors).length > 0) {
-    errors._form = "Faltan campos obligatorios por completar.";
+    errors._form = t("appI18n.portfolio.validation.form");
   }
 
   return errors;
 }
 
 export default function DashboardPortfolio() {
+  const { t } = useTranslation();
   const [itemsBySection, setItemsBySection] = useState(INITIAL_ITEMS);
   const [extraBySection, setExtraBySection] = useState(INITIAL_EXTRA_BY_SECTION);
   const [activeSection, setActiveSection] = useState(null);
@@ -132,7 +134,7 @@ export default function DashboardPortfolio() {
         setFieldErrors({});
       } catch {
         if (!cancelled) {
-          setLoadError("No se pudo cargar el portafolio en este momento.");
+          setLoadError(t("appI18n.portfolio.loadError"));
         }
       } finally {
         if (!cancelled) {
@@ -146,7 +148,7 @@ export default function DashboardPortfolio() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   const activeMeta = activeSection ? SECTION_META[activeSection] : null;
   const activeItems = activeSection ? itemsBySection[activeSection] : [];
@@ -194,10 +196,10 @@ export default function DashboardPortfolio() {
           icon: section.icon,
           count: itemsBySection[section.key]?.length ?? 0,
           latestTitle: latestItem ? getItemTitle(section.key, latestItem) : "",
-          latestSubtitle: latestItem ? getItemSubtitle(section.key, latestItem) : "",
+          latestSubtitle: latestItem ? getItemSubtitle(section.key, latestItem, t) : "",
         };
       }),
-    [itemsBySection]
+    [itemsBySection, t]
   );
 
   const openSection = (sectionKey) => {
@@ -249,9 +251,11 @@ export default function DashboardPortfolio() {
     setConfirmState({
       kind: "delete",
       itemId,
-      title: "Eliminar registro",
-      description: `Se eliminara ${target ? `"${target.title ?? target.name ?? target.platform ?? target.program}"` : "este registro"}. Esta accion no se puede deshacer.`,
-      confirmLabel: "Si, eliminar",
+      title: t("appI18n.portfolio.deleteTitle"),
+      description: t("appI18n.portfolio.deleteDescription", {
+        item: target ? `"${target.title ?? target.name ?? target.platform ?? target.program}"` : t("appI18n.portfolio.deleteFallback"),
+      }),
+      confirmLabel: t("appI18n.portfolio.deleteConfirm"),
     });
   };
 
@@ -311,8 +315,8 @@ export default function DashboardPortfolio() {
       setFieldErrors(nextErrors);
       setLoadError(
         Object.keys(nextErrors).length
-          ? "Corrige los campos marcados para continuar."
-          : error.message || "No se pudo guardar el registro en este momento."
+          ? t("appI18n.portfolio.fixFields")
+          : error.message || t("appI18n.portfolio.saveError")
       );
     } finally {
       setIsSyncing(false);
@@ -322,7 +326,7 @@ export default function DashboardPortfolio() {
   const handleSave = async () => {
     if (isSyncing) return;
     const cleanDraft = buildCleanDraft();
-    const nextErrors = validateSectionDraft(activeSection, cleanDraft);
+    const nextErrors = validateSectionDraft(activeSection, cleanDraft, t);
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
       setLoadError("");
@@ -333,9 +337,9 @@ export default function DashboardPortfolio() {
       setConfirmState({
         kind: "edit",
         cleanDraft,
-        title: "Guardar cambios",
-        description: "Se actualizara este registro con la informacion del formulario. Confirma si deseas continuar.",
-        confirmLabel: "Si, guardar",
+        title: t("appI18n.portfolio.saveTitle"),
+        description: t("appI18n.portfolio.saveDescription"),
+        confirmLabel: t("appI18n.portfolio.saveConfirm"),
       });
       return;
     }
@@ -356,7 +360,7 @@ export default function DashboardPortfolio() {
         window.dispatchEvent(new CustomEvent(PORTFOLIO_UPDATED_EVENT));
         setFieldErrors({});
       } catch (error) {
-        setLoadError(error.message || "No se pudo eliminar el registro");
+        setLoadError(error.message || t("appI18n.portfolio.deleteError"));
       } finally {
         setIsSyncing(false);
       }
@@ -392,7 +396,7 @@ export default function DashboardPortfolio() {
       draft={draft}
       fieldErrors={fieldErrors}
       isBusy={isSyncing}
-      syncMessage={isSyncing ? "Sincronizando con la base de datos..." : loadError}
+      syncMessage={isSyncing ? t("appI18n.portfolio.syncingDb") : loadError}
       onBack={() => setActiveSection(null)}
       onCreate={() => {
         if (isSyncing) return;
