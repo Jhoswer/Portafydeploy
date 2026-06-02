@@ -23,12 +23,17 @@ class FormacionAcademica extends Model
         'id_university',
         'id_career',
         'id_profile',
+        'support_document_url',
+        'support_status',
+        'support_reviewed_at',
+        'support_rejection_reason',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
         'visibility' => 'boolean',
+        'support_reviewed_at' => 'datetime',
     ];
 
     protected $hidden = [
@@ -57,6 +62,10 @@ class FormacionAcademica extends Model
         'type',
         'is_current',
         'isCurrent',
+        'supportDocumentUrl',
+        'supportStatus',
+        'supportIsVerified',
+        'supportRejectionReason',
     ];
 
     public function profile()
@@ -149,5 +158,25 @@ class FormacionAcademica extends Model
     public function getIsCurrentCamelAttribute(): bool
     {
         return $this->actualmente;
+    }
+
+    public function getSupportDocumentUrlAttribute(): ?string
+    {
+        return $this->getRawOriginal('support_document_url');
+    }
+
+    public function getSupportStatusAttribute(): string
+    {
+        return $this->getRawOriginal('support_status') ?: 'none';
+    }
+
+    public function getSupportIsVerifiedAttribute(): bool
+    {
+        return ($this->getRawOriginal('support_status') ?: 'none') === 'approved';
+    }
+
+    public function getSupportRejectionReasonAttribute(): ?string
+    {
+        return $this->getRawOriginal('support_rejection_reason');
     }
 }

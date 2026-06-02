@@ -103,6 +103,30 @@
   min-width: 64px;
 }
 
+/* ── Toggle wrap (siempre visible) ────────────────────────── */
+.sidebar-toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  min-height: 32px;
+}
+
+.sidebar-left.recruiter.collapsed .sidebar-toggle-wrap {
+  justify-content: center;
+}
+
+.sidebar-toggle-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-muted-text);
+  white-space: nowrap;
+  overflow: hidden;
+  font-family: var(--font-ui);
+}
+
 /* ── Toggle button ────────────────────────────────────────── */
 .sidebar-toggle-btn {
   background: none;
@@ -121,19 +145,6 @@
 .sidebar-toggle-btn:hover {
   background: var(--color-bg-section-alt);
   color: var(--color-text);
-}
-
-/* ── Panel card title ─────────────────────────────────────── */
-.sidebar-left.recruiter .panel-card-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.sidebar-left.recruiter.collapsed .panel-card-title {
-  justify-content: center;
 }
 
 /* ── Section header ───────────────────────────────────────── */
@@ -301,6 +312,10 @@
     border-radius: 0;
   }
 
+  .sidebar-left.recruiter .sidebar-toggle-wrap {
+    display: none;
+  }
+
   .sidebar-left.recruiter .card {
     background: transparent;
     border: none;
@@ -382,11 +397,11 @@
    ============================================================ */
 
 .dark .card {
-  border-color: rgba(162, 214, 249, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
 .dark .card:hover {
-  border-color: rgba(162, 214, 249, 0.14);
+  border-color: rgba(255, 255, 255, 0.10) !important;
 }
 
 .dark .section-divider {
@@ -401,8 +416,43 @@
   background: rgba(232, 72, 74, 0.18);
 }
 
+.dark .sidebar-left.recruiter {
+  border-right-color: rgba(162, 214, 249, 0.08);
+}
+
 @media (max-width: 768px) {
   .dark .sidebar-left.recruiter {
     border-bottom-color: rgba(162, 214, 249, 0.08);
+  }
+}
+
+/* ── panel-card-title colapsado: centrar el botón ─────────── */
+.sidebar-left.recruiter .panel-card-title.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sidebar-left.recruiter.collapsed .panel-card-title.card-title {
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.sidebar-left.recruiter.collapsed .card-body {
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+@media (max-width: 768px) {
+  .page-recruiter .layoutrecruiter {
+    padding: 70px 0 80px;
+    flex-direction: column;
+    gap: 0;
   }
 }

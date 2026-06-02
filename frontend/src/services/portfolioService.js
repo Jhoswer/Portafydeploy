@@ -116,6 +116,10 @@ function mapValidationErrors(endpoint, errors) {
       fecha_inicio: "startDate",
       fecha_fin: "endDate",
       actualmente: "isCurrent",
+      support_document: "supportDocument",
+      respaldo: "supportDocument",
+      support: "supportDocument",
+      supportDocument: "supportDocument",
     },
   };
 
@@ -406,6 +410,10 @@ function mapEducation(item) {
     startDate: item?.fecha_inicio || "",
     endDate: item?.fecha_fin || "",
     isCurrent: Boolean(item?.actualmente || item?.isCurrent || !item?.fecha_fin),
+    supportDocumentUrl: item?.supportDocumentUrl || item?.support_document_url || "",
+    supportStatus: item?.supportStatus || item?.support_status || "none",
+    supportIsVerified: Boolean(item?.supportIsVerified || item?.support_is_verified || item?.support_status === "approved"),
+    supportRejectionReason: item?.supportRejectionReason || item?.support_rejection_reason || "",
   };
 }
 
@@ -420,7 +428,24 @@ function buildEducationPayload(draft) {
     fecha_fin: draft.isCurrent ? null : draft.endDate || null,
     actualmente: Boolean(draft.isCurrent),
     isCurrent: Boolean(draft.isCurrent),
+    remove_support_document: Boolean(draft.removeSupportDocument),
   };
+}
+
+function buildEducationBody(draft, methodOverride = "") {
+  const payload = buildEducationPayload(draft);
+
+  if (!(draft.supportDocument instanceof File)) {
+    return JSON.stringify(payload);
+  }
+
+  const formData = new FormData();
+  Object.entries(payload).forEach(([key, value]) => {
+    formData.append(key, value === null || value === undefined ? "" : value);
+  });
+  formData.append("support_document", draft.supportDocument);
+  if (methodOverride) formData.append("_method", methodOverride);
+  return formData;
 }
 
 export function normalizeOverviewPayload(data = {}) {
@@ -595,9 +620,10 @@ export async function createPortfolioItem(sectionKey, draft) {
 
   if (sectionKey === "education") {
     clearPortfolioOverviewCache();
+    const hasSupportDocument = draft.supportDocument instanceof File;
     const response = await request(endpoint, {
       method: "POST",
-      body: JSON.stringify(buildEducationPayload(draft)),
+      body: hasSupportDocument ? buildEducationBody(draft) : JSON.stringify(buildEducationPayload(draft)),
     });
     return mapEducation(response.formacion ?? response);
   }
@@ -674,9 +700,10 @@ export async function updatePortfolioItem(sectionKey, itemId, draft) {
 
   if (sectionKey === "education") {
     clearPortfolioOverviewCache();
-    const response = await request(`${endpoint}/${itemId}`, {
-      method: "PUT",
-      body: JSON.stringify(buildEducationPayload(draft)),
+    const hasSupportDocument = draft.supportDocument instanceof File;
+    const response = await request(endpoint, {
+      method: hasSupportDocument ? "POST" : "PUT",
+      body: hasSupportDocument ? buildEducationBody(draft, "PUT") : JSON.stringify(buildEducationPayload(draft)),
     });
     return mapEducation(response.formacion ?? response);
   }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, User, MapPin, Briefcase, Clock,
@@ -8,27 +9,34 @@ import {
 } from "lucide-react";
 import { buscarUsuariosHistorial } from "../../../services/adminService";
 
-const ROLES = [
-  { value: "",                    label: "Todos los roles" },
-  { value: "reclutador",          label: "Reclutador" },
-  { value: "profesional",         label: "Profesional" },
-  { value: "administrador",       label: "Administrador" },
-  { value: "super administrador", label: "Super Administrador" },
-];
-
-function getVisibleRoles(currentRoleId) {
-  const normalizedRoleId = Number(currentRoleId);
-  if (normalizedRoleId === 5) return ROLES;
-  return ROLES.filter((r) => r.value !== "administrador" && r.value !== "super administrador");
+function getRoles(t) {
+  return [
+    { value: "",                    label: t("historial.usuarios.roles.todos") },
+    { value: "reclutador",          label: t("historial.usuarios.roles.reclutador") },
+    { value: "profesional",         label: t("historial.usuarios.roles.profesional") },
+    { value: "administrador",       label: t("historial.usuarios.roles.administrador") },
+    { value: "super administrador", label: t("historial.usuarios.roles.super_administrador") },
+  ];
 }
 
-const ROL_CONFIG = {
-  "super administrador": { color: "#7c3aed", bg: "rgba(124,58,237,.10)", icon: <Star size={10} />,      label: "Super Admin" },
-  "administrador":       { color: "#ef5759", bg: "rgba(239,87,89,.10)",  icon: <Shield size={10} />,    label: "Admin"       },
-  "reclutador":          { color: "#0284c7", bg: "rgba(2,132,199,.10)",  icon: <Users size={10} />,     label: "Reclutador"  },
-  "profesional":         { color: "#059669", bg: "rgba(5,150,105,.10)",  icon: <Briefcase size={10} />, label: "Profesional" },
-};
-const ROL_DEFAULT = { color: "#64748b", bg: "rgba(100,116,139,.10)", icon: <UserCheck size={10} />, label: "Usuario" };
+function getVisibleRoles(roles, currentRoleId) {
+  const normalizedRoleId = Number(currentRoleId);
+  if (normalizedRoleId === 5) return roles;
+  return roles.filter((r) => r.value !== "administrador" && r.value !== "super administrador");
+}
+
+function getRolConfig(t) {
+  return {
+    "super administrador": { color: "#7c3aed", bg: "rgba(124,58,237,.10)", icon: <Star size={10} />,      label: t("historial.usuarios.rol_labels.super_admin") },
+    "administrador":       { color: "#ef5759", bg: "rgba(239,87,89,.10)",  icon: <Shield size={10} />,    label: t("historial.usuarios.rol_labels.admin") },
+    "reclutador":          { color: "#0284c7", bg: "rgba(2,132,199,.10)",  icon: <Users size={10} />,     label: t("historial.usuarios.rol_labels.reclutador") },
+    "profesional":         { color: "#059669", bg: "rgba(5,150,105,.10)",  icon: <Briefcase size={10} />, label: t("historial.usuarios.rol_labels.profesional") },
+  };
+}
+
+function getRolDefault(t) {
+  return { color: "#64748b", bg: "rgba(100,116,139,.10)", icon: <UserCheck size={10} />, label: t("historial.usuarios.rol_labels.usuario") };
+}
 
 function highlight(text, query) {
   if (!query || !text) return text;
@@ -47,6 +55,12 @@ async function buscarUsuarios({ query, rol }) {
 }
 
 export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, currentRoleId }) {
+  const { t } = useTranslation();
+
+  const ROLES = getRoles(t);
+  const ROL_CONFIG = getRolConfig(t);
+  const ROL_DEFAULT = getRolDefault(t);
+
   const [query,       setQuery]       = useState("");
   const [usuarios,    setUsuarios]    = useState([]);
   const [loading,     setLoading]     = useState(false);
@@ -55,10 +69,13 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
   const [showFiltros, setShowFiltros] = useState(false);
   const [rolFiltro,   setRolFiltro]   = useState("");
   const debounceRef   = useRef(null);
-  const visibleRoles  = getVisibleRoles(currentRoleId);
+  const visibleRoles  = getVisibleRoles(ROLES, currentRoleId);
 
   const filtrosActivos = [
-    rolFiltro && { label: `Rol: ${visibleRoles.find(r => r.value === rolFiltro)?.label ?? rolFiltro}`, clear: () => setRolFiltro("") },
+    rolFiltro && {
+      label: t("historial.usuarios.chip_rol", { rol: visibleRoles.find(r => r.value === rolFiltro)?.label ?? rolFiltro }),
+      clear: () => setRolFiltro(""),
+    },
   ].filter(Boolean);
 
   const limpiarTodo = () => setRolFiltro("");
@@ -73,7 +90,7 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
       setUsuarios(data);
       setSearched(true);
     } catch {
-      setError("No se pudo completar la búsqueda. Verifica tu conexión.");
+      setError(t("historial.usuarios.error_busqueda"));
     } finally {
       setLoading(false);
     }
@@ -89,6 +106,8 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
 
   const handleFiltrar = () => { clearTimeout(debounceRef.current); fetchUsuarios(query); };
 
+  const resultCount = usuarios.length;
+
   return (
     <div className="hu-root">
 
@@ -98,8 +117,8 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           <Clock size={20} color="white" />
         </div>
         <div>
-          <h2 className="hu-header__title">Historial de usuarios</h2>
-          <p className="hu-header__subtitle">Busca usuarios para inspeccionar su información</p>
+          <h2 className="hu-header__title">{t("historial.usuarios.header_title")}</h2>
+          <p className="hu-header__subtitle">{t("historial.usuarios.header_subtitle")}</p>
         </div>
       </div>
 
@@ -112,7 +131,7 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleFiltrar()}
-            placeholder="Nombre, apellido o correo electrónico..."
+            placeholder={t("historial.usuarios.search_placeholder")}
             className="hu-searchbar__input"
           />
           {loading && <Loader2 size={15} className="hu-searchbar__loader" />}
@@ -131,7 +150,7 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           className={`hu-btn hu-btn--filter${showFiltros ? " hu-btn--filter-active" : ""}`}
         >
           <SlidersHorizontal size={14} />
-          Filtros
+          {t("historial.usuarios.btn_filtros")}
           {filtrosActivos.length > 0 && (
             <span className="hu-btn__badge">{filtrosActivos.length}</span>
           )}
@@ -143,7 +162,7 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           className="hu-btn hu-btn--search"
         >
           <Filter size={14} />
-          Buscar
+          {t("historial.usuarios.btn_buscar")}
         </button>
       </div>
 
@@ -159,16 +178,16 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           >
             <div className="hu-filters-card">
               <div className="hu-filters-card__head">
-                <span className="hu-filters-card__label">Filtros</span>
+                <span className="hu-filters-card__label">{t("historial.usuarios.filtros_title")}</span>
                 {filtrosActivos.length > 0 && (
                   <button onClick={limpiarTodo} className="hu-filters-card__clear">
-                    <RotateCcw size={11} /> Limpiar todo
+                    <RotateCcw size={11} /> {t("historial.usuarios.filtros_limpiar")}
                   </button>
                 )}
               </div>
               <div className="hu-filters-card__grid">
                 <div className="hu-filter-field">
-                  <label className="hu-filter-field__label">Rol</label>
+                  <label className="hu-filter-field__label">{t("historial.usuarios.filtro_rol_label")}</label>
                   <div className="hu-filter-field__select-wrap">
                     <select
                       value={rolFiltro}
@@ -230,8 +249,8 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
               <div className="hu-state__icon hu-state__icon--neutral">
                 <Search size={26} color="var(--muted, #94a3b8)" />
               </div>
-              <p className="hu-state__title">Busca un usuario</p>
-              <p className="hu-state__text">Ingresa un nombre, apellido o correo para comenzar.</p>
+              <p className="hu-state__title">{t("historial.usuarios.estado_buscar_title")}</p>
+              <p className="hu-state__text">{t("historial.usuarios.estado_buscar_text")}</p>
             </motion.div>
           )}
 
@@ -240,10 +259,11 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
               <div className="hu-state__icon hu-state__icon--red">
                 <User size={26} color="#ef5759" />
               </div>
-              <p className="hu-state__title">Sin resultados</p>
+              <p className="hu-state__title">{t("historial.usuarios.estado_sin_resultados_title")}</p>
               <p className="hu-state__text">
-                No se encontraron usuarios{query && <> para <strong>"{query}"</strong></>}
-                {filtrosActivos.length > 0 && " con los filtros aplicados"}
+                {t("historial.usuarios.estado_sin_resultados_text")}
+                {query && t("historial.usuarios.estado_sin_resultados_query", { query })}
+                {filtrosActivos.length > 0 && t("historial.usuarios.estado_sin_resultados_filtros")}
               </p>
             </motion.div>
           )}
@@ -251,7 +271,8 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           {usuarios.length > 0 && (
             <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <p className="hu-results-count">
-                <strong>{usuarios.length}</strong> resultado{usuarios.length !== 1 ? "s" : ""}
+                <strong>{resultCount}</strong>{" "}
+                {t(resultCount === 1 ? "historial.usuarios.resultados_count_one" : "historial.usuarios.resultados_count_other", { count: resultCount })}
               </p>
               <div className="hu-results-list">
                 {usuarios.map((u, i) => (
@@ -262,6 +283,8 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
                     onSelect={onSelectUsuario}
                     query={query}
                     isSelected={String(u.id ?? u.id_user) === String(selectedUserId)}
+                    rolConfig={ROL_CONFIG}
+                    rolDefault={ROL_DEFAULT}
                   />
                 ))}
               </div>
@@ -286,7 +309,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07);
         }
 
-        /* Header */
         .hu-header {
           display: flex;
           align-items: center;
@@ -318,7 +340,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           margin: 3px 0 0;
         }
 
-        /* Search bar */
         .hu-searchbar {
           display: flex;
           flex-wrap: wrap;
@@ -378,7 +399,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
         }
         .hu-searchbar__clear:hover { color: #ef5759; }
 
-        /* Buttons */
         .hu-btn {
           display: flex;
           align-items: center;
@@ -442,7 +462,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           cursor: not-allowed;
         }
 
-        /* Filters card */
         .hu-filters-card {
           padding: 18px 20px;
           flex-shrink: 0;
@@ -485,7 +504,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           gap: 12px;
         }
 
-        /* Filter field */
         .hu-filter-field__label {
           font-size: 11px;
           font-weight: 700;
@@ -527,7 +545,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           pointer-events: none;
         }
 
-        /* Chips */
         .hu-chips {
           display: flex;
           flex-wrap: wrap;
@@ -558,7 +575,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
         }
         .hu-chip__remove:hover { opacity: .65; }
 
-        /* Error */
         .hu-error {
           display: flex;
           align-items: center;
@@ -576,7 +592,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           font-family: inherit;
         }
 
-        /* States */
         .hu-state {
           text-align: center;
           padding: 56px 0;
@@ -606,7 +621,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           font-family: inherit;
         }
 
-        /* Results */
         .hu-results-count {
           font-size: 12px;
           color: var(--muted, #64748b);
@@ -622,12 +636,8 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           margin: 0 -2px;
           scroll-behavior: smooth;
         }
-        .hu-results-panel::-webkit-scrollbar {
-          width: 5px;
-        }
-        .hu-results-panel::-webkit-scrollbar-track {
-          background: transparent;
-        }
+        .hu-results-panel::-webkit-scrollbar { width: 5px; }
+        .hu-results-panel::-webkit-scrollbar-track { background: transparent; }
         .hu-results-panel::-webkit-scrollbar-thumb {
           background: rgba(239,87,89,.25);
           border-radius: 99px;
@@ -641,7 +651,6 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           gap: 8px;
         }
 
-        /* Usuario card */
         .hu-user-card {
           display: flex;
           align-items: center;
@@ -670,121 +679,51 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
           box-shadow: 0 0 0 3px rgba(239,87,89,.10) !important;
         }
 
-        /* Avatar */
-        .hu-user-avatar {
-          position: relative;
-          flex-shrink: 0;
-        }
+        .hu-user-avatar { position: relative; flex-shrink: 0; }
         .hu-user-avatar__img {
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
-          object-fit: cover;
-          border: 2px solid #e2e8f0;
-          display: block;
+          width: 44px; height: 44px; border-radius: 12px;
+          object-fit: cover; border: 2px solid #e2e8f0; display: block;
         }
         .hu-user-avatar__initials {
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
+          width: 44px; height: 44px; border-radius: 12px;
           background: rgba(239,87,89,.10);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 15px;
-          font-weight: 800;
-          color: #ef5759;
-          border: 2px solid rgba(239,87,89,.15);
-          font-family: inherit;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 15px; font-weight: 800; color: #ef5759;
+          border: 2px solid rgba(239,87,89,.15); font-family: inherit;
         }
         .hu-user-avatar__role-dot {
-          position: absolute;
-          bottom: -4px;
-          right: -4px;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 2px solid var(--bg, #f1f5f9);
-          font-size: 9px;
+          position: absolute; bottom: -4px; right: -4px;
+          width: 18px; height: 18px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          border: 2px solid var(--bg, #f1f5f9); font-size: 9px;
         }
 
-        /* User info */
         .hu-user-info { flex: 1; min-width: 0; }
-        .hu-user-info__top {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-        .hu-user-info__name {
-          font-size: 14px;
-          font-weight: 700;
-          color: var(--text, #0f172a);
-          font-family: inherit;
-        }
+        .hu-user-info__top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .hu-user-info__name { font-size: 14px; font-weight: 700; color: var(--text, #0f172a); font-family: inherit; }
         .hu-user-info__role-badge {
-          font-size: 10px;
-          font-weight: 800;
-          padding: 2px 8px;
-          border-radius: 100px;
-          text-transform: uppercase;
-          letter-spacing: .05em;
-          font-family: inherit;
-          white-space: nowrap;
+          font-size: 10px; font-weight: 800; padding: 2px 8px;
+          border-radius: 100px; text-transform: uppercase;
+          letter-spacing: .05em; font-family: inherit; white-space: nowrap;
         }
-        .hu-user-info__email {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          margin-top: 4px;
-        }
+        .hu-user-info__email { display: flex; align-items: center; gap: 5px; margin-top: 4px; }
         .hu-user-info__email-text {
-          font-size: 12px;
-          color: var(--muted, #64748b);
-          font-family: inherit;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          font-size: 12px; color: var(--muted, #64748b); font-family: inherit;
+          overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        .hu-user-info__meta {
-          display: flex;
-          gap: 14px;
-          margin-top: 5px;
-          flex-wrap: wrap;
-        }
+        .hu-user-info__meta { display: flex; gap: 14px; margin-top: 5px; flex-wrap: wrap; }
         .hu-user-info__meta-item {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          font-size: 12px;
-          color: var(--muted, #64748b);
-          font-family: inherit;
+          display: flex; align-items: center; gap: 4px;
+          font-size: 12px; color: var(--muted, #64748b); font-family: inherit;
         }
 
-        /* User side */
-        .hu-user-side {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 6px;
-          flex-shrink: 0;
-        }
+        .hu-user-side { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
         .hu-user-side__id {
-          display: flex;
-          align-items: center;
-          gap: 3px;
-          font-size: 11px;
-          color: var(--muted, #94a3b8);
-          font-family: monospace;
+          display: flex; align-items: center; gap: 3px;
+          font-size: 11px; color: var(--muted, #94a3b8); font-family: monospace;
         }
-        .hu-user-side__chevron {
-          transition: color .15s, transform .15s;
-        }
+        .hu-user-side__chevron { transition: color .15s, transform .15s; }
 
-        /* Responsive */
         @media (max-width: 600px) {
           .hu-btn { height: 44px; }
           .hu-searchbar { flex-direction: column; }
@@ -798,7 +737,7 @@ export default function HistorialUsuarios({ onSelectUsuario, selectedUserId, cur
   );
 }
 
-function UsuarioCard({ usuario, index, onSelect, query, isSelected }) {
+function UsuarioCard({ usuario, index, onSelect, query, isSelected, rolConfig, rolDefault }) {
   const nombre    = usuario.nombre   ?? usuario.name     ?? "—";
   const apellido  = usuario.apellido ?? usuario.last_name ?? "";
   const email     = usuario.email    ?? "—";
@@ -806,7 +745,7 @@ function UsuarioCard({ usuario, index, onSelect, query, isSelected }) {
   const profesion = usuario.profesion  ?? null;
   const ubicacion = usuario.ubicacion  ?? null;
   const rol       = (usuario.rol ?? "usuario").toLowerCase();
-  const rolConfig = ROL_CONFIG[rol] ?? ROL_DEFAULT;
+  const config    = rolConfig[rol] ?? rolDefault;
   const initials  = `${nombre[0] ?? ""}${apellido[0] ?? ""}`.toUpperCase();
 
   return (
@@ -818,7 +757,6 @@ function UsuarioCard({ usuario, index, onSelect, query, isSelected }) {
       onClick={() => onSelect?.(usuario)}
       className={`hu-user-card${isSelected ? " hu-user-card--selected" : ""}`}
     >
-      {/* Avatar */}
       <div className="hu-user-avatar">
         {foto
           ? <img src={foto} alt={nombre} className="hu-user-avatar__img" />
@@ -826,13 +764,12 @@ function UsuarioCard({ usuario, index, onSelect, query, isSelected }) {
         }
         <span
           className="hu-user-avatar__role-dot"
-          style={{ background: rolConfig.bg, color: rolConfig.color }}
+          style={{ background: config.bg, color: config.color }}
         >
-          {rolConfig.icon}
+          {config.icon}
         </span>
       </div>
 
-      {/* Info */}
       <div className="hu-user-info">
         <div className="hu-user-info__top">
           <span className="hu-user-info__name">
@@ -840,9 +777,9 @@ function UsuarioCard({ usuario, index, onSelect, query, isSelected }) {
           </span>
           <span
             className="hu-user-info__role-badge"
-            style={{ background: rolConfig.bg, color: rolConfig.color }}
+            style={{ background: config.bg, color: config.color }}
           >
-            {rolConfig.label}
+            {config.label}
           </span>
         </div>
 
@@ -869,7 +806,6 @@ function UsuarioCard({ usuario, index, onSelect, query, isSelected }) {
         )}
       </div>
 
-      {/* Side */}
       <div className="hu-user-side">
         <div className="hu-user-side__id">
           <Hash size={10} color="var(--muted, #94a3b8)" />

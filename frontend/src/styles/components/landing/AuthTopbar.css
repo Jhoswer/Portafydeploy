@@ -322,3 +322,66 @@
   .auth-topbar__logos .pf-nav-inst       { display: none; }
   .auth-topbar__logos .pf-nav-logos__sep { display: none; }
 }
+
+/* ── Idioma + tema en el drawer ───────────────────────────── */
+.auth-topbar__drawer-settings {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px;
+  border-top: 1px solid var(--topbar-divider);
+  border-bottom: 1px solid var(--topbar-divider);
+  margin: 4px 0;
+}
+
+@media (max-width: 768px) {
+  .auth-topbar__actions-desktop {
+    display: none !important;
+  }
+}
+
+.auth-topbar__drawer-group { display: flex; flex-direction: column; }
+
+.auth-topbar__drawer-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted-text);
+  padding: 14px 4px 6px;
+}
+
+/* Accordion grupos mobile */
+.auth-topbar__drawer-group--accordion {
+  border-bottom: 0.5px solid var(--tu-color-borde);
+}
+
+.auth-topbar__drawer-group-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 11px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.auth-topbar__drawer-group-toggle--open {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.auth-topbar__drawer-group-chevron {
+  transition: transform 0.2s ease;
+  opacity: 0.5;
+}
+
+.auth-topbar__drawer-group-chevron--open {
+  transform: rotate(90deg);
+  opacity: 1;
+}
+
+.auth-topbar__drawer-group-items {
+  padding-bottom: 4px;
+}

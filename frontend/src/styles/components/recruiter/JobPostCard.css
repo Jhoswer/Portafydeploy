@@ -18,6 +18,7 @@
 .job-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  background: #ffffff;
 }
 
 /* ── Card body ────────────────────────────────────────────── */
@@ -581,4 +582,8 @@
 
 .dark .job-modal__salary span {
   color: #34d399;
+}
+
+.dark .job-card:hover {
+  background: rgba(255, 255, 255, 0.03);
 }

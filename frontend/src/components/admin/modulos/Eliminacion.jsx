@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import AdminModuleLayout from "../components/AdminModuleLayout";
 import EdicionSearchBar  from "../components/Edicion/EdicionSearchBar";
 import EdicionFilterBar  from "../components/Edicion/EdicionFilterBar";
@@ -6,29 +7,22 @@ import EdicionUserGrid   from "../components/Edicion/EdicionUserGrid";
 import EliminacionPanel  from "../components/Eliminacion/EliminacionPanel";
 import { buscarUsuariosEdicion } from "../../../services/adminService";
 
-/* ─────────────────────────────────────────────────────────────
-   Eliminacion — módulo admin
-   Vista 1 → búsqueda + grid de usuarios
-   Vista 2 → EliminacionPanel del usuario elegido para eliminar
-───────────────────────────────────────────────────────────── */
 export default function Eliminacion() {
-  /* ── Estado de búsqueda ── */
+  const { t } = useTranslation();
+  const m = "adminEliminacion.module";
+
   const [query,        setQuery]        = useState("");
   const [activeRole,   setActiveRole]   = useState("todos");
   const [users,        setUsers]        = useState([]);
   const [isLoading,    setIsLoading]    = useState(false);
   const [searched,     setSearched]     = useState(false);
-
-  /* ── Usuario seleccionado para eliminar (null = vista búsqueda) ── */
   const [selectedUser, setSelectedUser] = useState(null);
 
-  /* ── Fetch ── */
   const fetchUsers = useCallback(async (searchQuery, role) => {
     const data = await buscarUsuariosEdicion({ query: searchQuery, role });
     setUsers(Array.isArray(data) ? data : []);
   }, []);
 
-  /* ── Buscar ── */
   const handleSearch = useCallback(async () => {
     const trimmed = query.trim();
     if (!trimmed) return;
@@ -44,14 +38,10 @@ export default function Eliminacion() {
     }
   }, [query, activeRole, fetchUsers]);
 
-  /* ── Limpiar ── */
   const handleClear = () => {
-    setQuery("");
-    setUsers([]);
-    setSearched(false);
+    setQuery(""); setUsers([]); setSearched(false);
   };
 
-  /* ── Cambio de rol ── */
   const handleRoleChange = (role) => {
     setActiveRole(role);
     if (searched && query.trim()) {
@@ -62,79 +52,60 @@ export default function Eliminacion() {
     }
   };
 
-  /* ── Abrir panel de eliminación ── */
-  const handleDelete = (user) => {
-    setSelectedUser(user);
-  };
-
-  /* ── Volver al listado ── */
-  const handleBack = () => {
-    setSelectedUser(null);
-  };
-
   const totalFound = users.length;
 
-  /* ════════════════════════════════════════════
-     VISTA 2 — Panel de eliminación del usuario
-  ════════════════════════════════════════════ */
+  /* Vista 2 — Panel de eliminación */
   if (selectedUser) {
+    const fullName = `${selectedUser.name ?? ""} ${selectedUser.last_name ?? ""}`.trim();
     return (
       <AdminModuleLayout
-        title="Eliminación"
-        subtitle={`Eliminar datos de ${(selectedUser.name ?? "")} ${(selectedUser.last_name ?? "")}`.trim()}
+        title={t(`${m}.title`)}
+        subtitle={`${t(`${m}.subtitleManaging`)} ${fullName}`}
       >
-        <EliminacionPanel user={selectedUser} onBack={handleBack} />
+        <EliminacionPanel user={selectedUser} onBack={() => setSelectedUser(null)} />
       </AdminModuleLayout>
     );
   }
 
-  /* ════════════════════════════════════════════
-     VISTA 1 — Búsqueda de usuarios
-  ════════════════════════════════════════════ */
+  /* Vista 1 — Búsqueda */
   return (
     <AdminModuleLayout
-      title="Eliminación"
-      subtitle="Busca y elimina la información de profesionales y reclutadores registrados."
+      title={t(`${m}.title`)}
+      subtitle={t(`${m}.subtitle`)}
     >
       <div className="creacion-nueva-info-panel">
-      <div className="edicion-module">
+        <div className="edicion-module">
 
-        <EdicionSearchBar
-          query={query}
-          onChange={setQuery}
-          onSearch={handleSearch}
-          onClear={handleClear}
-          isLoading={isLoading}
-        />
+          <EdicionSearchBar
+            query={query} onChange={setQuery}
+            onSearch={handleSearch} onClear={handleClear}
+            isLoading={isLoading} />
 
-        <EdicionFilterBar activeRole={activeRole} onChange={handleRoleChange} />
+          <EdicionFilterBar activeRole={activeRole} onChange={handleRoleChange} />
 
-        {searched && !isLoading && (
-          <div className="edicion-results__meta">
-            <p className="edicion-results__count">
-              {totalFound === 0 ? (
-                "Sin resultados"
-              ) : (
-                <>
-                  <strong>{totalFound}</strong>{" "}
-                  {totalFound === 1 ? "usuario encontrado" : "usuarios encontrados"}
-                  {activeRole !== "todos" && (
-                    <> · rol <strong>{activeRole}</strong></>
-                  )}
-                </>
-              )}
-            </p>
-          </div>
-        )}
+          {searched && !isLoading && (
+            <div className="edicion-results__meta">
+              <p className="edicion-results__count">
+                {totalFound === 0 ? (
+                  t(`${m}.noResults`)
+                ) : (
+                  <>
+                    <strong>{totalFound}</strong>{" "}
+                    {totalFound === 1 ? t(`${m}.found`) : t(`${m}.foundMany`)}
+                    {activeRole !== "todos" && (
+                      <> · {t(`${m}.role`)} <strong>{activeRole}</strong></>
+                    )}
+                  </>
+                )}
+              </p>
+            </div>
+          )}
 
-        <EdicionUserGrid
-          users={users}
-          isLoading={isLoading}
-          searched={searched}
-          onEdit={handleDelete}
-          module="eliminacion"
-        />
-      </div>
+          <EdicionUserGrid
+            users={users} isLoading={isLoading} searched={searched}
+            onEdit={(user) => setSelectedUser(user)}
+            module="eliminacion" />
+        </div>
       </div>
     </AdminModuleLayout>
   );

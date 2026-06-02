@@ -25,7 +25,19 @@ class FormacionAcademicaRequest extends FormRequest
             'fecha_inicio' => $this->input('fecha_inicio', $this->input('startDate')),
             'fecha_fin' => $current ? null : $this->input('fecha_fin', $this->input('endDate')),
             'actualmente' => $current,
+            'remove_support_document' => filter_var(
+                $this->input('remove_support_document', $this->input('removeSupportDocument', false)),
+                FILTER_VALIDATE_BOOLEAN
+            ),
         ]);
+
+        if ($this->hasFile('respaldo')) {
+            $this->files->set('support_document', $this->file('respaldo'));
+        } elseif ($this->hasFile('support')) {
+            $this->files->set('support_document', $this->file('support'));
+        } elseif ($this->hasFile('supportDocument')) {
+            $this->files->set('support_document', $this->file('supportDocument'));
+        }
     }
 
     public function rules(): array
@@ -37,6 +49,8 @@ class FormacionAcademicaRequest extends FormRequest
             'fecha_inicio' => ['nullable', 'date'],
             'fecha_fin' => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
             'actualmente' => ['nullable', 'boolean'],
+            'remove_support_document' => ['nullable', 'boolean'],
+            'support_document' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:6144'],
         ];
     }
 
@@ -46,6 +60,9 @@ class FormacionAcademicaRequest extends FormRequest
             'institucion.regex' => 'La institucion contiene caracteres no validos.',
             'nombre_programa.regex' => 'El programa contiene caracteres no validos.',
             'fecha_fin.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
+            'support_document.file' => 'El respaldo debe ser un archivo valido.',
+            'support_document.mimes' => 'El respaldo debe ser PDF o imagen JPG, PNG o WEBP.',
+            'support_document.max' => 'El respaldo no debe superar 6 MB.',
         ];
     }
 

@@ -234,8 +234,9 @@ export default function ProfileHero({
         <div style={{ ...primaryStatsGridStyle, gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "repeat(2, minmax(220px, 1fr))" }}>
           {primaryStats.map((stat) => (
             <StatCard
-              key={stat.label}
+              key={stat.key || stat.label}
               label={stat.label}
+              statKey={stat.key || stat.action}
               value={stat.value}
               onClick={stat.action ? () => onStatClick?.(stat.action) : null}
             />
@@ -245,11 +246,11 @@ export default function ProfileHero({
         {secondaryStats.length ? (
           <div style={secondaryStatsStyle}>
             {secondaryStats.map((stat) => {
-              const metric = compactMetricMeta(stat.label);
+              const metric = compactMetricMeta(stat.key || stat.action || stat.label);
 
               return (
                 <CompactMetric
-                  key={stat.label}
+                  key={stat.key || stat.label}
                   stat={stat}
                   metric={metric}
                   onClick={stat.action ? () => onStatClick?.(stat.action) : undefined}
@@ -596,7 +597,7 @@ const compactMetricLabelStyle = {
 function compactMetricMeta(label) {
   const key = String(label || "").toLowerCase();
 
-  if (key.includes("proyecto")) {
+  if (key === "projects" || key.includes("proyecto")) {
     return {
       icon: FolderKanban,
       color: "#2563eb",
@@ -609,7 +610,7 @@ function compactMetricMeta(label) {
     };
   }
 
-  if (key.includes("exp")) {
+  if (key === "experienceyears" || key.includes("exp")) {
     return {
       icon: BriefcaseBusiness,
       color: "#0f766e",
@@ -622,7 +623,7 @@ function compactMetricMeta(label) {
     };
   }
 
-  if (key.includes("empresa")) {
+  if (key === "companies" || key.includes("empresa")) {
     return {
       icon: Building2,
       color: "#7c3aed",

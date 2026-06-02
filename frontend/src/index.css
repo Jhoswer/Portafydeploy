@@ -32,7 +32,7 @@
 @import "./styles/components/feed/Layout.css";
 @import "./styles/components/feed/SavedPage.css";
 
-@import "./styles/components/search/search-card.css";
+@import "./styles/components/search/search.css";
 @import "./styles/components/recruiter/RecruiterLayout.css";
 
 /* ── Admin panel — base ── */
@@ -66,6 +66,7 @@
 @import "./styles/components/recruiter/convocatory/AudienceModal.css";
 @import "./styles/components/recruiter/Postulantesconvocatoria.css";
 @import "./styles/components/recruiter/RecluiterForms.css";
+@import "./styles/components/recruiter/CompanyLeftSidebar.css";
 
 @import "./styles/components/recruiter/ProfileTabs.css";
 @import "./styles/components/recruiter/CompanyProfile.css";

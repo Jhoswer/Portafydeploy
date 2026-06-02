@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import useDefinitionRecords from "./useDefinitionRecords";
 import { getStateLabel } from "./definitionLabels";
 
 export default function VerPais() {
+  const { t } = useTranslation();
+  const v = "admin.definicion.ver";
   const [search, setSearch] = useState("");
   const { records, isLoading, error } = useDefinitionRecords("countries");
 
@@ -12,21 +15,44 @@ export default function VerPais() {
     (r.state ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
+  const count = filtered.length;
+
   return (
     <div className="def-ver">
       <div className="def-ver__toolbar">
         <div className="def-ver__search-wrap">
           <Search size={14} className="def-ver__search-icon" />
-          <input className="def-ver__search" placeholder="Buscar por nombre o estado..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input
+            className="def-ver__search"
+            placeholder={t(`${v}.search.pais`)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-        <span className="def-ver__count">{filtered.length} registro{filtered.length !== 1 ? "s" : ""}</span>
+        <span className="def-ver__count">
+          {count} {count !== 1 ? t(`${v}.records`) : t(`${v}.record`)}
+        </span>
       </div>
       <div className="def-ver__table-wrap">
         <table className="def-ver__table">
-          <thead><tr><th>ID</th><th>Nombre</th><th>Estado</th><th>Creado</th><th>Actualizado</th></tr></thead>
+          <thead>
+            <tr>
+              <th>{t(`${v}.cols.id`)}</th>
+              <th>{t(`${v}.cols.name`)}</th>
+              <th>{t(`${v}.cols.state`)}</th>
+              <th>{t(`${v}.cols.created`)}</th>
+              <th>{t(`${v}.cols.updated`)}</th>
+            </tr>
+          </thead>
           <tbody>
             {isLoading || error || filtered.length === 0 ? (
-              <tr><td colSpan={5} className="def-ver__empty">{isLoading ? "Cargando registros..." : error || `Sin resultados para "${search}"`}</td></tr>
+              <tr>
+                <td colSpan={5} className="def-ver__empty">
+                  {isLoading
+                    ? t(`${v}.loading`)
+                    : error || t(`${v}.noResults`, { search })}
+                </td>
+              </tr>
             ) : filtered.map((r) => (
               <tr key={r.id_country}>
                 <td className="def-ver__id">#{r.id_country}</td>

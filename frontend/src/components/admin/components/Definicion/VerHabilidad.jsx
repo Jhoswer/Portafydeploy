@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import useDefinitionRecords from "./useDefinitionRecords";
 import { getSkillTypeLabel, getStateLabel } from "./definitionLabels";
 
 export default function VerHabilidad() {
+  const { t } = useTranslation();
+  const v = "admin.definicion.ver";
   const [search, setSearch] = useState("");
   const { records, isLoading, error } = useDefinitionRecords("skills");
 
@@ -14,21 +17,49 @@ export default function VerHabilidad() {
     (r.area_name ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
+  const count = filtered.length;
+
   return (
     <div className="def-ver">
       <div className="def-ver__toolbar">
         <div className="def-ver__search-wrap">
           <Search size={14} className="def-ver__search-icon" />
-          <input className="def-ver__search" placeholder="Buscar por nombre, tipo, area o descripcion..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input
+            className="def-ver__search"
+            placeholder={t(`${v}.search.habilidad`)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-        <span className="def-ver__count">{filtered.length} registro{filtered.length !== 1 ? "s" : ""}</span>
+        <span className="def-ver__count">
+          {count} {count !== 1 ? t(`${v}.records`) : t(`${v}.record`)}
+        </span>
       </div>
       <div className="def-ver__table-wrap">
         <table className="def-ver__table">
-          <thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Nivel Cuantitativo</th><th>Nivel Cualitativo</th><th>Descripcion</th><th>Estado</th><th>Area</th><th>Creado</th><th>Actualizado</th></tr></thead>
+          <thead>
+            <tr>
+              <th>{t(`${v}.cols.id`)}</th>
+              <th>{t(`${v}.cols.name`)}</th>
+              <th>{t(`${v}.cols.type`)}</th>
+              <th>{t(`${v}.cols.levelQuant`)}</th>
+              <th>{t(`${v}.cols.levelQual`)}</th>
+              <th>{t(`${v}.cols.description`)}</th>
+              <th>{t(`${v}.cols.state`)}</th>
+              <th>{t(`${v}.cols.area`)}</th>
+              <th>{t(`${v}.cols.created`)}</th>
+              <th>{t(`${v}.cols.updated`)}</th>
+            </tr>
+          </thead>
           <tbody>
             {isLoading || error || filtered.length === 0 ? (
-              <tr><td colSpan={10} className="def-ver__empty">{isLoading ? "Cargando registros..." : error || `Sin resultados para "${search}"`}</td></tr>
+              <tr>
+                <td colSpan={10} className="def-ver__empty">
+                  {isLoading
+                    ? t(`${v}.loading`)
+                    : error || t(`${v}.noResults`, { search })}
+                </td>
+              </tr>
             ) : filtered.map((r) => (
               <tr key={r.id_skill}>
                 <td className="def-ver__id">#{r.id_skill}</td>
@@ -38,7 +69,9 @@ export default function VerHabilidad() {
                 <td className="def-ver__center">{r.qualitative_level ?? <span className="def-ver__null">-</span>}</td>
                 <td className="def-ver__desc">{r.description ?? <span className="def-ver__null">-</span>}</td>
                 <td><span className={`def-badge def-badge--${r.state}`}>{getStateLabel(r.state)}</span></td>
-                <td className="def-ver__name">{r.area_name ?? <span className="def-ver__null">Sin area</span>}</td>
+                <td className="def-ver__name">
+                  {r.area_name ?? <span className="def-ver__null">{t(`${v}.noArea`)}</span>}
+                </td>
                 <td className="def-ver__date">{r.created_at}</td>
                 <td className="def-ver__date">{r.updated_at}</td>
               </tr>

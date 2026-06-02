@@ -1,21 +1,17 @@
-// src/components/admin/components/Eliminacion/TableGuardados.jsx
+// TablaGuardados.jsx
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Bookmark } from "lucide-react";
 import EliminacionProfileTable from "./EliminacionProfileTable";
 
-export default function TableGuardados({ idProfile }) {
+export default function TablaGuardados({ idProfile }) {
+  const { t } = useTranslation();
   const [reloadKey, setReloadKey] = useState(0);
-
   return (
-    <EliminacionProfileTable
-      idProfile={idProfile}
-      resource="saved"
-      title="Guardados del usuario"
-      emptyText="Este usuario no tiene elementos guardados."
-      Icon={Bookmark}
-      primaryKey="id_saved"
-      reloadKey={reloadKey}
-      onDeleted={() => setReloadKey((v) => v + 1)}
-    />
+    <EliminacionProfileTable idProfile={idProfile} resource="saved"
+      title={t("adminEliminacion.tablas.guardados.title")}
+      emptyText={t("adminEliminacion.tablas.guardados.empty")}
+      Icon={Bookmark} primaryKey="id_saved"
+      reloadKey={reloadKey} onDeleted={() => setReloadKey((v) => v + 1)} />
   );
 }

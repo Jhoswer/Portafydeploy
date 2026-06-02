@@ -6,9 +6,12 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
 import { useTranslation } from "react-i18next";
-import GlobalSearch from "../ui/GlobalSearch";
+import GlobalSearch from "../ui/GlobalSearch"; 
 import LanguageSwitcher from "../ui/LanguageSwitcher";
 import ThemeToggle from "../ui/ThemeTongle";
+import { useSidebarNav } from "./SidebarNavContext";
+import NotificationBell from "../notifications/NotificationBell";
+
 
 const getDashboardRoute = (user) => {
   const routes = {
@@ -26,16 +29,32 @@ const NAV_ITEMS = [
   { key: "saved",     label: "nav.saved",     icon: Bookmark,        route: "#guardados" },
 ];
 
+function groupNavItems(items) {
+  const groups = [];
+  const seen   = new Map();
+  for (const item of items) {
+    const groupKey = item.group ?? "__ungrouped__";
+    if (!seen.has(groupKey)) {
+      seen.set(groupKey, { title: item.group ?? null, items: [] });
+      groups.push(seen.get(groupKey));
+    }
+    seen.get(groupKey).items.push(item);
+  }
+  return groups;
+}
+
 export default function AuthTopbar() {
   const [userMenuOpen,   setUserMenuOpen]   = useState(false);
   const [mobileOpen,     setMobileOpen]     = useState(false);
   const [searchValue,    setSearchValue]    = useState("");
   const [failedPhotoUrl, setFailedPhotoUrl] = useState("");
+  const [openGroups,     setOpenGroups]     = useState({});
 
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   const { t } = useTranslation();
+  const { navItems } = useSidebarNav();
 
   const activePage = NAV_ITEMS.find(item =>
     item.route && location.pathname.startsWith(item.route)
@@ -49,6 +68,14 @@ export default function AuthTopbar() {
     setUserMenuOpen(false);
     setMobileOpen(false);
     navigate("/", { replace: true });
+  };
+
+  const isInDashboard   = Boolean(navItems);
+  const groupedNavItems = isInDashboard ? groupNavItems(navItems) : [];
+  const drawerItems     = navItems ?? NAV_ITEMS;
+
+  const toggleGroup = (groupKey) => {
+    setOpenGroups(prev => ({ ...prev, [groupKey]: !prev[groupKey] }));
   };
 
   return (
@@ -86,11 +113,9 @@ export default function AuthTopbar() {
 
             {/* Acciones */}
             <div className="pf-nav-actions">
-              <button className="pf-nav-bell" disabled>
-                <Bell size={18} />
-              </button>
               <LanguageSwitcher />
               <ThemeToggle />
+              <NotificationBell />
 
               <div className="pf-nav-actions__sep auth-topbar__sep-desktop" />
 
@@ -198,39 +223,102 @@ export default function AuthTopbar() {
         {mobileOpen && (
           <div className="auth-topbar__drawer">
 
-            <div className="pf-nav-search pf-nav-search--mobile">
-              <Search size={15} className="pf-nav-search__icon" />
-              <input
-                type="search"
-                className="pf-nav-search__input"
-                placeholder={t("nav.searchMobile")}
-                value={searchValue}
-                onChange={e =>
-                  setSearchValue(e.target.value.replace(/[^\p{L}\p{N}\s]/gu, ""))
-                }
-                onKeyDown={e => {
-                  if (e.key === "Enter" && searchValue.trim()) {
-                    navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
-                    setMobileOpen(false);
+            {/* Buscador: solo en nav global */}
+            {!navItems && (
+              <div className="pf-nav-search pf-nav-search--mobile">
+                <Search size={15} className="pf-nav-search__icon" />
+                <input
+                  type="search"
+                  className="pf-nav-search__input"
+                  placeholder={t("nav.searchMobile")}
+                  value={searchValue}
+                  onChange={e =>
+                    setSearchValue(e.target.value.replace(/[^\p{L}\p{N}\s]/gu, ""))
                   }
-                }}
-              />
-            </div>
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && searchValue.trim()) {
+                      navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
+                      setMobileOpen(false);
+                    }
+                  }}
+                />
+              </div>
+            )}
 
-            {NAV_ITEMS.map(({ key, label, icon: Icon, route }) => (
-              <button
-                key={key}
-                className={`auth-topbar__drawer-item${activePage === key ? " auth-topbar__drawer-item--active" : ""}`}
-                onClick={() => {
-                  navigate(route ?? getDashboardRoute(user));
-                  setMobileOpen(false);
-                }}
-              >
-                <Icon size={18} />
-                {t(label)}
-              </button>
-            ))}
+            {/* Items de navegación */}
+            {isInDashboard ? (
+              groupedNavItems.map((group, gi) => {
+                const groupKey = group.title ?? `group-${gi}`;
+                const isOpen   = openGroups[groupKey] ?? false;
 
+                return (
+                  <div key={gi} className="auth-topbar__drawer-group auth-topbar__drawer-group--accordion">
+
+                    {/* Cabecera del grupo — toca para abrir/cerrar */}
+                    {group.title ? (
+                      <button
+                        className={`auth-topbar__drawer-group-toggle${isOpen ? " auth-topbar__drawer-group-toggle--open" : ""}`}
+                        onClick={() => toggleGroup(groupKey)}
+                      >
+                        <span className="auth-topbar__drawer-group-title">
+                          {t(group.title)}
+                        </span>
+                        <ChevronRight
+                          size={14}
+                          className={`auth-topbar__drawer-group-chevron${isOpen ? " auth-topbar__drawer-group-chevron--open" : ""}`}
+                        />
+                      </button>
+                    ) : null}
+
+                    {/* Items: visibles si está abierto, o siempre si no tiene título */}
+                    {(isOpen || !group.title) && (
+                      <div className="auth-topbar__drawer-group-items">
+                        {group.items.map((item) => {
+                          const labelText = item.labelKey ? t(item.labelKey) : item.label;
+                          return (
+                            <button
+                              key={item.key}
+                              className="auth-topbar__drawer-item"
+                              onClick={() => {
+                                item.onClick();
+                                setMobileOpen(false);
+                              }}
+                            >
+                              <item.icon size={18} />
+                              {labelText}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              drawerItems.map((item) => {
+                const key      = item.key ?? item.page ?? item.label;
+                const label    = item.label;
+                const Icon     = item.icon;
+                const isActive = activePage === item.key;
+
+                return (
+                  <button
+                    key={key}
+                    className={`auth-topbar__drawer-item${isActive ? " auth-topbar__drawer-item--active" : ""}`}
+                    onClick={() => {
+                      if (item.onClick) item.onClick();
+                      else navigate(item.route ?? getDashboardRoute(user));
+                      setMobileOpen(false);
+                    }}
+                  >
+                    <Icon size={18} />
+                    {t(label)}
+                  </button>
+                );
+              })
+            )}
+
+            {/* Info de usuario */}
             {user && (
               <div className="pf-user__mobile">
                 <div className="pf-user__avatar pf-user__avatar--theme-blue">
@@ -242,7 +330,6 @@ export default function AuthTopbar() {
                     />
                   ) : user.initials}
                 </div>
-
                 <div>
                   <div className="pf-user__name">{user.name}</div>
                   <div style={{ fontSize: "12px" }}>{user.email}</div>

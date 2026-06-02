@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   UserPlus, User, Mail, Lock, Eye, EyeOff, MapPin,
@@ -9,9 +10,110 @@ import { LATIN_AMERICA_LOCATIONS, getCitiesForCountry } from "../../../data/loca
 
 void motion;
 
+/* ─── Dark-mode CSS injected once ─────────────────────────────────────────── */
+const DARK_STYLE_ID = "agregar-admin-dark";
+if (typeof document !== "undefined" && !document.getElementById(DARK_STYLE_ID)) {
+  const style = document.createElement("style");
+  style.id = DARK_STYLE_ID;
+  style.textContent = `
+    /* Selectors: class="dark" on <html>/<body> OR data-theme="dark" on <html> */
+    .dark .aa-card,
+    [data-theme="dark"] .aa-card {
+      background: #1e2535 !important;
+      border-color: rgba(99,132,174,0.18) !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,.30) !important;
+    }
+
+    .dark .aa-modal-backdrop,
+    [data-theme="dark"] .aa-modal-backdrop {
+      background: rgba(4, 8, 18, 0.75) !important;
+    }
+
+    .dark .aa-modal,
+    [data-theme="dark"] .aa-modal {
+      background: #1e2535 !important;
+      border-color: rgba(99,132,174,0.15) !important;
+      box-shadow: 0 24px 64px rgba(0,0,0,.55), 0 4px 16px rgba(0,0,0,.30) !important;
+    }
+
+    .dark .aa-summary,
+    [data-theme="dark"] .aa-summary {
+      background: #151c2c !important;
+      border-color: rgba(99,132,174,0.18) !important;
+    }
+
+    .dark .aa-summary-row-even,
+    [data-theme="dark"] .aa-summary-row-even {
+      background: #151c2c !important;
+    }
+
+    .dark .aa-summary-row-odd,
+    [data-theme="dark"] .aa-summary-row-odd {
+      background: #1a2133 !important;
+    }
+
+    .dark .aa-summary-row-border,
+    [data-theme="dark"] .aa-summary-row-border {
+      border-bottom-color: rgba(99,132,174,0.15) !important;
+    }
+
+    .dark .aa-summary-label,
+    [data-theme="dark"] .aa-summary-label {
+      color: #94a3b8 !important;
+    }
+
+    .dark .aa-summary-value,
+    [data-theme="dark"] .aa-summary-value {
+      color: #e2e8f0 !important;
+    }
+
+    .dark .aa-cancel-btn,
+    [data-theme="dark"] .aa-cancel-btn {
+      background: #252f42 !important;
+      border-color: rgba(99,132,174,0.25) !important;
+      color: #94a3b8 !important;
+    }
+
+    .dark .aa-cancel-btn:hover,
+    [data-theme="dark"] .aa-cancel-btn:hover {
+      border-color: rgba(99,132,174,0.45) !important;
+      color: #e2e8f0 !important;
+    }
+
+    .dark .aa-title,
+    [data-theme="dark"] .aa-title {
+      color: #e2e8f0 !important;
+    }
+
+    .dark .aa-subtitle,
+    [data-theme="dark"] .aa-subtitle {
+      color: #94a3b8 !important;
+    }
+
+    .dark .aa-success-title,
+    [data-theme="dark"] .aa-success-title {
+      color: #e2e8f0 !important;
+    }
+
+    .dark .aa-success-text,
+    [data-theme="dark"] .aa-success-text {
+      color: #94a3b8 !important;
+    }
+
+    .dark .aa-region-hint,
+    [data-theme="dark"] .aa-region-hint {
+      color: #64748b !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 const DEFAULT_REGION = "Por defecto";
 
 export default function AgregarAdmin() {
+  const { t } = useTranslation();
+
   const [form, setForm] = useState({
     name: "",
     last_name: "",
@@ -46,16 +148,16 @@ export default function AgregarAdmin() {
   };
 
   const validate = () => {
-    if (!form.name.trim()) return "El nombre es obligatorio.";
-    if (!form.last_name.trim()) return "El apellido es obligatorio.";
-    if (!form.email.trim()) return "El correo es obligatorio.";
-    if (!/\S+@\S+\.\S+/.test(form.email)) return "Ingresa un correo válido.";
-    if (form.number && !/^\d+$/.test(form.number)) return "El número debe ser numérico.";
-    if (!form.pais.trim()) return "El país es obligatorio.";
-    if (!form.ciudad.trim()) return "La ciudad es obligatoria.";
-    if (!form.password) return "La contraseña es obligatoria.";
-    if (form.password.length < 8) return "La contraseña debe tener al menos 8 caracteres.";
-    if (form.password !== form.confirmPassword) return "Las contraseñas no coinciden.";
+    if (!form.name.trim())        return t("agregarAdmin.errorNombre");
+    if (!form.last_name.trim())   return t("agregarAdmin.errorApellido");
+    if (!form.email.trim())       return t("agregarAdmin.errorCorreo");
+    if (!/\S+@\S+\.\S+/.test(form.email)) return t("agregarAdmin.errorCorreoValido");
+    if (form.number && !/^\d+$/.test(form.number)) return t("agregarAdmin.errorNumero");
+    if (!form.pais.trim())        return t("agregarAdmin.errorPais");
+    if (!form.ciudad.trim())      return t("agregarAdmin.errorCiudad");
+    if (!form.password)           return t("agregarAdmin.errorContrasena");
+    if (form.password.length < 8) return t("agregarAdmin.errorContrasenaCorta");
+    if (form.password !== form.confirmPassword) return t("agregarAdmin.errorContrasenaNoCoincide");
     return null;
   };
 
@@ -81,7 +183,7 @@ export default function AgregarAdmin() {
       });
       setSuccess(true);
     } catch (e) {
-      setError(e?.data?.message || e.message || "Ocurrió un error.");
+      setError(e?.data?.message || e.message || t("agregarAdmin.errorGenerico"));
     } finally {
       setLoading(false);
     }
@@ -104,19 +206,19 @@ export default function AgregarAdmin() {
   };
 
   const fields = [
-    { name: "name",     label: "Nombre",              icon: <User size={15} />, type: "text",  placeholder: "Ej: María"              },
-    { name: "last_name",label: "Apellido",             icon: <User size={15} />, type: "text",  placeholder: "Ej: García"             },
-    { name: "email",    label: "Correo electrónico",   icon: <Mail size={15} />, type: "email", placeholder: "Ej: maria@portafy.com"  },
-    { name: "number",   label: "Número (opcional)",    icon: <Hash size={15} />, type: "text",  placeholder: "Ej: 70012345"           },
+    { name: "name",      label: t("agregarAdmin.nombre"),   icon: <User size={15} />, type: "text",  placeholder: t("agregarAdmin.nombrePlaceholder")  },
+    { name: "last_name", label: t("agregarAdmin.apellido"), icon: <User size={15} />, type: "text",  placeholder: t("agregarAdmin.apellidoPlaceholder") },
+    { name: "email",     label: t("agregarAdmin.correo"),   icon: <Mail size={15} />, type: "email", placeholder: t("agregarAdmin.correoPlaceholder")   },
+    { name: "number",    label: t("agregarAdmin.numero"),   icon: <Hash size={15} />, type: "text",  placeholder: t("agregarAdmin.numeroPlaceholder")   },
   ];
 
   const isDefaultRegion = form.pais === DEFAULT_REGION;
   const selectedRegionLabel =
     form.pais === DEFAULT_REGION
-      ? DEFAULT_REGION
+      ? t("agregarAdmin.porDefecto")
       : form.ciudad && form.pais
         ? `${form.ciudad}, ${form.pais}`
-        : "Selecciona país y ciudad";
+        : t("agregarAdmin.seleccionaCiudad");
 
   return (
     <div style={{ maxWidth: 580, margin: "0 auto", padding: "32px 20px" }}>
@@ -131,26 +233,26 @@ export default function AgregarAdmin() {
           <UserPlus size={20} color="white" />
         </div>
         <div>
-          <h2 style={{
+          <h2 className="aa-title" style={{
             fontSize: 20, fontWeight: 700,
             fontFamily: "var(--f-ui, sans-serif)",
             color: "var(--text, #0f172a)",
             margin: 0, lineHeight: 1.2,
           }}>
-            Añadir administrador
+            {t("agregarAdmin.titulo")}
           </h2>
-          <p style={{
+          <p className="aa-subtitle" style={{
             fontSize: 13, color: "var(--muted, #64748b)",
             fontFamily: "var(--f-body, sans-serif)",
             margin: 0, marginTop: 2,
           }}>
-            El nuevo usuario tendrá rol de administrador.
+            {t("agregarAdmin.subtitulo")}
           </p>
         </div>
       </div>
 
       {/* Card */}
-      <div style={{
+      <div className="aa-card" style={{
         background: "var(--card, #fff)",
         border: "1.5px solid rgba(162,214,249,.35)",
         borderRadius: 18, padding: "28px 28px 24px",
@@ -173,19 +275,26 @@ export default function AgregarAdmin() {
               }}>
                 <CheckCircle2 size={32} color="#27ae60" />
               </div>
-              <h3 style={{
+              <h3 className="aa-success-title" style={{
                 fontSize: 18, fontWeight: 700,
                 fontFamily: "var(--f-ui, sans-serif)",
                 color: "var(--text, #0f172a)", marginBottom: 8,
               }}>
-                Administrador creado
+                {t("agregarAdmin.successTitulo")}
               </h3>
-              <p style={{
-                fontSize: 14, color: "var(--muted, #64748b)",
-                fontFamily: "var(--f-body, sans-serif)", marginBottom: 24,
-              }}>
-                <strong>{form.name} {form.last_name}</strong> ya puede iniciar sesión con sus credenciales.
-              </p>
+              <p
+                className="aa-success-text"
+                style={{
+                  fontSize: 14, color: "var(--muted, #64748b)",
+                  fontFamily: "var(--f-body, sans-serif)", marginBottom: 24,
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: t("agregarAdmin.successMensaje", {
+                    nombre: form.name,
+                    apellido: form.last_name,
+                  }),
+                }}
+              />
               <button
                 onClick={handleReset}
                 style={{
@@ -198,7 +307,7 @@ export default function AgregarAdmin() {
                 onMouseOver={(e) => { e.currentTarget.style.opacity = ".85"; }}
                 onMouseOut={(e) => { e.currentTarget.style.opacity = "1"; }}
               >
-                Añadir nuevo Administrador
+                {t("agregarAdmin.agregarNuevo")}
               </button>
             </motion.div>
           ) : (
@@ -217,10 +326,11 @@ export default function AgregarAdmin() {
               <Field {...fields[2]} value={form.email} onChange={handleChange} />
               <Field {...fields[3]} value={form.number} onChange={handleChange} />
 
+              {/* País / Ciudad */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 <div className="auth-field">
                   <label className="auth-label" style={{ fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
-                    País
+                    {t("agregarAdmin.pais")}
                   </label>
                   <div className="auth-input-wrap" style={{ display: "flex", alignItems: "center" }}>
                     <span className="auth-input-icon" style={{ flexShrink: 0 }}>
@@ -233,8 +343,8 @@ export default function AgregarAdmin() {
                       className="auth-input"
                       style={{ flex: 1, appearance: "none" }}
                     >
-                      <option value={DEFAULT_REGION}>{DEFAULT_REGION}</option>
-                      <option value="">Selecciona un país</option>
+                      <option value={DEFAULT_REGION}>{t("agregarAdmin.porDefecto")}</option>
+                      <option value="">{t("agregarAdmin.seleccionaPais")}</option>
                       {LATIN_AMERICA_LOCATIONS.map((item) => (
                         <option key={item.country} value={item.country}>
                           {item.country}
@@ -246,7 +356,7 @@ export default function AgregarAdmin() {
 
                 <div className="auth-field">
                   <label className="auth-label" style={{ fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
-                    Ciudad
+                    {t("agregarAdmin.ciudad")}
                   </label>
                   <div className="auth-input-wrap" style={{ display: "flex", alignItems: "center" }}>
                     <span className="auth-input-icon" style={{ flexShrink: 0 }}>
@@ -262,13 +372,13 @@ export default function AgregarAdmin() {
                     >
                       <option value="">
                         {!form.pais
-                          ? "Primero selecciona un país"
+                          ? t("agregarAdmin.primeroPais")
                           : isDefaultRegion
-                            ? DEFAULT_REGION
-                            : "Selecciona una ciudad"}
+                            ? t("agregarAdmin.porDefecto")
+                            : t("agregarAdmin.seleccionaCiudad")}
                       </option>
                       {isDefaultRegion ? (
-                        <option value={DEFAULT_REGION}>{DEFAULT_REGION}</option>
+                        <option value={DEFAULT_REGION}>{t("agregarAdmin.porDefecto")}</option>
                       ) : getCitiesForCountry(form.pais).map((city) => (
                         <option key={city} value={city}>
                           {city}
@@ -279,16 +389,18 @@ export default function AgregarAdmin() {
                 </div>
               </div>
 
-              <p style={{ fontSize: 12, color: "var(--muted, #64748b)", margin: "-6px 0 0" }}>
-                Asignado a la region: {selectedRegionLabel}
+              <p className="aa-region-hint" style={{ fontSize: 12, color: "var(--muted, #64748b)", margin: "-6px 0 0" }}>
+                {t("agregarAdmin.regionAsignada", { region: selectedRegionLabel })}
               </p>
 
               <Field
-                name="password" label="Contraseña"
+                name="password"
+                label={t("agregarAdmin.contrasena")}
                 icon={<Lock size={15} />}
                 type={showPassword ? "text" : "password"}
-                placeholder="Mínimo 8 caracteres"
-                value={form.password} onChange={handleChange}
+                placeholder={t("agregarAdmin.contrasenaPlaceholder")}
+                value={form.password}
+                onChange={handleChange}
                 suffix={
                   <button type="button" onClick={() => setShowPassword(v => !v)}
                     style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted, #64748b)", display: "flex", padding: 0 }}>
@@ -297,11 +409,13 @@ export default function AgregarAdmin() {
                 }
               />
               <Field
-                name="confirmPassword" label="Confirmar contraseña"
+                name="confirmPassword"
+                label={t("agregarAdmin.confirmarContrasena")}
                 icon={<Lock size={15} />}
                 type={showConfirm ? "text" : "password"}
-                placeholder="Repite la contraseña"
-                value={form.confirmPassword} onChange={handleChange}
+                placeholder={t("agregarAdmin.confirmarPlaceholder")}
+                value={form.confirmPassword}
+                onChange={handleChange}
                 suffix={
                   <button type="button" onClick={() => setShowConfirm(v => !v)}
                     style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted, #64748b)", display: "flex", padding: 0 }}>
@@ -348,7 +462,7 @@ export default function AgregarAdmin() {
                     style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,.3)", borderTopColor: "#fff", borderRadius: "50%" }}
                   />
                 ) : (
-                  <><UserPlus size={15} /> Crear administrador</>
+                  <><UserPlus size={15} /> {t("agregarAdmin.crearBtn")}</>
                 )}
               </motion.button>
             </motion.div>
@@ -389,10 +503,13 @@ function Field({ name, label, icon, type, placeholder, value, onChange, suffix }
 }
 
 function ConfirmModal({ open, loading, form, selectedRegionLabel, onCancel, onConfirm }) {
+  const { t } = useTranslation();
+
   return (
     <AnimatePresence>
       {open && (
         <motion.div
+          className="aa-modal-backdrop"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -401,7 +518,6 @@ function ConfirmModal({ open, loading, form, selectedRegionLabel, onCancel, onCo
             inset: 0,
             zIndex: 1000,
             padding: 20,
-            /* ✅ Fondo bien oscuro para que el modal resalte */
             background: "rgba(8, 14, 28, 0.65)",
             backdropFilter: "blur(6px)",
             WebkitBackdropFilter: "blur(6px)",
@@ -409,10 +525,10 @@ function ConfirmModal({ open, loading, form, selectedRegionLabel, onCancel, onCo
             alignItems: "center",
             justifyContent: "center",
           }}
-          /* Cerrar al hacer clic fuera */
           onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
         >
           <motion.div
+            className="aa-modal"
             initial={{ opacity: 0, y: 18, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}
@@ -420,7 +536,6 @@ function ConfirmModal({ open, loading, form, selectedRegionLabel, onCancel, onCo
             style={{
               width: "100%",
               maxWidth: 460,
-              /* ✅ Fondo sólido blanco puro — sin transparencias que filtren el fondo */
               background: "#ffffff",
               borderRadius: 20,
               border: "1px solid rgba(148, 163, 184, 0.20)",
@@ -430,7 +545,6 @@ function ConfirmModal({ open, loading, form, selectedRegionLabel, onCancel, onCo
           >
             {/* Body */}
             <div style={{ padding: "26px 26px 18px" }}>
-              {/* Icono */}
               <div style={{
                 width: 52, height: 52, borderRadius: 16,
                 background: "rgba(239,87,89,.10)",
@@ -441,63 +555,64 @@ function ConfirmModal({ open, loading, form, selectedRegionLabel, onCancel, onCo
                 <UserPlus size={22} color="#ef5759" />
               </div>
 
-              {/* Título — color sólido garantizado */}
-              <h3 style={{
+              <h3 className="aa-title" style={{
                 margin: 0, fontSize: 18, fontWeight: 700,
                 color: "#0f172a",
                 fontFamily: "var(--f-ui, sans-serif)",
                 lineHeight: 1.3,
               }}>
-                Confirmar nuevo administrador
+                {t("agregarAdmin.confirmarTitulo")}
               </h3>
 
-              {/* Subtítulo */}
-              <p style={{
+              <p className="aa-subtitle" style={{
                 margin: "8px 0 20px", fontSize: 14, lineHeight: 1.6,
                 color: "#64748b",
                 fontFamily: "var(--f-body, sans-serif)",
               }}>
-                Estás a punto de crear un nuevo administrador con la siguiente información:
+                {t("agregarAdmin.confirmarSubtitulo")}
               </p>
 
-              {/* Resumen — fondo ligeramente gris para separar del blanco */}
-              <div style={{
+              {/* Resumen */}
+              <div className="aa-summary" style={{
                 display: "grid", gap: 0,
                 borderRadius: 14,
                 background: "#f8fafc",
                 border: "1px solid #e2e8f0",
                 overflow: "hidden",
               }}>
-                {[ 
-                  { label: "Nombre",   value: form.name },
-                  { label: "Apellido", value: form.last_name },
-                  { label: "Correo",   value: form.email },
-                  { label: "Número",   value: form.number || "No especificado" },
-                  { label: "Región",   value: selectedRegionLabel },
+                {[
+                  { label: t("agregarAdmin.nombre"),    value: form.name },
+                  { label: t("agregarAdmin.filaApellido"), value: form.last_name },
+                  { label: t("agregarAdmin.filaCorreo"),   value: form.email },
+                  { label: t("agregarAdmin.filaNumero"),   value: form.number || t("agregarAdmin.noEspecificado") },
+                  { label: t("agregarAdmin.filaRegion"),   value: selectedRegionLabel },
                 ].map((row, i, arr) => (
                   <div
                     key={row.label}
+                    className={[
+                      i % 2 === 0 ? "aa-summary-row-even" : "aa-summary-row-odd",
+                      i < arr.length - 1 ? "aa-summary-row-border" : "",
+                    ].join(" ")}
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
                       gap: 16,
                       padding: "11px 16px",
-                      /* Separador entre filas excepto la última */
                       borderBottom: i < arr.length - 1 ? "1px solid #e2e8f0" : "none",
                       background: i % 2 === 0 ? "#f8fafc" : "#f1f5f9",
                     }}
                   >
-                    <span style={{
+                    <span className="aa-summary-label" style={{
                       fontSize: 13, fontWeight: 600,
-                      color: "#475569",   /* ✅ contraste garantizado */
+                      color: "#475569",
                       whiteSpace: "nowrap",
                     }}>
                       {row.label}
                     </span>
-                    <span style={{
+                    <span className="aa-summary-value" style={{
                       fontSize: 13, fontWeight: 500,
-                      color: "#0f172a",   /* ✅ texto oscuro y legible */
+                      color: "#0f172a",
                       textAlign: "right",
                       wordBreak: "break-word",
                     }}>
@@ -508,35 +623,28 @@ function ConfirmModal({ open, loading, form, selectedRegionLabel, onCancel, onCo
               </div>
             </div>
 
-            {/* Footer con botones */}
+            {/* Footer */}
             <div style={{
               display: "flex", justifyContent: "flex-end", gap: 10,
               padding: "0 26px 26px",
             }}>
               <button
                 type="button"
+                className="aa-cancel-btn"
                 onClick={onCancel}
                 disabled={loading}
                 style={{
                   padding: "11px 20px", borderRadius: 12,
                   border: "1.5px solid #e2e8f0",
                   background: "#fff",
-                  color: "#475569",      /* ✅ texto visible */
+                  color: "#475569",
                   fontWeight: 600, fontSize: 14,
                   fontFamily: "var(--f-ui, sans-serif)",
                   cursor: loading ? "not-allowed" : "pointer",
                   transition: "border-color .15s, color .15s",
                 }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.borderColor = "#cbd5e1";
-                  e.currentTarget.style.color = "#0f172a";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.borderColor = "#e2e8f0";
-                  e.currentTarget.style.color = "#475569";
-                }}
               >
-                Cancelar
+                {t("agregarAdmin.cancelar")}
               </button>
 
               <button
@@ -568,7 +676,7 @@ function ConfirmModal({ open, loading, form, selectedRegionLabel, onCancel, onCo
                     style={{ width: 15, height: 15, border: "2px solid rgba(255,255,255,.35)", borderTopColor: "#fff", borderRadius: "50%" }}
                   />
                 ) : (
-                  <><UserPlus size={15} /> Confirmar y crear</>
+                  <><UserPlus size={15} /> {t("agregarAdmin.confirmarCrear")}</>
                 )}
               </button>
             </div>

@@ -1,55 +1,45 @@
 import { SearchX } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-/**
- * Estado vacio cuando no hay resultados o aun no se inicio una busqueda.
- *
- * @param {{
- *   isIdle?: boolean,
- *   activeFilterCount: number,
- *   onClearFilters: () => void,
- *   onClearAll: () => void,
- * }} props
- */
 export function EmptyState({ isIdle = false, activeFilterCount, onClearFilters, onClearAll }) {
+  const { t } = useTranslation();
+
   return (
-    <div
-      className="flex flex-col items-center justify-center py-28 text-center animate-in fade-in zoom-in-95 duration-300"
-      data-testid="empty-state"
-    >
-      <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-5">
-        <SearchX className="h-9 w-9 text-muted-foreground" />
+    <div className="empty-state" data-testid="empty-state">
+      <div className="empty-state__icon">
+        <SearchX style={{ width: 36, height: 36 }} />
       </div>
 
-      <h3 className="text-xl font-bold text-foreground mb-2">
-        {isIdle ? "Busca perfiles y habilidades" : "Sin resultados"}
+      <h3 className="empty-state__title">
+        {isIdle ? t("portafySearch.empty.idleTitle") : t("portafySearch.empty.noResultsTitle")}
       </h3>
-      <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
+      <p className="empty-state__body">
         {isIdle
-          ? "Escribe un nombre, una profesion o aplica filtros para encontrar perfiles."
-          : "No hay coincidencias para los criterios aplicados."}
-        {!isIdle && activeFilterCount > 0 ? " Intenta ajustar o quitar algun filtro." : ""}
-        {!isIdle && activeFilterCount === 0 ? " Prueba con otros terminos." : ""}
+          ? t("portafySearch.empty.idleBody")
+          : t("portafySearch.empty.noResultsBody")}
+        {!isIdle && activeFilterCount > 0 && ` ${t("portafySearch.empty.hintFilters")}`}
+        {!isIdle && activeFilterCount === 0 && ` ${t("portafySearch.empty.hintTerms")}`}
       </p>
 
-      <div className="flex gap-2 mt-6 flex-wrap justify-center">
+      <div className="empty-state__actions">
         {activeFilterCount > 0 && (
           <button
-            aria-label="Limpiar todos los filtros"
+            aria-label={t("portafySearch.empty.clearFilters")}
             data-testid="button-clear-filters-empty"
             onClick={onClearFilters}
-            className="rounded-full px-5 py-2 text-sm font-medium border border-border bg-card text-foreground hover:border-primary/50 hover:text-primary transition-all"
+            className="btn-ghost"
           >
-            Quitar filtros
+            {t("portafySearch.empty.clearFilters")}
           </button>
         )}
         {!isIdle && (
           <button
-            aria-label="Limpiar busqueda"
+            aria-label={t("portafySearch.empty.newSearch")}
             data-testid="button-clear-all-empty"
             onClick={onClearAll}
-            className="rounded-full px-5 py-2 text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-all shadow-sm"
+            className="btn-cta"
           >
-            Nueva busqueda
+            {t("portafySearch.empty.newSearch")}
           </button>
         )}
       </div>

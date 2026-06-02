@@ -1,68 +1,49 @@
-// src/components/admin/components/Definicion/DefinicionConfirmModal.jsx
 import { createPortal } from "react-dom";
-import { AlertTriangle, X, ChevronLeft, Save } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { AlertTriangle, ChevronLeft, Save, X } from "lucide-react";
 import "../../../../styles/components/admin/components/Definicion/DefinicionConfirmModal.css";
 
 export default function DefinicionConfirmModal({
-  isOpen,
-  isBusy = false,
-  entidad = "",
-  resumen = [],
-  error = "",
-  onClose,
-  onConfirm,
+  isOpen, isBusy = false, entidad = "",
+  resumen = [], error = "", onClose, onConfirm,
 }) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return createPortal(
-    <div
-      className="dcm-backdrop"
-      onClick={isBusy ? undefined : onClose}
-    >
-      <div
-        className="dcm-modal"
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="dcm-title"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* ── Cerrar ── */}
-        <button
-          className="dcm-close"
-          onClick={onClose}
-          disabled={isBusy}
-          aria-label="Cerrar"
-          type="button"
-        >
+    <div className="dcm-backdrop" onClick={isBusy ? undefined : onClose}>
+      <div className="dcm-modal" role="alertdialog" aria-modal="true"
+        aria-labelledby="dcm-title" onClick={(e) => e.stopPropagation()}>
+
+        <button className="dcm-close" onClick={onClose} disabled={isBusy}
+          aria-label={t("admin.definicion.confirmModal.closeLabel")} type="button">
           <X size={16} />
         </button>
 
-        {/* ── Icono ── */}
         <div className="dcm-icon-wrap">
           <AlertTriangle size={26} strokeWidth={2} />
         </div>
 
-        {/* ── Textos ── */}
         <h3 className="dcm-title" id="dcm-title">
-          ¿Confirmar registro de {entidad}?
+          {t("admin.definicion.confirmModal.title", { entidad })}
         </h3>
 
-        <p className="dcm-text">
-          Estás a punto de <strong>guardar un nuevo registro</strong> en el
-          sistema. Esta acción <strong>modificará la base de datos</strong> y
-          no puede deshacerse fácilmente una vez confirmada.
-        </p>
+        <p className="dcm-text"
+          dangerouslySetInnerHTML={{
+            __html: t("admin.definicion.confirmModal.text1")
+          }}
+        />
+        <p className="dcm-text dcm-text--secondary"
+          dangerouslySetInnerHTML={{
+            __html: t("admin.definicion.confirmModal.text2")
+          }}
+        />
 
-        <p className="dcm-text dcm-text--secondary">
-          Verifica que los datos ingresados sean correctos antes de continuar.
-          Un registro incorrecto puede afectar el funcionamiento del sistema y
-          los datos relacionados.
-        </p>
-
-        {/* ── Resumen de campos ── */}
         {resumen.length > 0 && (
           <div className="dcm-summary">
-            <p className="dcm-summary__title">Datos a registrar:</p>
+            <p className="dcm-summary__title">
+              {t("admin.definicion.confirmModal.summaryTitle")}
+            </p>
             <ul className="dcm-summary__list">
               {resumen.map(({ label, value }) => (
                 <li key={label} className="dcm-summary__item">
@@ -70,7 +51,9 @@ export default function DefinicionConfirmModal({
                   <span className="dcm-summary__value">
                     {value !== "" && value !== null && value !== undefined
                       ? String(value)
-                      : <em className="dcm-summary__empty">—</em>}
+                      : <em className="dcm-summary__empty">
+                          {t("admin.definicion.confirmModal.emptyValue")}
+                        </em>}
                   </span>
                 </li>
               ))}
@@ -79,34 +62,23 @@ export default function DefinicionConfirmModal({
         )}
 
         {error && (
-          <p className="dcm-text dcm-text--secondary" role="alert">
-            {error}
-          </p>
+          <p className="dcm-text dcm-text--secondary" role="alert">{error}</p>
         )}
 
-        {/* ── Acciones ── */}
         <div className="dcm-actions">
-          <button
-            type="button"
-            className="dcm-btn dcm-btn--cancel"
-            onClick={onClose}
-            disabled={isBusy}
-          >
-            <ChevronLeft size={14} /> Cancelar
+          <button type="button" className="dcm-btn dcm-btn--cancel"
+            onClick={onClose} disabled={isBusy}>
+            <ChevronLeft size={14} /> {t("admin.definicion.confirmModal.cancel")}
           </button>
-          <button
-            type="button"
-            className="dcm-btn dcm-btn--confirm"
-            onClick={onConfirm}
-            disabled={isBusy}
-          >
+          <button type="button" className="dcm-btn dcm-btn--confirm"
+            onClick={onConfirm} disabled={isBusy}>
             {isBusy
-              ? "Guardando..."
-              : <><Save size={14} /> Confirmar registro</>}
+              ? t("admin.definicion.confirmModal.saving")
+              : <><Save size={14} /> {t("admin.definicion.confirmModal.confirm")}</>}
           </button>
         </div>
       </div>
     </div>,
-    document.body   // ← se monta fuera de cualquier contenedor padre
+    document.body
   );
 }

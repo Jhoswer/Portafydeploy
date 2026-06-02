@@ -17,6 +17,7 @@ import {
   Newspaper,
   Palette,
   Send,
+  ShieldCheck,
   Sparkles,
   SquareCode,
   Tv,
@@ -62,9 +63,12 @@ function compactUrl(url) {
 
   try {
     const parsed = new URL(url);
-    return parsed.hostname.replace(/^www\./, "");
+    const path = parsed.pathname.replace(/\/+$/, "");
+    return path && path !== "/" ? path : parsed.hostname.replace(/^www\./, "");
   } catch {
-    return String(url).replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0];
+    const normalized = String(url).replace(/^https?:\/\//, "").replace(/^www\./, "");
+    const pathIndex = normalized.indexOf("/");
+    return pathIndex >= 0 ? normalized.slice(pathIndex) : normalized;
   }
 }
 
@@ -76,6 +80,27 @@ function skillDotCount(skill) {
   if (skill?.level === "Senior") return 3;
   if (skill?.level === "Mid") return 2;
   return 1;
+}
+
+function isLanguageSkill(skill) {
+  const key = `${skill?.category || ""} ${skill?.name || ""}`.toLowerCase();
+  return ["idioma", "language", "ingles", "inglés", "english", "portugues", "portugués", "portuguese", "frances", "francés", "french", "aleman", "alemán", "german"].some((term) => key.includes(term));
+}
+
+function normalizeSkillLevelLabel(skill) {
+  if (isLanguageSkill(skill)) {
+    return skill.levelLabel || skill.nivel_label || skill.level || "Nivel";
+  }
+
+  const raw = String(skill?.level || skill?.levelLabel || skill?.nivel_label || "").toLowerCase();
+  if (raw.includes("senior") || raw.includes("avanz")) return "Senior";
+  if (raw.includes("mid") || raw.includes("inter")) return "Mid";
+  if (raw.includes("jr") || raw.includes("junior") || raw.includes("basic") || raw.includes("basico") || raw.includes("básic")) return "Jr";
+
+  const dots = skillDotCount(skill);
+  if (dots >= 3) return "Senior";
+  if (dots === 2) return "Mid";
+  return "Jr";
 }
 
 function skillPalette(skill) {
@@ -147,10 +172,10 @@ export function MessageBox({ color, text, fit = false }) {
   return <div style={{ display: "inline-flex", width: fit ? "fit-content" : "auto", padding: "10px 12px", borderRadius: 14, fontFamily: "var(--f-ui)", fontSize: ".82rem", fontWeight: 700, ...palette }}>{text}</div>;
 }
 
-export function StatCard({ label, value, onClick = null }) {
+export function StatCard({ label, value, onClick = null, statKey = "" }) {
   const [hovered, setHovered] = useState(false);
   const Component = onClick ? "button" : "div";
-  const stat = statMeta(label);
+  const stat = statMeta(statKey || label);
   return (
     <Component
       type={onClick ? "button" : undefined}
@@ -207,19 +232,19 @@ export function StatCard({ label, value, onClick = null }) {
 
 function statMeta(label) {
   const key = String(label || "").toLowerCase();
-  if (key.includes("seguidor") || key.includes("seguido")) {
+  if (key === "followers" || key === "following" || key.includes("seguidor") || key.includes("seguido")) {
     return { icon: Users, color: "#2563eb", soft: "rgba(37,99,235,.10)", softStrong: "rgba(37,99,235,.16)", border: "rgba(37,99,235,.22)", borderStrong: "rgba(37,99,235,.36)", shadow: "rgba(37,99,235,.13)" };
   }
-  if (key.includes("visita")) {
+  if (key === "views" || key.includes("visita")) {
     return { icon: Eye, color: "#0d9488", soft: "rgba(13,148,136,.10)", softStrong: "rgba(13,148,136,.16)", border: "rgba(13,148,136,.22)", borderStrong: "rgba(13,148,136,.36)", shadow: "rgba(13,148,136,.13)" };
   }
-  if (key.includes("proyecto")) {
+  if (key === "projects" || key.includes("proyecto")) {
     return { icon: FolderKanban, color: "#7c3aed", soft: "rgba(124,58,237,.10)", softStrong: "rgba(124,58,237,.16)", border: "rgba(124,58,237,.22)", borderStrong: "rgba(124,58,237,.36)", shadow: "rgba(124,58,237,.13)" };
   }
-  if (key.includes("exp")) {
+  if (key === "experienceyears" || key.includes("exp")) {
     return { icon: CalendarClock, color: "#ea580c", soft: "rgba(234,88,12,.10)", softStrong: "rgba(234,88,12,.16)", border: "rgba(234,88,12,.22)", borderStrong: "rgba(234,88,12,.36)", shadow: "rgba(234,88,12,.13)" };
   }
-  if (key.includes("empresa")) {
+  if (key === "companies" || key.includes("empresa")) {
     return { icon: Building2, color: "#be123c", soft: "rgba(190,18,60,.09)", softStrong: "rgba(190,18,60,.15)", border: "rgba(190,18,60,.20)", borderStrong: "rgba(190,18,60,.34)", shadow: "rgba(190,18,60,.12)" };
   }
   return { icon: Sparkles, color: "#475569", soft: "rgba(71,85,105,.09)", softStrong: "rgba(71,85,105,.15)", border: "rgba(71,85,105,.18)", borderStrong: "rgba(71,85,105,.30)", shadow: "rgba(71,85,105,.11)" };
@@ -291,7 +316,7 @@ export function SkillChip({ skill }) {
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState("bottom");
   const chipRef = useRef(null);
-  const levelLabel = skill.levelLabel || skill.nivel_label || skill.level || "Nivel";
+  const levelLabel = normalizeSkillLevelLabel(skill);
   const palette = skillPalette(skill);
   const openTooltip = () => {
     const rect = chipRef.current?.getBoundingClientRect();
@@ -533,24 +558,38 @@ export function ExperienceItem({ item, last, onShare, sharing = false, shared = 
 
 export function EducationItem({ item }) {
   const { t } = useTranslation();
+  const [hovered, setHovered] = useState(false);
   const period = [formatDate(item.startDate), item.isCurrent ? t("appI18n.portfolio.detail.present") : formatDate(item.endDate)]
     .filter(Boolean)
     .join(" - ");
+  const supportVerified = Boolean(item.supportIsVerified || item.supportStatus === "approved");
 
   return (
     <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         display: "grid",
         gridTemplateColumns: "auto minmax(0, 1fr)",
         gap: 10,
         padding: "12px 13px",
         borderRadius: 16,
-        background: "var(--dashboard-soft-bg)",
-        border: "1px solid var(--dashboard-card-border)",
-        boxShadow: "0 10px 22px rgba(14,30,60,.05)",
+        background: hovered ? "var(--dashboard-card-bg)" : "var(--dashboard-soft-bg)",
+        border: supportVerified ? "1px solid rgba(37,99,235,.22)" : "1px solid var(--dashboard-card-border)",
+        boxShadow: hovered ? "0 16px 34px rgba(14,30,60,.10)" : "0 10px 22px rgba(14,30,60,.05)",
+        transform: hovered ? "translateY(-1px)" : "translateY(0)",
+        transition: "transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease",
       }}
     >
-      <span style={{ ...dashboardShell.iconBadge, color: "#2048a8", background: "rgba(36,86,191,.10)" }}>
+      <span
+        style={{
+          ...dashboardShell.iconBadge,
+          color: "#2048a8",
+          background: supportVerified ? "rgba(37,99,235,.14)" : "rgba(36,86,191,.10)",
+          boxShadow: hovered ? "0 10px 22px rgba(37,99,235,.14)" : "none",
+          transition: "box-shadow .18s ease, background .18s ease",
+        }}
+      >
         <GraduationCap size={15} />
       </span>
       <span style={{ minWidth: 0, display: "grid", gap: 4 }}>
@@ -569,6 +608,27 @@ export function EducationItem({ item }) {
             </span>
           ) : null}
           {period ? <span style={ui.muted}>{period}</span> : null}
+          {supportVerified ? (
+            <span
+              title={t("appI18n.portfolio.detail.supportApproved", "Respaldo autenticado")}
+              style={{
+                ...ui.chip,
+                fontSize: ".72rem",
+                padding: "5px 9px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+                background: "linear-gradient(135deg, rgba(37,99,235,.12), rgba(59,130,246,.08))",
+                color: "#2563eb",
+                border: "1px solid rgba(37,99,235,.20)",
+                boxShadow: hovered ? "0 10px 20px rgba(37,99,235,.10)" : "none",
+                transition: "box-shadow .18s ease",
+              }}
+            >
+              <ShieldCheck size={12} fill="rgba(37,99,235,.16)" />
+              {t("appI18n.portfolio.detail.supportApproved", "Autenticado")}
+            </span>
+          ) : null}
         </span>
       </span>
     </div>

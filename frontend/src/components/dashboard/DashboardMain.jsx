@@ -24,22 +24,22 @@ import {
 
 const quickActions = [
   {
-    title: "Pulir perfil",
-    text: "Actualiza foto, titular y biografia para que tu primera impresion sea clara.",
+    titleKey: "appI18n.dashboard.main.quick.profile.title",
+    textKey: "appI18n.dashboard.main.quick.profile.text",
     icon: UserRound,
     action: "profile",
     color: "#2563eb",
   },
   {
-    title: "Mostrar trabajo",
-    text: "Ordena tus proyectos y experiencias visibles para reforzar tu historia.",
+    titleKey: "appI18n.dashboard.main.quick.portfolio.title",
+    textKey: "appI18n.dashboard.main.quick.portfolio.text",
     icon: FileCheck2,
     action: "portfolio",
     color: "#7c3aed",
   },
   {
-    title: "Revisar alcance",
-    text: "Mide visitas, clicks y senales de interes desde tus analiticas.",
+    titleKey: "appI18n.dashboard.main.quick.analytics.title",
+    textKey: "appI18n.dashboard.main.quick.analytics.text",
     icon: BarChart3,
     action: "analytics",
     color: "#0d9488",
@@ -47,10 +47,10 @@ const quickActions = [
 ];
 
 const roadmap = [
-  { label: "Identidad profesional", done: true },
-  { label: "Portafolio con evidencias", done: true },
-  { label: "Verificacion de confianza", done: false },
-  { label: "Feedback para mejorar plataforma", done: false },
+  { labelKey: "appI18n.dashboard.main.roadmap.identity", done: true },
+  { labelKey: "appI18n.dashboard.main.roadmap.portfolio", done: true },
+  { labelKey: "appI18n.dashboard.main.roadmap.verification", done: false },
+  { labelKey: "appI18n.dashboard.main.roadmap.feedback", done: false },
 ];
 
 export default function DashboardMain() {
@@ -103,7 +103,7 @@ export default function DashboardMain() {
       setSuggestionMessage(t("appI18n.dashboard.main.suggestionSent"));
       setTimeout(() => setSuggestionMessage(""), 2400);
     } catch (err) {
-      setSuggestionError(err.message || "No se pudo enviar la sugerencia.");
+      setSuggestionError(err.message || t("appI18n.dashboard.main.suggestionError"));
     } finally {
       setSuggestionBusy(false);
     }
@@ -117,7 +117,7 @@ export default function DashboardMain() {
       const payload = await submitVerification(formData);
       setVerification(payload.verification || payload);
     } catch (err) {
-      setVerificationError(err.message || "No se pudo enviar la solicitud.");
+      setVerificationError(err.message || t("appI18n.dashboard.main.verificationError"));
     } finally {
       setVerificationBusy(false);
     }
@@ -174,16 +174,16 @@ export default function DashboardMain() {
         {quickActions.map((item) => {
           const Icon = item.icon;
           return (
-            <button key={item.title} type="button" onClick={() => navigateDashboard(item.action)} style={quickActionCard(item.color)}>
+            <QuickActionCard key={item.titleKey} color={item.color} onClick={() => navigateDashboard(item.action)}>
               <span style={{ ...quickIcon, color: item.color, background: `${item.color}14` }}>
                 <Icon size={18} />
               </span>
               <span style={{ minWidth: 0 }}>
-                <span style={quickTitle}>{item.title}</span>
-                <span style={quickText}>{item.text}</span>
+                <span style={quickTitle}>{t(item.titleKey)}</span>
+                <span style={quickText}>{t(item.textKey)}</span>
               </span>
               <ArrowRight size={17} style={{ color: item.color, flexShrink: 0 }} />
-            </button>
+            </QuickActionCard>
           );
         })}
       </section>
@@ -251,15 +251,15 @@ export default function DashboardMain() {
               <Target size={19} />
             </span>
             <div>
-              <div style={panelEyebrow}>Ruta de perfil</div>
-              <h2 style={cardTitle}>Prioridades de esta etapa</h2>
+              <div style={panelEyebrow}>{t("appI18n.dashboard.main.profileRoute")}</div>
+              <h2 style={cardTitle}>{t("appI18n.dashboard.main.stagePriorities")}</h2>
             </div>
           </div>
           <div style={{ display: "grid", gap: 10 }}>
             {roadmap.map((item) => (
-              <div key={item.label} style={roadmapItem(item.done)}>
+              <div key={item.labelKey} style={roadmapItem(item.done)}>
                 <CheckCircle2 size={17} color={item.done ? "#16a34a" : "#94a3b8"} />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </div>
             ))}
           </div>
@@ -271,14 +271,14 @@ export default function DashboardMain() {
               <BarChart3 size={19} />
             </span>
             <div>
-              <div style={panelEyebrow}>Lectura rapida</div>
-              <h2 style={cardTitle}>Que mirar primero</h2>
+              <div style={panelEyebrow}>{t("appI18n.dashboard.main.quickRead")}</div>
+              <h2 style={cardTitle}>{t("appI18n.dashboard.main.whatToCheck")}</h2>
             </div>
           </div>
           <div style={insightList}>
-            <Insight title="Perfil" text="Nombre, titular y portada deben contar quien eres sin esfuerzo." />
-            <Insight title="Portafolio" text="Los proyectos con demo, repositorio y tecnologias claras convierten mejor." />
-            <Insight title="Confianza" text="La verificacion y los reportes bien canalizados hacen la plataforma mas seria." />
+            <Insight title={t("appI18n.dashboard.main.insights.profile.title")} text={t("appI18n.dashboard.main.insights.profile.text")} />
+            <Insight title={t("appI18n.dashboard.main.insights.portfolio.title")} text={t("appI18n.dashboard.main.insights.portfolio.text")} />
+            <Insight title={t("appI18n.dashboard.main.insights.trust.title")} text={t("appI18n.dashboard.main.insights.trust.text")} />
           </div>
         </article>
       </section>
@@ -300,6 +300,21 @@ function Insight({ title, text }) {
       <strong>{title}</strong>
       <span>{text}</span>
     </div>
+  );
+}
+
+function QuickActionCard({ children, color, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={quickActionCard(color, hovered)}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -421,7 +436,7 @@ const actionGrid = {
   gap: 14,
 };
 
-const quickActionCard = (color) => ({
+const quickActionCard = (color, hovered = false) => ({
   display: "grid",
   gridTemplateColumns: "auto minmax(0, 1fr) auto",
   alignItems: "center",
@@ -430,9 +445,12 @@ const quickActionCard = (color) => ({
   borderRadius: 22,
   background: "var(--dashboard-card-bg, #fff)",
   border: `1px solid ${color}22`,
-  boxShadow: `0 16px 34px ${color}12`,
+  boxShadow: hovered ? `0 20px 42px ${color}22` : `0 16px 34px ${color}12`,
   textAlign: "left",
   cursor: "pointer",
+  transform: hovered ? "translateY(-2px)" : "translateY(0)",
+  transition: "transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease",
+  borderColor: hovered ? `${color}44` : `${color}22`,
 });
 
 const quickIcon = {

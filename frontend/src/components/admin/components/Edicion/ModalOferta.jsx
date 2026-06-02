@@ -1,20 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import {
-  Briefcase,
-  Calendar,
-  DollarSign,
-  Eye,
-  EyeOff,
-  Image,
-  Loader2,
-  MapPin,
-  Plus,
-  Save,
-  Trash2,
-  Upload,
-  Users,
-  X,
+  Briefcase, Calendar, DollarSign, Eye, EyeOff, Image,
+  Loader2, MapPin, Plus, Save, Trash2, Upload, Users, X,
 } from "lucide-react";
 import EdicionConfirmModal from "./EdicionConfirmModal";
 import {
@@ -23,155 +12,123 @@ import {
 } from "../../../../services/adminProfileTableService";
 
 const OFFER_STATES = ["open", "visible", "closed", "removed", "private"];
-const CURRENCIES = ["USD", "BOB", "EUR"];
-
-// Etiquetas legibles para cada campo
-const FIELD_LABELS = {
-  title: "Título",
-  description: "Descripción",
-  type: "Tipo",
-  modalidad: "Modalidad",
-  ubicacion: "Ubicación",
-  nivel: "Nivel",
-  area: "Área",
-  state: "Estado",
-  quota_quantity: "Cupos",
-  salary_min: "Salario mínimo",
-  salary_max: "Salario máximo",
-  currency: "Moneda",
-  show_salary: "Mostrar salario",
-  closed_at: "Fecha de cierre",
-  banner_url: "Banner URL",
-  id_audience_type: "Alcance (audiencia)",
-};
-
-const COMPARABLE_FIELDS = Object.keys(FIELD_LABELS);
+const CURRENCIES   = ["USD", "BOB", "EUR"];
 
 function normalizeOffer(raw) {
   if (!raw) return null;
   return {
-    id_offer: raw.id_offer ?? null,
-    title: raw.title ?? "",
-    description: raw.description ?? "",
-    type: raw.type ?? "",
-    modalidad: raw.modalidad ?? "",
-    ubicacion: raw.ubicacion ?? "",
-    nivel: raw.nivel ?? "",
-    area: raw.area ?? "",
-    state: raw.state ?? "open",
-    quota_quantity: raw.quota_quantity ?? "",
-    salary_min: raw.salary_min ?? "",
-    salary_max: raw.salary_max ?? "",
-    currency: raw.currency ?? "USD",
-    show_salary: raw.show_salary ?? true,
-    closed_at: raw.closed_at ? raw.closed_at.slice(0, 10) : "",
-    banner_url: raw.banner_url ?? "",
+    id_offer:         raw.id_offer         ?? null,
+    title:            raw.title            ?? "",
+    description:      raw.description      ?? "",
+    type:             raw.type             ?? "",
+    modalidad:        raw.modalidad        ?? "",
+    ubicacion:        raw.ubicacion        ?? "",
+    nivel:            raw.nivel            ?? "",
+    area:             raw.area             ?? "",
+    state:            raw.state            ?? "open",
+    quota_quantity:   raw.quota_quantity   ?? "",
+    salary_min:       raw.salary_min       ?? "",
+    salary_max:       raw.salary_max       ?? "",
+    currency:         raw.currency         ?? "USD",
+    show_salary:      raw.show_salary      ?? true,
+    closed_at:        raw.closed_at ? raw.closed_at.slice(0, 10) : "",
+    banner_url:       raw.banner_url       ?? "",
     id_audience_type: raw.id_audience_type ?? null,
   };
 }
 
-// Formatea un valor para mostrarlo en el resumen del modal de confirmación
-function formatValue(field, value, catalogs) {
-  if (value === null || value === undefined || value === "") return "—";
-  if (field === "show_salary") return value ? "Visible" : "Oculto";
-  if (field === "id_audience_type") {
-    const aud = catalogs?.audience_types?.find(
-      (a) => String(a.value) === String(value)
-    );
-    return aud ? `${aud.code}${aud.name ? ` — ${aud.name}` : ""}` : String(value);
-  }
-  return String(value);
-}
-
-// Calcula qué cambió entre la snapshot original y el estado actual del formulario
-function buildResumen(original, current, details, bannerFile, catalogs) {
-  const resumen = [];
-
-  // 1. Campos escalares
-  for (const field of COMPARABLE_FIELDS) {
-    const oldVal = String(original?.[field] ?? "");
-    const newVal = String(current?.[field] ?? "");
-    if (oldVal !== newVal) {
-      resumen.push({
-        label: FIELD_LABELS[field],
-        value: `${formatValue(field, original?.[field], catalogs)} → ${formatValue(field, current?.[field], catalogs)}`,
-      });
-    }
-  }
-
-  // 2. Banner: nuevo archivo seleccionado
-  if (bannerFile) {
-    resumen.push({
-      label: "Banner",
-      value: `Nueva imagen: ${bannerFile.name} (${(bannerFile.size / 1024).toFixed(0)} KB)`,
-    });
-  }
-
-  // 3. Skills y puestos
-  const addedSkills = details
-    .filter((d) => d._isNew && d.id_skill && !d._delete)
-    .map((d) => d.skill_name || `Skill #${d.id_skill}`);
-
-  const removedSkills = details
-    .filter((d) => d._delete && d.id_skill && !d._isNew)
-    .map((d) => d.skill_name || `Skill #${d.id_skill}`);
-
-  const addedJobTitles = details
-    .filter((d) => d._isNew && d.id_job_title && !d._delete)
-    .map((d) => d.job_title_name || `Puesto #${d.id_job_title}`);
-
-  const removedJobTitles = details
-    .filter((d) => d._delete && d.id_job_title && !d._isNew)
-    .map((d) => d.job_title_name || `Puesto #${d.id_job_title}`);
-
-  if (addedSkills.length > 0)
-    resumen.push({ label: "Skills agregadas", value: addedSkills.join(", ") });
-  if (removedSkills.length > 0)
-    resumen.push({ label: "Skills eliminadas", value: removedSkills.join(", ") });
-  if (addedJobTitles.length > 0)
-    resumen.push({ label: "Puestos agregados", value: addedJobTitles.join(", ") });
-  if (removedJobTitles.length > 0)
-    resumen.push({ label: "Puestos eliminados", value: removedJobTitles.join(", ") });
-
-  return resumen;
-}
-
 export default function ModalOferta({ idProfile, idOffer, onClose, onSaved }) {
-  const [formData, setFormData] = useState(null);
-  const [originalData, setOriginalData] = useState(null); // snapshot inmutable para el diff
-  const [details, setDetails] = useState([]);
-  const [catalogs, setCatalogs] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState("");
-  const [showConfirm, setShowConfirm] = useState(false);
+  const { t } = useTranslation();
+  const e = "adminEdicion.oferta";
+
+  const FIELD_LABELS = {
+    title:            t(`${e}.fields.title`),
+    description:      t(`${e}.fields.description`),
+    type:             t(`${e}.fields.type`),
+    modalidad:        t(`${e}.fields.modalidad`),
+    ubicacion:        t(`${e}.fields.ubicacion`),
+    nivel:            t(`${e}.fields.nivel`),
+    area:             t(`${e}.fields.area`),
+    state:            t(`${e}.fields.state`),
+    quota_quantity:   t(`${e}.fields.quota`),
+    salary_min:       `${t(`${e}.fields.salary`)} ${t(`${e}.fields.salaryMin`)}`,
+    salary_max:       `${t(`${e}.fields.salary`)} ${t(`${e}.fields.salaryMax`)}`,
+    currency:         t(`${e}.fields.currency`),
+    show_salary:      t(`${e}.fields.showSalary`),
+    closed_at:        t(`${e}.fields.closedAt`),
+    banner_url:       t(`${e}.fields.banner`),
+    id_audience_type: t(`${e}.fields.id_audience_type`),
+  };
+
+  const COMPARABLE_FIELDS = Object.keys(FIELD_LABELS);
+
+  const formatValue = (field, value, catalogs) => {
+    if (value === null || value === undefined || value === "") return "—";
+    if (field === "show_salary")
+      return value ? t(`${e}.showSalaryOn`) : t(`${e}.showSalaryOff`);
+    if (field === "id_audience_type") {
+      const aud = catalogs?.audience_types?.find((a) => String(a.value) === String(value));
+      return aud ? `${aud.code}${aud.name ? ` — ${aud.name}` : ""}` : String(value);
+    }
+    return String(value);
+  };
+
+  const buildResumenFn = (original, current, details, bannerFile, catalogs) => {
+    const resumen = [];
+    for (const field of COMPARABLE_FIELDS) {
+      const oldVal = String(original?.[field] ?? "");
+      const newVal = String(current?.[field]  ?? "");
+      if (oldVal !== newVal)
+        resumen.push({
+          label: FIELD_LABELS[field],
+          value: `${formatValue(field, original?.[field], catalogs)} → ${formatValue(field, current?.[field], catalogs)}`,
+        });
+    }
+    if (bannerFile)
+      resumen.push({
+        label: t(`${e}.fields.banner`),
+        value: `${t(`${e}.resumen.bannerNew`)}: ${bannerFile.name} (${(bannerFile.size / 1024).toFixed(0)} KB)`,
+      });
+    const addedSkills    = details.filter((d) => d._isNew && d.id_skill     && !d._delete).map((d) => d.skill_name     || `Skill #${d.id_skill}`);
+    const removedSkills  = details.filter((d) => d._delete && d.id_skill    && !d._isNew).map((d) => d.skill_name     || `Skill #${d.id_skill}`);
+    const addedJT        = details.filter((d) => d._isNew && d.id_job_title && !d._delete).map((d) => d.job_title_name || `Puesto #${d.id_job_title}`);
+    const removedJT      = details.filter((d) => d._delete && d.id_job_title && !d._isNew).map((d) => d.job_title_name || `Puesto #${d.id_job_title}`);
+    if (addedSkills.length)   resumen.push({ label: t(`${e}.resumen.addedSkills`),    value: addedSkills.join(", ")   });
+    if (removedSkills.length) resumen.push({ label: t(`${e}.resumen.removedSkills`),  value: removedSkills.join(", ") });
+    if (addedJT.length)       resumen.push({ label: t(`${e}.resumen.addedJobTitles`), value: addedJT.join(", ")       });
+    if (removedJT.length)     resumen.push({ label: t(`${e}.resumen.removedJobTitles`), value: removedJT.join(", ")   });
+    return resumen;
+  };
+
+  const [formData,     setFormData]     = useState(null);
+  const [originalData, setOriginalData] = useState(null);
+  const [details,      setDetails]      = useState([]);
+  const [catalogs,     setCatalogs]     = useState(null);
+  const [isLoading,    setIsLoading]    = useState(true);
+  const [isSaving,     setIsSaving]     = useState(false);
+  const [error,        setError]        = useState("");
+  const [showConfirm,  setShowConfirm]  = useState(false);
   const [confirmError, setConfirmError] = useState("");
-  const [resumen, setResumen] = useState([]);
+  const [resumen,      setResumen]      = useState([]);
 
-  // Banner
   const bannerInputRef = useRef(null);
-  const [bannerFile, setBannerFile] = useState(null);
+  const [bannerFile,    setBannerFile]    = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
-
-  // Agregar nuevos detalles
-  const [newSkillId, setNewSkillId] = useState("");
+  const [newSkillId,    setNewSkillId]    = useState("");
   const [newJobTitleId, setNewJobTitleId] = useState("");
 
-  /* ── Carga inicial ── */
   useEffect(() => {
     if (!idOffer) return;
     const load = async () => {
-      setIsLoading(true);
-      setError("");
+      setIsLoading(true); setError("");
       try {
-        const data = await getAdminOffer(idProfile, idOffer);
+        const data       = await getAdminOffer(idProfile, idOffer);
         const normalized = normalizeOffer(data?.offer);
-        setFormData(normalized);
-        setOriginalData(normalized); // snapshot para comparar al confirmar
+        setFormData(normalized); setOriginalData(normalized);
         setDetails(Array.isArray(data?.details) ? data.details : []);
         setCatalogs(data?.catalogs ?? null);
       } catch (err) {
-        setError(err?.message || "No se pudo cargar la oferta.");
+        setError(err?.message || t(`${e}.errorLoad`));
       } finally {
         setIsLoading(false);
       }
@@ -179,205 +136,147 @@ export default function ModalOferta({ idProfile, idOffer, onClose, onSaved }) {
     load();
   }, [idProfile, idOffer]);
 
-  // Liberar object URL al desmontar
   useEffect(() => {
-    return () => {
-      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
-    };
+    return () => { if (bannerPreview) URL.revokeObjectURL(bannerPreview); };
   }, [bannerPreview]);
 
   const handleChange = (field, value) =>
     setFormData((prev) => ({ ...prev, [field]: value }));
 
-  /* ── Abrir confirmación: calcular diff en ese momento ── */
   const handleOpenConfirm = () => {
     setConfirmError("");
-    setResumen(buildResumen(originalData, formData, details, bannerFile, catalogs));
+    setResumen(buildResumenFn(originalData, formData, details, bannerFile, catalogs));
     setShowConfirm(true);
   };
 
-  /* ── Banner ── */
-  const handleBannerFileChange = (e) => {
-    const file = e.target.files?.[0];
+  const handleBannerFileChange = (ev) => {
+    const file = ev.target.files?.[0];
     if (!file) return;
     if (bannerPreview) URL.revokeObjectURL(bannerPreview);
-    setBannerFile(file);
-    setBannerPreview(URL.createObjectURL(file));
+    setBannerFile(file); setBannerPreview(URL.createObjectURL(file));
     handleChange("banner_url", "");
   };
 
   const handleRemoveBanner = () => {
     if (bannerPreview) URL.revokeObjectURL(bannerPreview);
-    setBannerFile(null);
-    setBannerPreview(null);
+    setBannerFile(null); setBannerPreview(null);
     handleChange("banner_url", "");
     if (bannerInputRef.current) bannerInputRef.current.value = "";
   };
 
-  /* ── Detalles: agregar skill ── */
   const handleAddSkill = () => {
     if (!newSkillId) return;
     const skillCat = catalogs?.skills?.find((s) => String(s.value) === String(newSkillId));
     if (!skillCat) return;
-    const alreadyExists = details.some(
-      (d) => !d._delete && String(d.id_skill) === String(newSkillId)
-    );
-    if (alreadyExists) { setNewSkillId(""); return; }
-    setDetails((prev) => [
-      ...prev,
-      {
-        id_offer_detail: null,
-        id_skill: Number(newSkillId),
-        skill_name: skillCat.label,
-        id_job_title: null,
-        job_title_name: null,
-        _isNew: true,
-      },
-    ]);
+    if (details.some((d) => !d._delete && String(d.id_skill) === String(newSkillId))) {
+      setNewSkillId(""); return;
+    }
+    setDetails((prev) => [...prev, {
+      id_offer_detail: null, id_skill: Number(newSkillId),
+      skill_name: skillCat.label, id_job_title: null, job_title_name: null, _isNew: true,
+    }]);
     setNewSkillId("");
   };
 
-  /* ── Detalles: agregar job_title ── */
   const handleAddJobTitle = () => {
     if (!newJobTitleId) return;
     const jtCat = catalogs?.job_titles?.find((j) => String(j.value) === String(newJobTitleId));
     if (!jtCat) return;
-    const alreadyExists = details.some(
-      (d) => !d._delete && String(d.id_job_title) === String(newJobTitleId)
-    );
-    if (alreadyExists) { setNewJobTitleId(""); return; }
-    setDetails((prev) => [
-      ...prev,
-      {
-        id_offer_detail: null,
-        id_skill: null,
-        skill_name: null,
-        id_job_title: Number(newJobTitleId),
-        job_title_name: jtCat.label,
-        _isNew: true,
-      },
-    ]);
+    if (details.some((d) => !d._delete && String(d.id_job_title) === String(newJobTitleId))) {
+      setNewJobTitleId(""); return;
+    }
+    setDetails((prev) => [...prev, {
+      id_offer_detail: null, id_skill: null, skill_name: null,
+      id_job_title: Number(newJobTitleId), job_title_name: jtCat.label, _isNew: true,
+    }]);
     setNewJobTitleId("");
   };
 
-  /* ── Detalles: quitar ── */
   const handleRemoveDetail = (index) => {
     setDetails((prev) => {
       const updated = [...prev];
-      const item = updated[index];
-      if (item._isNew) {
-        updated.splice(index, 1);
-      } else {
-        updated[index] = { ...item, _delete: true };
-      }
+      const item    = updated[index];
+      if (item._isNew) updated.splice(index, 1);
+      else updated[index] = { ...item, _delete: true };
       return updated;
     });
   };
 
-  /* ── Guardar (llamado desde EdicionConfirmModal al confirmar) ── */
   const handleConfirmedSave = async () => {
-    setIsSaving(true);
-    setConfirmError("");
+    setIsSaving(true); setConfirmError("");
     try {
       const payload = {
-        title: formData.title,
-        description: formData.description,
-        type: formData.type || null,
-        modalidad: formData.modalidad || null,
-        ubicacion: formData.ubicacion || null,
-        nivel: formData.nivel || null,
-        area: formData.area || null,
-        state: formData.state,
+        title: formData.title, description: formData.description,
+        type: formData.type || null, modalidad: formData.modalidad || null,
+        ubicacion: formData.ubicacion || null, nivel: formData.nivel || null,
+        area: formData.area || null, state: formData.state,
         quota_quantity: formData.quota_quantity !== "" ? Number(formData.quota_quantity) : null,
         salary_min: formData.salary_min !== "" ? Number(formData.salary_min) : null,
         salary_max: formData.salary_max !== "" ? Number(formData.salary_max) : null,
-        currency: formData.currency,
-        show_salary: formData.show_salary,
-        closed_at: formData.closed_at || null,
-        banner_url: formData.banner_url || null,
+        currency: formData.currency, show_salary: formData.show_salary,
+        closed_at: formData.closed_at || null, banner_url: formData.banner_url || null,
         id_audience_type: formData.id_audience_type || null,
-        details: details
-          .filter((d) => d._isNew || d._delete)
-          .map((d) => ({
-            id_offer_detail: d.id_offer_detail,
-            id_skill: d.id_skill || null,
-            id_job_title: d.id_job_title || null,
-            _delete: d._delete || false,
-          })),
+        details: details.filter((d) => d._isNew || d._delete).map((d) => ({
+          id_offer_detail: d.id_offer_detail,
+          id_skill: d.id_skill || null, id_job_title: d.id_job_title || null,
+          _delete: d._delete || false,
+        })),
       };
-
       if (bannerFile) {
-        // Enviar FormData con _method=PUT para que Laravel lo procese como PUT
         const form = new FormData();
         form.append("_method", "PUT");
         form.append("banner", bannerFile);
         Object.entries(payload).forEach(([key, value]) => {
           if (value === null || value === undefined) return;
-          if (key === "details") {
-            form.append(key, JSON.stringify(value));   // sigue igual
-          } else if (typeof value === "boolean") {
-            form.append(key, value ? "1" : "0");       // ← '1'/'0' en vez de 'true'/'false'
-          } else {
-            form.append(key, String(value));
-          }
+          if (key === "details") form.append(key, JSON.stringify(value));
+          else if (typeof value === "boolean") form.append(key, value ? "1" : "0");
+          else form.append(key, String(value));
         });
         await updateAdminOffer(idProfile, idOffer, form, true);
       } else {
         await updateAdminOffer(idProfile, idOffer, payload, false);
       }
-
-      setShowConfirm(false);
-      onSaved?.();
-      onClose?.();
+      setShowConfirm(false); onSaved?.(); onClose?.();
     } catch (err) {
-      setConfirmError(err?.message || "No se pudieron guardar los cambios.");
+      setConfirmError(err?.message || t(`${e}.errorLoad`));
     } finally {
       setIsSaving(false);
     }
   };
 
-  /* ── Helpers de render ── */
-  const visibleDetails = details.filter((d) => !d._delete);
-  const selectedAudience = catalogs?.audience_types?.find(
+  const visibleDetails    = details.filter((d) => !d._delete);
+  const selectedAudience  = catalogs?.audience_types?.find(
     (a) => String(a.value) === String(formData?.id_audience_type)
   );
 
   return (
     <>
       {createPortal(
-        <div
-          className="edicion-modal-overlay"
-          onClick={(e) => e.target === e.currentTarget && onClose?.()}
-        >
+        <div className="edicion-modal-overlay"
+          onClick={(ev) => ev.target === ev.currentTarget && onClose?.()}>
           <div className="edicion-modal" style={{ maxWidth: 700 }}>
 
-            {/* ── Header ── */}
             <div className="edicion-modal__header">
               <div className="edicion-modal__header-info">
                 <Briefcase size={15} className="edicion-modal__header-icon" />
                 <div>
-                  <h2 className="edicion-modal__title">Editar Oferta</h2>
+                  <h2 className="edicion-modal__title">{t(`${e}.title`)}</h2>
                   {formData?.id_offer && (
-                    <p className="edicion-modal__subtitle">Oferta #{formData.id_offer}</p>
+                    <p className="edicion-modal__subtitle">{t(`${e}.subtitle`)}{formData.id_offer}</p>
                   )}
                 </div>
               </div>
-              <button
-                className="edicion-modal__close"
-                onClick={onClose}
-                disabled={isSaving}
-                aria-label="Cerrar"
-              >
+              <button className="edicion-modal__close" onClick={onClose}
+                disabled={isSaving} aria-label={t("adminEdicion.common.close")}>
                 <X size={16} />
               </button>
             </div>
 
-            {/* ── Body ── */}
             <div className="edicion-modal__body">
               {isLoading ? (
                 <div className="edicion-modal__loading">
                   <Loader2 size={22} className="edicion-modal__spinner" />
-                  <span>Cargando oferta...</span>
+                  <span>{t(`${e}.loadingMsg`)}</span>
                 </div>
               ) : error && !formData ? (
                 <div className="edicion-modal__error">{error}</div>
@@ -385,96 +284,66 @@ export default function ModalOferta({ idProfile, idOffer, onClose, onSaved }) {
                 <div className="edicion-modal__fields">
                   {error && <div className="edicion-modal__error">{error}</div>}
 
-                  {/* Título */}
                   <div className="edicion-modal__field">
-                    <label className="edicion-modal__label">Título</label>
-                    <input
-                      className="edicion-modal__input"
-                      value={formData.title}
-                      onChange={(e) => handleChange("title", e.target.value)}
-                      placeholder="Título de la oferta"
-                    />
+                    <label className="edicion-modal__label">{t(`${e}.fields.title`)}</label>
+                    <input className="edicion-modal__input" value={formData.title}
+                      onChange={(ev) => handleChange("title", ev.target.value)}
+                      placeholder={t(`${e}.fields.title`)} />
                   </div>
 
-                  {/* Descripción */}
                   <div className="edicion-modal__field">
-                    <label className="edicion-modal__label">Descripción</label>
-                    <textarea
-                      className="edicion-modal__textarea"
-                      rows={3}
+                    <label className="edicion-modal__label">{t(`${e}.fields.description`)}</label>
+                    <textarea className="edicion-modal__textarea" rows={3}
                       value={formData.description}
-                      onChange={(e) => handleChange("description", e.target.value)}
-                      placeholder="Descripción de la oferta"
-                    />
+                      onChange={(ev) => handleChange("description", ev.target.value)}
+                      placeholder={t(`${e}.fields.description`)} />
                   </div>
 
-                  {/* Tipo + Modalidad */}
                   <div className="edicion-modal__row">
                     <div className="edicion-modal__field">
-                      <label className="edicion-modal__label">Tipo</label>
-                      <input
-                        className="edicion-modal__input"
-                        value={formData.type}
-                        onChange={(e) => handleChange("type", e.target.value)}
-                        placeholder="Ej: full-time, part-time"
-                      />
+                      <label className="edicion-modal__label">{t(`${e}.fields.type`)}</label>
+                      <input className="edicion-modal__input" value={formData.type}
+                        onChange={(ev) => handleChange("type", ev.target.value)}
+                        placeholder={t(`${e}.fields.typePh`)} />
                     </div>
                     <div className="edicion-modal__field">
-                      <label className="edicion-modal__label">Modalidad</label>
-                      <input
-                        className="edicion-modal__input"
-                        value={formData.modalidad}
-                        onChange={(e) => handleChange("modalidad", e.target.value)}
-                        placeholder="Ej: remoto, presencial"
-                      />
+                      <label className="edicion-modal__label">{t(`${e}.fields.modalidad`)}</label>
+                      <input className="edicion-modal__input" value={formData.modalidad}
+                        onChange={(ev) => handleChange("modalidad", ev.target.value)}
+                        placeholder={t(`${e}.fields.modalidadPh`)} />
                     </div>
                   </div>
 
-                  {/* Área + Nivel */}
                   <div className="edicion-modal__row">
                     <div className="edicion-modal__field">
-                      <label className="edicion-modal__label">Área</label>
-                      <input
-                        className="edicion-modal__input"
-                        value={formData.area}
-                        onChange={(e) => handleChange("area", e.target.value)}
-                        placeholder="Ej: Tecnología"
-                      />
+                      <label className="edicion-modal__label">{t(`${e}.fields.area`)}</label>
+                      <input className="edicion-modal__input" value={formData.area}
+                        onChange={(ev) => handleChange("area", ev.target.value)}
+                        placeholder={t(`${e}.fields.areaPh`)} />
                     </div>
                     <div className="edicion-modal__field">
-                      <label className="edicion-modal__label">Nivel</label>
-                      <input
-                        className="edicion-modal__input"
-                        value={formData.nivel}
-                        onChange={(e) => handleChange("nivel", e.target.value)}
-                        placeholder="Ej: junior, senior"
-                      />
+                      <label className="edicion-modal__label">{t(`${e}.fields.nivel`)}</label>
+                      <input className="edicion-modal__input" value={formData.nivel}
+                        onChange={(ev) => handleChange("nivel", ev.target.value)}
+                        placeholder={t(`${e}.fields.nivelPh`)} />
                     </div>
                   </div>
 
-                  {/* Ubicación */}
                   <div className="edicion-modal__field">
                     <label className="edicion-modal__label">
                       <MapPin size={11} style={{ display: "inline", marginRight: 4 }} />
-                      Ubicación
+                      {t(`${e}.fields.ubicacion`)}
                     </label>
-                    <input
-                      className="edicion-modal__input"
-                      value={formData.ubicacion}
-                      onChange={(e) => handleChange("ubicacion", e.target.value)}
-                      placeholder="Ej: Cochabamba, Bolivia"
-                    />
+                    <input className="edicion-modal__input" value={formData.ubicacion}
+                      onChange={(ev) => handleChange("ubicacion", ev.target.value)}
+                      placeholder={t(`${e}.fields.ubicacionPh`)} />
                   </div>
 
-                  {/* Estado + Cupos */}
                   <div className="edicion-modal__row">
                     <div className="edicion-modal__field">
-                      <label className="edicion-modal__label">Estado</label>
-                      <select
-                        className="edicion-modal__input"
-                        value={formData.state}
-                        onChange={(e) => handleChange("state", e.target.value)}
-                      >
+                      <label className="edicion-modal__label">{t(`${e}.fields.state`)}</label>
+                      <select className="edicion-modal__input" value={formData.state}
+                        onChange={(ev) => handleChange("state", ev.target.value)}>
                         {OFFER_STATES.map((s) => (
                           <option key={s} value={s}>{s}</option>
                         ))}
@@ -483,105 +352,76 @@ export default function ModalOferta({ idProfile, idOffer, onClose, onSaved }) {
                     <div className="edicion-modal__field">
                       <label className="edicion-modal__label">
                         <Users size={11} style={{ display: "inline", marginRight: 4 }} />
-                        Cupos
+                        {t(`${e}.fields.quota`)}
                       </label>
-                      <input
-                        className="edicion-modal__input"
-                        type="number"
-                        min={0}
+                      <input className="edicion-modal__input" type="number" min={0}
                         value={formData.quota_quantity}
-                        onChange={(e) => handleChange("quota_quantity", e.target.value)}
-                        placeholder="Cantidad de cupos"
-                      />
+                        onChange={(ev) => handleChange("quota_quantity", ev.target.value)}
+                        placeholder={t(`${e}.fields.quotaPh`)} />
                     </div>
                   </div>
 
-                  {/* Salario */}
                   <div className="edicion-modal__field">
                     <label className="edicion-modal__label">
                       <DollarSign size={11} style={{ display: "inline", marginRight: 4 }} />
-                      Salario
+                      {t(`${e}.fields.salary`)}
                     </label>
                     <div className="edicion-modal__row">
-                      <input
-                        className="edicion-modal__input"
-                        type="number"
-                        min={0}
+                      <input className="edicion-modal__input" type="number" min={0}
                         value={formData.salary_min}
-                        onChange={(e) => handleChange("salary_min", e.target.value)}
-                        placeholder="Mínimo"
-                      />
-                      <input
-                        className="edicion-modal__input"
-                        type="number"
-                        min={0}
+                        onChange={(ev) => handleChange("salary_min", ev.target.value)}
+                        placeholder={t(`${e}.fields.salaryMin`)} />
+                      <input className="edicion-modal__input" type="number" min={0}
                         value={formData.salary_max}
-                        onChange={(e) => handleChange("salary_max", e.target.value)}
-                        placeholder="Máximo"
-                      />
+                        onChange={(ev) => handleChange("salary_max", ev.target.value)}
+                        placeholder={t(`${e}.fields.salaryMax`)} />
                     </div>
                   </div>
 
-                  {/* Moneda + Mostrar salario */}
                   <div className="edicion-modal__row">
                     <div className="edicion-modal__field">
-                      <label className="edicion-modal__label">Moneda</label>
-                      <select
-                        className="edicion-modal__input"
-                        value={formData.currency}
-                        onChange={(e) => handleChange("currency", e.target.value)}
-                      >
+                      <label className="edicion-modal__label">{t(`${e}.fields.currency`)}</label>
+                      <select className="edicion-modal__input" value={formData.currency}
+                        onChange={(ev) => handleChange("currency", ev.target.value)}>
                         {CURRENCIES.map((c) => (
                           <option key={c} value={c}>{c}</option>
                         ))}
                       </select>
                     </div>
                     <div className="edicion-modal__field">
-                      <label className="edicion-modal__label">Mostrar salario</label>
+                      <label className="edicion-modal__label">{t(`${e}.fields.showSalary`)}</label>
                       <label className="edicion-modal__check">
-                        <input
-                          type="checkbox"
-                          checked={Boolean(formData.show_salary)}
-                          onChange={(e) => handleChange("show_salary", e.target.checked)}
-                        />
+                        <input type="checkbox" checked={Boolean(formData.show_salary)}
+                          onChange={(ev) => handleChange("show_salary", ev.target.checked)} />
                         {formData.show_salary
-                          ? <><Eye size={13} /> Visible</>
-                          : <><EyeOff size={13} /> Oculto</>}
+                          ? <><Eye size={13} /> {t(`${e}.showSalaryOn`)}</>
+                          : <><EyeOff size={13} /> {t(`${e}.showSalaryOff`)}</>}
                       </label>
                     </div>
                   </div>
 
-                  {/* Fecha de cierre */}
                   <div className="edicion-modal__field">
                     <label className="edicion-modal__label">
                       <Calendar size={11} style={{ display: "inline", marginRight: 4 }} />
-                      Fecha de cierre
+                      {t(`${e}.fields.closedAt`)}
                     </label>
-                    <input
-                      className="edicion-modal__input"
-                      type="date"
+                    <input className="edicion-modal__input" type="date"
                       value={formData.closed_at}
-                      onChange={(e) => handleChange("closed_at", e.target.value)}
-                    />
+                      onChange={(ev) => handleChange("closed_at", ev.target.value)} />
                   </div>
 
-                  {/* Alcance (AUDIENCE_TYPE) */}
                   <div className="edicion-modal__field">
                     <label className="edicion-modal__label">
                       <Users size={11} style={{ display: "inline", marginRight: 4 }} />
-                      Alcance
+                      {t(`${e}.fields.id_audience_type`)}
                     </label>
-                    <select
-                      className="edicion-modal__input"
+                    <select className="edicion-modal__input"
                       value={formData.id_audience_type ?? ""}
-                      onChange={(e) =>
-                        handleChange(
-                          "id_audience_type",
-                          e.target.value !== "" ? Number(e.target.value) : null
-                        )
-                      }
-                    >
-                      <option value="">— Sin especificar —</option>
+                      onChange={(ev) =>
+                        handleChange("id_audience_type",
+                          ev.target.value !== "" ? Number(ev.target.value) : null)
+                      }>
+                      <option value="">{t(`${e}.fields.audiencePh`)}</option>
                       {(catalogs?.audience_types ?? []).map((a) => (
                         <option key={a.value} value={a.value}>
                           {a.code}{a.name ? ` — ${a.name}` : ""}
@@ -593,55 +433,32 @@ export default function ModalOferta({ idProfile, idOffer, onClose, onSaved }) {
                     )}
                   </div>
 
-                  {/* Banner */}
                   <div className="edicion-modal__field">
                     <label className="edicion-modal__label">
                       <Image size={11} style={{ display: "inline", marginRight: 4 }} />
-                      Banner
+                      {t(`${e}.fields.banner`)}
                     </label>
-
                     {(bannerPreview || formData.banner_url) && (
                       <div className="edicion-modal__banner-preview">
-                        <img
-                          src={bannerPreview || formData.banner_url}
-                          alt="Banner preview"
-                          style={{
-                            width: "100%",
-                            maxHeight: 160,
-                            objectFit: "cover",
-                            borderRadius: 8,
-                            marginBottom: 8,
-                            border: "1px solid var(--color-border, #e5e7eb)",
-                          }}
-                        />
-                        <button
-                          type="button"
-                          className="edicion-modal__btn-cancel"
-                          style={{ marginBottom: 6 }}
-                          onClick={handleRemoveBanner}
-                        >
-                          <Trash2 size={12} /> Quitar banner
+                        <img src={bannerPreview || formData.banner_url} alt="Banner preview"
+                          style={{ width: "100%", maxHeight: 160, objectFit: "cover",
+                            borderRadius: 8, marginBottom: 8,
+                            border: "1px solid var(--color-border, #e5e7eb)" }} />
+                        <button type="button" className="edicion-modal__btn-cancel"
+                          style={{ marginBottom: 6 }} onClick={handleRemoveBanner}>
+                          <Trash2 size={12} /> {t(`${e}.bannerRemove`)}
                         </button>
                       </div>
                     )}
-
-                    <input
-                      ref={bannerInputRef}
-                      type="file"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      onChange={handleBannerFileChange}
-                    />
-
-                    <button
-                      type="button"
-                      className="edicion-modal__btn-cancel"
-                      onClick={() => bannerInputRef.current?.click()}
-                    >
+                    <input ref={bannerInputRef} type="file" accept="image/*"
+                      style={{ display: "none" }} onChange={handleBannerFileChange} />
+                    <button type="button" className="edicion-modal__btn-cancel"
+                      onClick={() => bannerInputRef.current?.click()}>
                       <Upload size={12} />
-                      {bannerPreview || formData.banner_url ? "Cambiar imagen" : "Seleccionar imagen"}
+                      {bannerPreview || formData.banner_url
+                        ? t(`${e}.bannerChange`)
+                        : t(`${e}.bannerSelect`)}
                     </button>
-
                     {bannerFile && (
                       <p className="edicion-modal__hint" style={{ marginTop: 4 }}>
                         {bannerFile.name} ({(bannerFile.size / 1024).toFixed(0)} KB)
@@ -649,140 +466,102 @@ export default function ModalOferta({ idProfile, idOffer, onClose, onSaved }) {
                     )}
                   </div>
 
-                  {/* Skills asociadas */}
+                  {/* Skills */}
                   <div className="edicion-modal__field">
-                    <label className="edicion-modal__label">Skills asociadas</label>
+                    <label className="edicion-modal__label">{t(`${e}.skillsLabel`)}</label>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
                       {visibleDetails.filter((d) => d.id_skill).map((d) => {
                         const realIdx = details.indexOf(d);
                         return (
-                          <span
-                            key={d.id_offer_detail ?? `new-skill-${realIdx}`}
+                          <span key={d.id_offer_detail ?? `new-skill-${realIdx}`}
                             className="edicion-cv-item"
-                            style={{ display: "flex", alignItems: "center", gap: 4 }}
-                          >
+                            style={{ display: "flex", alignItems: "center", gap: 4 }}>
                             {d.skill_name || `Skill #${d.id_skill}`}
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveDetail(realIdx)}
-                              style={{
-                                background: "none", border: "none", cursor: "pointer",
+                            <button type="button" onClick={() => handleRemoveDetail(realIdx)}
+                              style={{ background: "none", border: "none", cursor: "pointer",
                                 padding: 0, display: "flex", alignItems: "center",
-                                color: "inherit", opacity: 0.7,
-                              }}
-                              aria-label="Quitar skill"
-                            >
+                                color: "inherit", opacity: 0.7 }}
+                              aria-label="x">
                               <X size={11} />
                             </button>
                           </span>
                         );
                       })}
                       {visibleDetails.filter((d) => d.id_skill).length === 0 && (
-                        <span style={{ fontSize: 12, opacity: 0.5 }}>Sin skills agregadas</span>
+                        <span style={{ fontSize: 12, opacity: 0.5 }}>{t(`${e}.skillsEmpty`)}</span>
                       )}
                     </div>
                     {catalogs?.skills?.length > 0 && (
                       <div className="edicion-modal__row" style={{ alignItems: "center" }}>
-                        <select
-                          className="edicion-modal__input"
-                          value={newSkillId}
-                          onChange={(e) => setNewSkillId(e.target.value)}
-                        >
-                          <option value="">— Agregar skill —</option>
+                        <select className="edicion-modal__input" value={newSkillId}
+                          onChange={(ev) => setNewSkillId(ev.target.value)}>
+                          <option value="">{t(`${e}.addSkillPh`)}</option>
                           {catalogs.skills.map((s) => (
                             <option key={s.value} value={s.value}>{s.label}</option>
                           ))}
                         </select>
-                        <button
-                          type="button"
-                          className="edicion-modal__btn-save"
-                          style={{ flexShrink: 0 }}
-                          onClick={handleAddSkill}
-                          disabled={!newSkillId}
-                        >
+                        <button type="button" className="edicion-modal__btn-save"
+                          style={{ flexShrink: 0 }} onClick={handleAddSkill} disabled={!newSkillId}>
                           <Plus size={13} />
                         </button>
                       </div>
                     )}
                   </div>
 
-                  {/* Puestos asociados */}
+                  {/* Puestos */}
                   <div className="edicion-modal__field">
-                    <label className="edicion-modal__label">Puestos asociados</label>
+                    <label className="edicion-modal__label">{t(`${e}.jobTitlesLabel`)}</label>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
                       {visibleDetails.filter((d) => d.id_job_title).map((d) => {
                         const realIdx = details.indexOf(d);
                         return (
-                          <span
-                            key={d.id_offer_detail ?? `new-jt-${realIdx}`}
+                          <span key={d.id_offer_detail ?? `new-jt-${realIdx}`}
                             className="edicion-cv-item"
-                            style={{ display: "flex", alignItems: "center", gap: 4 }}
-                          >
+                            style={{ display: "flex", alignItems: "center", gap: 4 }}>
                             {d.job_title_name || `Puesto #${d.id_job_title}`}
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveDetail(realIdx)}
-                              style={{
-                                background: "none", border: "none", cursor: "pointer",
+                            <button type="button" onClick={() => handleRemoveDetail(realIdx)}
+                              style={{ background: "none", border: "none", cursor: "pointer",
                                 padding: 0, display: "flex", alignItems: "center",
-                                color: "inherit", opacity: 0.7,
-                              }}
-                              aria-label="Quitar puesto"
-                            >
+                                color: "inherit", opacity: 0.7 }}
+                              aria-label="x">
                               <X size={11} />
                             </button>
                           </span>
                         );
                       })}
                       {visibleDetails.filter((d) => d.id_job_title).length === 0 && (
-                        <span style={{ fontSize: 12, opacity: 0.5 }}>Sin puestos agregados</span>
+                        <span style={{ fontSize: 12, opacity: 0.5 }}>{t(`${e}.jobTitlesEmpty`)}</span>
                       )}
                     </div>
                     {catalogs?.job_titles?.length > 0 && (
                       <div className="edicion-modal__row" style={{ alignItems: "center" }}>
-                        <select
-                          className="edicion-modal__input"
-                          value={newJobTitleId}
-                          onChange={(e) => setNewJobTitleId(e.target.value)}
-                        >
-                          <option value="">— Agregar puesto —</option>
+                        <select className="edicion-modal__input" value={newJobTitleId}
+                          onChange={(ev) => setNewJobTitleId(ev.target.value)}>
+                          <option value="">{t(`${e}.addJobTitlePh`)}</option>
                           {catalogs.job_titles.map((j) => (
                             <option key={j.value} value={j.value}>{j.label}</option>
                           ))}
                         </select>
-                        <button
-                          type="button"
-                          className="edicion-modal__btn-save"
-                          style={{ flexShrink: 0 }}
-                          onClick={handleAddJobTitle}
-                          disabled={!newJobTitleId}
-                        >
+                        <button type="button" className="edicion-modal__btn-save"
+                          style={{ flexShrink: 0 }} onClick={handleAddJobTitle}
+                          disabled={!newJobTitleId}>
                           <Plus size={13} />
                         </button>
                       </div>
                     )}
                   </div>
-
                 </div>
               ) : null}
             </div>
 
-            {/* ── Footer ── */}
             {!isLoading && formData && (
               <div className="edicion-modal__footer">
-                <button
-                  className="edicion-modal__btn-cancel"
-                  onClick={onClose}
-                  disabled={isSaving}
-                >
-                  <X size={13} /> Cancelar
+                <button className="edicion-modal__btn-cancel" onClick={onClose} disabled={isSaving}>
+                  <X size={13} /> {t("adminEdicion.common.cancel")}
                 </button>
-                <button
-                  className="edicion-modal__btn-save"
-                  onClick={handleOpenConfirm}
-                  disabled={isSaving || Boolean(error)}
-                >
-                  <Save size={13} /> Guardar
+                <button className="edicion-modal__btn-save" onClick={handleOpenConfirm}
+                  disabled={isSaving || Boolean(error)}>
+                  <Save size={13} /> {t("adminEdicion.common.save")}
                 </button>
               </div>
             )}
@@ -791,14 +570,10 @@ export default function ModalOferta({ idProfile, idOffer, onClose, onSaved }) {
         document.body
       )}
 
-      {/* EdicionConfirmModal recibe el resumen calculado al abrir */}
       <EdicionConfirmModal
-        isOpen={showConfirm}
-        isBusy={isSaving}
-        entidad="Oferta"
-        accion="actualizar"
-        resumen={resumen}
-        error={confirmError}
+        isOpen={showConfirm} isBusy={isSaving}
+        entidad={t(`${e}.confirmEntity`)} accion="actualizar"
+        resumen={resumen} error={confirmError}
         onClose={() => !isSaving && setShowConfirm(false)}
         onConfirm={handleConfirmedSave}
       />

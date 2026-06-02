@@ -1,28 +1,29 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, UserCircle2, Briefcase } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ROLE_OPTIONS = [
   {
-    value: "PROFESIONAL",
-    title: "Profesional",
-    subtitle: "Buscar empleo",
-    icon: UserCircle2,
-    accent: "from-blue-500 to-cyan-500",
-    ringLight: "border-blue-500 bg-white shadow-blue-200",
-    ringDark:  "dark:border-blue-400 dark:bg-[hsl(220,30%,14%)] dark:shadow-blue-900/30",
+    value:      "PROFESIONAL",
+    i18nKey:    "professional",
+    icon:       UserCircle2,
+    accent:     "from-blue-500 to-cyan-500",
+    ringLight:  "border-blue-500 bg-white shadow-blue-200",
+    ringDark:   "dark:border-blue-400 dark:bg-[hsl(220,30%,14%)] dark:shadow-blue-900/30",
   },
   {
-    value: "RECLUTADOR",
-    title: "Reclutador",
-    subtitle: "Publicar ofertas",
-    icon: Briefcase,
-    accent: "from-violet-500 to-fuchsia-500",
-    ringLight: "border-violet-500 bg-white shadow-violet-200",
-    ringDark:  "dark:border-violet-400 dark:bg-[hsl(220,30%,14%)] dark:shadow-violet-900/30",
+    value:      "RECLUTADOR",
+    i18nKey:    "recruiter",
+    icon:       Briefcase,
+    accent:     "from-violet-500 to-fuchsia-500",
+    ringLight:  "border-violet-500 bg-white shadow-violet-200",
+    ringDark:   "dark:border-violet-400 dark:bg-[hsl(220,30%,14%)] dark:shadow-violet-900/30",
   },
 ];
 
 export default function RoleSelector({ value, onChange }) {
+  const { t } = useTranslation();
+
   return (
     <div className="grid grid-cols-2 gap-3">
       {ROLE_OPTIONS.map((option) => {
@@ -66,9 +67,11 @@ export default function RoleSelector({ value, onChange }) {
 
               <div>
                 <p className={`font-semibold text-sm ${isActive ? "text-gray-900 dark:text-slate-100" : "text-gray-700 dark:text-slate-300"}`}>
-                  {option.title}
+                  {t(`register.roles.${option.i18nKey}.title`)}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-slate-500">{option.subtitle}</p>
+                <p className="text-xs text-gray-500 dark:text-slate-500">
+                  {t(`register.roles.${option.i18nKey}.subtitle`)}
+                </p>
               </div>
             </div>
           </button>

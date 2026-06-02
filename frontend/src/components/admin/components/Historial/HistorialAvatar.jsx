@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { User } from "lucide-react";
 import {
   avatarColor,
@@ -16,6 +17,7 @@ export default function HistorialAvatar({
   className = "",
   style = {},
 }) {
+  const { t } = useTranslation();
   const [imageFailed, setImageFailed] = useState(false);
 
   const photo = getHistorialPhoto(usuario);
@@ -53,7 +55,7 @@ export default function HistorialAvatar({
       {showPhoto ? (
         <img
           src={photo}
-          alt={fullName || "Usuario"}
+          alt={fullName || t("historial.avatar.alt_usuario")}
           onError={() => setImageFailed(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />

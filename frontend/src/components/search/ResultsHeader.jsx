@@ -1,32 +1,28 @@
 import { SlidersHorizontal } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-/**
- * Muestra el contador de resultados y el indicador de búsqueda activa.
- *
- * @param {{
- *   isLoading: boolean,
- *   resultCount: number,
- *   activeFilterCount: number,
- *   debouncedQuery: string,
- * }} props
- */
 export function ResultsHeader({ isLoading, resultCount, activeFilterCount, debouncedQuery }) {
+  const { t } = useTranslation();
   const hasActiveSearch = debouncedQuery || activeFilterCount > 0;
 
   return (
-    <div className="flex items-center justify-between mb-5">
-      <p className="text-sm text-muted-foreground" aria-live="polite">
+    <div className="results-header">
+      <p className="results-header__count" aria-live="polite">
         {isLoading ? (
-          <span className="animate-pulse">Buscando...</span>
+          <span>{t("portafySearch.results.searching")}</span>
         ) : (
           <>
-            <span className="font-semibold text-foreground">{resultCount}</span>{" "}
-            resultado{resultCount !== 1 ? "s" : ""}
+            <strong>{resultCount}</strong>{" "}
+            {resultCount === 1
+              ? t("portafySearch.results.count_one", { count: resultCount })
+              : t("portafySearch.results.count_other", { count: resultCount })}
             {activeFilterCount > 0 && (
               <>
                 {" · "}
-                <span className="text-primary font-semibold">{activeFilterCount}</span>{" "}
-                filtro{activeFilterCount !== 1 ? "s" : ""} activo{activeFilterCount !== 1 ? "s" : ""}
+                <span className="count-filters">{activeFilterCount}</span>{" "}
+                {activeFilterCount === 1
+                  ? t("portafySearch.results.filterActive_one", { count: activeFilterCount })
+                  : t("portafySearch.results.filterActive_other", { count: activeFilterCount })}
               </>
             )}
           </>
@@ -34,9 +30,9 @@ export function ResultsHeader({ isLoading, resultCount, activeFilterCount, debou
       </p>
 
       {hasActiveSearch && !isLoading && resultCount > 0 && (
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <SlidersHorizontal className="h-3.5 w-3.5" />
-          Búsqueda activa
+        <div className="results-header__active">
+          <SlidersHorizontal style={{ width: 14, height: 14 }} />
+          {t("portafySearch.results.activeSearch")}
         </div>
       )}
     </div>

@@ -6,6 +6,7 @@
 /* ── Page wrapper ─────────────────────────────────────────── */
 .page-admin {
   min-height: 100vh;
+  padding-top: 70px;
 }
 
 /* ── Layout principal 3 columnas ──────────────────────────── */

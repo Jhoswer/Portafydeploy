@@ -1,60 +1,39 @@
 // src/components/admin/components/Edicion/EdicionSearchBar.jsx
 
+import { useTranslation } from "react-i18next";
 import { Search, X } from "lucide-react";
 
-/**
- * Barra de búsqueda del módulo Edición.
- * Permite buscar usuarios por nombre o apellido.
- *
- * Props:
- *  - query        : string   → valor actual del input
- *  - onChange     : fn(val)  → actualiza query en el padre
- *  - onSearch     : fn()     → dispara la búsqueda
- *  - onClear      : fn()     → limpia query y resultados
- *  - isLoading    : bool     → deshabilita el botón mientras carga
- */
 export default function EdicionSearchBar({
-  query = "",
-  onChange,
-  onSearch,
-  onClear,
-  isLoading = false,
+  query = "", onChange, onSearch, onClear, isLoading = false,
 }) {
-  /* Enter también dispara la búsqueda */
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") onSearch?.();
+  const { t } = useTranslation();
+  const e = "adminEdicion.searchBar";
+
+  const handleKeyDown = (ev) => {
+    if (ev.key === "Enter") onSearch?.();
   };
 
   return (
     <div className="edicion-searchbar">
-      {/* ── Input ── */}
       <div className="edicion-searchbar__input-wrap">
         <Search size={16} className="edicion-searchbar__icon" />
-        <input
-          type="text"
-          className="edicion-searchbar__input"
-          placeholder="Buscar usuario por nombre o apellido…"
+        <input type="text" className="edicion-searchbar__input"
+          placeholder={t(`${e}.placeholder`)}
           value={query}
-          onChange={(e) => onChange?.(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
+          onChange={(ev) => onChange?.(ev.target.value)}
+          onKeyDown={handleKeyDown} />
       </div>
 
-      {/* ── Botón buscar ── */}
-      <button
-        className="edicion-searchbar__btn"
-        onClick={onSearch}
-        disabled={isLoading || !query.trim()}
-      >
+      <button className="edicion-searchbar__btn" onClick={onSearch}
+        disabled={isLoading || !query.trim()}>
         <Search size={14} />
-        {isLoading ? "Buscando…" : "Buscar"}
+        {isLoading ? t(`${e}.searching`) : t(`${e}.searchBtn`)}
       </button>
 
-      {/* ── Limpiar (solo si hay query) ── */}
       {query.trim() && (
         <button className="edicion-searchbar__clear" onClick={onClear}>
           <X size={13} />
-          Limpiar
+          {t(`${e}.clearBtn`)}
         </button>
       )}
     </div>

@@ -503,7 +503,7 @@ export default function Register() {
                 {/* ── PASO 2: CAPTCHA ── */}
                 {recaptchaEnabled && (
                   <div className="mb-4">
-                    <StepLabel number={2} label={t("register.captchaLabel") || "Verificación de seguridad"} />
+                    <StepLabel number={2} label={t("register.captchaLabel")} />
                     <div className={`flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl border-2 bg-white/3 transition-all ${
                       errors.captcha
                         ? "border-red-500/40"

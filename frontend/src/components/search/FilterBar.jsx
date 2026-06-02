@@ -1,31 +1,22 @@
 import { useState } from "react";
 import { X, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { FilterInput, SUGGESTIONS } from "./FilterInput";
 
-// ─── Configuración ────────────────────────────────────────────────────────────
-
-const CATEGORIES = [
-  { id: "ubicacion",   label: "Ubicación"   },
-  { id: "profesion",   label: "Profesión"   },
-  { id: "habilidades", label: "Habilidades" },
-  { id: "experiencia", label: "Experiencia" },
-  { id: "academico",   label: "Estudios"    },
-];
-
 const FILTER_OPTIONS = {
-  ubicacion:   [{ key: "ubicacion",       label: "Ubicación",   type: "text"   }],
-  profesion:   [{ key: "profesion",       label: "Profesión",   type: "text"   }],
+  ubicacion:   [{ key: "ubicacion",       label: "portafySearch.filters.fields.ubicacion",   type: "text"   }],
+  profesion:   [{ key: "profesion",       label: "portafySearch.filters.fields.profesion",   type: "text"   }],
   habilidades: [
-    { key: "habilidad", label: "Habilidad", type: "text" },
-    { key: "hab_tipo",  label: "Tipo",      type: "select", options: ["tecnica", "blanda"] },
+    { key: "habilidad", label: "portafySearch.filters.fields.habilidad", type: "text" },
+    { key: "hab_tipo",  label: "portafySearch.filters.fields.hab_tipo",  type: "select", options: ["tecnica", "blanda"] },
   ],
   experiencia: [
-    { key: "exp_cargo",   label: "Cargo",   type: "text" },
-    { key: "exp_empresa", label: "Empresa", type: "text" },
+    { key: "exp_cargo",   label: "portafySearch.filters.fields.exp_cargo",   type: "text" },
+    { key: "exp_empresa", label: "portafySearch.filters.fields.exp_empresa", type: "text" },
   ],
   academico: [
-    { key: "institucion",     label: "Institución", type: "text" },
-    { key: "nivel_formacion", label: "Nivel",       type: "select", options: ["tecnico","tecnologo","licenciatura","ingenieria","maestria","doctorado"] },
+    { key: "institucion",     label: "portafySearch.filters.fields.institucion",     type: "text" },
+    { key: "nivel_formacion", label: "portafySearch.filters.fields.nivel_formacion", type: "select", options: ["tecnico","tecnologo","licenciatura","ingenieria","maestria","doctorado"] },
   ],
 };
 
@@ -37,26 +28,21 @@ function findFilterOption(filterKey) {
   return null;
 }
 
-function getCatLabel(filterKey) {
-  const entry = Object.entries(FILTER_OPTIONS).find(([, opts]) =>
-    opts.some((o) => o.key === filterKey)
-  );
-  return entry ? (CATEGORIES.find((c) => c.id === entry[0])?.label ?? "") : "";
+function getCatLabel(filterKey, categories) {
+  const catIds = {
+    ubicacion:      "ubicacion",
+    profesion:      "profesion",
+    habilidad:      "habilidades",
+    hab_tipo:       "habilidades",
+    exp_cargo:      "experiencia",
+    exp_empresa:    "experiencia",
+    institucion:    "academico",
+    nivel_formacion:"academico",
+  };
+  const catId = catIds[filterKey];
+  return categories.find((c) => c.id === catId)?.label ?? "";
 }
 
-// ─── FilterBar ────────────────────────────────────────────────────────────────
-
-/**
- * @param {{
- *   filtersOpen: boolean,
- *   openCategoryId: string | null,
- *   filterValues: Record<string, string>,
- *   onToggleCategory: (id: string) => void,
- *   onFilterValueChange: (key: string, val: string) => void,
- *   onClearFilter: (key: string) => void,
- *   onClearAllFilters: () => void,
- * }} props
- */
 export function FilterBar({
   filtersOpen,
   openCategoryId,
@@ -66,19 +52,22 @@ export function FilterBar({
   onClearFilter,
   onClearAllFilters,
 }) {
-  // Sub-filtros cuyo input está abierto (pendiente de confirmar valor)
+  const { t } = useTranslation();
   const [pendingFilters, setPendingFilters] = useState([]);
-  // Texto vivo del input mientras el usuario escribe
-  const [inputValues, setInputValues] = useState({});
-  // Opciones personalizadas agregadas por el usuario
-  const [customOptions, setCustomOptions] = useState({});
+  const [inputValues, setInputValues]       = useState({});
+  const [customOptions, setCustomOptions]   = useState({});
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+  const CATEGORIES = [
+    { id: "ubicacion",   label: t("portafySearch.filters.categories.ubicacion")   },
+    { id: "profesion",   label: t("portafySearch.filters.categories.profesion")   },
+    { id: "habilidades", label: t("portafySearch.filters.categories.habilidades") },
+    { id: "experiencia", label: t("portafySearch.filters.categories.experiencia") },
+    { id: "academico",   label: t("portafySearch.filters.categories.academico")   },
+  ];
 
   const openPending = (key) => {
     if (!pendingFilters.includes(key)) {
       setPendingFilters((prev) => [...prev, key]);
-      // Pre-llenar con el valor actual si ya había uno (edición)
       setInputValues((prev) => ({ ...prev, [key]: filterValues[key] ?? "" }));
     }
   };
@@ -88,17 +77,8 @@ export function FilterBar({
     setInputValues((prev) => ({ ...prev, [key]: "" }));
   };
 
-  // Confirmar valor → persistir y cerrar input
-  const handleConfirm = (key, val) => {
-    onFilterValueChange(key, val);
-    closePending(key);
-  };
-
-  // Limpiar filtro (desde chip o desde input)
-  const handleClear = (key) => {
-    onClearFilter(key);
-    closePending(key);
-  };
+  const handleConfirm = (key, val) => { onFilterValueChange(key, val); closePending(key); };
+  const handleClear   = (key)       => { onClearFilter(key); closePending(key); };
 
   const handleClearAll = () => {
     onClearAllFilters();
@@ -122,22 +102,12 @@ export function FilterBar({
     if (filterValues[key] === val) handleClear(key);
   };
 
-  // Clic en sub-filtro:
-  // · tiene valor confirmado → re-abre para editar
-  // · está pendiente y sin valor → cierra (toggle off)
-  // · sin valor y sin pending → abre el input
   const handleSubFilterClick = (key) => {
-    const hasValue = (filterValues[key] ?? "").trim() !== "";
+    const hasValue  = (filterValues[key] ?? "").trim() !== "";
     const isPending = pendingFilters.includes(key);
-
-    if (isPending && !hasValue) {
-      closePending(key);
-    } else {
-      openPending(key);
-    }
+    if (isPending && !hasValue) closePending(key);
+    else openPending(key);
   };
-
-  // ── Derived ───────────────────────────────────────────────────────────────
 
   const subFilters = openCategoryId ? (FILTER_OPTIONS[openCategoryId] ?? []) : [];
 
@@ -151,107 +121,90 @@ export function FilterBar({
 
   if (!filtersOpen) return null;
 
-  // ── Render ────────────────────────────────────────────────────────────────
-
   return (
-    <div
-      id="filters-panel"
-      className="space-y-2 pt-3 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200"
-    >
-      {/* ── Fila 1: categorías ── */}
-      <div className="flex flex-wrap gap-2 items-center">
+    <div id="filters-panel" className="filters-panel">
+
+      {/* Categorías */}
+      <div className="filters-panel__cats">
         {CATEGORIES.map((cat) => {
-          const isOpen = openCategoryId === cat.id;
+          const isOpen     = openCategoryId === cat.id;
           const catFilters = FILTER_OPTIONS[cat.id] ?? [];
-          const catActive = catFilters.some((o) => {
+          const catActive  = catFilters.some((o) => {
             const v = filterValues[o.key] ?? "";
             return o.type === "toggle" ? v === "true" : v.trim() !== "";
           });
 
+          let btnClass = "filters-panel__cat-btn";
+          if (isOpen)          btnClass += " filters-panel__cat-btn--open";
+          else if (catActive)  btnClass += " filters-panel__cat-btn--active";
+
           return (
             <button
               key={cat.id}
-              aria-label={`Categoría ${cat.label}`}
+              aria-label={`${t("portafySearch.filters.categories." + cat.id)}`}
               aria-expanded={isOpen}
               onClick={() => onToggleCategory(cat.id)}
-              className={[
-                "inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150",
-                isOpen
-                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                  : catActive
-                  ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
-                  : "bg-card text-foreground border-border hover:border-primary/40 hover:text-primary",
-              ].join(" ")}
+              className={btnClass}
             >
-              {catActive && !isOpen && (
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              )}
+              {catActive && !isOpen && <span className="filters-panel__cat-dot" />}
               {cat.label}
               <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                style={{
+                  width: 13, height: 13,
+                  transition: "transform 0.2s",
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                }}
               />
             </button>
           );
         })}
 
         {hasActiveFilters && (
-          <button
-            onClick={handleClearAll}
-            className="ml-auto text-xs text-muted-foreground hover:text-destructive transition-colors px-2 py-1 rounded-md hover:bg-destructive/10"
-          >
-            Quitar todos
+          <button onClick={handleClearAll} className="filters-panel__clear-all">
+            {t("portafySearch.filters.clearAll")}
           </button>
         )}
       </div>
 
-      {/* ── Fila 2: sub-filtros de la categoría abierta ── */}
+      {/* Sub-filtros */}
       {openCategoryId && subFilters.length > 0 && (
-        <div className="flex flex-wrap gap-2 pl-1 animate-in fade-in slide-in-from-top-1 duration-150">
+        <div className="filters-panel__subs">
           {subFilters.map((opt) => {
-            const val = filterValues[opt.key] ?? "";
+            const val      = filterValues[opt.key] ?? "";
             const hasValue = opt.type === "toggle" ? val === "true" : val.trim() !== "";
-            const isPending = pendingFilters.includes(opt.key);
-            const isActive = hasValue || isPending;
+            const isActive = hasValue || pendingFilters.includes(opt.key);
 
             return (
               <button
                 key={opt.key}
-                aria-label={`Sub-filtro ${opt.label}`}
+                aria-label={t(opt.label)}
                 aria-pressed={isActive}
                 onClick={() => handleSubFilterClick(opt.key)}
-                className={[
-                  "px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150",
-                  isActive
-                    ? "bg-primary/15 text-primary border-primary/40"
-                    : "bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground",
-                ].join(" ")}
+                className={`filters-panel__sub-btn${isActive ? " filters-panel__sub-btn--active" : ""}`}
               >
-                {opt.label}
+                {t(opt.label)}
               </button>
             );
           })}
         </div>
       )}
 
-      {/* ── Fila 3: inputs solo mientras el usuario está eligiendo ── */}
+      {/* Inputs pendientes */}
       {pendingFilters.length > 0 && (
-        <div className="flex flex-col gap-2 pt-1 animate-in fade-in slide-in-from-top-1 duration-200">
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {pendingFilters.map((filterKey) => {
             const opt = findFilterOption(filterKey);
             if (!opt) return null;
-
             return (
               <FilterInput
                 key={filterKey}
-                option={opt}
+                option={{ ...opt, label: t(opt.label) }}
                 value={filterValues[filterKey] ?? ""}
                 inputValue={inputValues[filterKey] ?? ""}
                 customOptions={customOptions[filterKey] ?? []}
                 suggestions={SUGGESTIONS[filterKey] ?? []}
                 onChange={(val) => handleConfirm(filterKey, val)}
-                onInputChange={(val) =>
-                  setInputValues((prev) => ({ ...prev, [filterKey]: val }))
-                }
+                onInputChange={(val) => setInputValues((prev) => ({ ...prev, [filterKey]: val }))}
                 onClear={() => handleClear(filterKey)}
                 onAddCustom={(val) => handleAddCustom(filterKey, val)}
                 onDeleteCustom={(val) => handleDeleteCustom(filterKey, val)}
@@ -261,38 +214,38 @@ export function FilterBar({
         </div>
       )}
 
-      {/* ── Fila 4: chips resumen — única huella visible de los filtros activos ── */}
+      {/* Chips activos */}
       {hasActiveFilters && (
-        <div className="flex flex-wrap gap-1.5 pt-1 items-center animate-in fade-in duration-200">
-          <span className="text-xs text-muted-foreground mr-0.5">Activos:</span>
+        <div className="filters-panel__chips">
+          <span className="filters-panel__chips-label">
+            {t("portafySearch.filters.active")}
+          </span>
           {allConfirmedEntries.map(([key, value]) => {
             const opt = findFilterOption(key);
             if (!opt) return null;
-            const catLabel = getCatLabel(key);
+            const catLabel     = getCatLabel(key, CATEGORIES);
             const displayValue = opt.type === "toggle" ? "✓" : value;
 
             return (
-              <span
-                key={key}
-                className="inline-flex items-center gap-1 pl-2.5 pr-1 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20"
-              >
-                <span className="opacity-60">{catLabel} ›</span>
-                <span>{opt.label}</span>
+              <span key={key} className="filters-panel__chip">
+                <span className="filters-panel__chip-dim">{catLabel} ›</span>
+                {t(opt.label)}
                 {displayValue !== "✓" && (
-                  <span className="opacity-70">: {displayValue}</span>
+                  <span className="filters-panel__chip-dim">: {displayValue}</span>
                 )}
                 <button
-                  aria-label={`Quitar filtro ${opt.label}`}
+                  aria-label={`${t("portafySearch.filters.clearAll")} ${t(opt.label)}`}
                   onClick={() => handleClear(key)}
-                  className="ml-0.5 h-4 w-4 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors"
+                  className="filters-panel__chip-x"
                 >
-                  <X className="h-2.5 w-2.5" />
+                  <X style={{ width: 10, height: 10 }} />
                 </button>
               </span>
             );
           })}
         </div>
       )}
+
     </div>
   );
 }

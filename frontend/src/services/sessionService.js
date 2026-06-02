@@ -62,6 +62,8 @@ export function buildSessionUser(rawUser, token = "") {
     provider: rawUser.provider || null,
     foto_perfil: rawUser.foto_perfil || "",
     foto_perfil_url: rawUser.foto_perfil_url || "",
+    verification: rawUser.verification || null,
+    is_verified: Boolean(rawUser.is_verified || rawUser.isVerified || rawUser.verification?.is_verified),
     photoUrl: resolvePhotoUrl(rawUser),
     initials,
     token: token || rawUser.token || "",

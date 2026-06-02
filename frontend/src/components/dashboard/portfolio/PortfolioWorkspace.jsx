@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, PencilLine, Plus, Sparkles, Trash2 } from "lucide-react";
+import { ArrowLeft, PencilLine, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   breadcrumb,
@@ -190,12 +190,7 @@ export default function PortfolioWorkspace(props) {
 
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <span style={{ ...statPill, background: "rgba(255,255,255,.10)", border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.82)" }}>
-                    <CheckCircle2 size={14} color="var(--blue-mid)" />
                     {recordsLabel}
-                  </span>
-                  <span style={{ ...statPill, background: "rgba(255,255,255,.10)", border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.82)" }}>
-                    <Sparkles size={14} color="var(--blue-mid)" />
-                    {t("appI18n.portfolio.editable", { singular: sectionSingular })}
                   </span>
                   {syncMessage ? (
                     <span style={{ ...statPill, background: "rgba(255,255,255,.10)", border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.82)" }}>
@@ -295,7 +290,6 @@ export default function PortfolioWorkspace(props) {
                             ? t("appI18n.portfolio.editItem", { singular: sectionSingular })
                             : t("appI18n.portfolio.addItem", { singular: sectionSingular })}
                         </div>
-                        <div style={detailMeta}>{t("appI18n.portfolio.formHint")}</div>
                         {fieldErrors?._form ? <div style={{ ...helperText, color: "#d53638", marginTop: 6 }}>{fieldErrors._form}</div> : null}
                       </div>
                     </div>

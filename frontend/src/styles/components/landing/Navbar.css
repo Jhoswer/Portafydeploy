@@ -395,6 +395,21 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pf-user-verified {
+  flex: 0 0 auto;
+  color: #2563eb;
+  fill: rgba(37, 99, 235, .16);
+  filter: drop-shadow(0 4px 8px rgba(37, 99, 235, .18));
+}
+
+.pf-user-verified--dropdown {
+  margin-left: 5px;
+  vertical-align: -2px;
 }
 
 /* Dropdown */

@@ -1,38 +1,28 @@
-// src/components/admin/components/Edicion/TablaPreferencias.jsx
-
+// TablaPreferencias.jsx
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Settings2 } from "lucide-react";
 import AdminProfileTable from "./AdminProfileTable";
 import ModalPreferencias from "./ModalPreferencias";
 
 export default function TablaPreferencias({ idProfile }) {
+  const { t } = useTranslation();
   const [selectedPreference, setSelectedPreference] = useState(null);
-  const [reloadKey, setReloadKey] = useState(0);
-
-  const handleRowClick  = (row) => setSelectedPreference(row);
-  const handleClose     = ()    => setSelectedPreference(null);
-  const handleSave      = ()    => { setSelectedPreference(null); setReloadKey((k) => k + 1); };
+  const [reloadKey,          setReloadKey]          = useState(0);
 
   return (
     <>
       <AdminProfileTable
-        idProfile={idProfile}
-        resource="preferences"
-        title="Preferencias del usuario"
-        emptyText="Este usuario no tiene preferencias registradas."
-        Icon={Settings2}
-        primaryKey="id_preference"
-        reloadKey={reloadKey}
-        onRowClick={handleRowClick}
+        idProfile={idProfile} resource="preferences"
+        title={t("adminEdicion.tablas.preferencias.title")}
+        emptyText={t("adminEdicion.tablas.preferencias.emptyText")}
+        Icon={Settings2} primaryKey="id_preference" reloadKey={reloadKey}
+        onRowClick={(row) => setSelectedPreference(row)}
       />
-
       {selectedPreference && (
-        <ModalPreferencias
-          idProfile={idProfile}
-          preference={selectedPreference}
-          onClose={handleClose}
-          onSave={handleSave}
-        />
+        <ModalPreferencias idProfile={idProfile} preference={selectedPreference}
+          onClose={() => setSelectedPreference(null)}
+          onSave={() => { setSelectedPreference(null); setReloadKey((k) => k + 1); }} />
       )}
     </>
   );

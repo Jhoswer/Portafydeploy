@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfileVerificationRequest;
 use App\Services\ProfileVerificationService;
+use App\Support\AdminDocumentResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -68,5 +69,34 @@ class ProfileVerificationController extends Controller
         } catch (\RuntimeException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }
+    }
+
+    public function document(ProfileVerificationRequest $verification, string $document)
+    {
+        $source = match ($document) {
+            'front' => $verification->document_front_url,
+            'back' => $verification->document_back_url,
+            'pdf' => $verification->document_pdf_url,
+            default => null,
+        };
+
+        abort_unless((bool) $source, 404, 'Documento no encontrado.');
+
+        return AdminDocumentResponse::inline(
+            $source,
+            'verificacion-' . $verification->getKey() . '-' . $document . '.' . $this->extension($document, $source),
+            $document === 'pdf' ? 'application/pdf' : null
+        );
+    }
+
+    private function extension(string $document, string $source): string
+    {
+        if ($document === 'pdf') {
+            return 'pdf';
+        }
+
+        $extension = strtolower(pathinfo(parse_url($source, PHP_URL_PATH) ?: $source, PATHINFO_EXTENSION));
+
+        return in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true) ? $extension : 'jpg';
     }
 }

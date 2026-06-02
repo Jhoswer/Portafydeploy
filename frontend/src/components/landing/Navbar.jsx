@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, ShieldCheck, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/useAuth";
 import { useClickOutside } from "../../hooks/useClickOutside";
@@ -86,6 +86,7 @@ export default function Navbar({ hideAuthButtons = false }) {
   const shouldShowPhoto = Boolean(user?.photoUrl) && failedPhotoUrl !== user.photoUrl;
   const navClass = `pf-nav pf-nav--theme-${pageTheme}${scrolled ? " pf-nav--scrolled" : ""}`;
   const productLinks = user ? userProductLinks : visitorProductLinks;
+  const userVerified = Boolean(user?.is_verified || user?.isVerified || user?.verification?.is_verified);
 
   const handleLogout = () => {
     logout();
@@ -167,7 +168,12 @@ export default function Navbar({ hideAuthButtons = false }) {
                       user.initials
                     )}
                   </div>
-                  <span className="pf-user__name">{user.name}</span>
+                  <span className="pf-user__name">
+                    {user.name}
+                    {userVerified ? (
+                      <ShieldCheck className="pf-user-verified" size={15} aria-label={t("appI18n.common.verifiedAccount")} />
+                    ) : null}
+                  </span>
                 </button>
 
                 {userMenuOpen ? (
@@ -186,7 +192,12 @@ export default function Navbar({ hideAuthButtons = false }) {
                           )}
                         </div>
                         <div>
-                          <p>{user.name} {user.lastName}</p>
+                          <p>
+                            {user.name} {user.lastName}
+                            {userVerified ? (
+                              <ShieldCheck className="pf-user-verified pf-user-verified--dropdown" size={15} aria-label={t("appI18n.common.verifiedAccount")} />
+                            ) : null}
+                          </p>
                           <span>{user.email}</span>
                         </div>
                       </div>

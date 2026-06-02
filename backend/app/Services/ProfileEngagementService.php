@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Profile;
 use App\Models\Relation;
 use App\Models\Usuario;
+use App\Services\NotificationService;
 use App\Support\OfficialSchema;
 use App\Support\ProfileRoleGuard;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,7 +14,10 @@ use RuntimeException;
 
 class ProfileEngagementService
 {
-    public function __construct(private readonly PublicAssetUrlService $assetUrlService) {}
+    public function __construct(
+        private readonly PublicAssetUrlService $assetUrlService,
+        private readonly NotificationService $notificationService,
+    ) {}
 
     public function summary(Profile $profile, ?Profile $viewer = null): array
     {
@@ -41,36 +45,53 @@ class ProfileEngagementService
         ];
     }
 
-    public function follow(Usuario $authenticatedUser, Usuario $targetUser): array
-    {
-        $viewer = OfficialSchema::ensureProfile($authenticatedUser);
-        $target = OfficialSchema::ensureProfile($targetUser);
+public function follow(Usuario $authenticatedUser, Usuario $targetUser): array
+{
+    $viewer = OfficialSchema::ensureProfile($authenticatedUser);
+    $target = OfficialSchema::ensureProfile($targetUser);
 
-        $this->assertSocialProfile($viewer);
-        $this->assertSocialProfile($target);
+    $this->assertSocialProfile($viewer);
+    $this->assertSocialProfile($target);
 
-        if ((int) $viewer->getKey() === (int) $target->getKey()) {
-            throw new RuntimeException('No puedes seguirte a ti mismo.');
-        }
-
-        Relation::updateOrCreate(
-            [
-                'id_profile1' => $viewer->getKey(),
-                'id_profile2' => $target->getKey(),
-            ],
-            [
-                'last_status_date' => now(),
-                'state_relation' => 'friends',
-                'state_profile1' => 'I accept',
-                'state_profile2' => 'I think',
-            ]
-        );
-
-        return [
-            'message' => 'Ahora sigues este perfil.',
-            'summary' => $this->summary($target, $viewer),
-        ];
+    if ((int) $viewer->getKey() === (int) $target->getKey()) {
+        throw new RuntimeException('No puedes seguirte a ti mismo.');
     }
+
+    Relation::updateOrCreate(
+        [
+            'id_profile1' => $viewer->getKey(),
+            'id_profile2' => $target->getKey(),
+        ],
+        [
+            'last_status_date' => now(),
+            'state_relation' => 'friends',
+            'state_profile1' => 'I accept',
+            'state_profile2' => 'I think',
+        ]
+    );
+
+    $actorName = trim(collect([
+        $authenticatedUser->nombre,
+        $authenticatedUser->apellido,
+    ])->filter()->implode(' '));
+
+    if ($actorName === '') {
+        $actorName = 'Usuario PortaFy';
+    }
+
+    $notification = $this->notificationService->createActivity(
+        $targetUser,
+        $authenticatedUser,
+        'follow',
+        "{$actorName} comenzó a seguirte",
+        "{$actorName} ahora te sigue en PortaFy.",
+    );
+
+    return [
+        'message' => 'Ahora sigues este perfil.',
+        'summary' => $this->summary($target, $viewer),
+    ];
+}
 
     public function unfollow(Usuario $authenticatedUser, Usuario $targetUser): array
     {

@@ -19,8 +19,19 @@ import {
 import { getItemSubtitle, getItemTitle } from "../../features/dashboard-portfolio/portfolioWorkspaceContent";
 
 const MAX_PROJECT_COVER_SIZE_BYTES = 2 * 1024 * 1024;
+const MAX_PROJECT_TECH_TAGS = 8;
 const PORTFOLIO_UPDATED_EVENT = "portfolio:updated";
 const MAIN_SECTION_KEYS = ["experience", "projects", "social", "skills"];
+const SAFE_GENERAL_TEXT = /^[\p{L}\p{N}\s.,:;!?&()/'"@+#_-]+$/u;
+const SAFE_LONG_TEXT = /^[\p{L}\p{N}\s.,:;!?&()/'"@+#_/%\-\n]+$/u;
+const SAFE_TAG_TEXT = /^[\p{L}\p{N}.+#_\-\s]+$/u;
+const FIELD_RULES = {
+  projectTitle: { min: 4, max: 90 },
+  projectDescription: { min: 30, max: 360 },
+  experienceCompany: { min: 2, max: 100 },
+  experienceDescription: { min: 30, max: 420 },
+  tag: { min: 2, max: 28 },
+};
 const SAFE_EDUCATION_TEXT = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,:&()/'-]+$/;
 const SAFE_INSTITUTION_TEXT = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,&()'-]+$/;
 
@@ -28,6 +39,22 @@ function isBlank(value) {
   if (Array.isArray(value)) return value.length === 0;
   if (typeof value === "string") return !value.trim();
   return !value;
+}
+
+function validateTextField(errors, key, value, rules, t, invalidKey = "safeText", pattern = SAFE_GENERAL_TEXT) {
+  if (isBlank(value) || errors[key]) return;
+  const text = String(value).trim();
+  if (text.length < rules.min) {
+    errors[key] = t("appI18n.portfolio.validation.minChars", { count: rules.min });
+    return;
+  }
+  if (text.length > rules.max) {
+    errors[key] = t("appI18n.portfolio.validation.maxChars", { count: rules.max });
+    return;
+  }
+  if (!pattern.test(text)) {
+    errors[key] = t(`appI18n.portfolio.validation.${invalidKey}`);
+  }
 }
 
 function validateSectionDraft(sectionKey, draft, t) {
@@ -39,6 +66,8 @@ function validateSectionDraft(sectionKey, draft, t) {
     if (isBlank(draft.title)) errors.title = t("appI18n.portfolio.validation.role");
     if (isBlank(draft.company)) errors.company = t("appI18n.portfolio.validation.company");
     if (isBlank(draft.description)) errors.description = t("appI18n.portfolio.validation.description");
+    validateTextField(errors, "company", draft.company, FIELD_RULES.experienceCompany, t, "safeCompany");
+    validateTextField(errors, "description", draft.description, FIELD_RULES.experienceDescription, t, "safeLongText", SAFE_LONG_TEXT);
     if (isBlank(draft.startDate)) errors.startDate = t("appI18n.portfolio.validation.startDate");
     if (!draft.isCurrent && isBlank(draft.endDate)) errors.endDate = t("appI18n.portfolio.validation.endDate");
   }
@@ -48,6 +77,19 @@ function validateSectionDraft(sectionKey, draft, t) {
     if (isBlank(draft.description)) errors.description = t("appI18n.portfolio.validation.projectDescription");
     if (isBlank(draft.techCategory)) errors.techCategory = t("appI18n.portfolio.validation.techCategory");
     if (isBlank(draft.tags)) errors.tags = t("appI18n.portfolio.validation.tags");
+    validateTextField(errors, "title", draft.title, FIELD_RULES.projectTitle, t);
+    validateTextField(errors, "description", draft.description, FIELD_RULES.projectDescription, t, "safeLongText", SAFE_LONG_TEXT);
+    if (Array.isArray(draft.tags)) {
+      if (draft.tags.length > MAX_PROJECT_TECH_TAGS) {
+        errors.tags = t("appI18n.portfolio.validation.maxTags", { count: MAX_PROJECT_TECH_TAGS });
+      } else {
+        const invalidTag = draft.tags.find((tag) => {
+          const text = String(tag || "").trim();
+          return text.length < FIELD_RULES.tag.min || text.length > FIELD_RULES.tag.max || !SAFE_TAG_TEXT.test(text);
+        });
+        if (invalidTag) errors.tags = t("appI18n.portfolio.validation.safeTag");
+      }
+    }
     if (isBlank(draft.status)) errors.status = t("appI18n.portfolio.validation.projectStatus");
     if (draft.cover instanceof File) {
       if (!draft.cover.type.startsWith("image/")) {

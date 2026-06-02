@@ -1,69 +1,79 @@
-// src/components/admin/components/Definicion/CarreraForm.jsx
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Save } from "lucide-react";
 import DefinicionConfirmModal from "./DefinicionConfirmModal";
 
 const initialState = { name: "", description: "", state: "activate" };
 
-const STATE_LABEL = { activate: "Activo", deactivate: "Desactivo" };
-
 export default function CarreraForm({ onGuardar, onCancelar }) {
+  const { t } = useTranslation();
+  const p = "admin.definicion.carreraForm";
+
   const [form, setForm]     = useState(initialState);
   const [modal, setModal]   = useState(false);
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError]   = useState("");
 
-  const handleChange  = (e) => { const { name, value } = e.target; setForm((p) => ({ ...p, [name]: value })); };
+  const handleChange  = (e) => { const { name, value } = e.target; setForm((prev) => ({ ...prev, [name]: value })); };
   const handleSubmit  = (e) => { e.preventDefault(); setModal(true); };
   const handleConfirm = async () => {
     setIsBusy(true); setError("");
-    try {
-      await onGuardar?.(form);
-      setModal(false); setForm(initialState);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsBusy(false);
-    }
+    try { await onGuardar?.(form); setModal(false); setForm(initialState); }
+    catch (err) { setError(err.message); }
+    finally { setIsBusy(false); }
   };
   const handleReset = () => { setForm(initialState); onCancelar?.(); };
+
+  const STATE_LABEL = {
+    activate:   t(`${p}.stateActivate`),
+    deactivate: t(`${p}.stateDeactivate`),
+  };
 
   return (
     <>
       <form className="def-form" onSubmit={handleSubmit} onReset={handleReset}>
         <div className="def-form__row">
           <div className="def-field">
-            <label className="def-field__label">Nombre <span className="def-field__required">*</span></label>
+            <label className="def-field__label">
+              {t(`${p}.nameLabel`)} <span className="def-field__required">*</span>
+            </label>
             <input className="def-field__input" name="name" value={form.name}
-              onChange={handleChange} placeholder="Ej: Ingeniería de Sistemas" maxLength={255} required />
-            <span className="def-field__hint">Debe ser único en el sistema</span>
+              onChange={handleChange} placeholder={t(`${p}.namePlaceholder`)}
+              maxLength={255} required />
+            <span className="def-field__hint">{t(`${p}.nameHint`)}</span>
           </div>
           <div className="def-field">
-            <label className="def-field__label">Estado <span className="def-field__required">*</span></label>
+            <label className="def-field__label">
+              {t(`${p}.stateLabel`)} <span className="def-field__required">*</span>
+            </label>
             <select className="def-field__select" name="state" value={form.state} onChange={handleChange}>
-              <option value="activate">Activo</option>
-              <option value="deactivate">Desactivo</option>
+              <option value="activate">{t(`${p}.stateActivate`)}</option>
+              <option value="deactivate">{t(`${p}.stateDeactivate`)}</option>
             </select>
           </div>
         </div>
 
         <div className="def-form__row--full def-field">
-          <label className="def-field__label">Descripción <span className="def-field__required">*</span></label>
+          <label className="def-field__label">
+            {t(`${p}.descriptionLabel`)} <span className="def-field__required">*</span>
+          </label>
           <textarea className="def-field__textarea" name="description" value={form.description}
-            onChange={handleChange} placeholder="Descripción general de la carrera..." maxLength={255} />
+            onChange={handleChange} placeholder={t(`${p}.descriptionPlaceholder`)} maxLength={255} />
         </div>
 
         <div className="def-form__actions">
-          <button type="submit" className="def-btn def-btn--primary"><Save size={14} /> Guardar Carrera</button>
+          <button type="submit" className="def-btn def-btn--primary">
+            <Save size={14} /> {t(`${p}.saveButton`)}
+          </button>
         </div>
       </form>
 
       <DefinicionConfirmModal
-        isOpen={modal} isBusy={isBusy} error={error} entidad="Carrera"
+        isOpen={modal} isBusy={isBusy} error={error} entidad={t(`${p}.entityName`)}
         resumen={[
-          { label: "Nombre",      value: form.name },
-          { label: "Estado",      value: STATE_LABEL[form.state] ?? form.state },
-          { label: "Descripción", value: form.description },
+          { label: t(`${p}.summaryName`),        value: form.name },
+          { label: t(`${p}.summaryState`),       value: STATE_LABEL[form.state] ?? form.state },
+          { label: t(`${p}.summaryDescription`), value: form.description },
         ]}
         onClose={() => !isBusy && setModal(false)}
         onConfirm={handleConfirm}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import AdminModuleLayout from "../components/AdminModuleLayout";
 import HistorialUsuarios from "../components/HistorialUsuarios";
 import HistorialDetalle from "../components/Historial/Historial";
@@ -7,6 +8,7 @@ import { normalizeHistorialUsuario, getUsuarioId } from "../components/Historial
 import "../../../styles/components/admin/adminHistorial.css";
 
 export default function Historial() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
   const currentRoleId =
@@ -35,8 +37,8 @@ export default function Historial() {
 
   return (
     <AdminModuleLayout
-      title="Historial"
-      subtitle="Busca un usuario y revisa sus registros de actividad."
+      title={t("historial.title")}
+      subtitle={t("historial.subtitle")}
     >
       <div className="adm-historial adm-historial--search">
         <div className="adm-historial__list">

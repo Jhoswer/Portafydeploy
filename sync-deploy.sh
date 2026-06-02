@@ -75,7 +75,7 @@ echo -e "${GREEN}  ✓ Frontend sincronizado${NC}"
 
 # ── 3.5 Fixes case-sensitive (Linux vs Windows) ───────────────
 echo -e "${YELLOW}► Aplicando fixes case-sensitive...${NC}"
-sed -i 's|./pages/auth/Register2|./pages/auth/Register|g' frontend/src/App.jsx
+node -e "const fs=require('fs');const f='frontend/src/App.jsx';fs.writeFileSync(f,fs.readFileSync(f,'utf8').replace('./pages/auth/Register2','./pages/auth/register2').replace('./pages/auth/Register','./pages/auth/register2'),'utf8');"
 sed -i 's|from "../../components/landing/NavBar"|from "../../components/landing/Navbar"|g' frontend/src/pages/reclutador/Recruiter.jsx
 sed -i 's|notifications/notifications.css|notifications/Notifications.css|g' frontend/src/pages/notificaciones/NotificationsPage.jsx
 node -e "const fs=require('fs');const f='frontend/src/components/reclutador/forms/Recruiterforms.jsx';fs.writeFileSync(f,fs.readFileSync(f,'utf8').replace('./StepIdentidad','./Stepidentidad'),'utf8');"

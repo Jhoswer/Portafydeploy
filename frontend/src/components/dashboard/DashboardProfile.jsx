@@ -703,7 +703,7 @@ export default function DashboardProfile({ userId = null, readOnly = false }) {
     () => buildStats(projects, experience, skills, shownProfile.metrics || {}, { showProfileViews: canEdit })
       .map((stat) => ({
         ...stat,
-        label: t(`appI18n.profile.stats.${stat.label}`, stat.label),
+        label: t(`appI18n.profile.stats.${stat.key}`, stat.label),
       })),
     [projects, experience, skills, shownProfile.metrics, canEdit, t],
   );

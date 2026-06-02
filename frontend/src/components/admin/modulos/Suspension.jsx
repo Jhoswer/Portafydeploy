@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence } from "framer-motion";
 import {
   AlertTriangle,
@@ -27,25 +28,25 @@ import "../../../styles/components/admin/components/Suspencion/Suspencion.css";
 
 const ROLE_STYLES = {
   "super administrador": {
-    label: "Super Admin",
+    labelKey: "roles.superAdmin",
     color: "#7c3aed",
     background: "rgba(124,58,237,.10)",
     icon: <Shield size={11} />,
   },
   administrador: {
-    label: "Admin",
+    labelKey: "roles.administrador",
     color: "#ef5759",
     background: "rgba(239,87,89,.10)",
     icon: <ShieldAlert size={11} />,
   },
   reclutador: {
-    label: "Reclutador",
+    labelKey: "roles.reclutador",
     color: "#0284c7",
     background: "rgba(2,132,199,.10)",
     icon: <User size={11} />,
   },
   profesional: {
-    label: "Profesional",
+    labelKey: "roles.profesional",
     color: "#059669",
     background: "rgba(5,150,105,.10)",
     icon: <User size={11} />,
@@ -53,7 +54,7 @@ const ROLE_STYLES = {
 };
 
 const DEFAULT_ROLE_STYLE = {
-  label: "Usuario",
+  labelKey: "roles.usuario",
   color: "#64748b",
   background: "rgba(100,116,139,.10)",
   icon: <User size={11} />,
@@ -78,8 +79,8 @@ function getRoleKey(role) {
   return String(role ?? "").toLowerCase();
 }
 
-function formatDate(value) {
-  if (!value) return "Sin definir";
+function formatDate(value, t) {
+  if (!value) return t("suspension.sinDefinir");
   const date = value.includes("T") ? new Date(value) : new Date(`${value}T12:00:00`);
   if (Number.isNaN(date.getTime())) return String(value);
   return new Intl.DateTimeFormat("es-ES", {
@@ -93,14 +94,8 @@ function normalizeText(value) {
   return String(value ?? "").replace(/\s+/g, " ").trim();
 }
 
-function buildSummaryMessage(result, payload) {
-  const user = result?.usuario ?? {};
-  const type = payload.tipo === TEMPORARY ? "temporal" : "permanente";
-  const until = payload.tipo === TEMPORARY ? ` hasta ${formatDate(payload.fecha_fin)}` : "";
-  return `${getFullName(user)} fue suspendido de forma ${type}${until}. Motivo: ${payload.motivo}`;
-}
-
 export default function Suspension() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [query, setQuery] = useState("");
   const [usuarios, setUsuarios] = useState([]);
@@ -121,18 +116,13 @@ export default function Suspension() {
   const isSuperAdmin = currentRole === "super administrador";
 
   const currentScopeLabel = useMemo(() => {
-    if (isSuperAdmin) return "Super administrador: acceso total";
-    return "Acceso restringido";
-  }, [isSuperAdmin]);
+    if (isSuperAdmin) return t("suspension.scopeSuperAdmin");
+    return t("suspension.scopeRestringido");
+  }, [isSuperAdmin, t]);
 
   const fetchUsuarios = async (term) => {
     const q = normalizeText(term);
-    if (!q) {
-      setUsuarios([]);
-      setSearched(false);
-      setError("");
-      return;
-    }
+    if (!q) { setUsuarios([]); setSearched(false); setError(""); return; }
     setLoading(true);
     setError("");
     try {
@@ -140,7 +130,7 @@ export default function Suspension() {
       setUsuarios(Array.isArray(data) ? data : []);
       setSearched(true);
     } catch (err) {
-      setError(err?.message || "No se pudo completar la busqueda.");
+      setError(err?.message || t("suspension.errorBusqueda"));
       setUsuarios([]);
       setSearched(true);
     } finally {
@@ -150,9 +140,7 @@ export default function Suspension() {
 
   useEffect(() => {
     clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      fetchUsuarios(query);
-    }, 350);
+    debounceRef.current = setTimeout(() => { fetchUsuarios(query); }, 350);
     return () => clearTimeout(debounceRef.current);
   }, [query]);
 
@@ -212,15 +200,27 @@ export default function Suspension() {
             suspension_reason: pendingPayload.motivo,
             suspension_ends_at: pendingPayload.tipo === TEMPORARY ? pendingPayload.fecha_fin : null,
             can_suspend: false,
-            disable_reason: "Este usuario ya tiene una suspension activa.",
+            disable_reason: t("suspension.disableReason"),
           };
         })
       );
 
-      setSuccessMessage(buildSummaryMessage(response?.data ?? response, pendingPayload));
+      const tipo  = pendingPayload.tipo === TEMPORARY ? t("suspension.tipoTemporal") : t("suspension.tipoPermanente");
+      const hasta = pendingPayload.tipo === TEMPORARY
+        ? t("suspension.hastaFecha", { fecha: formatDate(pendingPayload.fecha_fin, t) })
+        : "";
+
+      setSuccessMessage(
+        t("suspension.successMensaje", {
+          nombre: getFullName(response?.data?.usuario ?? selectedUser),
+          tipo,
+          hasta,
+          motivo: pendingPayload.motivo,
+        })
+      );
       succeeded = true;
     } catch (err) {
-      setConfirmError(err?.message || "No se pudo aplicar la suspension.");
+      setConfirmError(err?.message || t("suspension.errorSuspension"));
     } finally {
       setBusy(false);
     }
@@ -234,25 +234,22 @@ export default function Suspension() {
   };
 
   const scopeHint = isSuperAdmin
-    ? "Puedes suspender cualquier usuario del sistema."
-    : "Este modulo solo esta disponible para super administradores.";
+    ? t("suspension.hintSuperAdmin")
+    : t("suspension.hintRestringido");
 
   if (!isSuperAdmin) {
     return (
       <AdminModuleLayout
-        title="Suspension"
-        subtitle="Administracion de suspensiones de usuarios."
+        title={t("suspension.titulo")}
+        subtitle={t("suspension.subtituloRestringido")}
       >
         <div className="susp-restricted-wrapper">
           <div className="susp-restricted-card">
             <div className="susp-restricted-icon">
               <ShieldAlert size={28} color="#ef5759" />
             </div>
-            <h2>Acceso restringido</h2>
-            <p>
-              Este módulo está reservado únicamente para el super administrador.
-              Los administradores normales no pueden suspender usuarios.
-            </p>
+            <h2>{t("suspension.accesoRestringido")}</h2>
+            <p>{t("suspension.soloSuperAdmin")}</p>
           </div>
         </div>
       </AdminModuleLayout>
@@ -261,15 +258,16 @@ export default function Suspension() {
 
   return (
     <AdminModuleLayout
-      title="Suspension"
-      subtitle="Busca usuarios y aplica suspensiones temporales o permanentes con control de acceso por ubicacion."
+      title={t("suspension.titulo")}
+      subtitle={t("suspension.subtitulo")}
     >
       <div className="susp-layout">
-        {/* ── Banner de controles ── */}
+
+        {/* Banner */}
         <div className="susp-header-banner">
           <div className="susp-header-banner__title-group">
-            <p>Controles criticos</p>
-            <h2>Módulo de suspensión</h2>
+            <p>{t("suspension.bannerEyebrow")}</p>
+            <h2>{t("suspension.bannerTitulo")}</h2>
           </div>
           <div className="susp-header-banner__scope">
             <span className="susp-header-banner__scope-label">{currentScopeLabel}</span>
@@ -277,18 +275,18 @@ export default function Suspension() {
           </div>
         </div>
 
-        {/* ── Éxito ── */}
+        {/* Éxito */}
         {successMessage ? (
           <div className="susp-success-banner">
             <CheckCircle2 size={18} color="#059669" />
             <div>
-              <p className="susp-success-banner__title">Suspensión aplicada correctamente</p>
+              <p className="susp-success-banner__title">{t("suspension.successTitulo")}</p>
               <p className="susp-success-banner__text">{successMessage}</p>
             </div>
           </div>
         ) : null}
 
-        {/* ── Búsqueda ── */}
+        {/* Búsqueda */}
         <div className="susp-search-row">
           <div className={`susp-search-input-wrapper${query ? " susp-search-input-wrapper--active" : ""}`}>
             <Search
@@ -300,7 +298,7 @@ export default function Suspension() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Nombre, apellido o correo..."
+              placeholder={t("suspension.buscarPlaceholder")}
             />
             {loading ? (
               <Loader2 size={15} color="#ef5759" className="susp-search-input-wrapper__spinner" />
@@ -309,13 +307,8 @@ export default function Suspension() {
               <button
                 type="button"
                 className="susp-search-clear-btn"
-                onClick={() => {
-                  setQuery("");
-                  setUsuarios([]);
-                  setSearched(false);
-                  setError("");
-                }}
-                aria-label="Limpiar búsqueda"
+                onClick={() => { setQuery(""); setUsuarios([]); setSearched(false); setError(""); }}
+                aria-label={t("suspension.limpiarBusqueda")}
               >
                 <X size={13} />
               </button>
@@ -329,11 +322,11 @@ export default function Suspension() {
             disabled={loading}
           >
             <Search size={14} />
-            Buscar
+            {t("suspension.buscarBtn")}
           </button>
         </div>
 
-        {/* ── Error de búsqueda ── */}
+        {/* Error búsqueda */}
         {error ? (
           <div className="susp-error-banner">
             <AlertTriangle size={14} color="#ef5759" />
@@ -341,17 +334,15 @@ export default function Suspension() {
           </div>
         ) : null}
 
-        {/* ── Estados y resultados ── */}
+        {/* Estados y resultados */}
         <AnimatePresence mode="wait">
           {!searched && !loading ? (
             <div key="empty" className="susp-empty-state">
               <div className="susp-empty-state__icon susp-empty-state__icon--red">
                 <Ban size={28} color="#ef5759" />
               </div>
-              <p className="susp-empty-state__title">Busca un usuario a suspender</p>
-              <p className="susp-empty-state__subtitle">
-                Ingresa un nombre, apellido o correo para revisar si puede ser sancionado.
-              </p>
+              <p className="susp-empty-state__title">{t("suspension.buscarEstadoTitulo")}</p>
+              <p className="susp-empty-state__subtitle">{t("suspension.buscarEstadoTexto")}</p>
             </div>
           ) : null}
 
@@ -360,18 +351,24 @@ export default function Suspension() {
               <div className="susp-empty-state__icon susp-empty-state__icon--gray">
                 <ShieldOff size={28} color="#64748b" />
               </div>
-              <p className="susp-empty-state__title">Sin resultados</p>
-              <p className="susp-empty-state__subtitle">
-                No se encontraron usuarios para <strong>{query}</strong>.
-              </p>
+              <p className="susp-empty-state__title">{t("suspension.sinResultadosTitulo")}</p>
+              <p
+                className="susp-empty-state__subtitle"
+                dangerouslySetInnerHTML={{ __html: t("suspension.sinResultadosTexto", { query }) }}
+              />
             </div>
           ) : null}
 
           {usuarios.length > 0 ? (
             <div key="results" className="susp-results-list">
-              <p className="susp-results-count">
-                <strong>{usuarios.length}</strong> resultado{usuarios.length !== 1 ? "s" : ""}
-              </p>
+              <p
+                className="susp-results-count"
+                dangerouslySetInnerHTML={{
+                  __html: usuarios.length === 1
+                    ? t("suspension.resultados",      { count: usuarios.length })
+                    : t("suspension.resultadosPlural", { count: usuarios.length }),
+                }}
+              />
               {usuarios.map((usuario, index) => (
                 <SuspensionCard
                   key={getUserId(usuario) ?? index}
@@ -384,7 +381,7 @@ export default function Suspension() {
         </AnimatePresence>
       </div>
 
-      {/* ── Modales ── */}
+      {/* Modales */}
       <AnimatePresence>
         {showForm && selectedUser ? (
           <SuspensionFormModal
@@ -405,10 +402,7 @@ export default function Suspension() {
             isBusy={busy}
             error={confirmError}
             onClose={closeAllModals}
-            onBack={() => {
-              setShowConfirm(false);
-              setShowForm(true);
-            }}
+            onBack={() => { setShowConfirm(false); setShowForm(true); }}
             onConfirm={handleConfirm}
           />
         ) : null}
@@ -419,6 +413,7 @@ export default function Suspension() {
 
 /* ── Tarjeta de usuario ──────────────────────────────────── */
 function SuspensionCard({ usuario, onSuspender }) {
+  const { t } = useTranslation();
   const role = getRoleKey(usuario?.rol);
   const roleStyle = getRoleStyle(role);
   const initials = `${usuario?.nombre?.[0] ?? ""}${usuario?.apellido?.[0] ?? ""}`.toUpperCase();
@@ -428,9 +423,7 @@ function SuspensionCard({ usuario, onSuspender }) {
   const cardClass = [
     "susp-card",
     suspendido ? "susp-card--suspended" : canSuspend ? "susp-card--suspendable" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  ].filter(Boolean).join(" ");
 
   return (
     <article className={cardClass}>
@@ -463,16 +456,16 @@ function SuspensionCard({ usuario, onSuspender }) {
             className="susp-card__role-pill"
             style={{ background: roleStyle.background, color: roleStyle.color }}
           >
-            {roleStyle.label}
+            {t(roleStyle.labelKey)}
           </span>
           {suspendido ? (
-            <span className="susp-card__suspended-pill">Suspendido</span>
+            <span className="susp-card__suspended-pill">{t("suspension.suspendido")}</span>
           ) : null}
         </div>
 
         <div className="susp-card__meta-row">
           <Mail size={11} color="#94a3b8" />
-          <span className="susp-card__meta-text">{usuario?.email ?? "Sin correo"}</span>
+          <span className="susp-card__meta-text">{usuario?.email ?? t("suspension.sinCorreo")}</span>
           {usuario?.ubicacion ? (
             <>
               <span className="susp-card__meta-sep">•</span>
@@ -486,15 +479,15 @@ function SuspensionCard({ usuario, onSuspender }) {
               <CalendarDays size={11} color="#94a3b8" />
               <span className="susp-card__meta-text">
                 {usuario.suspension_status === "temporal"
-                  ? `Temporal hasta ${formatDate(usuario.suspension_ends_at)}`
-                  : "Permanente"}
+                  ? t("suspension.temporalHasta", { fecha: formatDate(usuario.suspension_ends_at, t) })
+                  : t("suspension.permanente")}
               </span>
             </>
           ) : null}
         </div>
 
         <div className="susp-card__footer-row">
-          <small className="susp-card__id">ID #{getUserId(usuario)}</small>
+          <small className="susp-card__id">{t("suspension.idLabel", { id: getUserId(usuario) })}</small>
           {usuario?.disable_reason ? (
             <small className="susp-card__disable-reason">{usuario.disable_reason}</small>
           ) : null}
@@ -510,7 +503,11 @@ function SuspensionCard({ usuario, onSuspender }) {
           disabled={!canSuspend}
         >
           <Ban size={14} />
-          {suspendido ? "Ya suspendido" : canSuspend ? "Suspender" : "No disponible"}
+          {suspendido
+            ? t("suspension.yaSuspendido")
+            : canSuspend
+              ? t("suspension.suspender")
+              : t("suspension.noDisponible")}
         </button>
         <ChevronRight size={16} color={canSuspend ? "#ef5759" : "#cbd5e1"} />
       </div>
@@ -520,10 +517,13 @@ function SuspensionCard({ usuario, onSuspender }) {
 
 /* ── Modal de formulario ─────────────────────────────────── */
 function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
+  const { t } = useTranslation();
   const [tipo, setTipo] = useState(TEMPORARY);
   const [fechaFin, setFechaFin] = useState("");
   const [motivo, setMotivo] = useState("");
   const [localError, setLocalError] = useState(() => error || "");
+
+  const roleStyle = getRoleStyle(usuario?.rol);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -531,23 +531,15 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
   }, []);
 
   useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.key === "Escape" && !isBusy) onClose();
-    };
+    const handleEsc = (event) => { if (event.key === "Escape" && !isBusy) onClose(); };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isBusy, onClose]);
 
   const submit = () => {
     const motivoNormalizado = normalizeText(motivo);
-    if (!motivoNormalizado) {
-      setLocalError("El motivo es obligatorio.");
-      return;
-    }
-    if (tipo === TEMPORARY && !fechaFin) {
-      setLocalError("La fecha de fin es obligatoria para suspensiones temporales.");
-      return;
-    }
+    if (!motivoNormalizado) { setLocalError(t("suspension.errorMotivo")); return; }
+    if (tipo === TEMPORARY && !fechaFin) { setLocalError(t("suspension.errorFechaFin")); return; }
     setLocalError("");
     onContinue({
       user_id: getUserId(usuario),
@@ -556,8 +548,6 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
       fecha_fin: tipo === TEMPORARY ? fechaFin : null,
     });
   };
-
-  const roleStyle = getRoleStyle(usuario?.rol);
 
   return (
     <div
@@ -577,10 +567,10 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
           </div>
           <div className="susp-modal__header-text">
             <h3 id="suspension-form-title" className="susp-modal__header-title">
-              Suspender a {getFullName(usuario)}
+              {t("suspension.formTitulo", { nombre: getFullName(usuario) })}
             </h3>
             <p className="susp-modal__header-subtitle">
-              Define el tipo de sancion, la fecha de fin si corresponde y un motivo claro para registrar la accion.
+              {t("suspension.formSubtitulo")}
             </p>
           </div>
           <button
@@ -588,7 +578,7 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
             className="susp-modal__close-btn"
             onClick={onClose}
             disabled={isBusy}
-            aria-label="Cerrar"
+            aria-label={t("suspension.cerrar")}
           >
             <X size={16} />
           </button>
@@ -599,12 +589,10 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
           {/* aside */}
           <aside className="susp-modal__aside">
             <div className="susp-modal__user-info-card">
-              <p className="susp-modal__user-info-card__label">Usuario seleccionado</p>
+              <p className="susp-modal__user-info-card__label">{t("suspension.usuarioSeleccionado")}</p>
               <div className="susp-modal__user-info-card__content">
                 <div className="susp-modal__user-avatar">
-                  {`${usuario?.nombre?.[0] ?? ""}${usuario?.apellido?.[0] ?? ""}`.toUpperCase() || (
-                    <User size={18} />
-                  )}
+                  {`${usuario?.nombre?.[0] ?? ""}${usuario?.apellido?.[0] ?? ""}`.toUpperCase() || <User size={18} />}
                 </div>
                 <div>
                   <div className="susp-modal__user-name">
@@ -613,42 +601,42 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
                       className="susp-card__role-pill"
                       style={{ background: roleStyle.background, color: roleStyle.color }}
                     >
-                      {roleStyle.label}
+                      {t(roleStyle.labelKey)}
                     </span>
                   </div>
                   <div className="susp-modal__user-meta">
                     <span><Mail size={11} /> {usuario?.email}</span>
-                    <span><MapPin size={11} /> {usuario?.ubicacion || "Sin ubicacion"}</span>
+                    <span><MapPin size={11} /> {usuario?.ubicacion || t("suspension.sinUbicacion")}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="susp-modal__rules-card">
-              <p className="susp-modal__rules-card__label">Reglas</p>
+              <p className="susp-modal__rules-card__label">{t("suspension.reglas")}</p>
               <ul>
-                <li>El motivo es obligatorio.</li>
-                <li>Las suspensiones temporales requieren fecha de fin.</li>
-                <li>Los administradores y super administradores no se pueden suspender.</li>
+                <li>{t("suspension.regla1")}</li>
+                <li>{t("suspension.regla2")}</li>
+                <li>{t("suspension.regla3")}</li>
               </ul>
             </div>
           </aside>
 
           {/* campos */}
           <section className="susp-modal__form-section">
-            <Field label="Tipo de sancion" icon={<ShieldAlert size={13} />}>
+            <Field label={t("suspension.tipoSancion")} icon={<ShieldAlert size={13} />}>
               <select
                 className="susp-input"
                 value={tipo}
                 onChange={(e) => setTipo(e.target.value)}
               >
-                <option value={TEMPORARY}>Temporal</option>
-                <option value={PERMANENT}>Permanente</option>
+                <option value={TEMPORARY}>{t("suspension.temporal")}</option>
+                <option value={PERMANENT}>{t("suspension.permanente")}</option>
               </select>
             </Field>
 
             {tipo === TEMPORARY ? (
-              <Field label="Fecha de fin" icon={<CalendarDays size={13} />}>
+              <Field label={t("suspension.fechaFin")} icon={<CalendarDays size={13} />}>
                 <input
                   type="date"
                   className="susp-input"
@@ -659,12 +647,12 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
               </Field>
             ) : null}
 
-            <Field label="Motivo" required icon={<Lock size={13} />}>
+            <Field label={t("suspension.motivo")} required icon={<Lock size={13} />}>
               <textarea
                 className="susp-input susp-textarea"
                 value={motivo}
                 onChange={(e) => setMotivo(e.target.value)}
-                placeholder="Explica claramente por qué se aplica la suspensión..."
+                placeholder={t("suspension.motivoPlaceholder")}
                 rows={6}
               />
             </Field>
@@ -678,7 +666,7 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
 
             <div className="susp-modal__btn-row">
               <button type="button" className="susp-btn-ghost" onClick={onClose} disabled={isBusy}>
-                Cancelar
+                {t("suspension.cancelar")}
               </button>
               <button type="button" className="susp-btn-primary" onClick={submit} disabled={isBusy}>
                 {isBusy ? (
@@ -686,7 +674,7 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
                 ) : (
                   <CheckCircle2 size={15} />
                 )}
-                Revisar
+                {t("suspension.revisar")}
               </button>
             </div>
           </section>
@@ -698,20 +686,19 @@ function SuspensionFormModal({ usuario, isBusy, error, onClose, onContinue }) {
 
 /* ── Modal de confirmación ───────────────────────────────── */
 function SuspensionConfirmModal({ usuario, payload, isBusy, error, onClose, onBack, onConfirm }) {
+  const { t } = useTranslation();
+  const isTemporal = payload?.tipo === TEMPORARY;
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
 
   useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.key === "Escape" && !isBusy) onClose();
-    };
+    const handleEsc = (event) => { if (event.key === "Escape" && !isBusy) onClose(); };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isBusy, onClose]);
-
-  const isTemporal = payload?.tipo === TEMPORARY;
 
   return (
     <div
@@ -731,10 +718,10 @@ function SuspensionConfirmModal({ usuario, payload, isBusy, error, onClose, onBa
           </div>
           <div className="susp-modal__header-text">
             <h3 id="suspension-confirm-title" className="susp-modal__header-title">
-              Confirmar suspensión
+              {t("suspension.confirmarTitulo")}
             </h3>
             <p className="susp-modal__header-subtitle">
-              Revisa el resumen antes de aplicar la sanción. Esta acción quedará registrada.
+              {t("suspension.confirmarSubtitulo")}
             </p>
           </div>
         </div>
@@ -742,20 +729,26 @@ function SuspensionConfirmModal({ usuario, payload, isBusy, error, onClose, onBa
         {/* cuerpo */}
         <div className="susp-confirm-body">
           <div className="susp-confirm-summary">
-            <p className="susp-confirm-summary__label">Resumen</p>
+            <p className="susp-confirm-summary__label">{t("suspension.resumen")}</p>
             <div className="susp-confirm-summary__rows">
-              <Row label="Usuario" value={getFullName(usuario)} />
-              <Row label="Tipo" value={isTemporal ? "Temporal" : "Permanente"} />
+              <Row label={t("suspension.rowUsuario")} value={getFullName(usuario)} />
+              <Row
+                label={t("suspension.rowTipo")}
+                value={isTemporal ? t("suspension.temporal") : t("suspension.permanente")}
+              />
               {isTemporal ? (
-                <Row label="Fecha de fin" value={formatDate(payload?.fecha_fin)} />
+                <Row
+                  label={t("suspension.rowFechaFin")}
+                  value={formatDate(payload?.fecha_fin, t)}
+                />
               ) : null}
-              <Row label="Motivo" value={payload?.motivo} />
+              <Row label={t("suspension.rowMotivo")} value={payload?.motivo} />
             </div>
           </div>
 
           <div className="susp-modal__btn-row susp-modal__btn-row--between">
             <button type="button" className="susp-btn-ghost" onClick={onBack} disabled={isBusy}>
-              Volver
+              {t("suspension.volver")}
             </button>
             <button type="button" className="susp-btn-primary" onClick={onConfirm} disabled={isBusy}>
               {isBusy ? (
@@ -763,7 +756,7 @@ function SuspensionConfirmModal({ usuario, payload, isBusy, error, onClose, onBa
               ) : (
                 <CheckCircle2 size={15} />
               )}
-              Aplicar suspensión
+              {t("suspension.aplicarSuspension")}
             </button>
           </div>
 
@@ -794,10 +787,11 @@ function Field({ label, icon, required = false, children }) {
 }
 
 function Row({ label, value }) {
+  const { t } = useTranslation();
   return (
     <div className="susp-row">
       <span className="susp-row__label">{label}</span>
-      <span className="susp-row__value">{value || "Sin definir"}</span>
+      <span className="susp-row__value">{value || t("suspension.sinDefinir")}</span>
     </div>
   );
 }

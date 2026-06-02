@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence } from "framer-motion";
 import {
   AlertTriangle,
@@ -32,35 +33,35 @@ import "../../../styles/components/admin/components/Permisos/Permisos.css";
 
 const ROLE_THEME = {
   profesional: {
-    label: "Profesional",
+    labelKey: "roles.profesional",
     color: "#059669",
     bg: "rgba(5,150,105,.10)",
     border: "rgba(5,150,105,.18)",
     icon: <UserRound size={11} />,
   },
   reclutador: {
-    label: "Reclutador",
+    labelKey: "roles.reclutador",
     color: "#0284c7",
     bg: "rgba(2,132,199,.10)",
     border: "rgba(2,132,199,.18)",
     icon: <ShieldCheck size={11} />,
   },
   administrador: {
-    label: "Administrador",
+    labelKey: "roles.administrador",
     color: "#ef5759",
     bg: "rgba(239,87,89,.10)",
     border: "rgba(239,87,89,.18)",
     icon: <ShieldAlert size={11} />,
   },
   "super administrador": {
-    label: "Super Admin",
+    labelKey: "roles.superAdmin",
     color: "#ef5759",
     bg: "rgba(239,87,89,.10)",
     border: "rgba(239,87,89,.18)",
     icon: <Shield size={11} />,
   },
   default: {
-    label: "Usuario",
+    labelKey: "roles.usuario",
     color: "#64748b",
     bg: "rgba(100,116,139,.10)",
     border: "rgba(100,116,139,.18)",
@@ -120,6 +121,7 @@ function diffPermissions(original, next) {
 }
 
 export default function Permisos() {
+  const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const currentRole  = getRoleKey(authUser?.rol);
   const isAllowed    = currentRole === "administrador" || currentRole === "super administrador";
@@ -145,19 +147,19 @@ export default function Permisos() {
   const debounceRef = useRef(null);
 
   const scopeLabel = useMemo(() => {
-    if (!isAllowed) return "Sin acceso";
-    if (isSuperAdmin) return "Super administrador: acceso total";
-    if (currentLocation) return `Alcance: ${currentLocation}`;
-    return "Alcance: usuarios sin ubicacion";
-  }, [currentLocation, isAllowed, isSuperAdmin]);
+    if (!isAllowed) return t("permisos.scopeSinAcceso");
+    if (isSuperAdmin) return t("permisos.scopeSuperAdmin");
+    if (currentLocation) return t("permisos.scopeAlcance", { location: currentLocation });
+    return t("permisos.scopeSinUbicacion");
+  }, [currentLocation, isAllowed, isSuperAdmin, t]);
 
   const scopeHint = isAllowed
     ? isSuperAdmin
-      ? "Puedes activar o desactivar permisos en cualquier usuario."
+      ? t("permisos.hintSuperAdmin")
       : currentLocation === "Por defecto"
-        ? "Solo puedes gestionar usuarios sin ubicacion."
-        : "Solo puedes gestionar usuarios de tu pais-ciudad."
-    : "Este modulo esta disponible solo para administradores.";
+        ? t("permisos.hintPorDefecto")
+        : t("permisos.hintRegion")
+    : t("permisos.hintSinAcceso");
 
   const hasChanges = useMemo(() => {
     if (!originalPermissions.length || !permissions.length) return false;
@@ -195,7 +197,7 @@ export default function Permisos() {
       setUsuarios(Array.isArray(data) ? data : []);
       setSearched(true);
     } catch (err) {
-      setError(err?.message || "No se pudo completar la busqueda.");
+      setError(err?.message || t("permisos.errorBusqueda"));
       setUsuarios([]);
       setSearched(true);
     } finally {
@@ -237,7 +239,7 @@ export default function Permisos() {
       setPermissions(nextPermissions);
       setOriginalPermissions(nextPermissions.map((perm) => ({ ...perm })));
     } catch (err) {
-      setDetailError(err?.message || "No se pudieron cargar los permisos.");
+      setDetailError(err?.message || t("permisos.errorPermisos"));
     } finally {
       setDetailLoading(false);
     }
@@ -282,16 +284,20 @@ export default function Permisos() {
       const response = await actualizarPermisosUsuario(selectedUser.id, pendingPayload.permissions);
       const payload  = response?.data ?? response ?? {};
       const summary  = payload?.data?.summary ?? payload?.summary ?? pendingPayload.summary;
+
       const temporaryText = summary.temporary?.length
-        ? summary.temporary.map((item) => `${item.name} hasta ${item.deadline}`).join(", ")
-        : "ninguno";
+        ? summary.temporary.map((item) => t("permisos.hasta", { name: item.name, deadline: item.deadline })).join(", ")
+        : t("permisos.ninguno");
+
       setSuccessMessage(
-        `Cambios aplicados correctamente. ` +
-          `Se actualizaron los permisos de ${getFullName(selectedUser)}. ` +
-          `Aplicados: ${summary.applied?.length ? summary.applied.join(", ") : "ninguno"}. ` +
-          `Quitados: ${summary.removed?.length ? summary.removed.join(", ") : "ninguno"}. ` +
-          `Temporales: ${temporaryText}.`
+        t("permisos.successTexto", {
+          nombre:     getFullName(selectedUser),
+          aplicados:  summary.applied?.length  ? summary.applied.join(", ")  : t("permisos.ninguno"),
+          quitados:   summary.removed?.length  ? summary.removed.join(", ")  : t("permisos.ninguno"),
+          temporales: temporaryText,
+        })
       );
+
       const nextPermissions = Array.isArray(payload?.data?.permissions)
         ? payload.data.permissions
         : permissions;
@@ -301,7 +307,7 @@ export default function Permisos() {
       setPendingPayload(null);
       setConfirmError("");
     } catch (err) {
-      setConfirmError(err?.message || "No se pudieron guardar los cambios.");
+      setConfirmError(err?.message || t("permisos.errorGuardar"));
     } finally {
       setSaving(false);
     }
@@ -310,16 +316,17 @@ export default function Permisos() {
   /* ── Acceso restringido ── */
   if (!isAllowed) {
     return (
-      <AdminModuleLayout title="Permisos" subtitle="Administracion de accesos, roles y autorizaciones.">
+      <AdminModuleLayout
+        title={t("permisos.titulo")}
+        subtitle={t("permisos.subtituloRestringido")}
+      >
         <div className="permisos-restricted">
           <div className="permisos-restricted__card">
             <div className="permisos-restricted__icon">
               <Lock size={28} color="#ef5759" />
             </div>
-            <h2 className="permisos-restricted__title">Acceso restringido</h2>
-            <p className="permisos-restricted__text">
-              Este módulo está disponible solo para administradores.
-            </p>
+            <h2 className="permisos-restricted__title">{t("permisos.accesoRestringido")}</h2>
+            <p className="permisos-restricted__text">{t("permisos.soloAdmins")}</p>
           </div>
         </div>
       </AdminModuleLayout>
@@ -329,16 +336,16 @@ export default function Permisos() {
   /* ── Render principal ── */
   return (
     <AdminModuleLayout
-      title="Permisos"
-      subtitle="Busca usuarios, ajusta sus permisos activos y confirma cada cambio antes de guardarlo."
+      title={t("permisos.titulo")}
+      subtitle={t("permisos.subtitulo")}
     >
       <div className="permisos-root">
 
         {/* Banner superior */}
         <div className="permisos-banner">
           <div className="permisos-banner__left">
-            <p className="permisos-banner__eyebrow">Control de accesos</p>
-            <h2 className="permisos-banner__title">Modulo de permisos</h2>
+            <p className="permisos-banner__eyebrow">{t("permisos.bannerEyebrow")}</p>
+            <h2 className="permisos-banner__title">{t("permisos.bannerTitulo")}</h2>
           </div>
           <div className="permisos-banner__scope">
             <span className="permisos-banner__scope-label">{scopeLabel}</span>
@@ -351,7 +358,7 @@ export default function Permisos() {
           <div className="permisos-success">
             <CheckCircle2 size={18} color="#059669" />
             <div>
-              <p className="permisos-success__title">Permisos actualizados correctamente</p>
+              <p className="permisos-success__title">{t("permisos.permisosActualizados")}</p>
               <p className="permisos-success__text">{successMessage}</p>
             </div>
           </div>
@@ -360,15 +367,12 @@ export default function Permisos() {
         {/* Barra de búsqueda */}
         <div className="permisos-search-row">
           <div className={`permisos-search-input-wrap${query ? " permisos-search-input-wrap--active" : ""}`}>
-            <Search
-              size={15}
-              className="permisos-search-icon"
-            />
+            <Search size={15} className="permisos-search-icon" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Nombre, apellido o correo..."
+              placeholder={t("permisos.buscarPlaceholder")}
               className="permisos-search-input"
             />
             {loading && (
@@ -379,7 +383,7 @@ export default function Permisos() {
                 type="button"
                 className="permisos-search-clear"
                 onClick={() => { setQuery(""); setUsuarios([]); setSearched(false); setError(""); }}
-                aria-label="Limpiar búsqueda"
+                aria-label={t("permisos.limpiarBusqueda")}
               >
                 <X size={13} />
               </button>
@@ -392,7 +396,7 @@ export default function Permisos() {
             className="permisos-search-btn"
           >
             <Search size={14} />
-            Buscar
+            {t("permisos.buscarBtn")}
           </button>
         </div>
 
@@ -415,8 +419,8 @@ export default function Permisos() {
                   <div className="permisos-state__icon">
                     <Search size={28} color="#ef5759" />
                   </div>
-                  <p className="permisos-state__title">Busca un usuario</p>
-                  <p className="permisos-state__text">Ingresa un nombre, apellido o correo para comenzar.</p>
+                  <p className="permisos-state__title">{t("permisos.buscarEstadoTitulo")}</p>
+                  <p className="permisos-state__text">{t("permisos.buscarEstadoTexto")}</p>
                 </div>
               )}
 
@@ -425,18 +429,24 @@ export default function Permisos() {
                   <div className="permisos-state__icon permisos-state__icon--neutral">
                     <UserRound size={28} color="#64748b" />
                   </div>
-                  <p className="permisos-state__title">Sin resultados</p>
-                  <p className="permisos-state__text">
-                    No se encontraron usuarios para <strong>{query}</strong>.
-                  </p>
+                  <p className="permisos-state__title">{t("permisos.sinResultadosTitulo")}</p>
+                  <p
+                    className="permisos-state__text"
+                    dangerouslySetInnerHTML={{ __html: t("permisos.sinResultadosTexto", { query }) }}
+                  />
                 </div>
               )}
 
               {usuarios.length > 0 && (
                 <div key="results">
-                  <p className="permisos-results-count">
-                    <strong>{usuarios.length}</strong> resultado{usuarios.length !== 1 ? "s" : ""}
-                  </p>
+                  <p
+                    className="permisos-results-count"
+                    dangerouslySetInnerHTML={{
+                      __html: usuarios.length === 1
+                        ? t("permisos.resultados",      { count: usuarios.length })
+                        : t("permisos.resultadosPlural", { count: usuarios.length }),
+                    }}
+                  />
                   <div className="permisos-results-list">
                     {usuarios.map((item) => {
                       const roleTheme = getRoleTheme(item.rol);
@@ -478,7 +488,7 @@ export default function Permisos() {
                                 className="permisos-user-card__role-badge"
                                 style={{ background: roleTheme.bg, color: roleTheme.color }}
                               >
-                                {roleTheme.label}
+                                {t(roleTheme.labelKey)}
                               </span>
                             </div>
                             <div className="permisos-user-card__meta">
@@ -520,10 +530,8 @@ export default function Permisos() {
                     <div className="permisos-panel__empty-icon">
                       <ShieldCheck size={30} color="#ef5759" />
                     </div>
-                    <p className="permisos-panel__empty-title">Selecciona un usuario</p>
-                    <p className="permisos-panel__empty-text">
-                      Aquí verás sus permisos activos y podrás activarlos o quitarlos.
-                    </p>
+                    <p className="permisos-panel__empty-title">{t("permisos.seleccionarUsuarioTitulo")}</p>
+                    <p className="permisos-panel__empty-text">{t("permisos.seleccionarUsuarioTexto")}</p>
                   </div>
                 </div>
               )}
@@ -547,7 +555,7 @@ export default function Permisos() {
                               color:      getRoleTheme(selectedUser.rol).color,
                             }}
                           >
-                            {getRoleTheme(selectedUser.rol).label}
+                            {t(getRoleTheme(selectedUser.rol).labelKey)}
                           </span>
                         </div>
                         <div className="permisos-panel__user-meta">
@@ -574,7 +582,7 @@ export default function Permisos() {
                         setDetailError("");
                         setShowConfirm(false);
                       }}
-                      aria-label="Limpiar selección"
+                      aria-label={t("permisos.limpiarSeleccion")}
                     >
                       <X size={16} />
                     </button>
@@ -585,7 +593,7 @@ export default function Permisos() {
                     <div className="permisos-panel__loading">
                       <div className="permisos-panel__loading-inner">
                         <Loader2 size={18} className="permisos-spin" />
-                        Cargando permisos...
+                        {t("permisos.cargandoPermisos")}
                       </div>
                     </div>
                   )}
@@ -605,16 +613,16 @@ export default function Permisos() {
                       <div className="permisos-panel__stats-row">
                         <div className="permisos-panel__stats-left">
                           <span className="permisos-badge permisos-badge--active">
-                            {permissions.filter((p) => p.active).length} activos
+                            {t("permisos.permisosActivos", { count: permissions.filter((p) => p.active).length })}
                           </span>
                           <span className="permisos-badge permisos-badge--total">
-                            {permissions.length} permisos
+                            {t("permisos.permisosTotal", { count: permissions.length })}
                           </span>
                         </div>
                         {!selectedUser.can_edit ? (
-                          <span className="permisos-badge permisos-badge--readonly">Solo lectura</span>
+                          <span className="permisos-badge permisos-badge--readonly">{t("permisos.soloLectura")}</span>
                         ) : (
-                          <span className="permisos-badge permisos-badge--editable">Editable</span>
+                          <span className="permisos-badge permisos-badge--editable">{t("permisos.editable")}</span>
                         )}
                       </div>
 
@@ -652,13 +660,13 @@ export default function Permisos() {
                                         color:      getRoleTheme(selectedUser.rol).color,
                                       }}
                                     >
-                                      {getRoleTheme(selectedUser.rol).label}
+                                      {t(getRoleTheme(selectedUser.rol).labelKey)}
                                     </span>
                                   </div>
                                   <p className="permisos-perm-btn__status">
                                     {checked
-                                      ? "Permiso activo para este usuario."
-                                      : "Permiso desactivado para este usuario."}
+                                      ? t("permisos.permisoActivo")
+                                      : t("permisos.permisoDesactivado")}
                                   </p>
                                 </div>
                                 <div className={`permisos-perm-btn__toggle${checked ? " permisos-perm-btn__toggle--active" : ""}`}>
@@ -671,10 +679,8 @@ export default function Permisos() {
                                 <div className="permisos-deadline">
                                   <CalendarDays size={14} color="#ef5759" />
                                   <div className="permisos-deadline__info">
-                                    <div className="permisos-deadline__title">Hasta una fecha opcional</div>
-                                    <div className="permisos-deadline__hint">
-                                      Si eliges una fecha y el permiso queda apagado, se reactivará cuando esa fecha venza.
-                                    </div>
+                                    <div className="permisos-deadline__title">{t("permisos.deadlineTitulo")}</div>
+                                    <div className="permisos-deadline__hint">{t("permisos.deadlineHint")}</div>
                                   </div>
                                   <input
                                     type="date"
@@ -699,7 +705,7 @@ export default function Permisos() {
                           className="permisos-btn-secondary"
                         >
                           <ArrowLeft size={15} />
-                          Revertir
+                          {t("permisos.revertir")}
                         </button>
                         <button
                           type="button"
@@ -711,7 +717,7 @@ export default function Permisos() {
                             ? <Loader2 size={15} className="permisos-spin" />
                             : <ArrowRight size={15} />
                           }
-                          Guardar cambios
+                          {t("permisos.guardarCambios")}
                         </button>
                       </div>
                     </>
@@ -745,6 +751,12 @@ export default function Permisos() {
    MODAL DE CONFIRMACIÓN
 ────────────────────────────────────────────────────────── */
 function ConfirmModal({ usuario, summary, isBusy, error, onClose, onBack, onConfirm }) {
+  const { t } = useTranslation();
+
+  const temporaryText = summary.temporary?.length
+    ? summary.temporary.map((item) => t("permisos.hasta", { name: item.name, deadline: item.deadline })).join(", ")
+    : t("permisos.ninguno2");
+
   return (
     <div
       className="permisos-modal-backdrop"
@@ -763,10 +775,10 @@ function ConfirmModal({ usuario, summary, isBusy, error, onClose, onBack, onConf
           </div>
           <div style={{ flex: 1 }}>
             <h3 id="permissions-confirm-title" className="permisos-modal__title">
-              Confirmar cambios de permisos
+              {t("permisos.confirmarTitulo")}
             </h3>
             <p className="permisos-modal__subtitle">
-              Revisa el resumen antes de guardar. Esta acción quedará registrada.
+              {t("permisos.confirmarSubtitulo")}
             </p>
           </div>
           <button
@@ -774,7 +786,7 @@ function ConfirmModal({ usuario, summary, isBusy, error, onClose, onBack, onConf
             className="permisos-modal__close"
             onClick={onClose}
             disabled={isBusy}
-            aria-label="Cerrar"
+            aria-label={t("permisos.cerrar")}
           >
             <X size={16} />
           </button>
@@ -783,27 +795,22 @@ function ConfirmModal({ usuario, summary, isBusy, error, onClose, onBack, onConf
         {/* Body */}
         <div className="permisos-modal__body">
           <div className="permisos-modal__summary">
-            <p className="permisos-modal__summary-eyebrow">Resumen</p>
+            <p className="permisos-modal__summary-eyebrow">{t("permisos.resumen")}</p>
             <div className="permisos-modal__summary-grid">
-              <ModalInfoRow label="Usuario"            value={getFullName(usuario)} />
-              <ModalInfoRow label="Permisos aplicados" value={summary.applied?.length  ? summary.applied.join(", ")  : "Ninguno"} />
-              <ModalInfoRow label="Permisos quitados"  value={summary.removed?.length  ? summary.removed.join(", ")  : "Ninguno"} />
-              <ModalInfoRow
-                label="Permisos temporales"
-                value={summary.temporary?.length
-                  ? summary.temporary.map((item) => `${item.name} hasta ${item.deadline}`).join(", ")
-                  : "Ninguno"}
-              />
+              <ModalInfoRow label={t("permisos.rowUsuario")}    value={getFullName(usuario)} />
+              <ModalInfoRow label={t("permisos.rowAplicados")}  value={summary.applied?.length  ? summary.applied.join(", ")  : t("permisos.ninguno2")} />
+              <ModalInfoRow label={t("permisos.rowQuitados")}   value={summary.removed?.length  ? summary.removed.join(", ")  : t("permisos.ninguno2")} />
+              <ModalInfoRow label={t("permisos.rowTemporales")} value={temporaryText} />
             </div>
           </div>
 
           <div className="permisos-modal__actions">
             <button type="button" onClick={onBack} disabled={isBusy} className="permisos-btn-secondary">
-              Volver
+              {t("permisos.volver")}
             </button>
             <button type="button" onClick={onConfirm} disabled={isBusy} className="permisos-btn-primary">
               {isBusy ? <Loader2 size={15} className="permisos-spin" /> : <CheckCircle2 size={15} />}
-              Guardar permisos
+              {t("permisos.guardarPermisos")}
             </button>
           </div>
 
@@ -820,10 +827,11 @@ function ConfirmModal({ usuario, summary, isBusy, error, onClose, onBack, onConf
 }
 
 function ModalInfoRow({ label, value }) {
+  const { t } = useTranslation();
   return (
     <div className="permisos-info-row">
       <span className="permisos-info-row__label">{label}</span>
-      <span className="permisos-info-row__value">{value || "Sin definir"}</span>
+      <span className="permisos-info-row__value">{value || t("permisos.sinDefinir")}</span>
     </div>
   );
 }

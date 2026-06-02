@@ -32,6 +32,7 @@ use App\Http\Controllers\SuspensionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AdminProfileTableController;
 use App\Http\Controllers\AdminCreacionController;
+use App\Http\Controllers\AdminEducationVerificationController;
 use App\Http\Controllers\AdminProfileEliminacionTableController;
 use App\Http\Controllers\BackupController;
 use App\Http\Middleware\SetLogUserContext;
@@ -215,8 +216,13 @@ Route::middleware(['auth:sanctum', SetLogUserContext::class])->group(function ()
         Route::get('definition/{catalog}', [DefinitionCatalogController::class, 'index']);
         Route::post('definition/{catalog}', [DefinitionCatalogController::class, 'store']);
         Route::get('verifications', [ProfileVerificationController::class, 'adminIndex']);
+        Route::get('verifications/{verification}/documents/{document}', [ProfileVerificationController::class, 'document'])->where('document', 'front|back|pdf');
         Route::post('verifications/{verification}/approve', [ProfileVerificationController::class, 'approve']);
         Route::post('verifications/{verification}/reject', [ProfileVerificationController::class, 'reject']);
+        Route::get('education-verifications', [AdminEducationVerificationController::class, 'index']);
+        Route::get('education-verifications/{formacion}/document', [AdminEducationVerificationController::class, 'document']);
+        Route::post('education-verifications/{formacion}/approve', [AdminEducationVerificationController::class, 'approve']);
+        Route::post('education-verifications/{formacion}/reject', [AdminEducationVerificationController::class, 'reject']);
     });
 
     // Notificaciones

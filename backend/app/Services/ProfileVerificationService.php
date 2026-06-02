@@ -55,7 +55,10 @@ class ProfileVerificationService
                 ? $this->cloudinaryService->uploadFile($back, 'portafolio/verificaciones', 'image')
                 : null,
             'document_pdf_url' => $pdf instanceof UploadedFile
-                ? $this->cloudinaryService->uploadFile($pdf, 'portafolio/verificaciones', 'raw')
+                ? $this->cloudinaryService->uploadFile($pdf, 'portafolio/verificaciones', 'raw', [
+                    'use_filename' => true,
+                    'unique_filename' => true,
+                ])
                 : null,
             'submitted_at' => now(),
         ]);
@@ -81,6 +84,7 @@ class ProfileVerificationService
         return [
             'items' => $query->limit(100)->get()->map(fn (ProfileVerificationRequest $request) => [
                 ...$this->mapRequest($request),
+                'kind' => 'identity',
                 'profile' => [
                     'id' => (int) $request->profile?->getKey(),
                     'user_id' => $request->profile?->userRole?->user?->getKey(),
@@ -90,6 +94,9 @@ class ProfileVerificationService
                     'front' => $request->document_front_url,
                     'back' => $request->document_back_url,
                     'pdf' => $request->document_pdf_url,
+                    'front_preview' => $request->document_front_url ? url('/api/admin/verifications/' . $request->getKey() . '/documents/front') : null,
+                    'back_preview' => $request->document_back_url ? url('/api/admin/verifications/' . $request->getKey() . '/documents/back') : null,
+                    'pdf_preview' => $request->document_pdf_url ? url('/api/admin/verifications/' . $request->getKey() . '/documents/pdf') : null,
                 ],
             ])->values(),
         ];

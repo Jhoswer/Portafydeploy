@@ -1,11 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 import config from "../../config";
+import { HelpCircle, ShieldCheck } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   detailBlock,
   detailLabel,
   detailText,
   fieldLabel,
+  helperText,
   tagChip,
   tagList,
 } from "./portfolioStyles";
@@ -17,6 +20,7 @@ import {
   FileUploadField,
   inputWithError,
   PlatformIconGlyph,
+  ProjectStatusPicker,
   ProjectStatusPill,
   renderDateField,
   renderSocialPlatformField,
@@ -25,6 +29,47 @@ import {
   SkillLevelPicker,
   textareaWithError,
 } from "./portfolioWorkspaceControls";
+
+const FIELD_HELP = {
+  projects: {
+    title: "Escribe un nombre claro y profesional para identificar el proyecto.",
+    description: "Resume el objetivo, alcance e impacto del proyecto en pocas lineas.",
+    techCategory: "Selecciona el area tecnica principal del proyecto.",
+    tags: "Selecciona las tecnologias usadas o las mas relevantes del proyecto.",
+    repoUrl: "Agrega el enlace al repositorio si puede mostrarse publicamente.",
+    demoUrl: "Agrega una demo o URL publica donde se pueda revisar el resultado.",
+    status: "Indica si el proyecto esta completo, en proceso o pausado.",
+    cover: "Sube una imagen de portada que represente visualmente el proyecto.",
+  },
+  experience: {
+    type: "Selecciona el tipo de experiencia que estas registrando.",
+    roleArea: "Elige el area profesional para sugerir cargos relacionados.",
+    title: "Selecciona o escribe el cargo desempenado.",
+    company: "Indica la empresa, institucion o cliente donde realizaste la experiencia.",
+    description: "Describe tus tareas, logros e impacto medible.",
+    startDate: "Fecha en que inicio esta experiencia.",
+    endDate: "Fecha de cierre; si sigue activa, marca la opcion actualmente.",
+    isCurrent: "Marca esta opcion si aun continuas en esta experiencia.",
+  },
+  skills: {
+    category: "Selecciona el grupo al que pertenece la habilidad.",
+    name: "Elige una habilidad sugerida o escribe una propia si seleccionaste Otra.",
+    level: "Indica tu nivel real: Junior, Mid o Senior.",
+  },
+  social: {
+    platform: "Selecciona la red o plataforma profesional.",
+    url: "Pega la URL completa del perfil o enlace que quieres mostrar.",
+  },
+  education: {
+    level: "Selecciona el tipo de formacion: carrera, curso, diplomado, maestria u otro.",
+    program: "Escribe el nombre del programa, carrera o certificacion.",
+    institution: "Indica la institucion que emitio o imparte esta formacion.",
+    startDate: "Fecha de inicio de la formacion.",
+    endDate: "Fecha de finalizacion; si sigue activa, marca actualmente.",
+    isCurrent: "Marca esta opcion si aun estas cursando esta formacion.",
+    supportDocument: "Adjunta un PDF o imagen del certificado, diploma o constancia para futura autenticacion.",
+  },
+};
 
 function compactUrl(url) {
   if (!url) return "";
@@ -113,6 +158,7 @@ export function DetailContent({ activeKey, item }) {
           label={t("appI18n.portfolio.detail.dates")}
           text={`${formatDateLabel(item.startDate) || t("appI18n.portfolio.detail.noStart")} - ${item.isCurrent ? t("appI18n.portfolio.detail.present") : formatDateLabel(item.endDate) || t("appI18n.portfolio.detail.undefined")}`}
         />
+        <EducationSupportBlock item={item} />
       </>
     );
   }
@@ -175,7 +221,7 @@ export function FormContent({ activeMeta, draft, extraData, fieldErrors, onDraft
         <div style={{ display: "grid", gap: 12 }}>
           {activeMeta.extraFields.map((field) => (
             <label key={field.key} style={{ display: "grid", gap: 6 }}>
-              <span style={fieldLabel}>{t(`appI18n.portfolio.fields.${field.key}`, field.label)}</span>
+              <FieldLabelWithHelp label={t(`appI18n.portfolio.fields.${field.key}`, field.label)} help={FIELD_HELP[activeMeta.key]?.[field.key]} />
               {renderExtraField(field, extraData[field.key] ?? "", fieldErrors?.[field.key], onExtraChange, t)}
             </label>
           ))}
@@ -184,7 +230,7 @@ export function FormContent({ activeMeta, draft, extraData, fieldErrors, onDraft
 
       {visibleFields.map((field) => (
         <label key={field.key} style={{ display: "grid", gap: 6 }}>
-          <span style={fieldLabel}>{t(`appI18n.portfolio.fields.${field.key}`, field.label)}</span>
+          <FieldLabelWithHelp label={t(`appI18n.portfolio.fields.${field.key}`, field.label)} help={FIELD_HELP[activeMeta.key]?.[field.key]} />
           {renderField(field, draft[field.key], draft, fieldErrors?.[field.key], onDraftChange, activeMeta, extraData, t)}
         </label>
       ))}
@@ -233,6 +279,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
           value={value}
           onChange={(event) => onDraftChange(field.key, event.target.value)}
           placeholder={placeholder}
+          maxLength={field.maxLength}
           style={{
             ...textareaWithError(errorMessage),
             resize: isLockedDescription ? "none" : "vertical",
@@ -240,6 +287,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
             maxHeight: isLockedDescription ? 120 : undefined,
           }}
         />
+        {renderFieldMeta(field, value, t)}
         {errorMessage ? <FieldError message={errorMessage} /> : null}
       </>
     );
@@ -277,6 +325,17 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
     );
   }
 
+  if (field.type === "project-status") {
+    return (
+      <ProjectStatusPicker
+        value={value}
+        options={field.options}
+        errorMessage={errorMessage}
+        onChange={(nextValue) => onDraftChange(field.key, nextValue)}
+      />
+    );
+  }
+
   if (field.type === "checkbox") {
     return (
       <>
@@ -307,6 +366,8 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
         selectedCategory={selectedCategory}
         options={options}
         placeholder={placeholder}
+        maxTags={field.maxTags}
+        maxTagLength={field.maxTagLength}
         errorMessage={errorMessage}
         onChange={(nextValue) => onDraftChange(field.key, nextValue)}
       />
@@ -329,13 +390,26 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
   }
 
   if (field.type === "file") {
+    const isSupportDocument = field.key === "supportDocument";
     return (
       <FileUploadField
-        accept="image/*"
+        accept={field.accept || "image/*"}
         helperTextValue={displayFileValue(value, "")}
-        helperLabel={t("appI18n.portfolio.controls.projectCoverHelper")}
-        emptyLabel={t("appI18n.portfolio.controls.projectCoverEmpty")}
-        buttonLabel={t("appI18n.portfolio.controls.uploadCover")}
+        helperLabel={
+          isSupportDocument
+            ? t("appI18n.portfolio.controls.educationSupportHelper", "Respaldo academico")
+            : t("appI18n.portfolio.controls.projectCoverHelper")
+        }
+        emptyLabel={
+          isSupportDocument
+            ? t("appI18n.portfolio.controls.educationSupportEmpty", "Sin respaldo adjunto. PDF o imagen, maximo 6 MB.")
+            : t("appI18n.portfolio.controls.projectCoverEmpty")
+        }
+        buttonLabel={
+          isSupportDocument
+            ? t("appI18n.portfolio.controls.uploadSupport", "Subir respaldo")
+            : t("appI18n.portfolio.controls.uploadCover")
+        }
         errorMessage={errorMessage}
         onChange={(nextFile) => onDraftChange(field.key, nextFile)}
       />
@@ -352,8 +426,87 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
         maxLength={field.maxLength}
         style={inputWithError(errorMessage)}
       />
+      {renderFieldMeta(field, value, t)}
       {errorMessage ? <FieldError message={errorMessage} /> : null}
     </>
+  );
+}
+
+function FieldLabelWithHelp({ label, help }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 7, width: "fit-content", position: "relative" }}>
+      <span style={fieldLabel}>{label}</span>
+      {help ? <FieldHelpDot text={help} /> : null}
+    </span>
+  );
+}
+
+function FieldHelpDot({ text }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <span
+      tabIndex={0}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+      style={{
+        position: "relative",
+        width: 18,
+        height: 18,
+        borderRadius: "50%",
+        display: "inline-grid",
+        placeItems: "center",
+        color: "#2563eb",
+        background: "rgba(37,99,235,.12)",
+        border: "1px solid rgba(37,99,235,.22)",
+        cursor: "help",
+        outline: "none",
+      }}
+    >
+      <HelpCircle size={12} />
+      {open ? (
+        <span
+          role="tooltip"
+          style={{
+            position: "absolute",
+            left: "calc(100% + 8px)",
+            top: "50%",
+            transform: "translateY(-50%)",
+            zIndex: 30,
+            width: 230,
+            padding: "9px 10px",
+            borderRadius: 12,
+            background: "var(--dashboard-card-bg)",
+            border: "1px solid var(--dashboard-card-border)",
+            boxShadow: "0 18px 40px rgba(14,30,60,.18)",
+            color: "var(--body)",
+            fontFamily: "var(--f-body)",
+            fontSize: ".76rem",
+            lineHeight: 1.45,
+            pointerEvents: "none",
+          }}
+        >
+          {text}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+function renderFieldMeta(field, value, t) {
+  if (!field.maxLength && !field.minLength) return null;
+  const length = String(value || "").length;
+  const maxLabel = field.maxLength ? `${length}/${field.maxLength}` : "";
+  const minLabel = field.minLength && length < field.minLength
+    ? t("appI18n.portfolio.controls.minCharacters", { count: field.minLength })
+    : "";
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", gap: 10, ...helperText, fontSize: "0.72rem" }}>
+      <span>{minLabel}</span>
+      <span>{maxLabel}</span>
+    </div>
   );
 }
 
@@ -375,18 +528,44 @@ function ProjectCoverBlock({ cover, title }) {
       <div
         style={{
           minHeight: 180,
+          position: "relative",
           display: "grid",
           alignItems: "end",
           padding: 16,
           background: coverSrc
-            ? `linear-gradient(180deg, rgba(14,30,60,.04) 0%, rgba(14,30,60,.52) 100%), url(${coverSrc})`
+            ? "linear-gradient(135deg, #0d1f3c 0%, #1e3a5f 55%, #7fc6f3 100%)"
             : "linear-gradient(135deg, #0d1f3c 0%, #3157d5 62%, #7fc6f3 100%)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       >
+        {coverSrc ? (
+          <>
+            <img
+              src={coverSrc}
+              alt={title}
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                objectPosition: "center",
+                background: "rgba(8,20,44,.18)",
+              }}
+            />
+            <span
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(180deg, rgba(14,30,60,.02) 0%, rgba(14,30,60,.28) 100%)",
+              }}
+            />
+          </>
+        ) : null}
         <div
           style={{
+            position: "relative",
+            zIndex: 1,
             width: "fit-content",
             maxWidth: "100%",
             padding: "8px 11px",
@@ -449,6 +628,61 @@ function formatDateLabel(value) {
   }
 
   return normalized;
+}
+
+function EducationSupportBlock({ item }) {
+  const { t } = useTranslation();
+  const status = item.supportStatus || item.support_status || (item.supportDocumentUrl ? "pending" : "none");
+  const verified = Boolean(item.supportIsVerified || item.support_is_verified || status === "approved");
+  const hasSupport = Boolean(item.supportDocumentUrl || item.support_document_url || status !== "none");
+  const rejectionReason = String(item.supportRejectionReason || item.support_rejection_reason || "").trim();
+
+  if (!hasSupport) return null;
+
+  return (
+    <div style={{ ...detailBlock, display: "flex", alignItems: "flex-start", gap: 10 }}>
+      <span
+        style={{
+          width: 34,
+          height: 34,
+          borderRadius: 12,
+          display: "grid",
+          placeItems: "center",
+          color: verified ? "#2563eb" : "#64748b",
+          background: verified ? "rgba(37,99,235,.12)" : "rgba(100,116,139,.10)",
+          border: `1px solid ${verified ? "rgba(37,99,235,.22)" : "rgba(100,116,139,.18)"}`,
+        }}
+      >
+        <ShieldCheck size={17} fill={verified ? "rgba(37,99,235,.16)" : "transparent"} />
+      </span>
+      <span style={{ display: "grid", gap: 2 }}>
+        <span style={detailLabel}>{t("appI18n.portfolio.fields.supportDocument", "Respaldo")}</span>
+        <span style={detailText}>
+          {verified
+            ? t("appI18n.portfolio.detail.supportApproved", "Respaldo autenticado")
+            : status === "rejected"
+              ? t("appI18n.portfolio.detail.supportRejected", "Respaldo observado")
+              : t("appI18n.portfolio.detail.supportPending", "Respaldo en revision")}
+        </span>
+        {status === "rejected" && rejectionReason ? (
+          <span
+            style={{
+              ...detailText,
+              marginTop: 4,
+              padding: "8px 10px",
+              borderRadius: 12,
+              background: "rgba(239,68,68,.08)",
+              color: "#b91c1c",
+              border: "1px solid rgba(239,68,68,.14)",
+              lineHeight: 1.45,
+            }}
+          >
+            {rejectionReason}
+          </span>
+        ) : null}
+      </span>
+    </div>
+  );
 }
 
 function formatEducationLevel(value, t) {

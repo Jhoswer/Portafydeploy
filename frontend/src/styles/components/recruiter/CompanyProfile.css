@@ -400,7 +400,11 @@
   transition: background 0.1s;
 }
 .job-card:last-child { border-bottom: none; }
-.job-card:hover { background: var(--muted, #f9fafb); }
+.job-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: #ffffff; 
+}
 
 .job-card__top {
   display: flex;

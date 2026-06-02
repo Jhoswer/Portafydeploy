@@ -2,20 +2,20 @@ import { yearsOfExperience } from "./profileUtils";
 
 export function buildStats(projects, experience, skills, metrics = {}, options = {}) {
   const stats = [
-    { label: "Seguidores", value: metrics.followers ?? 0, action: "followers" },
-    { label: "Seguidos", value: metrics.following ?? 0, action: "following" },
-    { label: "Proyectos", value: projects.length },
-    { label: "Años de exp.", value: yearsOfExperience(experience) },
+    { key: "followers", label: "Seguidores", value: metrics.followers ?? 0, action: "followers" },
+    { key: "following", label: "Seguidos", value: metrics.following ?? 0, action: "following" },
+    { key: "projects", label: "Proyectos", value: projects.length },
+    { key: "experienceYears", label: "Años de exp.", value: yearsOfExperience(experience) },
     {
+      key: "companies",
       label: "Empresas",
-      value: new Set(experience.map((item) => item.company).filter(Boolean))
-        .size,
+      value: new Set(experience.map((item) => item.company).filter(Boolean)).size,
     },
-    { label: "Habilidades", value: skills.length },
+    { key: "skills", label: "Habilidades", value: skills.length },
   ];
 
   if (options.showProfileViews) {
-    stats.splice(2, 0, { label: "Visitas", value: metrics.profile_views ?? 0, action: "views" });
+    stats.splice(2, 0, { key: "views", label: "Visitas", value: metrics.profile_views ?? 0, action: "views" });
   }
 
   return stats;

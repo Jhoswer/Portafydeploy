@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Activity,
@@ -22,10 +23,10 @@ import { apiClient } from "../../../../services/http/httpClient";
 import HistorialAvatar from "./HistorialAvatar";
 import {
   TABLAS,
-  TIPOS,
-  ROL_CONFIG,
-  ROL_DEFAULT,
-  TIPO_STYLES,
+  useTipos,
+  useRolConfig,
+  useRolDefault,
+  useTipoStyles,
   getUsuarioId,
   getHistorialFullName,
   normalizeHistorialUsuario,
@@ -64,6 +65,12 @@ function getLogsFromResponse(res) {
 }
 
 export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = true }) {
+  const { t } = useTranslation();
+  const TIPOS = useTipos();
+  const ROL_CONFIG = useRolConfig();
+  const ROL_DEFAULT = useRolDefault();
+  const TIPO_STYLES = useTipoStyles();
+
   const [logs, setLogs] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -102,7 +109,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
       setTotal(Number(res?.total ?? res?.data?.total ?? nextLogs.length) || 0);
       setPage(Number(res?.current_page ?? p) || p);
     } catch {
-      setError("No se pudieron cargar los registros.");
+      setError(t("historial.detalle.error_cargar"));
     } finally {
       setLoading(false);
     }
@@ -141,6 +148,16 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
     }
   };
 
+  const TABLE_HEADERS = [
+    t("historial.detalle.tabla_headers.numero"),
+    t("historial.detalle.tabla_headers.tabla"),
+    t("historial.detalle.tabla_headers.campo"),
+    t("historial.detalle.tabla_headers.valor_anterior"),
+    t("historial.detalle.tabla_headers.nuevo_valor"),
+    t("historial.detalle.tabla_headers.tipo"),
+    t("historial.detalle.tabla_headers.fecha"),
+  ];
+
   return (
     <div className="historial-detalle">
       <AnimatePresence mode="wait">
@@ -159,7 +176,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                 {onVolver ? (
                   <button type="button" className="historial-detalle__back-link" onClick={onVolver}>
                     <ArrowLeft size={14} />
-                    Volver a buscar
+                    {t("historial.detalle.volver_buscar")}
                   </button>
                 ) : (
                   <span />
@@ -173,10 +190,10 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
               <div className="historial-detalle__panel-banner-bottom">
                 <span className="historial-detalle__eyebrow">
                   <Clock size={11} />
-                  PANEL DE USUARIO
+                  {t("historial.detalle.panel_eyebrow")}
                 </span>
                 <p className="historial-detalle__panel-subtitle">
-                  Revisa la informacion general antes de abrir el historial.
+                  {t("historial.detalle.panel_subtitle")}
                 </p>
               </div>
             </div>
@@ -192,7 +209,9 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                 />
                 <div style={{ minWidth: 0 }}>
                   <h2 className="historial-detalle__name">{nombre.toUpperCase()}</h2>
-                  <p className="historial-detalle__email">{usuarioNormalizado?.email || "Sin correo"}</p>
+                  <p className="historial-detalle__email">
+                    {usuarioNormalizado?.email || t("historial.detalle.sin_correo")}
+                  </p>
                 </div>
               </div>
 
@@ -200,15 +219,31 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                 <div className="historial-detalle__info-box">
                   <p className="historial-detalle__box-title">
                     <FileText size={11} />
-                    Informacion general
+                    {t("historial.detalle.info_general_title")}
                   </p>
-                  <InfoRow icon={<Mail size={12} />} label="Correo" value={usuarioNormalizado?.email || "Sin correo"} />
-                  <InfoRow icon={<Briefcase size={12} />} label="Profesion" value={usuarioNormalizado?.profesion || "No registrada"} />
-                  <InfoRow icon={<MapPin size={12} />} label="Ubicacion" value={usuarioNormalizado?.ubicacion || "No registrada"} />
+                  <InfoRow
+                    icon={<Mail size={12} />}
+                    label={t("historial.detalle.label_correo")}
+                    value={usuarioNormalizado?.email || t("historial.detalle.sin_correo")}
+                  />
+                  <InfoRow
+                    icon={<Briefcase size={12} />}
+                    label={t("historial.detalle.label_profesion")}
+                    value={usuarioNormalizado?.profesion || t("historial.detalle.sin_profesion")}
+                  />
+                  <InfoRow
+                    icon={<MapPin size={12} />}
+                    label={t("historial.detalle.label_ubicacion")}
+                    value={usuarioNormalizado?.ubicacion || t("historial.detalle.sin_ubicacion")}
+                  />
                   <InfoRow
                     icon={<Activity size={12} />}
-                    label="Perfil"
-                    value={usuarioNormalizado?.perfil_completado ? "Completo" : "Incompleto"}
+                    label={t("historial.detalle.label_perfil")}
+                    value={
+                      usuarioNormalizado?.perfil_completado
+                        ? t("historial.detalle.perfil_completo")
+                        : t("historial.detalle.perfil_incompleto")
+                    }
                     highlight={!!usuarioNormalizado?.perfil_completado}
                   />
                 </div>
@@ -216,17 +251,17 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                 <div className="historial-detalle__info-box">
                   <p className="historial-detalle__box-title">
                     <User size={11} />
-                    Biografia
+                    {t("historial.detalle.biografia_title")}
                   </p>
                   <p className="historial-detalle__bio">
-                    {usuarioNormalizado?.biografia || "Sin biografia registrada."}
+                    {usuarioNormalizado?.biografia || t("historial.detalle.sin_biografia")}
                   </p>
                 </div>
               </div>
 
               <div className="historial-detalle__panel-footer">
                 <button type="button" className="historial-detalle__history-btn" onClick={() => setShowHistory(true)}>
-                  Ver historial
+                  {t("historial.detalle.ver_historial")}
                 </button>
               </div>
             </div>
@@ -248,7 +283,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
               className="historial-detalle__back"
             >
               <ArrowLeft size={15} />
-              Volver
+              {t("historial.detalle.volver")}
             </button>
 
             {/* Card: cabecera con avatar */}
@@ -264,7 +299,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                 <div style={{ minWidth: 0 }}>
                   <h3 className="historial-detalle__history-title">{nombre}</h3>
                   <p className="historial-detalle__history-subtitle">
-                    {usuarioNormalizado?.email || "Sin correo"} · {rolConfig.label}
+                    {usuarioNormalizado?.email || t("historial.detalle.sin_correo")} · {rolConfig.label}
                   </p>
                 </div>
               </div>
@@ -273,7 +308,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                 {hayFiltros && (
                   <button type="button" onClick={limpiar} className="historial-detalle__reset-btn">
                     <RotateCcw size={11} />
-                    Limpiar filtros
+                    {t("historial.detalle.limpiar_filtros")}
                   </button>
                 )}
               </div>
@@ -284,7 +319,9 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
               <div className="historial-detalle__filters">
                 {/* Select tabla */}
                 <div className="historial-detalle__select-box">
-                  <span className="historial-detalle__select-label">Tabla</span>
+                  <span className="historial-detalle__select-label">
+                    {t("historial.detalle.filtro_tabla_label")}
+                  </span>
                   <div className="historial-detalle__select-wrap">
                     <select
                       value={tablaActiva}
@@ -293,7 +330,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                     >
                       {TABLAS.map((tabla) => (
                         <option key={tabla} value={tabla}>
-                          {tabla}
+                          {tabla === "Todos" ? t("historial.detalle.tabla_todos") : tabla}
                         </option>
                       ))}
                     </select>
@@ -340,7 +377,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                 {/* Buscar */}
                 <button type="button" onClick={() => cargarLogs(1)} className="historial-detalle__search-btn">
                   <Filter size={13} />
-                  Buscar
+                  {t("historial.detalle.btn_buscar")}
                 </button>
               </div>
             </div>
@@ -348,7 +385,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
             {/* Card: tabla de logs */}
             <div className="historial-detalle__table">
               <div className="historial-detalle__table-head">
-                {["#", "Tabla", "Campo", "Valor anterior", "Nuevo valor", "Tipo", "Fecha"].map((header) => (
+                {TABLE_HEADERS.map((header) => (
                   <span key={header}>{header}</span>
                 ))}
               </div>
@@ -363,7 +400,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                     className="historial-detalle__state"
                   >
                     <div className="historial-detalle__spinner" />
-                    <p className="historial-detalle__state-text">Cargando registros...</p>
+                    <p className="historial-detalle__state-text">{t("historial.detalle.cargando")}</p>
                   </motion.div>
                 ) : error ? (
                   <motion.div
@@ -387,9 +424,11 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
                     <div className="historial-detalle__empty-icon">
                       <Activity size={22} color="var(--muted,#94a3b8)" />
                     </div>
-                    <p className="historial-detalle__state-title">Sin registros</p>
+                    <p className="historial-detalle__state-title">
+                      {t("historial.detalle.sin_registros_title")}
+                    </p>
                     <p className="historial-detalle__state-text">
-                      No hay actividad con los filtros aplicados
+                      {t("historial.detalle.sin_registros_text")}
                     </p>
                   </motion.div>
                 ) : (
@@ -448,7 +487,7 @@ export default function HistorialDetalle({ usuario, onVolver, showIntroPanel = t
               {!loading && logs.length > 0 && (
                 <div className="historial-detalle__pagination">
                   <span className="historial-detalle__pagination-count">
-                    <strong>{total}</strong> registros encontrados
+                    <strong>{total}</strong> {t("historial.detalle.registros_encontrados")}
                   </span>
                   <div className="historial-detalle__pagination-actions">
                     <PageBtn disabled={page <= 1} onClick={() => cargarLogs(page - 1)}>

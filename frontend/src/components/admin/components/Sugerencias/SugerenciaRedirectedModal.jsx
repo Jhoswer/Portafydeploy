@@ -1,90 +1,55 @@
+import { useTranslation } from "react-i18next";
 import { X, ArrowUpCircle } from "lucide-react";
 import "../../../../styles/components/admin/ReportDeleteModal.css";
 
-/**
- * SugerenciaRedirectedModal
- * Confirma la acción de ESCALAR una sugerencia.
- * Inserta en ATTENDED con state='higher'. NO elimina la sugerencia.
- *
- * Props:
- *   sugerencia  object   — objeto sugerencia normalizado
- *   isOpen      bool
- *   isBusy      bool
- *   error       string
- *   onClose     fn()
- *   onConfirm   fn()     — dispara escalateSugerencia en el padre
- */
 export default function SugerenciaRedirectedModal({
-  sugerencia,
-  isOpen,
-  isBusy = false,
-  error  = "",
-  onClose,
-  onConfirm,
+  sugerencia, isOpen, isBusy = false, error = "", onClose, onConfirm,
 }) {
+  const { t } = useTranslation();
+  const e = "adminSugerencias.escalateModal";
+
   if (!isOpen || !sugerencia) return null;
 
-  const postulantName = sugerencia.postulant?.name || "este usuario";
+  const postulantName = sugerencia.postulant?.name || t(`${e}.userFallback`);
 
   return (
-    <div
-      className="adm-report-modal__backdrop"
-      onClick={isBusy ? undefined : onClose}
-    >
-      <div
-        className="adm-report-modal"
-        role="dialog"
-        aria-modal="true"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          className="adm-report-modal__close"
-          onClick={onClose}
-          disabled={isBusy}
-          aria-label="Cerrar"
-        >
+    <div className="adm-report-modal__backdrop" onClick={isBusy ? undefined : onClose}>
+      <div className="adm-report-modal" role="dialog" aria-modal="true"
+        onClick={(ev) => ev.stopPropagation()}>
+
+        <button className="adm-report-modal__close" onClick={onClose}
+          disabled={isBusy} aria-label={t(`${e}.closeLabel`)}>
           <X size={18} />
         </button>
 
-        <div
-          className="adm-report-modal__icon"
-          style={{ background: "#eff6ff", color: "#1d4ed8" }}
-        >
+        <div className="adm-report-modal__icon"
+          style={{ background: "#eff6ff", color: "#1d4ed8" }}>
           <ArrowUpCircle size={22} />
         </div>
 
-        <h3 className="adm-report-modal__title">
-          Escalar sugerencia
-        </h3>
+        <h3 className="adm-report-modal__title">{t(`${e}.title`)}</h3>
 
         <p className="adm-report-modal__text">
-          Estás a punto de <strong>escalar</strong> la sugerencia de{" "}
-          <strong>{postulantName}</strong> a un nivel superior de revisión.
+          {t(`${e}.text`)}{" "}
+          <strong>{postulantName}</strong>{" "}
+          {t(`${e}.textSuffix`)}
         </p>
 
         <p className="adm-report-modal__text adm-report-modal__text--secondary">
-          La sugerencia permanecerá activa y quedará registrada como escalada.
-          La nota que hayas escrito se adjuntará al registro. ¿Deseas continuar?
+          {t(`${e}.textSecondary`)}
         </p>
 
         {error && <p className="adm-report-modal__error">{error}</p>}
 
         <div className="adm-report-modal__actions">
-          <button
-            className="adm-report-modal__button adm-report-modal__button--ghost"
-            onClick={onClose}
-            disabled={isBusy}
-          >
-            Cancelar
+          <button className="adm-report-modal__button adm-report-modal__button--ghost"
+            onClick={onClose} disabled={isBusy}>
+            {t(`${e}.btnCancel`)}
           </button>
-
-          <button
-            className="adm-report-modal__button"
+          <button className="adm-report-modal__button"
             style={{ background: "#2563eb", color: "#fff" }}
-            onClick={onConfirm}
-            disabled={isBusy}
-          >
-            {isBusy ? "Procesando..." : "Escalar"}
+            onClick={onConfirm} disabled={isBusy}>
+            {isBusy ? t(`${e}.processing`) : t(`${e}.btnConfirm`)}
           </button>
         </div>
       </div>

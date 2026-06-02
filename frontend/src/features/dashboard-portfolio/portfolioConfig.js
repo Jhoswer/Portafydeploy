@@ -1,4 +1,4 @@
-import {
+﻿import {
   BriefcaseBusiness,
   FolderKanban,
   GraduationCap,
@@ -234,12 +234,16 @@ export const SECTION_META = {
         label: "Titulo",
         type: "text",
         placeholder: "Nombre del proyecto",
+        minLength: 4,
+        maxLength: 90,
       },
       {
         key: "description",
         label: "Descripcion",
         type: "textarea",
         placeholder: "Resumen corto del proyecto",
+        minLength: 30,
+        maxLength: 360,
       },
       {
         key: "techCategory",
@@ -255,6 +259,8 @@ export const SECTION_META = {
         categoryKey: "techCategory",
         placeholder:
           "Selecciona tecnologias de la categoria o agrega una manualmente",
+        maxTags: 8,
+        maxTagLength: 28,
       },
       {
         key: "repoUrl",
@@ -271,7 +277,7 @@ export const SECTION_META = {
       {
         key: "status",
         label: "Estado del proyecto",
-        type: "select",
+        type: "project-status",
         options: ["Completo", "En proceso", "Pausado"],
       },
       {
@@ -292,7 +298,7 @@ export const SECTION_META = {
       "Administra experiencia laboral o academica de forma ligera e independiente.",
     helper:
       "Registra tipo, cargo, empresa, fechas y si la experiencia sigue activa.",
-    listSubtitle: (item) => `${item.type} · ${item.company}`,
+    listSubtitle: (item) => `${item.type} Â· ${item.company}`,
     fields: [
       {
         key: "type",
@@ -329,12 +335,16 @@ export const SECTION_META = {
         label: "Empresa / institucion / cliente",
         type: "text",
         placeholder: "Nombre de empresa o institucion",
+        minLength: 2,
+        maxLength: 100,
       },
       {
         key: "description",
         label: "Descripcion",
         type: "textarea",
         placeholder: "Impacto, tareas o logros",
+        minLength: 30,
+        maxLength: 420,
       },
       { key: "startDate", label: "Fecha inicio", type: "date" },
       { key: "endDate", label: "Fecha fin", type: "date" },
@@ -378,16 +388,9 @@ export const SECTION_META = {
         label: "Descripcion",
         type: "textarea",
         placeholder: "Describe la habilidad",
-        pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$",
+        pattern: "^[a-zA-Z0-9Ã¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“ÃšÃ±Ã‘ ]+$",
       },
-      {
-        key: "category",
-        label: "Categoria",
-        type: "text",
-        placeholder: "Frontend / Soft skill / Backend",
-        pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$",
-        maxLength: 50,
-      },
+
     ],
   },
   social: {
@@ -421,7 +424,7 @@ export const SECTION_META = {
       "Registra carreras, diplomados, cursos, maestrias y otros estudios relevantes.",
     helper:
       "Agrega tu formacion academica o profesional usando la misma informacion del registro inicial.",
-    listSubtitle: (item) => [item.institution, item.level].filter(Boolean).join(" · "),
+    listSubtitle: (item) => [item.institution, item.level].filter(Boolean).join(" Â· "),
     fields: [
       {
         key: "level",
@@ -446,6 +449,13 @@ export const SECTION_META = {
       { key: "startDate", label: "Fecha inicio", type: "date" },
       { key: "endDate", label: "Fecha fin", type: "date" },
       { key: "isCurrent", label: "Actualmente", type: "checkbox" },
+      {
+        key: "supportDocument",
+        label: "Respaldo",
+        type: "file",
+        accept: ".pdf,image/jpeg,image/png,image/webp",
+        placeholder: "Certificado, diploma o constancia",
+      },
     ],
   },
 };
@@ -477,7 +487,7 @@ export function createEmptyForm(sectionKey) {
 
 export function createFilledForm(sectionKey, item) {
   const meta = SECTION_META[sectionKey];
-  return meta.fields.reduce((acc, field) => {
+  const draft = meta.fields.reduce((acc, field) => {
     acc[field.key] =
       item[field.key] ??
       (field.type === "checkbox"
@@ -487,4 +497,12 @@ export function createFilledForm(sectionKey, item) {
           : "");
     return acc;
   }, {});
+
+  if (sectionKey === "education") {
+    draft.supportDocumentUrl = item.supportDocumentUrl || "";
+    draft.supportStatus = item.supportStatus || "none";
+    draft.supportRejectionReason = item.supportRejectionReason || "";
+  }
+
+  return draft;
 }

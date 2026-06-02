@@ -116,6 +116,64 @@ export function ProjectStatusPill({ status, compact = false }) {
   );
 }
 
+export function ProjectStatusPicker({ value, options = [], errorMessage, onChange }) {
+  const [hoveredStatus, setHoveredStatus] = useState("");
+  const activeStatus = hoveredStatus || value;
+  const statuses = options.length ? options : ["Completo", "En proceso", "Pausado"];
+
+  const statusMeta = (status) => {
+    const normalized = String(status || "").toLowerCase();
+    if (normalized.includes("paus")) return { Icon: PauseCircle, color: "#b7791f", soft: "rgba(251,191,36,.13)", border: "rgba(251,191,36,.28)" };
+    if (normalized.includes("complet")) return { Icon: CheckCircle2, color: "#15803d", soft: "rgba(34,197,94,.13)", border: "rgba(34,197,94,.28)" };
+    return { Icon: CircleDashed, color: "#3157d5", soft: "rgba(79,140,255,.13)", border: "rgba(79,140,255,.28)" };
+  };
+
+  return (
+    <div style={fieldCardWithError(errorMessage)}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(132px, 1fr))", gap: 10 }}>
+        {statuses.map((status) => {
+          const meta = statusMeta(status);
+          const Icon = meta.Icon;
+          const isActive = activeStatus === status;
+
+          return (
+            <button
+              key={status}
+              type="button"
+              onClick={() => onChange(status)}
+              onMouseEnter={() => setHoveredStatus(status)}
+              onMouseLeave={() => setHoveredStatus("")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 9,
+                minHeight: 46,
+                padding: "10px 12px",
+                borderRadius: 16,
+                border: `1px solid ${isActive ? meta.border : "var(--dashboard-card-border)"}`,
+                background: isActive ? meta.soft : "var(--dashboard-card-bg)",
+                color: isActive ? meta.color : "var(--body)",
+                cursor: "pointer",
+                fontFamily: "var(--f-ui)",
+                fontWeight: 850,
+                boxShadow: isActive ? `0 12px 24px ${meta.color}18` : "none",
+                transform: isActive ? "translateY(-1px)" : "translateY(0)",
+                transition: "transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease",
+              }}
+            >
+              <span style={{ width: 28, height: 28, borderRadius: 10, display: "grid", placeItems: "center", background: isActive ? "rgba(255,255,255,.62)" : "var(--dashboard-icon-bg)" }}>
+                <Icon size={15} />
+              </span>
+              {status}
+            </button>
+          );
+        })}
+      </div>
+      {errorMessage ? <FieldError message={errorMessage} /> : null}
+    </div>
+  );
+}
+
 export function SkillDots({ level }) {
   const count = level === "Senior" ? 3 : level === "Mid" ? 2 : 1;
   return (
@@ -206,14 +264,16 @@ export function SkillLevelPicker({ value, onChange }) {
   );
 }
 
-export function CatalogTagsField({ value, selectedCategory, options, placeholder, errorMessage, onChange }) {
+export function CatalogTagsField({ value, selectedCategory, options, placeholder, maxTags = 8, maxTagLength = 28, errorMessage, onChange }) {
   const { t } = useTranslation();
   const canUseCatalog = selectedCategory && selectedCategory !== "Otra";
   const useManualOnly = selectedCategory === "Otra";
+  const limitReached = value.length >= maxTags;
 
   const addTag = (tag) => {
-    if (!tag || value.includes(tag)) return;
-    onChange([...value, tag]);
+    const normalized = String(tag || "").trim().slice(0, maxTagLength);
+    if (!normalized || value.includes(normalized) || limitReached) return;
+    onChange([...value, normalized]);
   };
 
   const removeTag = (tag) => onChange(value.filter((currentTag) => currentTag !== tag));
@@ -224,6 +284,7 @@ export function CatalogTagsField({ value, selectedCategory, options, placeholder
         <div>
           <select
             defaultValue=""
+            disabled={limitReached}
             onChange={(event) => {
               addTag(event.target.value);
               event.target.value = "";
@@ -244,10 +305,17 @@ export function CatalogTagsField({ value, selectedCategory, options, placeholder
         <ManualValueAdder
           buttonLabel={t("appI18n.portfolio.addButton")}
           placeholder={placeholder}
+          maxLength={maxTagLength}
+          disabled={limitReached}
           errorMessage={errorMessage}
           onAdd={addTag}
         />
       ) : null}
+
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 10, ...helperText, fontSize: "0.72rem" }}>
+        <span>{limitReached ? t("appI18n.portfolio.controls.tagLimitReached") : t("appI18n.portfolio.controls.tagLimitHint", { count: maxTags })}</span>
+        <span>{value.length}/{maxTags}</span>
+      </div>
 
       <div style={tagList}>
         {value.length ? (
@@ -300,12 +368,12 @@ export function CatalogSelectField({ value, selectedCategory, options, placehold
   );
 }
 
-export function ManualValueAdder({ buttonLabel, placeholder, errorMessage, onAdd }) {
+export function ManualValueAdder({ buttonLabel, placeholder, maxLength, disabled = false, errorMessage, onAdd }) {
   const [draftValue, setDraftValue] = useState("");
 
   const handleClick = () => {
     const nextValue = draftValue.trim();
-    if (!nextValue) return;
+    if (!nextValue || disabled) return;
     onAdd(nextValue);
     setDraftValue("");
   };
@@ -317,9 +385,11 @@ export function ManualValueAdder({ buttonLabel, placeholder, errorMessage, onAdd
         value={draftValue}
         onChange={(event) => setDraftValue(event.target.value)}
         placeholder={placeholder}
+        maxLength={maxLength}
+        disabled={disabled}
         style={inputWithError(errorMessage)}
       />
-      <button type="button" onClick={handleClick} style={miniPrimaryButton}>
+      <button type="button" onClick={handleClick} disabled={disabled} style={{ ...miniPrimaryButton, opacity: disabled ? 0.62 : 1, cursor: disabled ? "not-allowed" : "pointer" }}>
         <Plus size={14} />
         {buttonLabel}
       </button>

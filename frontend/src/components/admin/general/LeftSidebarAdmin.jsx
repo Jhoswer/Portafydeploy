@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { ADMIN_MODULE_GROUPS } from "./adminModules";
+import { useTranslation } from "react-i18next";
+import { getAdminModuleGroups } from "./adminModules";
 import "../../../styles/components/admin/LeftSidebarAdmin.css";
 
 export default function LeftSidebarAdmin({ activePage, setActivePage }) {
   const [collapsed, setCollapsed] = useState(false);
+  const { t } = useTranslation();
+  const ADMIN_MODULE_GROUPS = getAdminModuleGroups(t);
 
   function renderNavItem({ page, icon: Icon, label, color }) {
     return (
@@ -58,7 +61,7 @@ export default function LeftSidebarAdmin({ activePage, setActivePage }) {
                 <button
                   type="button"
                   onClick={() => setCollapsed((value) => !value)}
-                  title={collapsed ? "Expandir menu" : "Colapsar menu"}
+                  title={collapsed ? t("common.expandMenu") : t("common.collapseMenu")}
                   style={{
                     background: "none",
                     border: 0,

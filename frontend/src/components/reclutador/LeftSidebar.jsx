@@ -2,7 +2,7 @@ import {
   Building2, Users, Search, FilePlus,
   PanelLeftClose, PanelLeftOpen, ChevronDown, ChevronUp,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import EmpresaPerfil    from "./dashboardCompany/CompanyProfile";
@@ -11,9 +11,11 @@ import Convocatorias    from "./dashboardCompany/Convocatory";
 import NewConvocatory   from "./dashboardCompany/NewConvocatory";
 
 import { convocatorias as convocatoriasData, candidatos as candidatosData, visibilidadInicial } from "../../data/mockData";
+import { useSidebarNav } from "../landing/SidebarNavContext";
 
 export default function RecruiterLeftSidebar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation(); 
+  const { setNavItems } = useSidebarNav();
 
   const [collapsed, setCollapsed]            = useState(false);
   const [collapsedSections, setCollapsedSec] = useState({});
@@ -42,24 +44,48 @@ export default function RecruiterLeftSidebar() {
     setActivePage("convocatorias");
   }
 
+
   const NAV_SECTIONS = [
     {
       id: "empresa",
       label: t("empresa.nav.empresa"),
+      groupKey: "empresa.nav.empresa",
       items: [
-        { page: "empresa", icon: Building2, label: t("empresa.nav.perfil_empresa"), color: "res-violet" },
-        { page: "panel",   icon: Users,     label: t("empresa.nav.panel"),          color: "res-teal"   },
+        { page: "empresa", icon: Building2, label: t("empresa.nav.perfil_empresa"), labelKey: "empresa.nav.perfil_empresa", color: "res-violet" },
+        { page: "panel",   icon: Users,     label: t("empresa.nav.panel"),          labelKey: "empresa.nav.panel",          color: "res-teal"   },
       ],
     },
     {
       id: "convocatorias",
       label: t("empresa.nav.convocatorias"),
+      groupKey: "empresa.nav.convocatorias",
       items: [
-        { page: "convocatorias", icon: Search,   label: t("empresa.nav.convocatory"),        color: "res-blue", badge: null },
-        { page: "nueva",         icon: FilePlus, label: t("empresa.nav.nueva_convocatoria"), color: "res-teal", badge: null },
+        { page: "convocatorias", icon: Search,   label: t("empresa.nav.convocatory"),        labelKey: "empresa.nav.convocatory",        color: "res-blue", badge: null },
+        { page: "nueva",         icon: FilePlus, label: t("empresa.nav.nueva_convocatoria"), labelKey: "empresa.nav.nueva_convocatoria", color: "res-teal", badge: null },
       ],
     },
   ];
+
+  useEffect(() => {
+  const allItems = NAV_SECTIONS.flatMap(section =>
+    section.items.map(item => ({
+      key:      item.page,
+      label:    item.label,     
+      labelKey: item.labelKey,   
+      group:    section.label,   
+      groupKey: section.groupKey,
+      icon:     item.icon,
+      onClick:  () => {
+        if (item.page === "nueva") handleNavigateNueva();
+        else setActivePage(item.page);
+      },
+    }))
+  );
+
+  setNavItems(allItems);
+  return () => setNavItems(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [i18n.language]); 
 
   const PAGE_MAP = {
     empresa: <EmpresaPerfil />,
@@ -120,6 +146,7 @@ export default function RecruiterLeftSidebar() {
 
       <div className={`sidebar-left recruiter${collapsed ? " collapsed" : ""}`}>
 
+        {/* Primera card: título + botón toggle SIEMPRE dentro */}
         <div className="card">
           <div className="card-body">
             <div className="panel-card-title card-title">
@@ -136,6 +163,7 @@ export default function RecruiterLeftSidebar() {
           </div>
         </div>
 
+        {/* Resto de secciones colapsables */}
         {NAV_SECTIONS.slice(1).map((section) => {
           const isClosed = !!collapsedSections[section.id];
           return (

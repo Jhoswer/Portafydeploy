@@ -109,9 +109,8 @@ export default function NuevaBusqueda() {
             className="search-header"
             style={{
               position: "sticky",
-              top: "76px",
               zIndex: 10,
-              background: "rgba(234,243,251,.92)",
+              background: "var(--color-bg-sticky)", 
               backdropFilter: "blur(14px)",
               paddingBottom: "0px",
             }}
@@ -138,7 +137,7 @@ export default function NuevaBusqueda() {
           </div>
 
           {/* Resultados con margen para no quedar bajo el sticky */}
-          <div style={{ paddingTop: "70px" }}>
+          <div style={{ paddingTop: "16px" }}>
             <ResultsHeader
               isLoading={isBusy}
               resultCount={resultCount}
@@ -158,7 +157,7 @@ export default function NuevaBusqueda() {
             {isBusy ? (
               <SkeletonGrid />
             ) : profiles.length > 0 ? (
-              <div className="search-grid">
+              <div className="profile-grid">
                 {profiles.map((profile) => (
                   <SearchCard key={profile.id} profile={profile} />
                 ))}

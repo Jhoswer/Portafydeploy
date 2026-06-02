@@ -1,88 +1,77 @@
-// src/components/admin/components/Creacion/CreacionFormCV.jsx
-
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { FileText, Loader2, Plus, X } from "lucide-react";
 import CreacionModalConfirmacion from "./CreacionModalConfirmacion";
 import { crearCv } from "../../../../services/adminCreacionService";
 
-/* ── Catálogos de plantilla y fuente ─────────────────────────── */
-const TEMPLATES = [
-  { id: "navy",    name: "Clásico Navy",  description: "Profesional y elegante"    },
-  { id: "slate",   name: "Slate Moderno", description: "Limpio y contemporáneo"    },
-  { id: "forest",  name: "Forest",        description: "Natural y sobrio"          },
-  { id: "crimson", name: "Crimson",       description: "Audaz y memorable"         },
-  { id: "bicolor", name: "Bicolor",       description: "Sidebar oscuro + contenido"},
-  { id: "tech",    name: "Tech / Dev",    description: "Dark mode, estilo terminal"},
-  { id: "minimal", name: "Minimalista",   description: "Elegante y limpio"         },
-];
-
+const TEMPLATE_IDS = ["navy","slate","forest","crimson","bicolor","tech","minimal"];
 const FONTS = [
-  { id: "serif", label: "Serif", value: "Georgia, 'Times New Roman', serif"         },
-  { id: "sans",  label: "Sans",  value: "system-ui, -apple-system, sans-serif"      },
-  { id: "mono",  label: "Mono",  value: "'Courier New', Courier, monospace"         },
+  { id: "serif", value: "Georgia, 'Times New Roman', serif"    },
+  { id: "sans",  value: "system-ui, -apple-system, sans-serif" },
+  { id: "mono",  value: "'Courier New', Courier, monospace"    },
 ];
-
-/* ── Campos de texto / URL / textarea (sin template ni font) ── */
-const TEXT_FIELDS = [
-  { key: "archive_pdf", label: "PDF (URL)",   type: "url",      maxLength: 255 },
-  { key: "cv_url",      label: "URL CV",      type: "url",      maxLength: 255 },
-  { key: "description", label: "Descripción", type: "textarea", maxLength: 255 },
-];
+const TEXT_FIELD_KEYS = ["archive_pdf", "cv_url", "description"];
 
 const EMPTY_FORM = {
-  name_cv:     "",
-  template:    "",   // guarda el id de TEMPLATES (ej. "navy")
-  font:        "",   // guarda el id de FONTS (ej. "serif")
-  archive_pdf: "",
-  cv_url:      "",
-  description: "",
-  state:       false,
-  visible:     true,
+  name_cv: "", template: "", font: "",
+  archive_pdf: "", cv_url: "", description: "",
+  state: false, visible: true,
 };
 
-/* ── Resumen para el modal de confirmación ───────────────────── */
-function buildResumen(form) {
-  const templateLabel = TEMPLATES.find((t) => t.id === form.template)?.name ?? "";
-  const fontLabel     = FONTS.find((f) => f.id === form.font)?.label ?? "";
-
-  return [
-    { key: "name_cv",     label: "Nombre CV",  value: form.name_cv     },
-    { key: "template",    label: "Plantilla",  value: templateLabel    },
-    { key: "font",        label: "Fuente",     value: fontLabel        },
-    { key: "archive_pdf", label: "PDF (URL)",  value: form.archive_pdf },
-    { key: "cv_url",      label: "URL CV",     value: form.cv_url      },
-    { key: "description", label: "Descripción",value: form.description },
-    { key: "state",       label: "Activo",     value: form.state   ? "Sí" : "No" },
-    { key: "visible",     label: "Visible",    value: form.visible ? "Sí" : "No" },
-  ].filter(({ key, value }) => {
-    if (key === "state")   return form.state;
-    if (key === "visible") return form.visible;
-    return value !== "" && value !== null && value !== undefined;
-  });
-}
-
-/* ════════════════════════════════════════════════════════════════
-   COMPONENTE
-════════════════════════════════════════════════════════════════ */
 export default function CreacionFormCV({ idProfile, onClose, onSaved }) {
+  const { t } = useTranslation();
+  const c = "adminCreacion.cv";
+
   const [formData,     setFormData]     = useState({ ...EMPTY_FORM });
   const [isSaving,     setIsSaving]     = useState(false);
   const [error,        setError]        = useState("");
   const [showConfirm,  setShowConfirm]  = useState(false);
   const [confirmError, setConfirmError] = useState("");
 
+  // Construir catálogos con t() dentro del componente
+  const TEMPLATES = TEMPLATE_IDS.map((id) => ({
+    id,
+    name:        t(`${c}.templates.${id}`),
+    description: t(`${c}.templateDesc.${id}`),
+  }));
+
+  const TEXT_FIELDS = [
+    { key: "archive_pdf", label: t(`${c}.fields.archive_pdf`), type: "url",      maxLength: 255 },
+    { key: "cv_url",      label: t(`${c}.fields.cv_url`),      type: "url",      maxLength: 255 },
+    { key: "description", label: t(`${c}.fields.description`), type: "textarea", maxLength: 255 },
+  ];
+
+  function buildResumen(form) {
+    const templateLabel = TEMPLATES.find((tmpl) => tmpl.id === form.template)?.name ?? "";
+    const fontLabel     = FONTS.find((f) => f.id === form.font)
+      ? t(`${c}.fonts.${form.font}`) : "";
+    return [
+      { key: "name_cv",     label: t(`${c}.resumen.nameCv`),      value: form.name_cv     },
+      { key: "template",    label: t(`${c}.resumen.template`),    value: templateLabel    },
+      { key: "font",        label: t(`${c}.resumen.font`),        value: fontLabel        },
+      { key: "archive_pdf", label: t(`${c}.resumen.archivePdf`),  value: form.archive_pdf },
+      { key: "cv_url",      label: t(`${c}.resumen.cvUrl`),       value: form.cv_url      },
+      { key: "description", label: t(`${c}.resumen.description`), value: form.description },
+      { key: "state",       label: t(`${c}.resumen.active`),      value: form.state   ? t(`${c}.resumen.yes`) : t(`${c}.resumen.no`) },
+      { key: "visible",     label: t(`${c}.resumen.visible`),     value: form.visible ? t(`${c}.resumen.yes`) : t(`${c}.resumen.no`) },
+    ].filter(({ key, value }) => {
+      if (key === "state")   return form.state;
+      if (key === "visible") return form.visible;
+      return value !== "" && value !== null && value !== undefined;
+    });
+  }
+
   const handleChange = (field, value) =>
     setFormData((prev) => ({ ...prev, [field]: value }));
 
   const handleConfirmedSave = async () => {
-    setIsSaving(true);
-    setConfirmError("");
+    setIsSaving(true); setConfirmError("");
     try {
       const payload = {
         name_cv:     formData.name_cv     || null,
-        template:    formData.template    || null,   // envía "navy", "slate", etc.
-        font:        formData.font        || null,   // envía "serif", "sans" o "mono"
+        template:    formData.template    || null,
+        font:        formData.font        || null,
         archive_pdf: formData.archive_pdf || null,
         cv_url:      formData.cv_url      || null,
         description: formData.description || null,
@@ -94,8 +83,7 @@ export default function CreacionFormCV({ idProfile, onClose, onSaved }) {
       onSaved?.(data);
       onClose?.();
     } catch (err) {
-      console.error("[CreacionFormCV] Error al crear:", err);
-      setConfirmError(err?.message || "No se pudo crear el CV.");
+      setConfirmError(err?.message || t(`${c}.errorCreate`));
     } finally {
       setIsSaving(false);
     }
@@ -104,190 +92,130 @@ export default function CreacionFormCV({ idProfile, onClose, onSaved }) {
   return (
     <>
       {createPortal(
-        <div
-          className="edicion-modal-overlay"
-          onClick={(e) => e.target === e.currentTarget && !isSaving && onClose?.()}
-        >
+        <div className="edicion-modal-overlay"
+          onClick={(e) => e.target === e.currentTarget && !isSaving && onClose?.()}>
           <div className="edicion-modal edicion-modal--personal">
 
-            {/* ── Header ── */}
             <div className="edicion-modal__header">
               <div className="edicion-modal__header-info">
                 <FileText size={15} className="edicion-modal__header-icon" />
                 <div>
-                  <h2 className="edicion-modal__title">Nuevo CV</h2>
-                  <p className="edicion-modal__subtitle">
-                    Crear CV para el perfil #{idProfile}
-                  </p>
+                  <h2 className="edicion-modal__title">{t(`${c}.headerTitle`)}</h2>
+                  <p className="edicion-modal__subtitle">{t(`${c}.headerSubtitle`)}{idProfile}</p>
                 </div>
               </div>
-              <button
-                className="edicion-modal__close"
-                onClick={onClose}
-                disabled={isSaving}
-                aria-label="Cerrar"
-              >
+              <button className="edicion-modal__close" onClick={onClose}
+                disabled={isSaving} aria-label={t(`${c}.closeLabel`)}>
                 <X size={16} />
               </button>
             </div>
 
-            {/* ── Body ── */}
             <div className="edicion-modal__body">
               {error && <div className="edicion-modal__error">{error}</div>}
-
               <div className="edicion-modal__fields">
 
-                {/* Checkboxes Activo / Visible */}
                 <div className="edicion-modal__row">
                   <label className="edicion-modal__check">
-                    <input
-                      type="checkbox"
-                      checked={formData.state}
-                      onChange={(e) => handleChange("state", e.target.checked)}
-                    />
-                    Activo
+                    <input type="checkbox" checked={formData.state}
+                      onChange={(e) => handleChange("state", e.target.checked)} />
+                    {t(`${c}.checkActive`)}
                   </label>
                   <label className="edicion-modal__check">
-                    <input
-                      type="checkbox"
-                      checked={formData.visible}
-                      onChange={(e) => handleChange("visible", e.target.checked)}
-                    />
-                    Visible
+                    <input type="checkbox" checked={formData.visible}
+                      onChange={(e) => handleChange("visible", e.target.checked)} />
+                    {t(`${c}.checkVisible`)}
                   </label>
                 </div>
 
-                {/* Nombre CV */}
                 <div className="edicion-modal__field">
-                  <label className="edicion-modal__label">Nombre CV</label>
-                  <input
-                    className="edicion-modal__input"
-                    type="text"
+                  <label className="edicion-modal__label">{t(`${c}.fieldNameCv`)}</label>
+                  <input className="edicion-modal__input" type="text"
                     value={formData.name_cv}
                     onChange={(e) => handleChange("name_cv", e.target.value)}
-                    placeholder="Nombre del CV…"
-                    maxLength={255}
-                  />
+                    placeholder={t(`${c}.fieldNameCvPh`)} maxLength={255} />
                 </div>
 
-                {/* Plantilla — combobox con nombre visible, envía id */}
                 <div className="edicion-modal__field">
-                  <label className="edicion-modal__label">Plantilla</label>
-                  <select
-                    className="edicion-modal__input"
-                    value={formData.template}
-                    onChange={(e) => handleChange("template", e.target.value)}
-                  >
-                    <option value="">— Seleccionar plantilla —</option>
-                    {TEMPLATES.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name} — {t.description}
+                  <label className="edicion-modal__label">{t(`${c}.fieldTemplate`)}</label>
+                  <select className="edicion-modal__input" value={formData.template}
+                    onChange={(e) => handleChange("template", e.target.value)}>
+                    <option value="">{t(`${c}.templatePh`)}</option>
+                    {TEMPLATES.map((tmpl) => (
+                      <option key={tmpl.id} value={tmpl.id}>
+                        {tmpl.name} — {tmpl.description}
                       </option>
                     ))}
                   </select>
                   {formData.template && (
                     <span className="edicion-modal__char-count">
-                      Valor enviado al backend: <strong>{formData.template}</strong>
+                      {t(`${c}.templateSent`)} <strong>{formData.template}</strong>
                     </span>
                   )}
                 </div>
 
-                {/* Fuente — combobox con 3 opciones */}
                 <div className="edicion-modal__field">
-                  <label className="edicion-modal__label">Fuente</label>
-                  <select
-                    className="edicion-modal__input"
-                    value={formData.font}
-                    onChange={(e) => handleChange("font", e.target.value)}
-                  >
-                    <option value="">— Seleccionar fuente —</option>
+                  <label className="edicion-modal__label">{t(`${c}.fieldFont`)}</label>
+                  <select className="edicion-modal__input" value={formData.font}
+                    onChange={(e) => handleChange("font", e.target.value)}>
+                    <option value="">{t(`${c}.fontPh`)}</option>
                     {FONTS.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {f.label}
-                      </option>
+                      <option key={f.id} value={f.id}>{f.id}</option>
                     ))}
                   </select>
                   {formData.font && (
-                    <span
-                      className="edicion-modal__char-count"
-                      style={{
-                        fontFamily:
-                          FONTS.find((f) => f.id === formData.font)?.value,
-                      }}
-                    >
-                      Vista previa: Texto en {FONTS.find((f) => f.id === formData.font)?.label}
+                    <span className="edicion-modal__char-count"
+                      style={{ fontFamily: FONTS.find((f) => f.id === formData.font)?.value }}>
+                      {t(`${c}.fontPreview`)} {formData.font}
                     </span>
                   )}
                 </div>
 
-                {/* Resto de campos (URL / textarea) */}
                 {TEXT_FIELDS.map((field) => (
                   <div className="edicion-modal__field" key={field.key}>
                     <label className="edicion-modal__label">{field.label}</label>
                     {field.type === "textarea" ? (
                       <>
-                        <textarea
-                          className="edicion-modal__textarea"
+                        <textarea className="edicion-modal__textarea"
                           value={formData[field.key]}
                           onChange={(e) => handleChange(field.key, e.target.value)}
                           placeholder={`${field.label}…`}
-                          rows={3}
-                          maxLength={field.maxLength}
-                        />
+                          rows={3} maxLength={field.maxLength} />
                         <span className="edicion-modal__char-count">
                           {formData[field.key]?.length ?? 0} / {field.maxLength}
                         </span>
                       </>
                     ) : (
-                      <input
-                        className="edicion-modal__input"
-                        type={field.type}
+                      <input className="edicion-modal__input" type={field.type}
                         value={formData[field.key]}
                         onChange={(e) => handleChange(field.key, e.target.value)}
-                        placeholder={`${field.label}…`}
-                        maxLength={field.maxLength}
-                      />
+                        placeholder={`${field.label}…`} maxLength={field.maxLength} />
                     )}
                   </div>
                 ))}
-
               </div>
             </div>
 
-            {/* ── Footer ── */}
             <div className="edicion-modal__footer">
-              <button
-                className="edicion-modal__btn-cancel"
-                onClick={onClose}
-                disabled={isSaving}
-              >
-                <X size={13} /> Cerrar
+              <button className="edicion-modal__btn-cancel" onClick={onClose} disabled={isSaving}>
+                <X size={13} /> {t(`${c}.btnClose`)}
               </button>
-              <button
-                className="edicion-modal__btn-save"
+              <button className="edicion-modal__btn-save"
                 onClick={() => { setConfirmError(""); setShowConfirm(true); }}
-                disabled={isSaving}
-              >
+                disabled={isSaving}>
                 {isSaving
-                  ? <><Loader2 size={13} className="edicion-modal__spinner" /> Creando…</>
-                  : <><Plus size={13} /> Crear CV</>}
+                  ? <><Loader2 size={13} className="edicion-modal__spinner" /> {t(`${c}.creating`)}</>
+                  : <><Plus size={13} /> {t(`${c}.btnCreate`)}</>}
               </button>
             </div>
-
           </div>
         </div>,
         document.body
       )}
-
       <CreacionModalConfirmacion
-        isOpen={showConfirm}
-        isBusy={isSaving}
-        entidad="CV"
-        resumen={buildResumen(formData)}
-        error={confirmError}
+        isOpen={showConfirm} isBusy={isSaving} entidad="CV"
+        resumen={buildResumen(formData)} error={confirmError}
         onClose={() => !isSaving && setShowConfirm(false)}
-        onConfirm={handleConfirmedSave}
-      />
+        onConfirm={handleConfirmedSave} />
     </>
   );
 }

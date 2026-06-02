@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 export const TABLAS = [
   "Todos",
   "PROFILE",
@@ -14,47 +16,79 @@ export const TABLAS = [
   "CV",
 ];
 
-export const TIPOS = [
-  { value: "", label: "Todos" },
-  { value: "create", label: "Creado" },
-  { value: "update", label: "Editado" },
-  { value: "delete", label: "Eliminado" },
-];
+/**
+ * Hook: devuelve TIPOS con labels traducidos.
+ * Úsalo dentro de componentes React.
+ *
+ * const TIPOS = useTipos();
+ */
+export function useTipos() {
+  const { t } = useTranslation();
+  return [
+    { value: "",       label: t("historial.utils.tipos.todos") },
+    { value: "create", label: t("historial.utils.tipos.creado") },
+    { value: "update", label: t("historial.utils.tipos.editado") },
+    { value: "delete", label: t("historial.utils.tipos.eliminado") },
+  ];
+}
 
-export const ROL_CONFIG = {
-  "super administrador": {
-    color: "#7c3aed",
-    bg: "rgba(124,58,237,.12)",
-    label: "Super Admin",
-  },
-  administrador: {
-    color: "#ef5759",
-    bg: "rgba(239,87,89,.12)",
-    label: "Admin",
-  },
-  reclutador: {
-    color: "#0284c7",
-    bg: "rgba(2,132,199,.12)",
-    label: "Reclutador",
-  },
-  profesional: {
-    color: "#059669",
-    bg: "rgba(5,150,105,.12)",
-    label: "Profesional",
-  },
-};
+/**
+ * Hook: devuelve ROL_CONFIG con labels traducidos.
+ * Úsalo dentro de componentes React.
+ *
+ * const ROL_CONFIG = useRolConfig();
+ */
+export function useRolConfig() {
+  const { t } = useTranslation();
+  return {
+    "super administrador": {
+      color: "#7c3aed",
+      bg: "rgba(124,58,237,.12)",
+      label: t("historial.utils.roles.super_admin"),
+    },
+    administrador: {
+      color: "#ef5759",
+      bg: "rgba(239,87,89,.12)",
+      label: t("historial.utils.roles.admin"),
+    },
+    reclutador: {
+      color: "#0284c7",
+      bg: "rgba(2,132,199,.12)",
+      label: t("historial.utils.roles.reclutador"),
+    },
+    profesional: {
+      color: "#059669",
+      bg: "rgba(5,150,105,.12)",
+      label: t("historial.utils.roles.profesional"),
+    },
+  };
+}
 
-export const ROL_DEFAULT = {
-  color: "#64748b",
-  bg: "rgba(100,116,139,.12)",
-  label: "Usuario",
-};
+/**
+ * Hook: devuelve ROL_DEFAULT con label traducido.
+ */
+export function useRolDefault() {
+  const { t } = useTranslation();
+  return {
+    color: "#64748b",
+    bg: "rgba(100,116,139,.12)",
+    label: t("historial.utils.roles.usuario"),
+  };
+}
 
-export const TIPO_STYLES = {
-  create: { label: "Creado", color: "#059669", bg: "rgba(5,150,105,.10)" },
-  update: { label: "Editado", color: "#0284c7", bg: "rgba(2,132,199,.10)" },
-  delete: { label: "Eliminado", color: "#ef5759", bg: "rgba(239,87,89,.10)" },
-};
+/**
+ * Hook: devuelve TIPO_STYLES con labels traducidos.
+ */
+export function useTipoStyles() {
+  const { t } = useTranslation();
+  return {
+    create: { label: t("historial.utils.tipos.creado"),    color: "#059669", bg: "rgba(5,150,105,.10)" },
+    update: { label: t("historial.utils.tipos.editado"),   color: "#0284c7", bg: "rgba(2,132,199,.10)" },
+    delete: { label: t("historial.utils.tipos.eliminado"), color: "#ef5759", bg: "rgba(239,87,89,.10)" },
+  };
+}
+
+/* ─── Constantes estáticas (sin texto visible) ─── */
 
 export const AVATAR_PALETTE = [
   { bg: "#FEE2E2", fg: "#B91C1C" },
@@ -64,6 +98,8 @@ export const AVATAR_PALETTE = [
   { bg: "#FEF3C7", fg: "#92400E" },
   { bg: "#FCE7F3", fg: "#9D174D" },
 ];
+
+/* ─── Utilidades puras (sin texto visible) ─── */
 
 function firstNonEmpty(...values) {
   for (const value of values) {

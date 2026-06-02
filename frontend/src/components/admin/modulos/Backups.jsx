@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AlertCircle,
   CheckCircle2,
@@ -24,8 +25,8 @@ function getRoleKey(role) {
   return String(role ?? "").toLowerCase();
 }
 
-function formatDate(value) {
-  if (!value) return "Sin fecha";
+function formatDate(value, t) {
+  if (!value) return t("backups.sinFecha");
 
   const date = value.includes("T") ? new Date(value) : new Date(`${value}T12:00:00`);
   if (Number.isNaN(date.getTime())) return String(value);
@@ -60,6 +61,7 @@ function getFileName(backup) {
 }
 
 export default function Backups() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const currentRole = getRoleKey(user?.rol);
   const isSuperAdmin = currentRole === "super administrador";
@@ -83,10 +85,7 @@ export default function Backups() {
   );
 
   const loadBackups = useCallback(async ({ silent = false } = {}) => {
-    if (!silent) {
-      setLoading(true);
-    }
-
+    if (!silent) setLoading(true);
     setListError("");
 
     try {
@@ -99,27 +98,16 @@ export default function Backups() {
       });
     } catch (error) {
       console.error("[Backups] Error al cargar lista", error);
-      setListError(error?.message || "No se pudo cargar la lista de backups.");
-
-      if (!silent) {
-        setBackups([]);
-      }
+      setListError(error?.message || t("backups.errorListar"));
+      if (!silent) setBackups([]);
     } finally {
-      if (!silent) {
-        setLoading(false);
-      }
+      if (!silent) setLoading(false);
     }
-  }, [isSuperAdmin]);
+  }, [isSuperAdmin, t]);
 
   useEffect(() => {
-    if (!isAllowed) {
-      return undefined;
-    }
-
-    const timer = window.setTimeout(() => {
-      loadBackups();
-    }, 0);
-
+    if (!isAllowed) return undefined;
+    const timer = window.setTimeout(() => { loadBackups(); }, 0);
     return () => window.clearTimeout(timer);
   }, [isAllowed, loadBackups]);
 
@@ -150,15 +138,15 @@ export default function Backups() {
       console.info("[Backups] Iniciando generacion de backup manual");
       const response = await generarBackup();
       console.info("[Backups] Respuesta generate", response);
-      setSuccessMessage(response?.message || "Backup generado correctamente.");
+      setSuccessMessage(response?.message || t("backups.successGenerar"));
       await loadBackups({ silent: true });
     } catch (error) {
       console.error("[Backups] Error al generar backup", error);
-      setGenerateError(error?.message || "No se pudo generar el backup.");
+      setGenerateError(error?.message || t("backups.errorGenerar"));
     } finally {
       setIsGenerating(false);
     }
-  }, [loadBackups]);
+  }, [loadBackups, t]);
 
   const handleDownload = useCallback(async (backup) => {
     const filename = getFileName(backup);
@@ -176,15 +164,15 @@ export default function Backups() {
       link.remove();
       URL.revokeObjectURL(objectUrl);
     } catch (error) {
-      setActionError(error?.message || "No se pudo descargar el backup.");
+      setActionError(error?.message || t("backups.errorDescargar"));
     } finally {
       setLoadingFile("");
     }
-  }, []);
+  }, [t]);
 
   const handleDelete = useCallback(async (backup) => {
     const filename = getFileName(backup);
-    const confirmed = window.confirm(`Eliminar ${filename}? Esta accion no se puede deshacer.`);
+    const confirmed = window.confirm(t("backups.confirmarEliminar", { filename }));
     if (!confirmed) return;
 
     setDeletingFile(filename);
@@ -192,21 +180,18 @@ export default function Backups() {
 
     try {
       const response = await eliminarBackup(filename);
-      setSuccessMessage(response?.message || "Backup eliminado correctamente.");
+      setSuccessMessage(response?.message || t("backups.successEliminar"));
       await loadBackups({ silent: true });
     } catch (error) {
-      setActionError(error?.message || "No se pudo eliminar el backup.");
+      setActionError(error?.message || t("backups.errorEliminar"));
     } finally {
       setDeletingFile("");
     }
-  }, [loadBackups]);
+  }, [loadBackups, t]);
 
   const handleRestore = useCallback(async (backup) => {
     const filename = getFileName(backup);
-    const confirmed = window.confirm(
-      `Restaurar ${filename}? Antes de hacerlo se generara automaticamente un backup de seguridad del estado actual.`
-    );
-
+    const confirmed = window.confirm(t("backups.confirmarRestaurar", { filename }));
     if (!confirmed) return;
 
     setRestoringFile(filename);
@@ -226,12 +211,14 @@ export default function Backups() {
 
       const safetyFilename = response?.data?.safety_backup?.filename;
       const restoredName = response?.data?.restored_backup?.filename || filename;
+      const baseMsg = response?.message || t("backups.successRestaurar");
 
       setSuccessMessage(
         safetyFilename
-          ? `${response?.message || "Backup restaurado correctamente."} Respaldo previo: ${safetyFilename}.`
-          : `${response?.message || "Backup restaurado correctamente."} Backup aplicado: ${restoredName}.`
+          ? t("backups.successRestaurarConRespaldo", { mensaje: baseMsg, safety: safetyFilename })
+          : t("backups.successRestaurarConAplicado", { mensaje: baseMsg, restored: restoredName })
       );
+
       await loadBackups({ silent: true });
       window.setTimeout(() => {
         console.info("[Backups] Recargando interfaz para forzar lectura fresca de la BD");
@@ -239,24 +226,22 @@ export default function Backups() {
       }, 1200);
     } catch (error) {
       console.error("[Backups] Error al restaurar backup", error);
-      setActionError(error?.message || "No se pudo restaurar el backup.");
+      setActionError(error?.message || t("backups.errorRestaurar"));
     } finally {
       setRestoringFile("");
     }
-  }, [loadBackups]);
+  }, [loadBackups, t]);
 
   if (!isAllowed) {
     return (
       <AdminModuleLayout
-        title="Backups"
-        subtitle="Gestion de respaldos de base de datos."
+        title={t("backups.titulo")}
+        subtitle={t("backups.subtituloRestringido")}
       >
         <div className="backups-restricted">
           <AlertCircle size={28} color="#b45309" />
-          <h2 className="backups-restricted__title">Acceso restringido</h2>
-          <p className="backups-restricted__text">
-            Este modulo solo esta disponible para el super administrador.
-          </p>
+          <h2 className="backups-restricted__title">{t("backups.accesoRestringido")}</h2>
+          <p className="backups-restricted__text">{t("backups.soloSuperAdmin")}</p>
         </div>
       </AdminModuleLayout>
     );
@@ -264,23 +249,19 @@ export default function Backups() {
 
   return (
     <AdminModuleLayout
-      title="Backups"
-      subtitle="Gestion de respaldos de base de datos y descargas."
+      title={t("backups.titulo")}
+      subtitle={t("backups.subtitulo")}
     >
       <div className="backups-page">
         <section className="backups-hero">
           <div className="backups-hero__info">
             <div className="backups-hero__badge">
               <Database size={14} />
-              <span>Respaldo del sistema</span>
+              <span>{t("backups.badge")}</span>
             </div>
-            <h2 className="backups-hero__title">Backups del sistema</h2>
-            <p className="backups-hero__text">
-              Genera y descarga respaldos de los datos.
-            </p>
-            <div className="backups-hero__notice">
-              Antes de restaurar, el sistema crea automaticamente un backup de seguridad del estado actual.
-            </div>
+            <h2 className="backups-hero__title">{t("backups.heroTitulo")}</h2>
+            <p className="backups-hero__text">{t("backups.heroTexto")}</p>
+            <div className="backups-hero__notice">{t("backups.heroAviso")}</div>
           </div>
 
           <div className="backups-hero__actions">
@@ -293,12 +274,12 @@ export default function Backups() {
               {isGenerating ? (
                 <>
                   <Loader2 size={16} className="animate-spin" />
-                  Generando backup...
+                  {t("backups.generando")}
                 </>
               ) : (
                 <>
                   <Database size={16} />
-                  Generar backup
+                  {t("backups.generarBtn")}
                 </>
               )}
             </button>
@@ -310,23 +291,23 @@ export default function Backups() {
               className="btn btn--secondary"
             >
               <RefreshCw size={16} />
-              Actualizar
+              {t("backups.actualizar")}
             </button>
           </div>
         </section>
 
         <section className="metrics-grid">
           <article className="metric-card">
-            <span className="metric-card__label">Backups</span>
+            <span className="metric-card__label">{t("backups.metricBackups")}</span>
             <strong className="metric-card__value">{backups.length}</strong>
           </article>
           <article className="metric-card">
-            <span className="metric-card__label">Tamaño total</span>
+            <span className="metric-card__label">{t("backups.metricTamano")}</span>
             <strong className="metric-card__value">{formatBytes(totalSize)}</strong>
           </article>
           <article className="metric-card">
-            <span className="metric-card__label">Eliminar habilitado</span>
-            <strong className="metric-card__value">{canDelete ? "Si" : "No"}</strong>
+            <span className="metric-card__label">{t("backups.metricEliminar")}</span>
+            <strong className="metric-card__value">{canDelete ? t("backups.si") : t("backups.no")}</strong>
           </article>
         </section>
 
@@ -344,7 +325,7 @@ export default function Backups() {
               <span>{generateError}</span>
             </div>
             <button type="button" onClick={handleGenerateBackup} className="btn__small">
-              Reintentar
+              {t("backups.reintentar")}
             </button>
           </div>
         ) : null}
@@ -356,7 +337,7 @@ export default function Backups() {
               <span>{actionError}</span>
             </div>
             <button type="button" onClick={() => loadBackups()} className="btn__small">
-              Reintentar
+              {t("backups.reintentar")}
             </button>
           </div>
         ) : null}
@@ -368,7 +349,7 @@ export default function Backups() {
               <span>{listError}</span>
             </div>
             <button type="button" onClick={() => loadBackups()} className="btn__small">
-              Reintentar
+              {t("backups.reintentar")}
             </button>
           </div>
         ) : null}
@@ -376,8 +357,7 @@ export default function Backups() {
         <section className="table-card">
           <div className="table-card__header">
             <div>
-              <h3 className="table-card__title">Listado de backups</h3>
-              
+              <h3 className="table-card__title">{t("backups.listado")}</h3>
             </div>
           </div>
 
@@ -385,10 +365,10 @@ export default function Backups() {
             <table className="table">
               <thead>
                 <tr>
-                  <th className="table__header-cell">Nombre de archivo</th>
-                  <th className="table__header-cell">Fecha</th>
-                  <th className="table__header-cell">Tamaño</th>
-                  <th className="table__header-cell">Acciones</th>
+                  <th className="table__header-cell">{t("backups.colArchivo")}</th>
+                  <th className="table__header-cell">{t("backups.colFecha")}</th>
+                  <th className="table__header-cell">{t("backups.colTamano")}</th>
+                  <th className="table__header-cell">{t("backups.colAcciones")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -397,7 +377,7 @@ export default function Backups() {
                     <td className="table__empty-cell" colSpan={4}>
                       <div className="table__empty-state">
                         <Loader2 size={18} className="animate-spin" />
-                        Cargando backups...
+                        {t("backups.cargando")}
                       </div>
                     </td>
                   </tr>
@@ -406,7 +386,7 @@ export default function Backups() {
                     <td className="table__empty-cell" colSpan={4}>
                       <div className="table__empty-state">
                         <Database size={18} />
-                        Aun no hay backups generados.
+                        {t("backups.sinBackups")}
                       </div>
                     </td>
                   </tr>
@@ -425,12 +405,16 @@ export default function Backups() {
                           </div>
                           <div>
                             <div className="table__file-name">{filename}</div>
-                            <div className="table__file-meta">Backup del sistema</div>
+                            <div className="table__file-meta">{t("backups.backupSistema")}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="table__cell">{formatDate(backup?.created_at || backup?.created_at_human)}</td>
-                      <td className="table__cell">{backup?.size_label || formatBytes(backup?.size_bytes)}</td>
+                      <td className="table__cell">
+                        {formatDate(backup?.created_at || backup?.created_at_human, t)}
+                      </td>
+                      <td className="table__cell">
+                        {backup?.size_label || formatBytes(backup?.size_bytes)}
+                      </td>
                       <td className="table__cell">
                         <div className="table__actions">
                           <button
@@ -438,10 +422,12 @@ export default function Backups() {
                             onClick={() => handleDownload(backup)}
                             disabled={isDownloading}
                             className="btn btn--icon"
-                            title="Descargar backup"
+                            title={t("backups.descargar")}
                           >
-                            {isDownloading ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
-                            Descargar
+                            {isDownloading
+                              ? <Loader2 size={15} className="animate-spin" />
+                              : <Download size={15} />}
+                            {t("backups.descargar")}
                           </button>
 
                           <button
@@ -449,10 +435,12 @@ export default function Backups() {
                             onClick={() => handleRestore(backup)}
                             disabled={isRestoring}
                             className="btn btn--restore"
-                            title="Restaurar backup"
+                            title={t("backups.restaurar")}
                           >
-                            {isRestoring ? <Loader2 size={15} className="animate-spin" /> : <RotateCcw size={15} />}
-                            {isRestoring ? "Preparando respaldo..." : "Restaurar"}
+                            {isRestoring
+                              ? <Loader2 size={15} className="animate-spin" />
+                              : <RotateCcw size={15} />}
+                            {isRestoring ? t("backups.preparandoRespaldo") : t("backups.restaurar")}
                           </button>
 
                           {canDelete ? (
@@ -461,10 +449,12 @@ export default function Backups() {
                               onClick={() => handleDelete(backup)}
                               disabled={isDeleting}
                               className="btn btn--danger"
-                              title="Eliminar backup"
+                              title={t("backups.eliminar")}
                             >
-                              {isDeleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
-                              Eliminar
+                              {isDeleting
+                                ? <Loader2 size={15} className="animate-spin" />
+                                : <Trash2 size={15} />}
+                              {t("backups.eliminar")}
                             </button>
                           ) : null}
                         </div>
@@ -480,5 +470,3 @@ export default function Backups() {
     </AdminModuleLayout>
   );
 }
-
-/* Styles have been moved to Backups.css for better maintainability */

@@ -85,6 +85,7 @@ export function normalizeEducation(item = {}) {
     item.type ||
     item.training_type ||
     "";
+  const supportStatus = item.supportStatus || item.support_status || "none";
 
   return {
     id: String(item.id || item.id_university_career || `${program}-${institution}`),
@@ -94,6 +95,10 @@ export function normalizeEducation(item = {}) {
     startDate: item.fecha_inicio || item.start_date || "",
     endDate: item.fecha_fin || item.end_date || "",
     isCurrent: Boolean(item.actualmente || item.isCurrent || item.is_current || !item.fecha_fin),
+    supportDocumentUrl: item.supportDocumentUrl || item.support_document_url || "",
+    supportStatus,
+    supportIsVerified: Boolean(item.supportIsVerified || item.support_is_verified || supportStatus === "approved"),
+    supportRejectionReason: item.supportRejectionReason || item.support_rejection_reason || "",
   };
 }
 

@@ -1,20 +1,10 @@
 // src/components/admin/components/Creacion/CreacionFormPostulacion.jsx
-// Formulario de creación de postulación — POST /admin/profile/{profile}/postulations
-
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { FileText, Loader2, Plus, SendHorizonal, X } from "lucide-react";
 import CreacionModalConfirmacion from "./CreacionModalConfirmacion";
-import {
-  crearPostulacion,
-  getCatalogosPostulacion,
-} from "../../../../services/adminCreacionService";
-
-const STATE_OPTIONS = [
-  { value: "in_verification", label: "En verificación" },
-  { value: "accepted",        label: "Aceptado"         },
-  { value: "refused",         label: "Rechazado"        },
-];
+import { crearPostulacion, getCatalogosPostulacion } from "../../../../services/adminCreacionService";
 
 const EMPTY_FORM = {
   id_offer: "",
@@ -23,24 +13,32 @@ const EMPTY_FORM = {
   reason:   "",
 };
 
-function buildResumen(form, catalogs) {
-  const entries = [];
-
-  if (form.id_offer) {
-    const o = catalogs?.offers?.find((o) => String(o.value) === String(form.id_offer));
-    entries.push({ label: "Oferta", value: o?.label ?? `ID ${form.id_offer}` });
-  }
-  if (form.id_cv) {
-    const c = catalogs?.cvs?.find((c) => String(c.value) === String(form.id_cv));
-    entries.push({ label: "CV", value: c?.label ?? `ID ${form.id_cv}` });
-  }
-  const stateLabel = STATE_OPTIONS.find((s) => s.value === form.state)?.label ?? form.state;
-  entries.push({ label: "Estado", value: stateLabel });
-  if (form.reason) entries.push({ label: "Motivo", value: form.reason });
-  return entries;
-}
-
 export default function CreacionFormPostulacion({ idProfile, onClose, onSaved }) {
+  const { t } = useTranslation();
+  const p = "adminCreacion.postulacion";
+
+  const STATE_OPTIONS = [
+    { value: "in_verification", label: t(`${p}.states.in_verification`) },
+    { value: "accepted",        label: t(`${p}.states.accepted`)        },
+    { value: "refused",         label: t(`${p}.states.refused`)         },
+  ];
+
+  function buildResumen(form, catalogs) {
+    const entries = [];
+    if (form.id_offer) {
+      const offer = catalogs?.offers?.find((o) => String(o.value) === String(form.id_offer));
+      entries.push({ label: t(`${p}.resumen.offer`), value: offer?.label ?? `ID ${form.id_offer}` });
+    }
+    if (form.id_cv) {
+      const cv = catalogs?.cvs?.find((c) => String(c.value) === String(form.id_cv));
+      entries.push({ label: t(`${p}.resumen.cv`), value: cv?.label ?? `ID ${form.id_cv}` });
+    }
+    const stateLabel = STATE_OPTIONS.find((s) => s.value === form.state)?.label ?? form.state;
+    entries.push({ label: t(`${p}.resumen.state`), value: stateLabel });
+    if (form.reason) entries.push({ label: t(`${p}.resumen.reason`), value: form.reason });
+    return entries;
+  }
+
   const [formData,     setFormData]     = useState({ ...EMPTY_FORM });
   const [catalogs,     setCatalogs]     = useState(null);
   const [isLoading,    setIsLoading]    = useState(true);
@@ -56,7 +54,7 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
         const data = await getCatalogosPostulacion(idProfile);
         setCatalogs(data);
       } catch {
-        setError("No se pudieron cargar los catálogos de la postulación.");
+        setError(t(`${p}.errorLoad`));
       } finally {
         setIsLoading(false);
       }
@@ -68,10 +66,7 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
     setFormData((prev) => ({ ...prev, [field]: value }));
 
   const handleConfirmedSave = async () => {
-    if (!formData.id_offer) {
-      setConfirmError("Debes seleccionar una oferta.");
-      return;
-    }
+    if (!formData.id_offer) { setConfirmError(t(`${p}.errorRequired`)); return; }
     setIsSaving(true);
     setConfirmError("");
     try {
@@ -87,7 +82,7 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
       onClose?.();
     } catch (err) {
       console.error("[CreacionFormPostulacion] Error al crear:", err);
-      setConfirmError(err?.message || "No se pudo crear la postulación.");
+      setConfirmError(err?.message || t(`${p}.errorCreate`));
     } finally {
       setIsSaving(false);
     }
@@ -99,10 +94,8 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
   return (
     <>
       {createPortal(
-        <div
-          className="edicion-modal-overlay"
-          onClick={(e) => e.target === e.currentTarget && !isSaving && onClose?.()}
-        >
+        <div className="edicion-modal-overlay"
+          onClick={(e) => e.target === e.currentTarget && !isSaving && onClose?.()}>
           <div className="edicion-modal edicion-modal--postulacion">
 
             {/* Header */}
@@ -110,11 +103,12 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
               <div className="edicion-modal__header-info">
                 <SendHorizonal size={15} className="edicion-modal__header-icon" />
                 <div>
-                  <h2 className="edicion-modal__title">Nueva Postulación</h2>
-                  <p className="edicion-modal__subtitle">Perfil #{idProfile}</p>
+                  <h2 className="edicion-modal__title">{t(`${p}.headerTitle`)}</h2>
+                  <p className="edicion-modal__subtitle">{t(`${p}.headerSubtitle`)}{idProfile}</p>
                 </div>
               </div>
-              <button className="edicion-modal__close" onClick={onClose} disabled={isSaving} aria-label="Cerrar">
+              <button className="edicion-modal__close" onClick={onClose}
+                disabled={isSaving} aria-label={t(`${p}.closeLabel`)}>
                 <X size={16} />
               </button>
             </div>
@@ -124,7 +118,7 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
               {isLoading ? (
                 <div className="edicion-modal__loading">
                   <Loader2 size={22} className="edicion-modal__spinner" />
-                  <span>Cargando catálogos…</span>
+                  <span>{t(`${p}.loading`)}</span>
                 </div>
               ) : (
                 <div className="edicion-modal__fields">
@@ -135,21 +129,18 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
                   {/* Oferta */}
                   <div className="edicion-modal__field">
                     <label className="edicion-modal__label">
-                      Oferta <span className="edicion-modal__required">*</span>
+                      {t(`${p}.fieldOffer`)} <span className="edicion-modal__required">*</span>
                     </label>
-                    <select
-                      className="edicion-modal__input"
-                      value={formData.id_offer}
-                      onChange={(e) => handleChange("id_offer", e.target.value)}
-                    >
-                      <option value="">— Seleccionar oferta —</option>
+                    <select className="edicion-modal__input" value={formData.id_offer}
+                      onChange={(e) => handleChange("id_offer", e.target.value)}>
+                      <option value="">{t(`${p}.offerPh`)}</option>
                       {offerOptions.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
                     {offerOptions.length === 0 && (
                       <span className="edicion-modal__char-count" style={{ color: "#f59e0b" }}>
-                        No hay ofertas disponibles.
+                        {t(`${p}.offerEmpty`)}
                       </span>
                     )}
                   </div>
@@ -158,21 +149,18 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
                   <div className="edicion-modal__field">
                     <label className="edicion-modal__label">
                       <FileText size={11} style={{ display: "inline", marginRight: 4 }} />
-                      CV del postulante
+                      {t(`${p}.fieldCv`)}
                     </label>
-                    <select
-                      className="edicion-modal__input"
-                      value={formData.id_cv}
-                      onChange={(e) => handleChange("id_cv", e.target.value)}
-                    >
-                      <option value="">— Sin CV seleccionado —</option>
+                    <select className="edicion-modal__input" value={formData.id_cv}
+                      onChange={(e) => handleChange("id_cv", e.target.value)}>
+                      <option value="">{t(`${p}.cvPh`)}</option>
                       {cvOptions.map((c) => (
                         <option key={c.value} value={c.value}>{c.label}</option>
                       ))}
                     </select>
                     {cvOptions.length === 0 && (
                       <span className="edicion-modal__char-count" style={{ color: "#f59e0b" }}>
-                        Este perfil no tiene CVs registrados.
+                        {t(`${p}.cvEmpty`)}
                       </span>
                     )}
                   </div>
@@ -180,30 +168,22 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
                   {/* Estado */}
                   <div className="edicion-modal__field">
                     <label className="edicion-modal__label">
-                      Estado <span className="edicion-modal__required">*</span>
+                      {t(`${p}.fieldState`)} <span className="edicion-modal__required">*</span>
                     </label>
-                    <select
-                      className="edicion-modal__input"
-                      value={formData.state}
-                      onChange={(e) => handleChange("state", e.target.value)}
-                    >
-                      {STATE_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
+                    <select className="edicion-modal__input" value={formData.state}
+                      onChange={(e) => handleChange("state", e.target.value)}>
+                      {STATE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
                   </div>
 
                   {/* Motivo */}
                   <div className="edicion-modal__field">
-                    <label className="edicion-modal__label">Motivo / Carta de presentación</label>
-                    <textarea
-                      className="edicion-modal__textarea"
-                      value={formData.reason}
+                    <label className="edicion-modal__label">{t(`${p}.fieldReason`)}</label>
+                    <textarea className="edicion-modal__textarea" value={formData.reason}
                       onChange={(e) => handleChange("reason", e.target.value)}
-                      placeholder="Motivo o carta de presentación…"
-                      rows={5}
-                      maxLength={255}
-                    />
+                      placeholder={t(`${p}.reasonPh`)} rows={5} maxLength={255} />
                     <span className="edicion-modal__char-count">
                       {formData.reason?.length ?? 0} / 255
                     </span>
@@ -215,14 +195,12 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
             {/* Footer */}
             <div className="edicion-modal__footer">
               <button className="edicion-modal__btn-cancel" onClick={onClose} disabled={isSaving}>
-                <X size={13} /> Cerrar
+                <X size={13} /> {t(`${p}.btnClose`)}
               </button>
-              <button
-                className="edicion-modal__btn-save"
+              <button className="edicion-modal__btn-save"
                 onClick={() => { setConfirmError(""); setShowConfirm(true); }}
-                disabled={isSaving || isLoading || !formData.id_offer}
-              >
-                <Plus size={13} /> Crear Postulación
+                disabled={isSaving || isLoading || !formData.id_offer}>
+                <Plus size={13} /> {t(`${p}.btnCreate`)}
               </button>
             </div>
           </div>
@@ -231,14 +209,10 @@ export default function CreacionFormPostulacion({ idProfile, onClose, onSaved })
       )}
 
       <CreacionModalConfirmacion
-        isOpen={showConfirm}
-        isBusy={isSaving}
-        entidad="Postulación"
-        resumen={buildResumen(formData, catalogs)}
-        error={confirmError}
+        isOpen={showConfirm} isBusy={isSaving} entidad="Postulación"
+        resumen={buildResumen(formData, catalogs)} error={confirmError}
         onClose={() => !isSaving && setShowConfirm(false)}
-        onConfirm={handleConfirmedSave}
-      />
+        onConfirm={handleConfirmedSave} />
     </>
   );
 }

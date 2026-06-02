@@ -1,78 +1,56 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
-  X,
-  AlertTriangle,
-  User,
-  Calendar,
-  Tag,
-  FileText,
-  Link,
-  Trash2,
-  XCircle,
-  CornerUpRight,
-  ExternalLink,
-  Clock,
-  Zap,
+  X, AlertTriangle, User, Calendar, Tag, FileText, Link,
+  Trash2, XCircle, CornerUpRight, ExternalLink, Clock, Zap,
 } from "lucide-react";
 import "../../../../styles/components/admin/components/Report/ReportOpen.css";
-
 import ReportActionModal from "./ReportActionModal";
 import ReportRedirected from "./ReportRedirected";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "/api";
-
-function getToken() {
-  return localStorage.getItem("token") ?? "";
-}
+function getToken() { return localStorage.getItem("token") ?? ""; }
 
 async function fetchReportContext(reportId) {
   const res = await fetch(`${API_BASE}/reports/${reportId}/context`, {
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-      Accept: "application/json",
-    },
+    headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/json" },
   });
-  if (!res.ok) throw new Error("No se pudo cargar el contexto del reporte.");
+  if (!res.ok) throw new Error("contextError");
   return res.json();
 }
 
 function ProfileStats({ label, stats, loading, error }) {
+  const { t } = useTranslation();
+  const o = "adminReports.open";
   return (
     <div className="ro-detail-card">
       <div className="ro-detail-card__title">{label}</div>
-
-      {loading && (
-        <p className="ro-section__empty">Cargando historial…</p>
-      )}
-
-      {!loading && error && (
-        <p className="ro-section__empty ro-section__empty--error">{error}</p>
-      )}
-
+      {loading && <p className="ro-section__empty">{t(`${o}.historyLoading`)}</p>}
+      {!loading && error && <p className="ro-section__empty ro-section__empty--error">{error}</p>}
       {!loading && !error && stats && (
         <ul className="ro-history-list">
           <li className="ro-history-item">
             <span className="ro-history-item__dot ro-history-item__dot--gray" />
             <span className="ro-history-item__bd">
-              Reportes realizados: <strong>{stats.total}</strong>
+              {t(`${o}.historyTotal`)} <strong>{stats.total}</strong>
             </span>
           </li>
           <li className="ro-history-item">
             <span className="ro-history-item__dot ro-history-item__dot--green" />
             <span className="ro-history-item__bd">
-              Reportes aceptados: <strong>{stats.accepted_against}</strong>
+              {t(`${o}.historyAcceptedAgainst`)} <strong>{stats.accepted_against}</strong>
             </span>
           </li>
           <li className="ro-history-item">
             <span className="ro-history-item__dot ro-history-item__dot--red" />
             <span className="ro-history-item__bd">
-              Reportes rechazados: <strong>{stats.rejected}</strong>
+              {t(`${o}.historyRejected`)} <strong>{stats.rejected}</strong>
             </span>
           </li>
           <li className="ro-history-item">
             <span className="ro-history-item__dot ro-history-item__dot--orange" />
             <span className="ro-history-item__bd">
-              Reportes aceptados en contra: <strong>{stats.accepted}</strong>
+              {t(`${o}.historyAccepted`)} <strong>{stats.accepted}</strong>
             </span>
           </li>
         </ul>
@@ -82,15 +60,11 @@ function ProfileStats({ label, stats, loading, error }) {
 }
 
 export default function ReportOpen({
-  report,
-  onClose,
-  onDelete,
-  onIgnore,
-  onAccept,
-  onInProgress,
-  onRedirect,
+  report, onClose, onDelete, onIgnore, onAccept, onInProgress, onRedirect,
 }) {
-  // ── TODOS los hooks van primero, sin excepción ──────────────────────────────
+  const { t } = useTranslation();
+  const o = "adminReports.open";
+
   const [showActionModal,   setShowActionModal]   = useState(false);
   const [showRedirectModal, setShowRedirectModal] = useState(false);
   const [ignoreBusy,        setIgnoreBusy]        = useState(false);
@@ -104,105 +78,72 @@ export default function ReportOpen({
 
   useEffect(() => {
     if (!report) return;
-    setContextLoading(true);
-    setContextError("");
+    setContextLoading(true); setContextError("");
     fetchReportContext(report.id)
       .then(setContext)
-      .catch((e) => setContextError(e.message))
+      .catch((e) => setContextError(e.message === "contextError"
+        ? t(`${o}.contextError`) : e.message))
       .finally(() => setContextLoading(false));
   }, [report?.id]);
 
   useEffect(() => {
-    function handleKey(e) {
-      if (e.key === "Escape") onClose();
-    }
+    function handleKey(e) { if (e.key === "Escape") onClose(); }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, []);
 
-  // ── Early return DESPUÉS de los hooks ──────────────────────────────────────
   if (!report) return null;
 
-  const {
-    meta,
-    reported_user,
-    reporter_user,
-    refType,
-    description,
-    formattedDate,
-    id,
-    tests_url,
-  } = report;
+  const { meta, reported_user, reporter_user, refType, description, formattedDate, id, tests_url } = report;
 
   const reporterPhoto = typeof reporter_user?.photo === "string" ? reporter_user.photo.trim() : "";
   const reportedPhoto = typeof reported_user?.photo === "string" ? reported_user.photo.trim() : "";
+  const reporterName = reporter_user.name || t(`${o}.reporterUserFallback`, { defaultValue: "Usuario" });
+  const reportedName = reported_user.name || t(`${o}.reportedUserFallback`, { defaultValue: "Usuario reportado" });
+  const motivoLabel = t(meta.labelKey);
+  const badgeLabel = t(meta.badgeKey);
   const showReporterPhoto = Boolean(reporterPhoto) && !reporterImageFailed;
   const showReportedPhoto = Boolean(reportedPhoto) && !reportedImageFailed;
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   const handleIgnore = async () => {
     setIgnoreBusy(true);
-    try {
-      const handled = await onIgnore?.(report);
-      if (handled) onClose?.();
-    } finally {
-      setIgnoreBusy(false);
-    }
+    try { const handled = await onIgnore?.(report); if (handled) onClose?.(); }
+    finally { setIgnoreBusy(false); }
   };
 
   const handleAcceptSuccess = async (payload) => {
     const handled = await onAccept?.(report, payload);
-    if (handled) {
-      setShowActionModal(false);
-      onClose?.();
-      return true;
-    }
+    if (handled) { setShowActionModal(false); onClose?.(); return true; }
     return false;
   };
 
   const handleRedirectConfirm = async () => {
-    setRedirectBusy(true);
-    setRedirectError("");
+    setRedirectBusy(true); setRedirectError("");
     try {
       const handled = await onRedirect?.(report);
-      if (handled) {
-        setShowRedirectModal(false);
-        onClose?.();
-      }
+      if (handled) { setShowRedirectModal(false); onClose?.(); }
     } catch (requestError) {
-      setRedirectError(requestError?.message || "No se pudo redirigir el reporte.");
-    } finally {
-      setRedirectBusy(false);
-    }
+      setRedirectError(requestError?.message || t(`${o}.contextError`));
+    } finally { setRedirectBusy(false); }
   };
 
-  // ── Badge de Estado dinámico ───────────────────────────────────────────────
   const statusBadge = contextLoading
-    ? { label: "Cargando…", cls: "rp-badge--gray"  }
+    ? { label: t(`${o}.statusLoading`), cls: "rp-badge--gray" }
     : contextError
-    ? { label: "Error",     cls: "rp-badge--gray"  }
+    ? { label: t(`${o}.statusError`),   cls: "rp-badge--gray" }
     : context?.is_open
-    ? { label: "Abierto",   cls: "rp-badge--open"  }
-    : { label: meta.badge,  cls: meta.badgeClass   };
+    ? { label: t(`${o}.statusOpen`),    cls: "rp-badge--open" }
+    : { label: badgeLabel,              cls: meta.badgeClass   };
 
-  // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div
-      className="ro-overlay"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Detalle del reporte"
-    >
+    <div className="ro-overlay"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      role="dialog" aria-modal="true" aria-label={t(`${o}.ariaLabel`)}>
       <div className="ro-modal">
 
         {/* Header */}
@@ -210,26 +151,20 @@ export default function ReportOpen({
           <div className="ro-header__left">
             <div className={`ro-header__avatar ${meta.avatarClass}`}>
               {showReporterPhoto ? (
-                <img
-                  src={reporterPhoto}
-                  alt={reporter_user.name || "Usuario reportante"}
-                  className="ro-card__avatar-img"
-                  onError={() => setReporterImageFailed(true)}
-                />
-              ) : (
-                reporter_user.initials
-              )}
+                <img src={reporterPhoto} alt={reporterName}
+                  className="ro-card__avatar-img" onError={() => setReporterImageFailed(true)} />
+              ) : reporter_user.initials}
             </div>
             <div>
               <h2 className="ro-header__title">
-                Reporte hecho por {reporter_user.name}
+                {t(`${o}.reportMadeBy`)} {reporterName}
               </h2>
               <p className="ro-header__subtitle">
-                {meta.label} · Reporte #{id}
+                {motivoLabel} · #{id}
               </p>
             </div>
           </div>
-          <button className="ro-close-btn" onClick={onClose} aria-label="Cerrar">
+          <button className="ro-close-btn" onClick={onClose} aria-label={t(`${o}.btnClose`)}>
             <X size={18} />
           </button>
         </div>
@@ -240,191 +175,143 @@ export default function ReportOpen({
 
             <section className="ro-section">
               <div className="ro-section__label">
-                <User size={14} /> Usuario reportado
+                <User size={14} /> {t(`${o}.reportedUser`)}
               </div>
               <div className="ro-user-card">
                 <div className={`ro-user-card__avatar ${meta.avatarClass}`}>
                   {showReportedPhoto ? (
-                    <img
-                      src={reportedPhoto}
-                      alt={reported_user.name || "Usuario reportado"}
-                      className="ro-card__avatar-img"
-                      onError={() => setReportedImageFailed(true)}
-                    />
-                  ) : (
-                    reported_user.initials
-                  )}
+                    <img src={reportedPhoto} alt={reportedName}
+                      className="ro-card__avatar-img" onError={() => setReportedImageFailed(true)} />
+                  ) : reported_user.initials}
                 </div>
                 <div className="ro-user-card__info">
-                  <span className="ro-user-card__name">{reported_user.name}</span>
-                  <span className="ro-user-card__id">ID de perfil: {report.id_reported_user}</span>
+                  <span className="ro-user-card__name">{reportedName}</span>
+                  <span className="ro-user-card__id">{t(`${o}.profileId`)} {report.id_reported_user}</span>
                 </div>
-                <a
-                  href={`/profile/${report.id_reported_user}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ro-profile-link"
-                >
-                  <ExternalLink size={13} /> Ver perfil
+                <a href={`/profile/${report.id_reported_user}`} target="_blank"
+                  rel="noopener noreferrer" className="ro-profile-link">
+                  <ExternalLink size={13} /> {t(`${o}.viewProfile`)}
                 </a>
               </div>
             </section>
 
             <section className="ro-section">
               <div className="ro-section__label">
-                <AlertTriangle size={14} /> Reportado por
+                <AlertTriangle size={14} /> {t(`${o}.reportedBy`)}
               </div>
               <div className="ro-user-card ro-user-card--reporter">
                 <div className="ro-user-card__avatar ro-user-card__avatar--reporter">
                   {showReporterPhoto ? (
-                    <img
-                      src={reporterPhoto}
-                      alt={reporter_user.name || "Usuario reportante"}
-                      className="ro-card__avatar-img"
-                      onError={() => setReporterImageFailed(true)}
-                    />
-                  ) : (
-                    reporter_user.initials
-                  )}
+                    <img src={reporterPhoto} alt={reporterName}
+                      className="ro-card__avatar-img" onError={() => setReporterImageFailed(true)} />
+                  ) : reporter_user.initials}
                 </div>
                 <div className="ro-user-card__info">
-                  <span className="ro-user-card__name">{reporter_user.name}</span>
-                  <span className="ro-user-card__id">ID de perfil: {report.id_profile}</span>
+                  <span className="ro-user-card__name">{reporterName}</span>
+                  <span className="ro-user-card__id">{t(`${o}.profileId`)} {report.id_profile}</span>
                 </div>
               </div>
             </section>
 
             <section className="ro-section">
               <div className="ro-section__label">
-                <FileText size={14} /> Descripcion del reporte
+                <FileText size={14} /> {t(`${o}.descriptionLabel`)}
               </div>
               <p className="ro-section__text">{description}</p>
             </section>
 
             <section className="ro-section">
               <div className="ro-section__label">
-                <Link size={14} /> Pruebas
+                <Link size={14} /> {t(`${o}.evidenceLabel`)}
               </div>
               {tests_url ? (
-                <a
-                  href={tests_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ro-evidence-link"
-                >
+                <a href={tests_url} target="_blank" rel="noopener noreferrer" className="ro-evidence-link">
                   <ExternalLink size={13} /> {tests_url}
                 </a>
               ) : (
-                <p className="ro-section__empty">Sin pruebas adjuntas.</p>
+                <p className="ro-section__empty">{t(`${o}.noEvidence`)}</p>
               )}
             </section>
-
           </div>
 
           {/* Aside */}
           <aside className="ro-aside">
-
             <div className="ro-detail-card">
-              <div className="ro-detail-card__title">Detalles</div>
-
+              <div className="ro-detail-card__title">{t(`${o}.details`)}</div>
               <div className="ro-detail-row">
                 <Tag size={13} className="ro-detail-row__icon" />
-                <span className="ro-detail-row__label">Tipo</span>
+                <span className="ro-detail-row__label">{t(`${o}.detailType`)}</span>
                 <span className="ro-detail-row__value">{refType}</span>
               </div>
               <div className="ro-detail-row">
                 <AlertTriangle size={13} className="ro-detail-row__icon" />
-                <span className="ro-detail-row__label">Motivo</span>
-                <span className="ro-detail-row__value">{meta.label}</span>
+                <span className="ro-detail-row__label">{t(`${o}.detailReason`)}</span>
+                <span className="ro-detail-row__value">{motivoLabel}</span>
               </div>
               <div className="ro-detail-row">
                 <Clock size={13} className="ro-detail-row__icon" />
-                <span className="ro-detail-row__label">Estado</span>
-                <span className={`rp-badge ${statusBadge.cls}`}>
-                  {statusBadge.label}
-                </span>
+                <span className="ro-detail-row__label">{t(`${o}.detailStatus`)}</span>
+                <span className={`rp-badge ${statusBadge.cls}`}>{statusBadge.label}</span>
               </div>
               <div className="ro-detail-row">
                 <Calendar size={13} className="ro-detail-row__icon" />
-                <span className="ro-detail-row__label">Fecha</span>
+                <span className="ro-detail-row__label">{t(`${o}.detailDate`)}</span>
                 <span className="ro-detail-row__value">{formattedDate}</span>
               </div>
             </div>
 
             <ProfileStats
-              label={`Historial de ${reported_user.name}`}
+              label={`${t(`${o}.historyOf`)} ${reportedName}`}
               stats={context?.reporter_stats}
-              loading={contextLoading}
-              error={contextError}
+              loading={contextLoading} error={contextError}
             />
-
             <ProfileStats
-              label={`Historial de ${reporter_user.name}`}
+              label={`${t(`${o}.historyOf`)} ${reporterName}`}
               stats={context?.reported_stats}
-              loading={contextLoading}
-              error={contextError}
+              loading={contextLoading} error={contextError}
             />
-
           </aside>
         </div>
 
         {/* Footer */}
         <div className="ro-footer">
           <div className="ro-footer__left">
-            <button
-              className="ro-action-btn ro-action-btn--delete"
-              onClick={() => onDelete?.(report)}
-            >
-              <Trash2 size={15} /> Eliminar
+            <button className="ro-action-btn ro-action-btn--delete" onClick={() => onDelete?.(report)}>
+              <Trash2 size={15} /> {t(`${o}.btnDelete`)}
             </button>
-            <button
-              className="ro-action-btn ro-action-btn--ignore"
-              onClick={handleIgnore}
-              disabled={ignoreBusy}
-            >
-              <XCircle size={15} /> {ignoreBusy ? "Procesando..." : "Ignorar"}
+            <button className="ro-action-btn ro-action-btn--ignore"
+              onClick={handleIgnore} disabled={ignoreBusy}>
+              <XCircle size={15} /> {ignoreBusy ? t(`${o}.processing`) : t(`${o}.btnIgnore`)}
             </button>
           </div>
-
           <div className="ro-footer__right">
-            <button
-              className="ro-action-btn ro-action-btn--inprogress"
-              onClick={() => setShowActionModal(true)}
-            >
-              <Zap size={15} /> Accion
+            <button className="ro-action-btn ro-action-btn--inprogress"
+              onClick={() => setShowActionModal(true)}>
+              <Zap size={15} /> {t(`${o}.btnAction`)}
             </button>
-            <button
-              className="ro-action-btn ro-action-btn--redirect"
+            <button className="ro-action-btn ro-action-btn--redirect"
               onClick={() => { setRedirectError(""); setShowRedirectModal(true); }}
-              disabled={redirectBusy}
-            >
-              <CornerUpRight size={15} /> {redirectBusy ? "Procesando..." : "Redirigir"}
+              disabled={redirectBusy}>
+              <CornerUpRight size={15} />
+              {redirectBusy ? t(`${o}.processing`) : t(`${o}.btnRedirect`)}
             </button>
-            <button
-              className="ro-action-btn ro-action-btn--close"
-              onClick={onClose}
-            >
-              <X size={15} /> Cerrar
+            <button className="ro-action-btn ro-action-btn--close" onClick={onClose}>
+              <X size={15} /> {t(`${o}.btnClose`)}
             </button>
           </div>
         </div>
 
         <ReportActionModal
-          report={report}
-          isOpen={showActionModal}
+          report={report} isOpen={showActionModal}
           onClose={() => setShowActionModal(false)}
           onAccept={handleAcceptSuccess}
         />
-
         <ReportRedirected
-          report={report}
-          isOpen={showRedirectModal}
-          isBusy={redirectBusy}
-          error={redirectError}
+          report={report} isOpen={showRedirectModal}
+          isBusy={redirectBusy} error={redirectError}
           onClose={() => setShowRedirectModal(false)}
           onConfirm={handleRedirectConfirm}
         />
-
       </div>
     </div>
   );

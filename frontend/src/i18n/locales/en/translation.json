@@ -146,6 +146,8 @@
     "back": "Back to home",
     "title": "Log in",
     "welcome": "Welcome back to PortaFy",
+    "continueWith": "Continue with",
+    "withEmail": "Continue with email",
     "continueGoogle": "Continue with Google",
     "continueLinkedIn": "Continue with LinkedIn",
     "continueGitHub": "Continue with GitHub",
@@ -169,7 +171,11 @@
   "register": {
     "back": "Back to home",
     "title": "Create account",
+    "accountType": "Account Type",
+    "captchaLabel": "Security Verification",
     "subtitle": "Build your professional portfolio today",
+    "continueWith": "Continue with",
+    "continueEmail": "Continue with email",
     "continueGoogle": "Continue with Google",
     "continueLinkedIn": "Continue with LinkedIn",
     "continueGitHub": "Continue with GitHub",
@@ -213,6 +219,41 @@
       "captchaRequired": "Complete the captcha to continue",
       "passwordLetter": "Password must contain at least one letter",
       "passwordSymbol": "Password must contain at least one symbol"
+    },
+    "brandPanel": {
+      "register": {
+        "title": "Join our professional community",
+        "subtitle": "Create your account and access opportunities, connect with professionals, and build your future."
+      },
+      "login": {
+        "title": "Welcome back to PortaFy",
+        "subtitle": "Sign in and continue building your professional future."
+      },
+      "benefits": {
+        "connect": {
+          "title": "Connect",
+          "desc": "Expand your professional network"
+        },
+        "opportunities": {
+          "title": "Opportunities",
+          "desc": "Find the best job opportunities"
+        },
+        "growth": {
+          "title": "Growth",
+          "desc": "Develop your skills and advance your career"
+        }
+      },
+      "dataProtected": "Protected data"
+    },
+    "roles": {
+      "professional": {
+        "title": "Professional",
+        "subtitle": "Find a job"
+      },
+      "recruiter": {
+        "title": "Recruiter",
+        "subtitle": "Post job offers"
+      }
     }
   },
   "resetPassword": {
@@ -1125,6 +1166,66 @@
       }
     }
   },
+  "empresa": {
+    "perfil": {
+      "convocatorias_activas": "Active job postings",
+      "convocatorias_destacadas": "Featured job postings",
+      "sin_convocatorias_publicas": "There are no active job postings.",
+      "sin_convocatorias_propias": "You have no job postings",
+      "cargando": "Loading...",
+      "error_cargar": "Could not load the company."
+    },
+    "dashboard": {
+      "eyebrow": "Recruitment Dashboard",
+      "bienvenido": "Welcome, {{nombre}}",
+      "resumen": "You have {{activas}} active job postings and {{revision}} candidates pending review.",
+      "nueva_convocatoria": "+ New job posting",
+      "sin_convocatorias": "You don't have any job postings yet.",
+      "sin_postulantes": "There are no applicants yet.",
+      "ver_todas": "View all →",
+      "ver_todos": "View all →",
+      "convocatorias_recientes": "Recent job postings",
+      "candidatos_recientes": "Recent candidates",
+      "postulantes": "{{count}} applicants · {{area}}",
+      "visibilidad_titulo": "Company profile visibility",
+      "secciones_visibles": "{{count}} visible sections",
+      "perfil_privado": "Private profile"
+    },
+    "stats": {
+      "convocatorias_activas": "Active job postings",
+      "candidatos_por_revisar": "Candidates pending review",
+      "candidatos_aceptados": "Accepted candidates",
+      "total_postulantes": "Total applicants"
+    },
+    "badges": {
+      "en_curso": "In Progress",
+      "pendiente": "Pending",
+      "aceptados": "Accepted",
+      "historico": "Historical",
+      "activa": "Active",
+      "borrador": "Draft",
+      "cerrada": "Closed",
+      "en_revision": "Under Review",
+      "aceptado": "Accepted",
+      "rechazado": "Rejected"
+    },
+    "visibilidad": {
+      "convocatorias": "Job Postings",
+      "empresa": "Company Profile",
+      "contacto": "Contact Information",
+      "redes": "Social Media"
+    },
+    "nav": {
+      "empresa": "Company",
+      "perfil_empresa": "Company Profile",
+      "panel": "Dashboard",
+      "convocatorias": "Job Postings",
+      "convocatory": "Job Postings",
+      "nueva_convocatoria": "New Job Posting",
+      "expandir": "Expand menu",
+      "colapsar": "Collapse menu"
+    }
+  },
   "notifications": {
     "title": "Notifications",
     "back": "Back",
@@ -1374,6 +1475,17 @@
       }
     },
     "portfolio": {
+      "active": "Active portfolio",
+      "completed": "{{percent}}% complete",
+      "records": "{{count}} records",
+      "smartActivity": "Smart activity",
+      "title": "The latest things you added, turned into useful signals.",
+      "text": "This block summarizes your portfolio pulse: which module is alive, what piece moved forward and where to continue refining your professional story.",
+      "progress": "Progress",
+      "next": "Next",
+      "publication": "Publication",
+      "record": "record",
+      "recordsPlural": "records",
       "syncingDb": "Syncing with the database...",
       "loadError": "The portfolio could not be loaded right now.",
       "fixFields": "Fix the highlighted fields to continue.",
@@ -1489,7 +1601,10 @@
         "chooseFile": "Choose file",
         "projectCoverHelper": "Upload a cover to better present your project",
         "projectCoverEmpty": "No cover selected. Optional, max 2 MB.",
-        "uploadCover": "Upload cover"
+        "uploadCover": "Upload cover",
+        "minCharacters": "Minimum {{count}} characters",
+        "tagLimitHint": "You can add up to {{count}} technologies.",
+        "tagLimitReached": "Technology limit reached."
       },
       "validation": {
         "experienceType": "Select the experience type.",
@@ -1520,7 +1635,13 @@
         "safeInstitution": "The institution contains invalid characters.",
         "endDateCurrent": "Select the end date or mark that it is still current.",
         "dateOrder": "The end date cannot be before the start date.",
-        "form": "Required fields are missing."
+        "form": "Required fields are missing.",
+        "minChars": "Minimum {{count}} characters.",
+        "maxChars": "Maximum {{count}} characters.",
+        "maxTags": "Add at most {{count}} technologies.",
+        "safeCompany": "Use only letters, numbers and basic symbols for the company.",
+        "safeLongText": "Use only letters, numbers, line breaks and basic symbols.",
+        "safeTag": "Each technology must have 2 to 28 valid characters."
       },
       "overview": {
         "latest": "Latest {{item}}",
@@ -1550,7 +1671,7 @@
         "skills": {
           "name": "Select a skill or type another one manually",
           "description": "Describe the skill",
-          "category": "Frontend / Soft skill / Backend"
+          "category": "Select a category"
         },
         "social": {
           "url": "https://..."
@@ -1683,7 +1804,14 @@
         "A?os de exp.": "Years exp.",
         "Empresas": "Companies",
         "Habilidades": "Skills",
-        "Visitas": "Visits"
+        "Visitas": "Visits",
+        "followers": "Followers",
+        "following": "Following",
+        "projects": "Projects",
+        "experienceYears": "Years exp.",
+        "companies": "Companies",
+        "skills": "Skills",
+        "views": "Visits"
       },
       "errors": {
         "commentReport": "Could not send the comment report.",
@@ -1928,7 +2056,47 @@
         "noneText": "Send your document and activate a trust signal on your profile.",
         "checking": "Checking status",
         "viewRequest": "View request status",
-        "sendVerification": "Submit for verification"
+        "sendVerification": "Submit for verification",
+        "quick": {
+          "profile": {
+            "title": "Polish profile",
+            "text": "Update photo, headline and bio so your first impression is clear."
+          },
+          "portfolio": {
+            "title": "Show work",
+            "text": "Organize visible projects and experience to reinforce your story."
+          },
+          "analytics": {
+            "title": "Review reach",
+            "text": "Measure visits, clicks and interest signals from your statistics."
+          }
+        },
+        "roadmap": {
+          "identity": "Professional identity",
+          "portfolio": "Portfolio with evidence",
+          "verification": "Trust verification",
+          "feedback": "Feedback to improve the platform"
+        },
+        "profileRoute": "Profile route",
+        "stagePriorities": "Priorities for this stage",
+        "quickRead": "Quick read",
+        "whatToCheck": "What to check first",
+        "insights": {
+          "profile": {
+            "title": "Profile",
+            "text": "Name, headline and cover should explain who you are without effort."
+          },
+          "portfolio": {
+            "title": "Portfolio",
+            "text": "Projects with demo, repository and clear technologies convert better."
+          },
+          "trust": {
+            "title": "Trust",
+            "text": "Verification and well-routed reports make the platform more serious."
+          }
+        },
+        "suggestionError": "The suggestion could not be sent.",
+        "verificationError": "The request could not be sent."
       }
     },
     "analytics": {
@@ -2052,6 +2220,22 @@
         "approved": "Approved",
         "rejected": "Rejected"
       },
+      "kind": {
+        "identity": "Identity",
+        "education": "Education"
+      },
+      "chooser": {
+        "identityTitle": "Validate verified accounts",
+        "identityText": "Review ID, DNI or PDF files sent to approve or reject the profile badge.",
+        "educationTitle": "Authenticate professional education",
+        "educationText": "Review certificates, diplomas or academic proof sent by professionals.",
+        "enter": "Open",
+        "back": "Back",
+        "selected": {
+          "identity": "Verified account requests",
+          "education": "Professional education requests"
+        }
+      },
       "searchPlaceholder": "Search by user or status",
       "metrics": {
         "current": "In this view",
@@ -2076,13 +2260,23 @@
         "pdf": "PDF",
         "front": "Front",
         "back": "Back",
+        "support": "Proof",
         "empty": "No attached documents"
       },
       "card": {
         "userFallback": "PortaFy user",
+        "educationFallback": "Professional education",
         "userLine": "User #{{id}} - Sent {{date}}",
+        "educationLine": "{{user}} - {{institution}} - {{level}} - Sent {{date}}",
         "noId": "no id",
+        "noInstitution": "no institution",
+        "noLevel": "no type",
         "reviewed": "Request reviewed {{date}}"
+      },
+      "preview": {
+        "eyebrow": "Preview",
+        "loading": "Opening document...",
+        "error": "The document could not be opened."
       },
       "actions": {
         "approve": "Approve",
@@ -2105,5 +2299,2265 @@
       "characters": "{{count}}/500 characters",
       "noDate": "no date"
     }
+  },
+  "agregarAdmin": {
+    "titulo": "Add administrator",
+    "subtitulo": "The new user will have the administrator role.",
+    "nombre": "First name",
+    "nombrePlaceholder": "E.g: Maria",
+    "apellido": "Last name",
+    "apellidoPlaceholder": "E.g: Garcia",
+    "correo": "Email address",
+    "correoPlaceholder": "E.g: maria@portafy.com",
+    "numero": "Phone number (optional)",
+    "numeroPlaceholder": "E.g: 70012345",
+    "pais": "Country",
+    "ciudad": "City",
+    "seleccionaPais": "Select a country",
+    "primeroPais": "Select a country first",
+    "seleccionaCiudad": "Select a city",
+    "regionAsignada": "Assigned to region: {{region}}",
+    "contrasena": "Password",
+    "contrasenaPlaceholder": "At least 8 characters",
+    "confirmarContrasena": "Confirm password",
+    "confirmarPlaceholder": "Repeat the password",
+    "crearBtn": "Create administrator",
+    "successTitulo": "Administrator created",
+    "successMensaje": "<strong>{{nombre}} {{apellido}}</strong> can now log in with their credentials.",
+    "agregarNuevo": "Add new Administrator",
+    "confirmarTitulo": "Confirm new administrator",
+    "confirmarSubtitulo": "You are about to create a new administrator with the following information:",
+    "filaApellido": "Last name",
+    "filaCorreo": "Email",
+    "filaNumero": "Number",
+    "filaRegion": "Region",
+    "noEspecificado": "Not specified",
+    "cancelar": "Cancel",
+    "confirmarCrear": "Confirm and create",
+    "errorNombre": "First name is required.",
+    "errorApellido": "Last name is required.",
+    "errorCorreo": "Email is required.",
+    "errorCorreoValido": "Enter a valid email address.",
+    "errorNumero": "Phone number must be numeric.",
+    "errorPais": "Country is required.",
+    "errorCiudad": "City is required.",
+    "errorContrasena": "Password is required.",
+    "errorContrasenaCorta": "Password must be at least 8 characters.",
+    "errorContrasenaNoCoincide": "Passwords do not match.",
+    "errorGenerico": "An error occurred.",
+    "porDefecto": "Default"
+  },
+  "backups": {
+    "titulo": "Backups",
+    "subtitulo": "Database backup management and downloads.",
+    "subtituloRestringido": "Database backup management.",
+    "accesoRestringido": "Restricted access",
+    "soloSuperAdmin": "This module is only available to the super administrator.",
+    "badge": "System backup",
+    "heroTitulo": "System backups",
+    "heroTexto": "Generate and download data backups.",
+    "heroAviso": "Before restoring, the system automatically creates a safety backup of the current state.",
+    "generando": "Generating backup...",
+    "generarBtn": "Generate backup",
+    "actualizar": "Refresh",
+    "metricBackups": "Backups",
+    "metricTamano": "Total size",
+    "metricEliminar": "Delete enabled",
+    "si": "Yes",
+    "no": "No",
+    "listado": "Backup list",
+    "colArchivo": "File name",
+    "colFecha": "Date",
+    "colTamano": "Size",
+    "colAcciones": "Actions",
+    "cargando": "Loading backups...",
+    "sinBackups": "No backups have been generated yet.",
+    "backupSistema": "System backup",
+    "descargar": "Download",
+    "restaurar": "Restore",
+    "preparandoRespaldo": "Preparing backup...",
+    "eliminar": "Delete",
+    "reintentar": "Retry",
+    "sinFecha": "No date",
+    "confirmarEliminar": "Delete {{filename}}? This action cannot be undone.",
+    "confirmarRestaurar": "Restore {{filename}}? A safety backup of the current state will be created automatically before proceeding.",
+    "errorListar": "Could not load the backup list.",
+    "errorGenerar": "Could not generate the backup.",
+    "errorDescargar": "Could not download the backup.",
+    "errorEliminar": "Could not delete the backup.",
+    "errorRestaurar": "Could not restore the backup.",
+    "successGenerar": "Backup generated successfully.",
+    "successEliminar": "Backup deleted successfully.",
+    "successRestaurar": "Backup restored successfully.",
+    "successRestaurarConRespaldo": "{{mensaje}} Previous backup: {{safety}}.",
+    "successRestaurarConAplicado": "{{mensaje}} Applied backup: {{restored}}."
+  },
+  "permisos": {
+    "titulo": "Permissions",
+    "subtitulo": "Search users, adjust their active permissions and confirm each change before saving.",
+    "subtituloRestringido": "Access, roles and authorization management.",
+    "accesoRestringido": "Restricted access",
+    "soloAdmins": "This module is only available to administrators.",
+    "bannerEyebrow": "Access control",
+    "bannerTitulo": "Permissions module",
+    "scopeSinAcceso": "No access",
+    "scopeSuperAdmin": "Super administrator: full access",
+    "scopeAlcance": "Scope: {{location}}",
+    "scopeSinUbicacion": "Scope: users without location",
+    "hintSuperAdmin": "You can enable or disable permissions for any user.",
+    "hintPorDefecto": "You can only manage users without a location.",
+    "hintRegion": "You can only manage users from your country-city.",
+    "hintSinAcceso": "This module is only available to administrators.",
+    "buscarPlaceholder": "Name, last name or email...",
+    "buscarBtn": "Search",
+    "limpiarBusqueda": "Clear search",
+    "resultados": "<strong>{{count}}</strong> result",
+    "resultadosPlural": "<strong>{{count}}</strong> results",
+    "buscarEstadoTitulo": "Search for a user",
+    "buscarEstadoTexto": "Enter a name, last name or email to get started.",
+    "sinResultadosTitulo": "No results",
+    "sinResultadosTexto": "No users found for <strong>{{query}}</strong>.",
+    "seleccionarUsuarioTitulo": "Select a user",
+    "seleccionarUsuarioTexto": "Here you will see their active permissions and be able to enable or remove them.",
+    "limpiarSeleccion": "Clear selection",
+    "cargandoPermisos": "Loading permissions...",
+    "permisosActivos": "{{count}} active",
+    "permisosTotal": "{{count}} permissions",
+    "soloLectura": "Read only",
+    "editable": "Editable",
+    "permisoActivo": "Permission active for this user.",
+    "permisoDesactivado": "Permission disabled for this user.",
+    "deadlineTitulo": "Until an optional date",
+    "deadlineHint": "If you choose a date and the permission is off, it will be reactivated when that date expires.",
+    "revertir": "Revert",
+    "guardarCambios": "Save changes",
+    "permisosActualizados": "Permissions updated successfully",
+    "successTexto": "Permissions for {{nombre}} were updated. Applied: {{aplicados}}. Removed: {{quitados}}. Temporary: {{temporales}}.",
+    "hasta": "{{name}} until {{deadline}}",
+    "ninguno": "none",
+    "errorBusqueda": "Could not complete the search.",
+    "errorPermisos": "Could not load permissions.",
+    "errorGuardar": "Could not save the changes.",
+    "confirmarTitulo": "Confirm permission changes",
+    "confirmarSubtitulo": "Review the summary before saving. This action will be recorded.",
+    "cerrar": "Close",
+    "resumen": "Summary",
+    "rowUsuario": "User",
+    "rowAplicados": "Applied permissions",
+    "rowQuitados": "Removed permissions",
+    "rowTemporales": "Temporary permissions",
+    "ninguno2": "None",
+    "sinDefinir": "Not defined",
+    "volver": "Back",
+    "guardarPermisos": "Save permissions"
+  },
+  "suspension": {
+    "titulo": "Suspension",
+    "subtitulo": "Search users and apply temporary or permanent suspensions with location-based access control.",
+    "subtituloRestringido": "User suspension management.",
+    "accesoRestringido": "Restricted access",
+    "soloSuperAdmin": "This module is reserved exclusively for the super administrator. Regular administrators cannot suspend users.",
+    "scopeSuperAdmin": "Super administrator: full access",
+    "scopeRestringido": "Restricted access",
+    "hintSuperAdmin": "You can suspend any user in the system.",
+    "hintRestringido": "This module is only available to super administrators.",
+    "bannerEyebrow": "Critical controls",
+    "bannerTitulo": "Suspension module",
+    "successTitulo": "Suspension applied successfully",
+    "successMensaje": "{{nombre}} was suspended {{tipo}}{{hasta}}. Reason: {{motivo}}",
+    "tipoTemporal": "temporarily",
+    "tipoPermanente": "permanently",
+    "hastaFecha": " until {{fecha}}",
+    "buscarPlaceholder": "Name, last name or email...",
+    "buscarBtn": "Search",
+    "limpiarBusqueda": "Clear search",
+    "resultados": "<strong>{{count}}</strong> result",
+    "resultadosPlural": "<strong>{{count}}</strong> results",
+    "buscarEstadoTitulo": "Search for a user to suspend",
+    "buscarEstadoTexto": "Enter a name, last name or email to check if they can be sanctioned.",
+    "sinResultadosTitulo": "No results",
+    "sinResultadosTexto": "No users found for <strong>{{query}}</strong>.",
+    "suspendido": "Suspended",
+    "sinCorreo": "No email",
+    "sinUbicacion": "No location",
+    "sinDefinir": "Not defined",
+    "temporalHasta": "Temporary until {{fecha}}",
+    "permanente": "Permanent",
+    "idLabel": "ID #{{id}}",
+    "yaSuspendido": "Already suspended",
+    "suspender": "Suspend",
+    "noDisponible": "Not available",
+    "formTitulo": "Suspend {{nombre}}",
+    "formSubtitulo": "Define the type of sanction, the end date if applicable and a clear reason to record the action.",
+    "cerrar": "Close",
+    "usuarioSeleccionado": "Selected user",
+    "reglas": "Rules",
+    "regla1": "The reason is required.",
+    "regla2": "Temporary suspensions require an end date.",
+    "regla3": "Administrators and super administrators cannot be suspended.",
+    "tipoSancion": "Sanction type",
+    "temporal": "Temporary",
+    "fechaFin": "End date",
+    "motivo": "Reason",
+    "motivoPlaceholder": "Clearly explain why the suspension is being applied...",
+    "cancelar": "Cancel",
+    "revisar": "Review",
+    "confirmarTitulo": "Confirm suspension",
+    "confirmarSubtitulo": "Review the summary before applying the sanction. This action will be recorded.",
+    "resumen": "Summary",
+    "rowUsuario": "User",
+    "rowTipo": "Type",
+    "rowFechaFin": "End date",
+    "rowMotivo": "Reason",
+    "volver": "Back",
+    "aplicarSuspension": "Apply suspension",
+    "errorBusqueda": "Could not complete the search.",
+    "errorSuspension": "Could not apply the suspension.",
+    "errorMotivo": "The reason is required.",
+    "errorFechaFin": "An end date is required for temporary suspensions.",
+    "disableReason": "This user already has an active suspension."
+  },
+  "historial": {
+    "title": "History",
+    "subtitle": "Search for a user and review their activity records.",
+    "usuarios": {
+      "header_title": "User history",
+      "header_subtitle": "Search users to inspect their information",
+      "search_placeholder": "Name, last name or email address...",
+      "btn_filtros": "Filters",
+      "btn_buscar": "Search",
+      "filtros_title": "Filters",
+      "filtros_limpiar": "Clear all",
+      "filtro_rol_label": "Role",
+      "roles": {
+        "todos": "All roles",
+        "reclutador": "Recruiter",
+        "profesional": "Professional",
+        "administrador": "Administrator",
+        "super_administrador": "Super Administrator"
+      },
+      "rol_labels": {
+        "super_admin": "Super Admin",
+        "admin": "Admin",
+        "reclutador": "Recruiter",
+        "profesional": "Professional",
+        "usuario": "User"
+      },
+      "chip_rol": "Role: {{rol}}",
+      "error_busqueda": "Could not complete the search. Check your connection.",
+      "estado_buscar_title": "Search for a user",
+      "estado_buscar_text": "Enter a name, last name or email to get started.",
+      "estado_sin_resultados_title": "No results",
+      "estado_sin_resultados_text": "No users found",
+      "estado_sin_resultados_query": " for \"{{query}}\"",
+      "estado_sin_resultados_filtros": " with the applied filters",
+      "resultados_count_one": "{{count}} result",
+      "resultados_count_other": "{{count}} results"
+    },
+    "detalle": {
+      "volver_buscar": "Back to search",
+      "volver": "Back",
+      "panel_eyebrow": "USER PANEL",
+      "panel_subtitle": "Review general information before opening the history.",
+      "ver_historial": "View history",
+      "limpiar_filtros": "Clear filters",
+      "sin_correo": "No email",
+      "info_general_title": "General information",
+      "biografia_title": "Biography",
+      "label_correo": "Email",
+      "label_profesion": "Profession",
+      "label_ubicacion": "Location",
+      "label_perfil": "Profile",
+      "perfil_completo": "Complete",
+      "perfil_incompleto": "Incomplete",
+      "sin_profesion": "Not registered",
+      "sin_ubicacion": "Not registered",
+      "sin_biografia": "No biography registered.",
+      "filtro_tabla_label": "Table",
+      "tabla_todos": "All",
+      "btn_buscar": "Search",
+      "tabla_headers": {
+        "numero": "#",
+        "tabla": "Table",
+        "campo": "Field",
+        "valor_anterior": "Previous value",
+        "nuevo_valor": "New value",
+        "tipo": "Type",
+        "fecha": "Date"
+      },
+      "cargando": "Loading records...",
+      "error_cargar": "Could not load records.",
+      "sin_registros_title": "No records",
+      "sin_registros_text": "No activity with the applied filters",
+      "registros_encontrados": "records found",
+      "tipo_styles": {
+        "creacion": "Creation",
+        "actualizacion": "Update",
+        "eliminacion": "Deletion",
+        "login": "Login",
+        "logout": "Logout"
+      }
+    },
+    "avatar": {
+      "alt_usuario": "User"
+    },
+    "utils": {
+      "tipos": {
+        "todos": "All",
+        "creado": "Created",
+        "editado": "Updated",
+        "eliminado": "Deleted"
+      },
+      "roles": {
+        "super_admin": "Super Admin",
+        "admin": "Admin",
+        "reclutador": "Recruiter",
+        "profesional": "Professional",
+        "usuario": "User"
+      }
+    }
+  },
+  "portafySearch": {
+    "input": {
+      "placeholder": "Search across profiles, projects, and skills...",
+      "ariaLabel": "Global search",
+      "filtersBtn": "Filters"
+    },
+    "filters": {
+      "toggleAll": "Filters",
+      "clearAll": "Clear all",
+      "active": "Active:",
+      "categories": {
+        "ubicacion": "Location",
+        "profesion": "Profession",
+        "habilidades": "Skills",
+        "experiencia": "Experience",
+        "academico": "Education"
+      },
+      "fields": {
+        "ubicacion": "Location",
+        "profesion": "Profession",
+        "habilidad": "Skill",
+        "hab_tipo": "Type",
+        "exp_cargo": "Position",
+        "exp_empresa": "Company",
+        "institucion": "Institution",
+        "nivel_formacion": "Degree Level"
+      },
+      "habTipoOptions": {
+        "tecnica": "Technical",
+        "blanda": "Soft"
+      },
+      "nivelOptions": {
+        "tecnico": "Technical Degree",
+        "tecnologo": "Technologist",
+        "licenciatura": "Bachelor's Degree",
+        "ingenieria": "Engineering",
+        "maestria": "Master's Degree",
+        "doctorado": "Doctorate"
+      }
+    },
+    "results": {
+      "searching": "Searching...",
+      "count_one": "<strong>{{count}}</strong> result",
+      "count_other": "<strong>{{count}}</strong> results",
+      "filterActive_one": "· <span>{{count}}</span> active filter",
+      "filterActive_other": "· <span>{{count}}</span> active filters",
+      "activeSearch": "Active search"
+    },
+    "card": {
+      "verDetalle": "View details",
+      "verPerfil": "View profile",
+      "irAlPerfil": "Go to full profile",
+      "sobreMi": "About me",
+      "habilidades": "Skills",
+      "types": {
+        "usuario": "User",
+        "proyecto": "Project",
+        "habilidad": "Skill"
+      }
+    },
+    "modal": {
+      "close": "Close"
+    },
+    "empty": {
+      "idleTitle": "Search profiles and skills",
+      "idleBody": "Type a name, profession, or apply filters to find profiles.",
+      "noResultsTitle": "No results found",
+      "noResultsBody": "No matches were found for the selected criteria.",
+      "hintFilters": "Try adjusting or removing some filters.",
+      "hintTerms": "Try different search terms.",
+      "clearFilters": "Clear filters",
+      "newSearch": "New search"
+    },
+    "suggestions": {
+      "ubicacion": [
+        "Cochabamba, Bolivia",
+        "La Paz, Bolivia",
+        "Santa Cruz, Bolivia",
+        "Oruro, Bolivia",
+        "Sucre, Bolivia",
+        "Buenos Aires, Argentina",
+        "Bogotá, Colombia",
+        "Lima, Peru",
+        "Mexico City",
+        "Madrid, Spain",
+        "Barcelona, Spain",
+        "Remote"
+      ],
+      "profesion": [
+        "Frontend Developer",
+        "Backend Developer",
+        "Full Stack Developer",
+        "UX/UI Designer",
+        "Data Scientist",
+        "DevOps Engineer",
+        "Product Manager",
+        "QA Engineer",
+        "Software Architect",
+        "Scrum Master",
+        "Data Analyst",
+        "Mobile Developer"
+      ],
+      "habilidad": [
+        "JavaScript",
+        "TypeScript",
+        "Python",
+        "React",
+        "Vue.js",
+        "Node.js",
+        "SQL",
+        "Docker",
+        "Kubernetes",
+        "Machine Learning",
+        "Figma",
+        "AWS",
+        "Git",
+        "GraphQL",
+        "Java",
+        "Kotlin",
+        "Swift"
+      ],
+      "exp_cargo": [
+        "Senior Developer",
+        "Mid-Level Developer",
+        "Junior Developer",
+        "Tech Lead",
+        "Engineering Manager",
+        "CTO",
+        "Director of Technology",
+        "Data Analyst",
+        "Software Engineer",
+        "IT Consultant",
+        "Project Manager"
+      ],
+      "exp_empresa": [
+        "Google",
+        "Microsoft",
+        "Amazon",
+        "Meta",
+        "Mercado Libre",
+        "Globant",
+        "Accenture",
+        "Deloitte",
+        "IBM",
+        "Oracle",
+        "Startup",
+        "Freelancer"
+      ],
+      "institucion": [
+        "UMSS",
+        "UMSA",
+        "UAGRM",
+        "UCB",
+        "UAB",
+        "UPSA",
+        "Pontifical Xavierian University",
+        "UNAM",
+        "UBA",
+        "University of Antioquia",
+        "PUCP",
+        "MIT",
+        "Stanford"
+      ]
+    }
+  },
+  "admin": {
+    "definicion": {
+      "areaForm": {
+        "entityName": "Area",
+        "nameLabel": "Name",
+        "nameRequired": "*",
+        "namePlaceholder": "E.g.: Software Development",
+        "nameHint": "Must be unique in the system",
+        "descriptionLabel": "Description",
+        "descriptionRequired": "*",
+        "descriptionPlaceholder": "Describe the knowledge or work area...",
+        "descriptionHint": "Max. 255 characters",
+        "saveButton": "Save Area"
+      },
+      "confirmModal": {
+        "closeLabel": "Close",
+        "title": "Confirm registration of {{entidad}}?",
+        "text1": "You are about to <strong>save a new record</strong> in the system. This action <strong>will modify the database</strong> and cannot be easily undone once confirmed.",
+        "text2": "Verify that the entered data is correct before continuing. An incorrect record may affect system functionality and related data.",
+        "summaryTitle": "Data to register:",
+        "emptyValue": "—",
+        "cancel": "Cancel",
+        "confirm": "Confirm record",
+        "saving": "Saving..."
+      },
+      "module": {
+        "title": "Definitions",
+        "subtitle": "Manage the system base catalogs: countries, skills, states, universities, careers, companies and areas.",
+        "recordsPrefix": "Records —",
+        "newRecordPrefix": "New record —"
+      },
+      "paisForm": {
+        "entityName": "Country",
+        "nameLabel": "Name",
+        "namePlaceholder": "E.g.: Bolivia",
+        "nameHint": "Must be unique in the system",
+        "stateLabel": "Status",
+        "stateHint": "Allowed values: active or inactive",
+        "stateActivate": "Active",
+        "stateDeactivate": "Inactive",
+        "saveButton": "Save Country",
+        "summaryName": "Name",
+        "summaryState": "Status"
+      },
+      "carreraForm": {
+        "entityName": "Career",
+        "nameLabel": "Name",
+        "namePlaceholder": "E.g.: Systems Engineering",
+        "nameHint": "Must be unique in the system",
+        "stateLabel": "Status",
+        "stateActivate": "Active",
+        "stateDeactivate": "Inactive",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "General description of the career...",
+        "saveButton": "Save Career",
+        "summaryName": "Name",
+        "summaryState": "Status",
+        "summaryDescription": "Description"
+      },
+      "universidadForm": {
+        "entityName": "University",
+        "nameLabel": "Name",
+        "namePlaceholder": "E.g.: University of California",
+        "nameHint": "Must be unique in the system",
+        "stateLabel": "Status",
+        "stateActivate": "Active",
+        "stateDeactivate": "Inactive",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "General description of the university...",
+        "saveButton": "Save University",
+        "summaryName": "Name",
+        "summaryState": "Status",
+        "summaryDescription": "Description"
+      },
+      "estadoForm": {
+        "entityName": "State / Department",
+        "nameLabel": "State/Department Name",
+        "namePlaceholder": "E.g.: California",
+        "paisLabel": "Country",
+        "paisLoading": "Loading countries...",
+        "paisPlaceholder": "Select a country",
+        "paisHint": "Reference to the state's country",
+        "stateLabel": "Status",
+        "stateActivate": "Active",
+        "stateDeactivate": "Inactive",
+        "saveButton": "Save State",
+        "summaryName": "Name",
+        "summaryPais": "Country",
+        "summaryState": "Status"
+      },
+      "habilidadForm": {
+        "entityName": "Skill",
+        "nameLabel": "Name",
+        "namePlaceholder": "E.g.: React.js",
+        "tipoLabel": "Type",
+        "tipoHard": "Hard",
+        "tipoSoft": "Soft",
+        "tipoHint": "Allowed values: hard or soft",
+        "stateLabel": "Status",
+        "stateActivate": "Active",
+        "stateDeactivate": "Inactive",
+        "areaLabel": "Area",
+        "areaLoading": "Loading areas...",
+        "areaPlaceholder": "Select an area",
+        "areaHint": "Reference to the skill's area",
+        "competenciaTitle": "Competency levels",
+        "cualitativoLabel": "Qualitative Level",
+        "cualitativoPlaceholder": "E.g.: Advanced",
+        "cuantitativoLabel": "Quantitative Level",
+        "cuantitativoPlaceholder": "E.g.: 3",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Briefly describe this skill...",
+        "saveButton": "Save Skill",
+        "summaryName": "Name",
+        "summaryTipo": "Type",
+        "summaryState": "Status",
+        "summaryArea": "Area",
+        "summaryCualitativo": "Qualitative level",
+        "summaryCuantitativo": "Quantitative level",
+        "summaryDescription": "Description"
+      },
+      "companiaForm": {
+        "entityName": "Company",
+        "sectionPrincipal": "Main information",
+        "sectionContacto": "Phone contact",
+        "sectionVisual": "Visual resources",
+        "sectionDesc": "Description and values",
+        "nameLabel": "Name",
+        "namePlaceholder": "E.g.: Tech Solutions LLC",
+        "stateLabel": "Status",
+        "stateActive": "Active",
+        "stateInactive": "Inactive",
+        "stateSuspended": "Suspended",
+        "industryLabel": "Industry",
+        "industryPlaceholder": "E.g.: Technology",
+        "cityLabel": "City",
+        "cityPlaceholder": "E.g.: New York",
+        "paisLabel": "Country",
+        "paisLoading": "Loading countries...",
+        "paisPlaceholder": "Select a country",
+        "paisHint": "Reference to the company's country",
+        "websiteLabel": "Website",
+        "websitePlaceholder": "https://company.com",
+        "prefixLabel": "Prefix",
+        "prefixPlaceholder": "+1",
+        "phoneLabel": "Phone",
+        "phonePlaceholder": "70000000",
+        "logoLabel": "Logo URL",
+        "logoPlaceholder": "https://cdn.company.com/logo.png",
+        "bannerLabel": "Banner URL",
+        "bannerPlaceholder": "https://cdn.company.com/banner.jpg",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "General description...",
+        "descriptionHint": "Max. 500 characters",
+        "misionLabel": "Mission",
+        "misionPlaceholder": "Company mission...",
+        "visionLabel": "Vision",
+        "visionPlaceholder": "Company vision...",
+        "saveButton": "Save Company",
+        "summaryName": "Name",
+        "summaryIndustry": "Industry",
+        "summaryCity": "City",
+        "summaryPhone": "Phone",
+        "summaryState": "Status"
+      },
+      "ver": {
+        "loading": "Loading records...",
+        "noResults": "No results for \"{{search}}\"",
+        "record": "record",
+        "records": "records",
+        "noPais": "No country",
+        "noArea": "No area",
+        "cols": {
+          "id": "ID",
+          "name": "Name",
+          "description": "Description",
+          "state": "Status",
+          "created": "Created",
+          "updated": "Updated",
+          "industry": "Industry",
+          "city": "City",
+          "country": "Country",
+          "phone": "Phone",
+          "website": "Website",
+          "mission": "Mission",
+          "vision": "Vision",
+          "type": "Type",
+          "levelQuant": "Quantitative Level",
+          "levelQual": "Qualitative Level",
+          "area": "Area"
+        },
+        "search": {
+          "area": "Search by name or description...",
+          "carrera": "Search by name, description or status...",
+          "compania": "Search by name, industry, city, country or status...",
+          "estado": "Search by name, country or status...",
+          "habilidad": "Search by name, type, area or description...",
+          "pais": "Search by name or status...",
+          "universidad": "Search by name, description or status..."
+        }
+      },
+      "selector": {
+        "ariaEyeOff": "Switch to form",
+        "ariaEyeOn": "Switch to records view",
+        "labelRecords": "Records view active",
+        "labelForm": "Select an entity to define",
+        "opciones": {
+          "pais": "Country",
+          "habilidad": "Skill",
+          "estado": "State",
+          "universidad": "University",
+          "carrera": "Career",
+          "compania": "Company",
+          "area": "Area"
+        }
+      }
+    }
+  },
+  "adminReports": {
+    "module": {
+      "title": "Reports",
+      "subtitle": "General review of reports made by PortaFy users."
+    },
+    "search": {
+      "placeholder": "Search reports..."
+    },
+    "list": {
+      "loadingTitle": "Loading",
+      "loadingText": "We are consulting the reports in the database.",
+      "errorTitle": "Error",
+      "emptyTitle": "No results",
+      "emptyText": "No reports match the applied filters.",
+      "loadError": "Could not load reports."
+    },
+    "card": {
+      "reportedBy": "Reported by",
+      "open": "Open",
+      "ignore": "Ignore",
+      "delete": "Delete",
+      "processing": "Processing..."
+    },
+    "open": {
+      "ariaLabel": "Report detail",
+      "reportMadeBy": "Report made by",
+      "reportedUser": "Reported user",
+      "reportedBy": "Reported by",
+      "profileId": "Profile ID:",
+      "viewProfile": "View profile",
+      "descriptionLabel": "Report description",
+      "evidenceLabel": "Evidence",
+      "noEvidence": "No evidence attached.",
+      "details": "Details",
+      "detailType": "Type",
+      "detailReason": "Reason",
+      "detailStatus": "Status",
+      "detailDate": "Date",
+      "statusLoading": "Loading…",
+      "statusError": "Error",
+      "statusOpen": "Open",
+      "historyOf": "History of",
+      "historyLoading": "Loading history…",
+      "historyTotal": "Reports made:",
+      "historyAcceptedAgainst": "Accepted reports:",
+      "historyRejected": "Rejected reports:",
+      "historyAccepted": "Reports accepted against:",
+      "btnDelete": "Delete",
+      "btnIgnore": "Ignore",
+      "btnAction": "Action",
+      "btnRedirect": "Redirect",
+      "btnClose": "Close",
+      "processing": "Processing...",
+      "contextError": "Could not load report context."
+    },
+    "actionModal": {
+      "ariaLabel": "Report attention #{{id}}",
+      "title": "Report attention",
+      "reportId": "#{{id}}",
+      "subtitle": "Fill in the fields to record the action taken on this report",
+      "closeLabel": "Close",
+      "sectionUsers": "Users",
+      "roleReported": "Reported",
+      "roleReporter": "Reporter",
+      "sectionManagement": "Management",
+      "attendedBy": "Attended by",
+      "attendanceNumber": "Attendance #",
+      "creation": "Creation",
+      "modification": "Modification",
+      "undefined": "Undefined",
+      "actionLabel": "Action taken",
+      "actionPlaceholder": "Action description...",
+      "actionRequired": "Please describe the action taken before continuing.",
+      "actionError": "An error occurred while processing the report. Try again.",
+      "evidenceReadonly": "Reviewed evidence",
+      "evidenceReadonlyBadge": "Read only",
+      "noEvidence": "No evidence attached to the report.",
+      "evidenceSent": "Submitted evidence",
+      "evidencePlaceholder": "Attach evidence...",
+      "btnBack": "Back",
+      "btnAccept": "Accept",
+      "processing": "Processing...",
+      "adminFallback": "Administrator"
+    },
+    "acceptModal": {
+      "title": "Confirm report acceptance",
+      "text": "You are about to approve this report and accept the actions applied to the user:",
+      "userFallback": "this user",
+      "textSecondary": "This action will be recorded in the system. Do you wish to continue?",
+      "btnBack": "Back",
+      "btnAccept": "Accept",
+      "processing": "Processing..."
+    },
+    "redirectModal": {
+      "title": "Redirect report",
+      "text": "You are about to transfer this report to another administrator for review.",
+      "textSecondary": "This action will notify the new responsible party and will be recorded. Do you wish to continue?",
+      "btnCancel": "Cancel",
+      "btnRedirect": "Redirect",
+      "processing": "Processing..."
+    },
+    "deleteModal": {
+      "deleteError": "Could not register the report deletion.",
+      "closeLabel": "Close modal",
+      "title": "Deletion warning",
+      "text": "You are about to mark this report as deleted. This activity will be recorded in the system and your history as the administrator who handled the report of:",
+      "userFallback": "this user",
+      "textSecondary": "Are you sure about your decision?",
+      "btnCancel": "Cancel",
+      "btnConfirm": "Accept",
+      "processing": "Processing..."
+    },
+    "reportTypes": {
+      "todos": "All",
+      "hate_incitement": "Hate incitement",
+      "impersonation": "Impersonation",
+      "prohibited_content": "Prohibited content",
+      "violence": "Violence",
+      "terrorism": "Terrorism",
+      "spam": "Spam"
+    },
+    "reportRefTypes": {
+      "todos": "All",
+      "comment": "Comment",
+      "group": "Group",
+      "message": "Message",
+      "portfolio": "Portfolio",
+      "profile": "Profile",
+      "project": "Project",
+      "post": "Post",
+      "reply": "Reply"
+    },
+    "motivoBadge": {
+      "critico": "Critical",
+      "pendiente": "Pending",
+      "abierto": "Open"
+    },
+    "userFallbacks": {
+      "reportedUser": "Reported user",
+      "user": "User"
+    }
+  },
+  "adminCommon": {
+    "filterBar": {
+      "refresh": "Refresh",
+      "clearFilters": "Clear filters"
+    },
+    "breadcrumb": {
+      "manage": "Manage"
+    }
+  },
+  "adminSugerencias": {
+    "module": {
+      "title": "Suggestions",
+      "subtitle": "View to review and prioritize ideas proposed by users."
+    },
+    "search": {
+      "placeholder": "Search suggestions..."
+    },
+    "filterBar": {
+      "refresh": "Refresh",
+      "export": "Export",
+      "clearFilters": "Clear filters",
+      "dateFrom": "Date from",
+      "dateTo": "Date to"
+    },
+    "list": {
+      "loadingTitle": "Loading",
+      "loadingText": "We are consulting the suggestions in the database.",
+      "errorTitle": "Error",
+      "emptyTitle": "No results",
+      "emptyText": "No suggestions match the applied filters.",
+      "loadError": "Could not load suggestions."
+    },
+    "card": {
+      "open": "Open",
+      "ignore": "Ignore",
+      "delete": "Delete",
+      "processing": "Processing..."
+    },
+    "open": {
+      "ariaLabel": "Suggestion detail",
+      "closeLabel": "Close",
+      "titlePrefix": "Suggestion by",
+      "idPrefix": "Suggestion #",
+      "statusLoading": "loading status...",
+      "sectionUser": "Suggesting user",
+      "profileId": "Profile ID:",
+      "sectionDescription": "Suggestion description",
+      "sectionNote": "Administrator note",
+      "notePlaceholder": "Write the reason for the decision taken (will be attached to the action)...",
+      "detailsTitle": "Details",
+      "detailType": "Type",
+      "detailStatus": "Status",
+      "detailDate": "Date",
+      "historyTitle": "History of",
+      "historyActive": "Active suggestions",
+      "historyDiscussion": "In discussion",
+      "historyEscalated": "Escalated",
+      "historyLoadError": "Could not load history.",
+      "attendanceTitle": "Attendance record",
+      "attendanceNever": "This suggestion has never been attended.",
+      "attendanceBy": "Attended by",
+      "attendanceUnknown": "Unknown administrator",
+      "attendanceCreation": "Creation",
+      "attendanceModification": "Modification",
+      "attendanceUnavailable": "Not available.",
+      "btnReject": "Reject",
+      "btnIgnore": "Ignore",
+      "btnAccept": "Accept",
+      "btnEscalate": "Escalate",
+      "btnClose": "Close",
+      "processing": "Processing...",
+      "errorIgnore": "Error ignoring.",
+      "errorAccept": "Error accepting.",
+      "errorReject": "Error rejecting.",
+      "errorEscalate": "Error escalating.",
+      "errorContext": "Error loading context."
+    },
+    "stateBadge": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "in_discussion": "In discussion",
+      "higher": "Escalated",
+      "ignored": "Ignored"
+    },
+    "acceptModal": {
+      "closeLabel": "Close modal",
+      "title": "Confirm suggestion acceptance",
+      "text": "You are about to accept the suggestion from user",
+      "textSuffix": "This suggestion will be concluded accepting the proposed modifications.",
+      "textSecondary": "This action will be recorded in the system along with your history as administrator. Are you sure?",
+      "userFallback": "this user",
+      "btnBack": "Back",
+      "btnAccept": "Accept",
+      "processing": "Processing..."
+    },
+    "deleteModal": {
+      "closeLabel": "Close modal",
+      "title": "Confirm suggestion rejection",
+      "text": "You are about to reject the suggestion from user",
+      "textSuffix": "This action will be recorded in the system along with your history as administrator.",
+      "textSecondary": "The note you wrote will be attached to the record. Are you sure?",
+      "userFallback": "this user",
+      "btnCancel": "Cancel",
+      "btnConfirm": "Reject",
+      "processing": "Processing..."
+    },
+    "escalateModal": {
+      "closeLabel": "Close",
+      "title": "Escalate suggestion",
+      "text": "You are about to escalate the suggestion from",
+      "textSuffix": "to a higher review level.",
+      "textSecondary": "The suggestion will remain active and will be recorded as escalated. The note you wrote will be attached to the record. Do you wish to continue?",
+      "userFallback": "this user",
+      "btnCancel": "Cancel",
+      "btnConfirm": "Escalate",
+      "processing": "Processing..."
+    },
+    "typeOptions": {
+      "todos": "All",
+      "agregar": "New feature",
+      "idea": "Idea",
+      "mejora": "Improvement",
+      "eliminar": "Remove feature"
+    },
+    "typeMeta": {
+      "agregar": "New feature",
+      "idea": "Idea",
+      "mejora": "Improvement",
+      "eliminar": "Remove",
+      "fallback": "Suggestion"
+    }
+  },
+  "adminCreacion": {
+    "module": {
+      "title": "Creation",
+      "subtitleProfesional": "Fill in the form to register a new professional.",
+      "subtitleReclutador": "Fill in the form to register a new recruiter.",
+      "subtitleNuevaInfo": "Select a user to manage their additional information.",
+      "subtitleManaging": "Managing information for"
+    },
+    "cv": {
+      "headerTitle": "New CV",
+      "headerSubtitle": "Create CV for profile #",
+      "closeLabel": "Close",
+      "fieldNameCv": "CV Name",
+      "fieldNameCvPh": "CV name…",
+      "fieldTemplate": "Template",
+      "templatePh": "— Select template —",
+      "templateSent": "Value sent to backend:",
+      "fieldFont": "Font",
+      "fontPh": "— Select font —",
+      "fontPreview": "Preview: Text in",
+      "checkActive": "Active",
+      "checkVisible": "Visible",
+      "btnClose": "Close",
+      "btnCreate": "Create CV",
+      "creating": "Creating…",
+      "errorCreate": "Could not create the CV.",
+      "templates": {
+        "navy": "Classic Navy",
+        "slate": "Modern Slate",
+        "forest": "Forest",
+        "crimson": "Crimson",
+        "bicolor": "Bicolor",
+        "tech": "Tech / Dev",
+        "minimal": "Minimalist"
+      },
+      "templateDesc": {
+        "navy": "Professional and elegant",
+        "slate": "Clean and contemporary",
+        "forest": "Natural and sober",
+        "crimson": "Bold and memorable",
+        "bicolor": "Dark sidebar + content",
+        "tech": "Dark mode, terminal style",
+        "minimal": "Elegant and clean"
+      },
+      "resumen": {
+        "nameCv": "CV Name",
+        "template": "Template",
+        "font": "Font",
+        "archivePdf": "PDF (URL)",
+        "cvUrl": "CV URL",
+        "description": "Description",
+        "active": "Active",
+        "visible": "Visible",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "fields": {
+        "archive_pdf": "PDF (URL)",
+        "cv_url": "CV URL",
+        "description": "Description"
+      }
+    },
+    "experiencia": {
+      "headerTitle": "New Experience",
+      "headerSubtitle": "Profile #",
+      "closeLabel": "Close",
+      "fieldType": "Type",
+      "typePh": "— Select type —",
+      "fieldState": "Status",
+      "statePh": "— Select status —",
+      "fieldArea": "Area",
+      "areaPh": "— Select area —",
+      "fieldCargo": "Position / Title",
+      "cargoPh": "— Select position —",
+      "cargoAreaFirst": "— First select an area —",
+      "btnClose": "Close",
+      "btnCreate": "Create Experience",
+      "errorTypeRequired": "The Type field is required.",
+      "errorCreate": "Could not create the experience.",
+      "types": {
+        "professional": "Professional",
+        "academic": "Academic",
+        "freelance": "Freelance"
+      },
+      "states": {
+        "public": "Public",
+        "private": "Private"
+      },
+      "fields": {
+        "company": "Company",
+        "start_date": "Start date",
+        "end_date": "End date",
+        "description": "Description"
+      },
+      "resumen": {
+        "type": "Type",
+        "state": "Status",
+        "area": "Area",
+        "title": "Position / Title",
+        "company": "Company",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "description": "Description"
+      }
+    },
+    "habilidades": {
+      "headerTitle": "Add Skill",
+      "headerSubtitle": "Profile #",
+      "closeLabel": "Close",
+      "loading": "Loading skills…",
+      "errorLoad": "Could not load the skills catalog.",
+      "errorRequired": "You must select a skill.",
+      "errorCreate": "Could not associate the skill.",
+      "checkVisible": "Visible",
+      "fieldSkill": "Skill",
+      "skillPh": "— Select skill —",
+      "skillEmpty": "No skills available in the catalog.",
+      "fieldLevel": "Level",
+      "levelPh": "— Select level —",
+      "btnClose": "Close",
+      "btnCreate": "Add Skill",
+      "resumen": {
+        "skill": "Skill",
+        "level": "Level",
+        "visible": "Visible",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "oferta": {
+      "headerTitle": "New Offer",
+      "headerSubtitle": "Profile #",
+      "closeLabel": "Close",
+      "loading": "Loading catalogs…",
+      "errorLoad": "Could not load the offer catalog.",
+      "errorCreate": "Could not create the offer.",
+      "fieldTitle": "Title",
+      "titlePh": "Offer title",
+      "fieldDesc": "Description",
+      "descPh": "Offer description",
+      "fieldType": "Type",
+      "fieldModalidad": "Modality",
+      "fieldArea": "Area",
+      "areaPh": "e.g. Technology",
+      "fieldNivel": "Level",
+      "fieldUbicacion": "Location",
+      "ubicacionPh": "e.g. Cochabamba, Bolivia",
+      "fieldState": "Status",
+      "fieldQuota": "Slots",
+      "quotaPh": "Number of slots",
+      "fieldSalary": "Salary",
+      "salaryMin": "Minimum",
+      "salaryMax": "Maximum",
+      "fieldCurrency": "Currency",
+      "fieldShowSalary": "Show salary",
+      "salaryVisible": "Visible",
+      "salaryHidden": "Hidden",
+      "fieldClosedAt": "Closing date",
+      "fieldAudience": "Reach",
+      "audiencePh": "— Unspecified —",
+      "fieldAudienceProf": "Professional Audience",
+      "audienceProfEmpty": "No professional audience added",
+      "areaPh2": "— Select area —",
+      "careerAll": "— All careers (optional) —",
+      "careerAreaFirst": "— First select an area —",
+      "allCareers": "All careers",
+      "btnAddAudience": "Add audience",
+      "fieldBanner": "Banner",
+      "bannerRemove": "Remove banner",
+      "bannerChange": "Change image",
+      "bannerSelect": "Select image",
+      "fieldPuestos": "Associated positions",
+      "puestosEmpty": "No positions added",
+      "puestosPh": "— Add position —",
+      "btnCancel": "Cancel",
+      "btnCreate": "Create Offer",
+      "types": {
+        "empty": "Unspecified",
+        "full-time": "Full time"
+      },
+      "modalidades": {
+        "empty": "Unspecified",
+        "Remoto": "Remote"
+      },
+      "niveles": {
+        "empty": "Unspecified",
+        "sin experiencia": "No experience",
+        "junior": "Junior",
+        "mid": "Mid",
+        "senior": "Senior"
+      },
+      "resumen": {
+        "title": "Title",
+        "description": "Description",
+        "type": "Type",
+        "modalidad": "Modality",
+        "area": "Area",
+        "nivel": "Level",
+        "ubicacion": "Location",
+        "state": "Status",
+        "quota": "Slots",
+        "salaryMin": "Min. salary",
+        "salaryMax": "Max. salary",
+        "currency": "Currency",
+        "showSalary": "Show salary",
+        "closedAt": "Closing date",
+        "audience": "Reach",
+        "banner": "Banner",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "postulacion": {
+      "headerTitle": "New Application",
+      "headerSubtitle": "Profile #",
+      "closeLabel": "Close",
+      "loading": "Loading catalogs…",
+      "errorLoad": "Could not load the application catalogs.",
+      "errorRequired": "You must select an offer.",
+      "errorCreate": "Could not create the application.",
+      "fieldOffer": "Offer",
+      "offerPh": "— Select offer —",
+      "offerEmpty": "No offers available.",
+      "fieldCv": "Applicant CV",
+      "cvPh": "— No CV selected —",
+      "cvEmpty": "This profile has no registered CVs.",
+      "fieldState": "Status",
+      "fieldReason": "Reason / Cover letter",
+      "reasonPh": "Reason or cover letter…",
+      "btnClose": "Close",
+      "btnCreate": "Create Application",
+      "states": {
+        "in_verification": "In verification",
+        "accepted": "Accepted",
+        "refused": "Rejected"
+      },
+      "resumen": {
+        "offer": "Offer",
+        "cv": "CV",
+        "state": "Status",
+        "reason": "Reason"
+      }
+    },
+    "proyecto": {
+      "headerTitle": "New Project",
+      "headerSubtitle": "Profile #",
+      "closeLabel": "Close",
+      "errorCreate": "Could not create the project.",
+      "fieldPhoto": "Main photo",
+      "photoRemove": "Remove image",
+      "photoChange": "Change image",
+      "photoSelect": "Select image",
+      "fieldState": "Status",
+      "fieldVisibility": "Visibility",
+      "visibilityOn": "Visible",
+      "visibilityOff": "Hidden",
+      "btnClose": "Close",
+      "btnCreate": "Create Project",
+      "states": {
+        "in_progress": "In progress",
+        "completed": "Completed",
+        "removed": "Removed"
+      },
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "repository_url": "Repository URL",
+        "url_demo": "Demo URL"
+      },
+      "resumen": {
+        "title": "Title",
+        "description": "Description",
+        "repositoryUrl": "Repository URL",
+        "urlDemo": "Demo URL",
+        "state": "Status",
+        "visibility": "Visibility",
+        "photo": "Photo",
+        "visible": "Visible",
+        "hidden": "Hidden"
+      }
+    },
+    "publicacion": {
+      "headerTitle": "New Publication",
+      "headerSubtitle": "Profile #",
+      "closeLabel": "Close",
+      "loading": "Loading catalogs…",
+      "errorLoad": "Could not load the publication catalogs.",
+      "errorCreate": "Could not create the publication.",
+      "checkOutstanding": "Featured",
+      "checkVisible": "Visible",
+      "fieldDesc": "Description",
+      "descPh": "Publication description…",
+      "fieldState": "Status",
+      "fieldAudience": "Reach",
+      "audienceNone": "No type",
+      "detailTitle": "Publication detail",
+      "detailNote": "Only",
+      "detailNoteStrong": "one reason",
+      "detailNoteEnd": "can be associated per publication.",
+      "detailActive": "Active",
+      "detailNone": "None",
+      "btnClose": "Close",
+      "btnCreate": "Create Publication",
+      "states": {
+        "incomplete": "Incomplete",
+        "published": "Published",
+        "removed": "Removed"
+      },
+      "detail": {
+        "id_offer": "Associated offer",
+        "id_project": "Associated project",
+        "id_cv": "Associated CV",
+        "id_experience": "Associated experience"
+      },
+      "resumen": {
+        "description": "Description",
+        "outstanding": "Featured",
+        "visible": "Visible",
+        "state": "Status",
+        "audienceType": "Audience type",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "infoPanel": {
+      "backBtn": "Back",
+      "roleProfesional": "Professional",
+      "roleReclutador": "Recruiter",
+      "sectionTitle": "What information do you want to create?",
+      "secciones": {
+        "cvs": {
+          "label": "CVs",
+          "desc": "Created resumes: name, template, visibility and URL."
+        },
+        "experiencias": {
+          "label": "Experiences",
+          "desc": "Registered work and academic experiences."
+        },
+        "habilidades": {
+          "label": "Skills",
+          "desc": "Profile skills: type, level (junior / mid / senior) and visibility."
+        },
+        "ofertas": {
+          "label": "Offers",
+          "desc": "Job postings published by the recruiter user."
+        },
+        "postulaciones": {
+          "label": "Applications",
+          "desc": "Applications sent to job offers."
+        },
+        "proyectos": {
+          "label": "Projects",
+          "desc": "Created projects: title, description, status and repository."
+        },
+        "publicaciones": {
+          "label": "Publications",
+          "desc": "Feed publications: description, visibility and status."
+        }
+      }
+    },
+    "confirmacion": {
+      "closeLabel": "Close",
+      "title": "Create new",
+      "titleEnd": "?",
+      "text": "You are about to insert a new record of type",
+      "textEnd": "in the database. This action cannot be easily undone once confirmed.",
+      "textSecondary": "Check that the data shown below is correct before continuing. An incorrect record may affect system operation and related data.",
+      "summaryOne": "Field to register:",
+      "summaryMany": "Fields to register",
+      "summaryEmpty": "No data entered",
+      "summaryEmptyDesc": "No fields with a value were detected. Do you want to create the record anyway?",
+      "btnCancel": "Cancel",
+      "btnConfirm": "Create",
+      "creating": "Creating…"
+    },
+    "confirmacionUsuario": {
+      "closeLabel": "Close",
+      "titlePre": "Create new",
+      "titleEnd": "?",
+      "nombreProfesional": "Professional",
+      "nombreReclutador": "Recruiter",
+      "text": "You are about to register a new account of type",
+      "textEnd": "in the system. Once created, the user will receive access to the platform with the entered credentials.",
+      "textSecondary": "Check that the data is correct before confirming. The password cannot be recovered from this panel; make sure to communicate it to the user if necessary.",
+      "summaryOne": "Data to register:",
+      "summaryMany": "Data to register",
+      "summaryEmpty": "No data entered",
+      "summaryEmptyDesc": "No fields with a value were detected. Complete the form before continuing.",
+      "btnCancel": "Cancel",
+      "btnConfirmPre": "Create",
+      "creating": "Creating…"
+    },
+    "nuevaInfo": {
+      "noResults": "No results",
+      "found": "user found",
+      "foundMany": "users found",
+      "role": "role"
+    },
+    "tabs": {
+      "profesional": "Add Professional",
+      "reclutador": "Add Recruiter",
+      "nuevaInfo": "Create New Information"
+    },
+    "profesionalForm": {
+      "headerTitle": "New Professional",
+      "headerSubtitle": "Fill in the details to create the account",
+      "sectionPersonal": "Personal data",
+      "sectionSecurity": "Security",
+      "fieldName": "First name",
+      "fieldNamePh": "John",
+      "fieldLastName": "Last name",
+      "fieldLastNamePh": "Doe",
+      "fieldEmail": "Email address",
+      "fieldEmailPh": "john@mail.com",
+      "fieldPassword": "Password",
+      "fieldPasswordPh": "Minimum 8 characters",
+      "fieldConfirm": "Confirm password",
+      "fieldConfirmPh": "Repeat the password",
+      "terms": "I accept the",
+      "termsLink1": "terms and conditions",
+      "termsAnd": "and the",
+      "termsLink2": "privacy policy",
+      "btnCancel": "Cancel",
+      "btnCreate": "Create Professional",
+      "strengthWeak": "Weak",
+      "strengthMid": "Fair",
+      "strengthStrong": "Strong",
+      "errorName": "First name is required.",
+      "errorLastName": "Last name is required.",
+      "errorEmail": "Email is required.",
+      "errorEmailInvalid": "Invalid email address.",
+      "errorPassword": "Password is required.",
+      "errorPasswordMin": "Minimum 8 characters.",
+      "errorPasswordLetters": "Must contain letters.",
+      "errorPasswordSymbol": "Must contain a symbol.",
+      "errorConfirm": "Please confirm your password.",
+      "errorConfirmMatch": "Passwords do not match.",
+      "errorTerms": "You must accept the terms.",
+      "errorCreate": "Could not create the professional.",
+      "resumenName": "First name",
+      "resumenLastName": "Last name",
+      "resumenEmail": "Email",
+      "resumenPassword": "Password"
+    },
+    "reclutadorForm": {
+      "headerTitle": "New Recruiter",
+      "headerSubtitle": "Fill in the details to create the account",
+      "sectionCompany": "Company data",
+      "sectionSecurity": "Security",
+      "fieldCompany": "Company name",
+      "fieldCompanyPh": "Acme Inc.",
+      "fieldEmail": "Corporate email",
+      "fieldEmailPh": "you@company.com",
+      "fieldPassword": "Password",
+      "fieldPasswordPh": "Minimum 8 characters",
+      "fieldConfirm": "Confirm password",
+      "fieldConfirmPh": "Repeat the password",
+      "terms": "I accept the",
+      "termsLink1": "terms and conditions",
+      "termsAnd": "and the",
+      "termsLink2": "privacy policy",
+      "btnCancel": "Cancel",
+      "btnCreate": "Create Recruiter",
+      "errorCompany": "Company name is required.",
+      "errorCompanyMin": "Minimum 2 characters.",
+      "errorEmail": "Corporate email is required.",
+      "errorEmailInvalid": "Invalid email address.",
+      "errorPassword": "Password is required.",
+      "errorPasswordMin": "Minimum 8 characters.",
+      "errorPasswordLetters": "Must contain letters.",
+      "errorPasswordSymbol": "Must contain a symbol.",
+      "errorConfirm": "Please confirm your password.",
+      "errorConfirmMatch": "Passwords do not match.",
+      "errorTerms": "You must accept the terms.",
+      "errorCreate": "Could not create the recruiter.",
+      "resumenCompany": "Company",
+      "resumenEmail": "Email",
+      "resumenPassword": "Password"
+    }
+  },
+  "adminEdicion": {
+    "common": {
+      "close": "Close",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "add": "Add",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "present": "Present",
+      "yes": "Yes",
+      "no": "No",
+      "new": "New",
+      "restore": "↩",
+      "clickToRestore": "Click to restore",
+      "clickToEdit": "Click to edit",
+      "noName": "Unnamed"
+    },
+    "academico": {
+      "title": "Academic Data",
+      "loadingMsg": "Loading academic data…",
+      "errorLoad": "Could not load academic data.",
+      "jobTitleLabel": "Job title",
+      "jobTitleEmpty": "— No title assigned —",
+      "sectionTitle": "ACADEMIC TRAINING",
+      "records": "records",
+      "sectionHeader": "Degrees and Universities",
+      "emptyState": "No academic training registered.",
+      "addForm": {
+        "universityLabel": "University *",
+        "universityPh": "Select university",
+        "careerLabel": "Degree *",
+        "careerPh": "Select degree",
+        "trainingTypeLabel": "Training type",
+        "trainingTypePh": "— Select —",
+        "visibilityLabel": "Visibility",
+        "startDateLabel": "Start date",
+        "endDateLabel": "End date"
+      },
+      "trainingTypes": {
+        "pregrado": "Undergraduate",
+        "posgrado": "Postgraduate",
+        "maestria": "Master's",
+        "doctorado": "Doctorate",
+        "tecnico": "Technical",
+        "diplomado": "Diploma",
+        "curso": "Course",
+        "otro": "Other"
+      },
+      "itemLabels": {
+        "noCareer": "Unnamed degree",
+        "noUniversity": "Unnamed university",
+        "noType": "No type"
+      },
+      "resumen": {
+        "jobTitle": "Job title",
+        "deleted": "Deleted training",
+        "added": "Added training",
+        "modified": "Modified training"
+      },
+      "confirmEntity": "Academic Data"
+    },
+    "credenciales": {
+      "title": "Credentials",
+      "loadingMsg": "Loading credentials…",
+      "errorLoad": "Could not load credentials.",
+      "newPasswordLabel": "New password",
+      "newPasswordPh": "Leave blank to keep unchanged",
+      "confirmLabel": "Repeat password",
+      "confirmPh": "Repeat the new password",
+      "keywordLabel": "Recovery keyword",
+      "keywordPh": "Recovery keyword",
+      "note": "The new password will be stored hashed. Leave blank to keep unchanged. The keyword is stored as plain text.",
+      "mismatch": "Passwords do not match",
+      "match": "Passwords match",
+      "resumen": {
+        "password": "New password",
+        "passwordValue": "Will be stored encrypted",
+        "keyword": "Keyword"
+      },
+      "confirmEntity": "Credentials",
+      "confirmLabel2": "Save credentials",
+      "confirmBusy": "Saving credentials…"
+    },
+    "cv": {
+      "title": "Edit CV",
+      "subtitle": "CV #",
+      "loadingMsg": "Loading CV...",
+      "errorLoad": "Could not load the selected CV.",
+      "active": "Active",
+      "visible": "Visible",
+      "detailHeader": "CV Detail",
+      "activeItems": "active",
+      "emptyItems": "No elements added",
+      "selectPrefix": "Select",
+      "fields": {
+        "name_cv": "CV Name",
+        "template": "Template",
+        "font": "Font",
+        "archive_pdf": "PDF",
+        "cv_url": "CV URL",
+        "description": "Description",
+        "state": "Status",
+        "visible": "Visible"
+      },
+      "categories": {
+        "skill_profile": "Skills",
+        "project": "Projects",
+        "certificate": "Certificates",
+        "experience": "Experiences",
+        "university_career": "University / Degree",
+        "social_network": "Social Networks"
+      },
+      "resumen": {
+        "deleted": "Deleted elements",
+        "added": "Added elements",
+        "visibility": "Visibility changed",
+        "noName": "New element"
+      },
+      "confirmEntity": "CV"
+    },
+    "datosPersonales": {
+      "title": "Personal Data",
+      "loadingMsg": "Loading profile data…",
+      "errorLoad": "Could not load profile data.",
+      "coverEmpty": "No cover photo",
+      "changeCover": "Change cover",
+      "fields": {
+        "name": "First name",
+        "lastName": "Last name",
+        "biography": "Biography",
+        "birthdate": "Date of birth",
+        "profilePhoto": "Profile photo",
+        "coverPhoto": "Cover photo",
+        "completedProfile": "Profile completed"
+      },
+      "biographyPh": "Brief user description…",
+      "socials": {
+        "sectionTitle": "Social Networks",
+        "records": "records",
+        "sectionHeader": "Linked platforms",
+        "loadingMsg": "Loading social networks…",
+        "emptyState": "No social networks linked.",
+        "platformLabel": "Platform",
+        "platformRequired": "Platform *",
+        "platformPh": "— Select —",
+        "visibilityLabel": "Visibility",
+        "urlLabel": "URL",
+        "urlRequired": "URL *",
+        "publicBadge": "Public",
+        "privateBadge": "Private",
+        "createdLabel": "Created",
+        "updatedLabel": "Updated",
+        "badgeNew": "New",
+        "addBtn": "Add",
+        "cancelBtn": "Cancel",
+        "confirmBtn": "Confirm",
+        "noPlatform": "— No platform —"
+      },
+      "resumen": {
+        "addedSocials": "Added social networks",
+        "deletedSocials": "Deleted social networks",
+        "modifiedSocials": "Modified social networks",
+        "newImage": "New image selected",
+        "platform": "Platform #"
+      },
+      "confirmEntity": "Personal Data"
+    },
+    "experiencias": {
+      "title": "Edit Experience",
+      "subtitle": "Experience #",
+      "loadingMsg": "Loading experience...",
+      "errorLoad": "Could not load the selected experience.",
+      "typeLabel": "Type",
+      "typePh": "— Select type —",
+      "stateLabel": "Status",
+      "statePh": "— Select status —",
+      "types": {
+        "labor": "Work",
+        "academic": "Academic"
+      },
+      "states": {
+        "public": "Public",
+        "private": "Private"
+      },
+      "fields": {
+        "title": "Position / Title",
+        "company": "Company",
+        "start_date": "Start date",
+        "end_date": "End date",
+        "description": "Description",
+        "type": "Type",
+        "state": "Status"
+      },
+      "confirmEntity": "Experience"
+    },
+    "habilidades": {
+      "title": "Edit Skill",
+      "loadingMsg": "Loading skill...",
+      "errorLoad": "Could not load the selected skill.",
+      "visibleLabel": "Visible",
+      "levelLabel": "Level",
+      "levelPh": "— Select level —",
+      "levels": {
+        "junior": "Junior",
+        "mid": "Mid",
+        "senior": "Senior"
+      },
+      "resumen": {
+        "level": "Level",
+        "visibility": "Visibility"
+      },
+      "confirmEntity": "Skill"
+    },
+    "oferta": {
+      "title": "Edit Offer",
+      "subtitle": "Offer #",
+      "loadingMsg": "Loading offer...",
+      "errorLoad": "Could not load the offer.",
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "type": "Type",
+        "typePh": "E.g.: full-time, part-time",
+        "modalidad": "Modality",
+        "modalidadPh": "E.g.: remote, on-site",
+        "area": "Area",
+        "areaPh": "E.g.: Technology",
+        "nivel": "Level",
+        "nivelPh": "E.g.: junior, senior",
+        "ubicacion": "Location",
+        "ubicacionPh": "E.g.: Cochabamba, Bolivia",
+        "state": "Status",
+        "quota": "Slots",
+        "quotaPh": "Number of slots",
+        "salary": "Salary",
+        "salaryMin": "Minimum",
+        "salaryMax": "Maximum",
+        "currency": "Currency",
+        "showSalary": "Show salary",
+        "closedAt": "Closing date",
+        "audience": "Reach",
+        "audiencePh": "— Unspecified —",
+        "banner": "Banner",
+        "skills": "Associated skills",
+        "jobTitles": "Associated positions",
+        "id_audience_type": "Reach (audience)"
+      },
+      "skillsEmpty": "No skills added",
+      "jobTitlesEmpty": "No positions added",
+      "addSkillPh": "— Add skill —",
+      "addJobTitlePh": "— Add position —",
+      "bannerRemove": "Remove banner",
+      "bannerSelect": "Select image",
+      "bannerChange": "Change image",
+      "showSalaryOn": "Visible",
+      "showSalaryOff": "Hidden",
+      "resumen": {
+        "addedSkills": "Added skills",
+        "removedSkills": "Removed skills",
+        "addedJobTitles": "Added positions",
+        "removedJobTitles": "Removed positions",
+        "bannerNew": "New image"
+      },
+      "confirmEntity": "Offer"
+    },
+    "postulacion": {
+      "title": "Edit Application",
+      "subtitle": "Modify application data",
+      "loadingMsg": "Loading application data…",
+      "errorLoad": "Could not load application data.",
+      "dateLabel": "Application date",
+      "updatedLabel": "Last updated",
+      "cvLabel": "Applicant CV",
+      "cvPh": "— No CV selected —",
+      "cvEmpty": "This profile has no registered CVs.",
+      "stateLabel": "Application status",
+      "reasonLabel": "Reason / Cover letter",
+      "reasonPh": "Applicant's reason or cover letter…",
+      "states": {
+        "in_verification": "In review",
+        "accepted": "Accepted",
+        "refused": "Rejected"
+      },
+      "fields": {
+        "id_cv": "Applicant CV",
+        "reason": "Reason / Cover letter",
+        "state": "Application status"
+      },
+      "confirmEntity": "Application"
+    },
+    "preferencias": {
+      "title": "Edit Preference",
+      "subtitleFallback": "Modify user preference",
+      "loadingMsg": "Loading preference…",
+      "errorLoad": "Could not load preference data.",
+      "fields": {
+        "description": "Description",
+        "type": "Type",
+        "visibility": "Visibility",
+        "color": "Color"
+      },
+      "descriptionPh": "Preference description…",
+      "visibleHint": "This preference is visible to the user.",
+      "hiddenHint": "This preference is hidden.",
+      "colorSelected": "Selected color:",
+      "types": {
+        "privacy": "Privacy",
+        "personalization": "Personalization"
+      },
+      "colors": {
+        "default": "Default",
+        "blue": "Blue",
+        "sky blue": "Sky blue",
+        "cyan": "Cyan",
+        "green": "Green",
+        "yellow": "Yellow",
+        "orange": "Orange",
+        "red": "Red",
+        "pink": "Pink",
+        "purple": "Purple",
+        "coffee": "Brown",
+        "black": "Black"
+      },
+      "confirmEntity": "Preference"
+    },
+    "proyecto": {
+      "title": "Edit Project",
+      "subtitle": "Project #",
+      "loadingMsg": "Loading project…",
+      "errorLoad": "Could not load the project.",
+      "errorSave": "Could not save the changes.",
+      "confirmEntity": "Project",
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "repository_url": "Repository URL",
+        "url_demo": "Demo URL",
+        "state": "Status",
+        "visibility": "Visibility",
+        "url_photo_main": "Main photo"
+      },
+      "states": {
+        "in_progress": "In progress",
+        "completed": "Completed",
+        "removed": "Removed"
+      },
+      "visibilityOn": "The project is visible in the portfolio.",
+      "visibilityOff": "The project is hidden.",
+      "photoRemove": "Remove image",
+      "photoSelect": "Select image",
+      "photoChange": "Change image",
+      "skillsTitle": "Project skills",
+      "skillsEmpty": "No skills added",
+      "addSkillPh": "— Add skill —",
+      "resumen": {
+        "addedSkills": "Added skills",
+        "removedSkills": "Removed skills",
+        "newPhoto": "New image",
+        "deletedPhoto": "Photo removed"
+      }
+    },
+    "publicacion": {
+      "title": "Edit Publication",
+      "subtitle": "Publication #",
+      "loadingMsg": "Loading publication…",
+      "errorLoad": "Could not load the publication.",
+      "errorSave": "Could not save the changes.",
+      "confirmEntity": "Publication",
+      "fields": {
+        "outstanding": "Featured",
+        "visibility": "Visible",
+        "description": "Description",
+        "state": "Status",
+        "id_audience_type": "Audience type",
+        "created_at": "Created",
+        "updated_at": "Updated"
+      },
+      "audienceTypePh": "No type",
+      "states": {
+        "incomplete": "Incomplete",
+        "published": "Published",
+        "removed": "Removed"
+      },
+      "detailSection": "Publication detail",
+      "detailNote": "Only one reason can be associated per publication.",
+      "detailActive": "Active",
+      "detailNone": "None",
+      "detailFields": {
+        "id_offer": "Associated offer",
+        "id_project": "Associated project",
+        "id_cv": "Associated CV",
+        "id_experience": "Associated experience"
+      },
+      "audienceSection": "Professional audience",
+      "audienceEmpty": "No professional audience defined",
+      "areaLabel": "Professional area",
+      "areaRequired": "Professional area *",
+      "areaPh": "— Select an area —",
+      "careerLabel": "Professional career",
+      "careerOptional": "(optional)",
+      "careerPh": "— No specific career —",
+      "badgeNew": "New",
+      "resumen": {
+        "deletedAudiences": "Removed audiences",
+        "addedAudiences": "Added audiences",
+        "records": "record(s)"
+      }
+    },
+    "tablas": {
+      "cvs": {
+        "title": "User CVs",
+        "emptyText": "This user has no registered CVs."
+      },
+      "experiencias": {
+        "title": "User experiences",
+        "emptyText": "This user has no registered experiences."
+      },
+      "habilidades": {
+        "title": "User skills",
+        "emptyText": "This user has no registered skills."
+      },
+      "ofertas": {
+        "title": "User offers",
+        "emptyText": "This user has no registered offers."
+      },
+      "postulaciones": {
+        "title": "User applications",
+        "emptyText": "This user has no registered applications."
+      },
+      "preferencias": {
+        "title": "User preferences",
+        "emptyText": "This user has no registered preferences."
+      },
+      "proyectos": {
+        "title": "User projects",
+        "emptyText": "This user has no registered projects."
+      },
+      "publicaciones": {
+        "title": "User publications",
+        "emptyText": "This user has no registered publications."
+      }
+    },
+    "table": {
+      "loadingPrefix": "Loading",
+      "errorLoad": "Could not load the table.",
+      "records": "records",
+      "prevPage": "Previous page",
+      "nextPage": "Next page",
+      "openLink": "Open",
+      "columns": {
+        "name_cv": "CV Name",
+        "archive_pdf": "PDF",
+        "cv_url": "CV URL",
+        "id_profile": "Profile ID",
+        "id_skill": "Skill ID",
+        "skill_name": "Skill",
+        "id_offer": "Offer ID",
+        "id_postulant": "Applicant ID",
+        "id_cv": "CV ID",
+        "repository_url": "Repository",
+        "url_demo": "Demo",
+        "url_photo_main": "Main photo",
+        "quota_quantity": "Slots",
+        "closed_at": "Closing",
+        "salary_min": "Min. salary",
+        "salary_max": "Max. salary",
+        "show_salary": "Show salary",
+        "id_audience_type": "Audience ID",
+        "created_at": "Created",
+        "updated_at": "Updated"
+      },
+      "boolTrue": "Yes",
+      "boolFalse": "No"
+    },
+    "confirm": {
+      "titlePrefix": "Save in",
+      "bodyAction": "You are about to",
+      "bodyData": "update the data",
+      "bodyOf": "of",
+      "bodyWarning": "This action will modify the database and cannot be easily undone once confirmed.",
+      "bodyReview": "Please verify that the values shown below are correct before continuing. An incorrect change may affect system functionality and related data.",
+      "summaryOne": "Modified field:",
+      "summaryMany": "Modified fields",
+      "noChanges": "No changes detected",
+      "noChangesDesc": "No differences were found compared to the current data. Do you still want to save?",
+      "saveLabel": "Save",
+      "savingLabel": "Saving...",
+      "cancelLabel": "Cancel",
+      "closeAriaLabel": "Close"
+    },
+    "filterBar": {
+      "roleLabel": "Role:",
+      "roles": {
+        "todos": "All",
+        "profesional": "Professional",
+        "reclutador": "Recruiter"
+      }
+    },
+    "searchBar": {
+      "placeholder": "Search user by name or last name…",
+      "searchBtn": "Search",
+      "searching": "Searching…",
+      "clearBtn": "Clear"
+    },
+    "userCard": {
+      "profesionalRole": "Professional",
+      "reclutadorRole": "Recruiter",
+      "editBtn": "Edit",
+      "deleteBtn": "Delete",
+      "createBtn": "Create",
+      "viewBtn": "View"
+    },
+    "userGrid": {
+      "emptyTitle": "Search for a user to edit",
+      "emptyDesc": "Enter a name or last name in the search bar and select the role you want to filter.",
+      "noResultsTitle": "No results",
+      "noResultsDesc": "No users were found with that name. Try a different term or change the role filter."
+    },
+    "panel": {
+      "backBtn": "Back",
+      "sectionTitle": "What do you want to edit?",
+      "roleProfesional": "Professional",
+      "roleReclutador": "Recruiter",
+      "openFormBtn": "Open form",
+      "formPlaceholder": "Form for",
+      "formDesc": "The edit form for",
+      "formDescOf": "will be integrated here for user",
+      "sections": {
+        "datos_personales": {
+          "label": "Personal Data",
+          "desc": "Name, last name, biography, date of birth and photos."
+        },
+        "credenciales": {
+          "label": "Credentials",
+          "desc": "Current password, new password and recovery keyword."
+        },
+        "cvs": {
+          "label": "CVs",
+          "desc": "Created CVs: name, template, visibility and URL."
+        },
+        "experiencias": {
+          "label": "Experiences",
+          "desc": "Registered work and academic experiences."
+        },
+        "habilidades": {
+          "label": "Skills",
+          "desc": "Profile skills: type, level (junior / mid / senior) and visibility."
+        },
+        "ofertas": {
+          "label": "Offers",
+          "desc": "Job postings published by the recruiter user."
+        },
+        "postulaciones": {
+          "label": "Applications",
+          "desc": "Applications submitted to job offers."
+        },
+        "preferencias": {
+          "label": "Preferences",
+          "desc": "Privacy, color and personalization settings."
+        },
+        "academico": {
+          "label": "Academic",
+          "desc": "Professional title and university degree (institution, study dates)."
+        },
+        "proyectos": {
+          "label": "Projects",
+          "desc": "Created projects: title, description, status and repository."
+        },
+        "publicacion": {
+          "label": "Publication",
+          "desc": "Feed publications: description, visibility and status."
+        }
+      }
+    }
+  },
+  "adminEliminacion": {
+    "panel": {
+      "backBtn": "Back",
+      "roleProfesional": "Professional",
+      "roleReclutador": "Recruiter",
+      "sectionTitle": "What do you want to delete?",
+      "selectRowsHint": "Select the rows you want to delete.",
+      "noProfile": "Could not determine the user's profile.",
+      "secciones": {
+        "datos_personales": {
+          "label": "Personal Data",
+          "desc": "Delete providers, company, social networks, title and studies from the profile."
+        },
+        "comentarios": {
+          "label": "Comments",
+          "desc": "Delete all comments made by the user."
+        },
+        "cvs": {
+          "label": "CVs",
+          "desc": "Delete created resumes."
+        },
+        "habilidades": {
+          "label": "Skills",
+          "desc": "Delete all skills from the profile."
+        },
+        "experiencias": {
+          "label": "Experiences",
+          "desc": "Delete all work and academic experiences."
+        },
+        "ofertas": {
+          "label": "Offers",
+          "desc": "Delete published job postings."
+        },
+        "postulaciones": {
+          "label": "Applications",
+          "desc": "Delete sent applications."
+        },
+        "proyectos": {
+          "label": "Projects",
+          "desc": "Delete created projects."
+        },
+        "publicaciones": {
+          "label": "Publications",
+          "desc": "Delete feed publications."
+        },
+        "guardados": {
+          "label": "Saved",
+          "desc": "Delete all saved items."
+        }
+      }
+    },
+    "table": {
+      "records": "records",
+      "prevPage": "Previous page",
+      "nextPage": "Next page",
+      "selected": "selected",
+      "selectedPlural": "selected",
+      "clear": "Clear",
+      "deleteBtn": "Delete",
+      "loading": "Loading",
+      "loadError": "Could not load the table.",
+      "columns": {
+        "name_cv": "CV Name",
+        "archive_pdf": "PDF",
+        "cv_url": "CV URL",
+        "id_profile": "Profile ID",
+        "id_skill": "Skill ID",
+        "skill_name": "Skill",
+        "id_offer": "Offer ID",
+        "id_postulant": "Applicant ID",
+        "id_cv": "CV ID",
+        "repository_url": "Repository",
+        "url_demo": "Demo",
+        "url_photo_main": "Main photo",
+        "quota_quantity": "Slots",
+        "closed_at": "Closing",
+        "salary_min": "Min. salary",
+        "salary_max": "Max. salary",
+        "show_salary": "Show salary",
+        "id_audience_type": "Audience ID",
+        "id_commentator": "Commenter ID",
+        "id_publication": "Publication ID",
+        "id_project": "Project ID",
+        "id_provider": "Provider ID",
+        "id_saved": "Saved ID",
+        "removed_at": "Removed",
+        "provider_user_id": "Provider User ID",
+        "created_at": "Created",
+        "updated_at": "Updated"
+      },
+      "boolYes": "Yes",
+      "boolNo": "No",
+      "openLink": "Open",
+      "resumenMore": "…and more",
+      "resumenMoreValue": "additional record(s)",
+      "resumenRowLabel": "Record"
+    },
+    "confirmModal": {
+      "closeLabel": "Close",
+      "title": "Delete",
+      "titleEnd": "?",
+      "text": "You are about to permanently delete this record of",
+      "textEnd": "This action cannot be undone once confirmed.",
+      "textSecondary": "Verify that the record shown below is correct. Deletion may affect related data in the system.",
+      "summaryTitle": "Record to be deleted:",
+      "summaryEmpty": "No additional information",
+      "summaryEmptyDesc": "No additional data to show for the selected record.",
+      "btnCancel": "Cancel",
+      "btnConfirm": "Delete",
+      "deleting": "Deleting…"
+    },
+    "datosPersonales": {
+      "headerTitle": "Personal Data",
+      "closeLabel": "Close",
+      "loading": "Loading personal data…",
+      "errorLoad": "Could not load personal data.",
+      "errorDelete": "Could not delete the data.",
+      "hint": "Click on an item to mark it for deletion. Click again to unmark it. Confirm at the end with the red button.",
+      "btnClose": "Close",
+      "btnDelete": "Delete selected",
+      "restoreTitle": "Click to restore",
+      "markTitle": "Click to mark for deletion",
+      "sections": {
+        "providers": {
+          "label": "Providers",
+          "empty": "No providers registered"
+        },
+        "company": {
+          "label": "Company",
+          "empty": "No company associated"
+        },
+        "socials": {
+          "label": "Social Networks",
+          "empty": "No social networks registered"
+        },
+        "jobTitle": {
+          "label": "Professional Title",
+          "empty": "No professional title assigned"
+        },
+        "studies": {
+          "label": "Studies",
+          "empty": "No studies registered"
+        }
+      },
+      "resumen": {
+        "provider": "Provider",
+        "company": "Company",
+        "social": "Social network",
+        "jobTitle": "Professional title",
+        "study": "Study"
+      },
+      "itemActive": "Active",
+      "itemInactive": "Inactive",
+      "careerUnknown": "Unknown career",
+      "universityUnknown": "Unknown university",
+      "socialFallback": "Social network",
+      "entidad": "Personal Data"
+    },
+    "tablas": {
+      "comentarios": {
+        "title": "User comments",
+        "empty": "This user has no registered comments."
+      },
+      "cvs": {
+        "title": "User CVs",
+        "empty": "This user has no registered CVs."
+      },
+      "experiencias": {
+        "title": "User experiences",
+        "empty": "This user has no registered experiences."
+      },
+      "guardados": {
+        "title": "User saved items",
+        "empty": "This user has no saved items."
+      },
+      "habilidades": {
+        "title": "User skills",
+        "empty": "This user has no registered skills."
+      },
+      "ofertas": {
+        "title": "User offers",
+        "empty": "This user has no registered offers."
+      },
+      "postulaciones": {
+        "title": "User applications",
+        "empty": "This user has no registered applications."
+      },
+      "proyectos": {
+        "title": "User projects",
+        "empty": "This user has no registered projects."
+      },
+      "publicaciones": {
+        "title": "User publications",
+        "empty": "This user has no registered publications."
+      }
+    }
+  },
+  "adminModules": {
+  "groups": {
+    "panel":     "Panel",
+    "soporte":   "Support",
+    "gestion":   "Management",
+    "atencion":  "Attention",
+    "critico":   "Critical",
+    "miHistoria":"My History"
+  },
+  "items": {
+    "reportes":    "Reports",
+    "sugerencias": "Suggestions",
+    "historial":   "History",
+    "mensajes":    "Messages",
+    "solicitudes": "Requests",
+    "permisos":    "Permissions",
+    "creacion":    "Creation",
+    "eliminacion": "Deletion",
+    "edicion":     "Edition",
+    "atendido":    "Attended",
+    "estadistica": "Statistics",
+    "guardado":    "Saved",
+    "nuevos":      "New",
+    "redirigidos": "Redirected",
+    "anadir":      "Add",
+    "suspension":  "Suspension",
+    "backups":     "Backups",
+    "mensaje":     "Message",
+    "definicion":  "Definition"
   }
+}
 }

@@ -1,6 +1,6 @@
 import { apiClient } from "./http/httpClient";
-import config from "../config";
 import { getToken } from "./sessionService";
+import config from "../config";
 
 
 /**
@@ -220,6 +220,20 @@ export async function listarSolicitudesVerificacion({ status = "pending" } = {},
   };
 }
 
+export async function listarSolicitudesFormacion({ status = "pending" } = {}, options = {}) {
+  const params = new URLSearchParams();
+  if (status && status !== "todos") params.set("status", status);
+
+  const payload = await apiClient.get(`admin/education-verifications?${params.toString()}`, {
+    signal: options.signal,
+    fallbackMessage: "No se pudieron cargar las solicitudes de formacion.",
+  });
+
+  return {
+    items: Array.isArray(payload?.items) ? payload.items : [],
+  };
+}
+
 export async function aprobarSolicitudVerificacion(id) {
   return apiClient.post(`admin/verifications/${id}/approve`, {}, {
     fallbackMessage: "No se pudo aprobar la solicitud.",
@@ -230,6 +244,31 @@ export async function rechazarSolicitudVerificacion(id, reason) {
   return apiClient.post(`admin/verifications/${id}/reject`, { reason }, {
     fallbackMessage: "No se pudo rechazar la solicitud.",
   });
+}
+
+export async function aprobarSolicitudFormacion(id) {
+  return apiClient.post(`admin/education-verifications/${id}/approve`, {}, {
+    fallbackMessage: "No se pudo aprobar el respaldo de formacion.",
+  });
+}
+
+export async function rechazarSolicitudFormacion(id, reason) {
+  return apiClient.post(`admin/education-verifications/${id}/reject`, { reason }, {
+    fallbackMessage: "No se pudo rechazar el respaldo de formacion.",
+  });
+}
+
+export async function obtenerVistaDocumentoAdmin(url) {
+  const token = getToken();
+  const response = await fetch(url, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+
+  if (!response.ok) {
+    throw new Error("No se pudo abrir el documento.");
+  }
+
+  return URL.createObjectURL(await response.blob());
 }
 export async function restaurarBackup(filename) {
   return apiClient.post(`admin/backups/${encodeURIComponent(String(filename ?? "").trim())}/restore`, {}, {

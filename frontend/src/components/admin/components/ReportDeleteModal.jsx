@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { X, AlertTriangle } from "lucide-react";
 import "../../../styles/components/admin/ReportDeleteModal.css";
 
@@ -9,6 +10,9 @@ export default function ReportDeleteModal({
   onClose,
   onConfirm,
 }) {
+  const { t } = useTranslation();
+  const d = "adminReports.deleteModal";
+
   if (!isOpen || !report) return null;
 
   return (
@@ -25,7 +29,7 @@ export default function ReportDeleteModal({
           className="adm-report-modal__close"
           onClick={onClose}
           disabled={isBusy}
-          aria-label="Cerrar modal"
+          aria-label={t(`${d}.closeLabel`)}
         >
           <X size={18} />
         </button>
@@ -35,15 +39,16 @@ export default function ReportDeleteModal({
         </div>
 
         <h3 id="adm-report-modal-title" className="adm-report-modal__title">
-          Advertencia de eliminacion
+          {t(`${d}.title`)}
         </h3>
 
         <p className="adm-report-modal__text">
-          Estas a punto de marcar este reporte como eliminado. Esta actividad se registrara en el sistema y tu historial como administrador que atendio el reporte de: <strong>{report.reported_user?.name || "este usuario"}</strong>.
+          {t(`${d}.text`)}{" "}
+          <strong>{report.reported_user?.name || t(`${d}.userFallback`)}</strong>.
         </p>
 
         <p className="adm-report-modal__text adm-report-modal__text--secondary">
-          Esta seguro con su decision?.
+          {t(`${d}.textSecondary`)}
         </p>
 
         {error ? <p className="adm-report-modal__error">{error}</p> : null}
@@ -55,7 +60,7 @@ export default function ReportDeleteModal({
             onClick={onClose}
             disabled={isBusy}
           >
-            Cancelar
+            {t(`${d}.btnCancel`)}
           </button>
           <button
             type="button"
@@ -63,7 +68,7 @@ export default function ReportDeleteModal({
             onClick={onConfirm}
             disabled={isBusy}
           >
-            {isBusy ? "Procesando..." : "Aceptar"}
+            {isBusy ? t(`${d}.processing`) : t(`${d}.btnConfirm`)}
           </button>
         </div>
       </div>
