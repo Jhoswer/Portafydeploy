@@ -84,3 +84,7 @@ export async function subirPdfCv(cvId, pdfBlob, cvName) {
   formData.append('pdf', pdfBlob, `${cvName}.pdf`);
   return apiClient.post(`/cv/${cvId}/upload-pdf`, formData);
 }
+
+export function getCvDownloadUrl(cvId) {
+  return `${import.meta.env.VITE_API_URL}/cv/${cvId}/download`;
+}

@@ -250,11 +250,12 @@ class CvController extends Controller
                     'folder'        => 'cvs',
                     'resource_type' => 'raw',
                     'public_id'     => 'cv_' . $id . '_' . time() . '.pdf',
-                    /* 'format'        => 'pdf', */
                 ]
             );
 
+            $cvName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $cv->name_cv);
             $url = $result['secure_url'];
+
             $cv->update(['cv_url' => $url]);
 
             return response()->json(['status' => 'success', 'cv_url' => $url]);
@@ -263,5 +264,37 @@ class CvController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * GET /api/cv/{id}/download
+     * Descarga el PDF del CV con el nombre correcto
+     */
+    public function downloadPdf(int $id): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $cv = Cv::where('id_cv', '=', $id, 'and')
+            ->where('visible', '=', true, 'and')
+            ->where('state', '=', true, 'and')
+            ->firstOrFail();
+
+        if (!$cv->cv_url) {
+            abort(404, 'PDF no disponible');
+        }
+
+        $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $cv->name_cv) . '.pdf';
+        $url = $cv->cv_url;
+
+        return response()->streamDownload(function () use ($url) {
+            $context = stream_context_create([
+                'ssl' => [
+                    'verify_peer'      => false,
+                    'verify_peer_name' => false,
+                ]
+            ]);
+            readfile($url, false, $context);
+        }, $filename, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
     }
 }

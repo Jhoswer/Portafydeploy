@@ -25,7 +25,10 @@ import { MessageBox, MetaItem, StatCard } from "./ProfileSections";
 import { profileUi as ui } from "../../../styles/components/dashboard/profileStyles";
 
 import { FileText, Eye } from "lucide-react";
-import { obtenerCvsPublicos } from "../../../services/cvService";
+import {
+  obtenerCvsPublicos,
+  getCvDownloadUrl,
+} from "../../../services/cvService";
 
 function useCloseOnOutside(open, onClose) {
   const ref = useRef(null);
@@ -569,29 +572,27 @@ export default function ProfileHero({
                         </div>
                       </div>
                       {cv.cv_url ? (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleDescargarCv(cv.cv_url, cv.name_cv)
-                          }
+                        <a
+                          href={getCvDownloadUrl(cv.id_cv)}
+                          target="_blank"
+                          rel="noreferrer"
                           style={{
                             display: "inline-flex",
                             alignItems: "center",
                             gap: 6,
                             padding: "7px 14px",
                             borderRadius: 8,
-                            border: "none",
+                            textDecoration: "none",
                             background:
                               "linear-gradient(135deg, #12369e 0%, #255dde 100%)",
                             color: "#fff",
                             fontFamily: "var(--f-ui)",
                             fontSize: "0.8rem",
                             fontWeight: 700,
-                            cursor: "pointer",
                           }}
                         >
                           <Download size={13} /> Descargar
-                        </button>
+                        </a>
                       ) : (
                         <span
                           style={{
@@ -697,8 +698,7 @@ function EditNameFields({ draft, setDraft, isMobile }) {
   );
 }
 
-// Agrega esta función dentro del componente ProfileHero
-async function handleDescargarCv(url, nombre) {
+/* async function handleDescargarCv(url, nombre) {
   try {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -713,7 +713,7 @@ async function handleDescargarCv(url, nombre) {
   } catch {
     window.open(url, "_blank");
   }
-}
+} */
 
 const heroShell = {
   ...ui.shell,

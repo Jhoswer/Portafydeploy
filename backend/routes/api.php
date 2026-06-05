@@ -140,7 +140,7 @@ Route::middleware(['auth:sanctum', SetLogUserContext::class])->group(function ()
     // Visibilidad
     Route::get('profile/visibility', [VisibilityController::class, 'show']);
     Route::put('profile/visibility', [VisibilityController::class, 'update']);
-    
+
     //Calendario
     Route::post('/calendar/events', [CalendarEventController::class, 'store']);
     Route::get('/calendar/events', [CalendarEventController::class, 'index']);
@@ -254,3 +254,4 @@ Route::get('companies/{company}/public', [CompanyEngagementController::class, 'p
 Route::get('/feed/posts', [FeedController::class, 'index']);
 Route::post('postulations/{id}/interview', [PostulationController::class, 'storeInterview']);
 Route::get('/cv/public/{profileId}', [CvController::class, 'publicIndex']);
+Route::get('/cv/{id}/download', [CvController::class, 'downloadPdf']);
