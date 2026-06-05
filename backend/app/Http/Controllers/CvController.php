@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\CvService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Models\Cv;
 
 class CvController extends Controller
 {
@@ -155,64 +156,112 @@ class CvController extends Controller
     }
 
     /**
- * POST /api/cv/{id}/custom-entry
- * Guarda una entidad solo en el CV sin afectar el perfil.
- */
-public function storeCustomEntry(Request $request, int $id): JsonResponse
-{
-    $request->validate([
-        'entry_type'  => 'required|in:experience,skill,education',
-        'title'       => 'required|string|max:255',
-        'subtitle'    => 'nullable|string|max:255',
-        'description' => 'nullable|string',
-        'date_start'  => 'nullable|string',
-        'date_end'    => 'nullable|string',
-        'is_current'  => 'nullable|boolean',
-    ]);
+     * POST /api/cv/{id}/custom-entry
+     * Guarda una entidad solo en el CV sin afectar el perfil.
+     */
+    public function storeCustomEntry(Request $request, int $id): JsonResponse
+    {
+        $request->validate([
+            'entry_type'  => 'required|in:experience,skill,education',
+            'title'       => 'required|string|max:255',
+            'subtitle'    => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'date_start'  => 'nullable|string',
+            'date_end'    => 'nullable|string',
+            'is_current'  => 'nullable|boolean',
+        ]);
 
-    try {
-        $entry = $this->cvService->saveCustomEntry($id, $request->all(), $request->user());
-        return response()->json([
-            'status' => 'success',
-            'data'   => $entry,
-        ], 201);
-    } catch (\RuntimeException $e) {
-        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 404);
-    } catch (\Exception $e) {
-        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        try {
+            $entry = $this->cvService->saveCustomEntry($id, $request->all(), $request->user());
+            return response()->json([
+                'status' => 'success',
+                'data'   => $entry,
+            ], 201);
+        } catch (\RuntimeException $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 404);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
-}
 
-/**
- * GET /api/cv/{id}/custom-entries
- * Devuelve las entidades guardadas solo en este CV.
- */
-public function getCustomEntries(Request $request, int $id): JsonResponse
-{
-    try {
-        $this->cvService->find($id, $request->user());
-        $entries = \App\Models\CvCustomEntry::where('id_cv', '=', $id, 'and')
-            ->where('visibility', '=', true, 'and')
+    /**
+     * GET /api/cv/{id}/custom-entries
+     * Devuelve las entidades guardadas solo en este CV.
+     */
+    public function getCustomEntries(Request $request, int $id): JsonResponse
+    {
+        try {
+            $this->cvService->find($id, $request->user());
+            $entries = \App\Models\CvCustomEntry::where('id_cv', '=', $id, 'and')
+                ->where('visibility', '=', true, 'and')
+                ->get();
+            return response()->json(['status' => 'success', 'data' => $entries]);
+        } catch (\RuntimeException $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 404);
+        }
+    }
+
+    /**
+     * DELETE /api/cv/{id}/custom-entry/{entryId}
+     */
+    public function deleteCustomEntry(Request $request, int $id, int $entryId): JsonResponse
+    {
+        try {
+            $this->cvService->find($id, $request->user());
+            \App\Models\CvCustomEntry::where('id_cv', '=', $id, 'and')
+                ->where('id_cv_custom_entry', '=', $entryId, 'and')
+                ->delete();
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * GET /api/cv/public/{profileId}
+     * CVs públicos (visible=true) de un perfil — accesible sin auth
+     */
+    public function publicIndex(int $profileId): JsonResponse
+    {
+        $cvs = Cv::where('id_profile', '=', $profileId, 'and')
+            ->where('state', '=', true, 'and')
+            ->where('visible', '=', true, 'and')
             ->get();
-        return response()->json(['status' => 'success', 'data' => $entries]);
-    } catch (\RuntimeException $e) {
-        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 404);
+        return response()->json(['status' => 'success', 'data' => $cvs]);
     }
-}
 
-/**
- * DELETE /api/cv/{id}/custom-entry/{entryId}
- */
-public function deleteCustomEntry(Request $request, int $id, int $entryId): JsonResponse
-{
-    try {
-        $this->cvService->find($id, $request->user());
-        \App\Models\CvCustomEntry::where('id_cv', '=', $id, 'and')
-            ->where('id_cv_custom_entry', '=', $entryId, 'and')
-            ->delete();
-        return response()->json(['status' => 'success']);
-    } catch (\Exception $e) {
-        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+    /**
+     * POST /api/cv/{id}/upload-pdf
+     * Recibe el PDF generado en el frontend, lo sube a Cloudinary y guarda la URL.
+     */
+    public function uploadPdf(Request $request, int $id): JsonResponse
+    {
+        $request->validate([
+            'pdf' => 'required|file|mimes:pdf|max:10240',
+        ]);
+
+        try {
+            $cv = $this->cvService->find($id, $request->user());
+
+            $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('pdf')->getRealPath(),
+                [
+                    'folder'        => 'cvs',
+                    'resource_type' => 'raw',
+                    'public_id'     => 'cv_' . $id . '_' . time() . '.pdf',
+                    /* 'format'        => 'pdf', */
+                ]
+            );
+
+            $url = $result['secure_url'];
+            $cv->update(['cv_url' => $url]);
+
+            return response()->json(['status' => 'success', 'cv_url' => $url]);
+        } catch (\RuntimeException $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 404);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
-}
 }

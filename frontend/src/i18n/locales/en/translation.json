@@ -1441,15 +1441,6 @@
         "November",
         "December"
       ],
-      "weekDays": [
-        "M",
-        "T",
-        "W",
-        "T",
-        "F",
-        "S",
-        "S"
-      ],
       "dateLabel": "{{month}} {{day}}, {{year}}",
       "events": {
         "updateProfile": {
@@ -1472,6 +1463,22 @@
           "detail": "Verify the PDF, social links and public portfolio.",
           "tag": "Social"
         }
+              },
+      "createEvent": "Create event",
+      "newEvent": "New event",
+      "saving": "Saving...",
+      "save": "Save event",
+      "fields": {
+        "title": "Event title",
+        "description": "Description",
+        "time": "Time",
+        "priority": "Priority",
+        "tag": "Tag (e.g. work, health)"
+      },
+            "priority": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High"
       }
     },
     "portfolio": {
@@ -1605,6 +1612,21 @@
         "minCharacters": "Minimum {{count}} characters",
         "tagLimitHint": "You can add up to {{count}} technologies.",
         "tagLimitReached": "Technology limit reached."
+      },
+      "filters": {
+        "title": "Filter records",
+        "summary": "{{count}}/{{total}} visible",
+        "all": "All",
+        "clear": "Clear filters",
+        "projectStatus": "Status",
+        "technology": "Technology",
+        "experienceType": "Type",
+        "area": "Area",
+        "skillCategory": "Category",
+        "platform": "Platform",
+        "educationType": "Education type",
+        "emptyTitle": "No matches",
+        "emptyText": "Adjust or clear filters to see more records."
       },
       "validation": {
         "experienceType": "Select the experience type.",

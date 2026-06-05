@@ -1,73 +1,14 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  House,
-  LayoutDashboard,
-  Search,
-  Compass,
-  Bookmark,
-  TrendingUp,
-  User,
-  Layers,
-  Briefcase,
-  PanelLeftClose,
-  PanelLeftOpen,
-  SlidersHorizontal,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../../context/useAuth";
 import { useTranslation } from "react-i18next";
-
-const NAV_ITEMS = {
-  panel: [
-    { page: "home",      route: "/feed",        icon: House,           labelKey: "home",    color: "res-blue"   },
-    { page: "dashboard", route: "/dashboard",      icon: LayoutDashboard, labelKey: "dashboard", color: "res-violet" },
-    { page: "search",    route: "/search", icon: Search,          labelKey: "search",    color: "res-blue"   },
-  ],
-  actividad: [
-    { page: "guardados",  route: "/guardados",  icon: Bookmark,   labelKey: "saved",  color: "res-teal" },
-    { page: "tendencias", route: "/tendencias", icon: TrendingUp, labelKey: "trending",  color: "res-blue" },
-  ],
-};
-
-const EXPLORE_FILTER_ITEMS = [
-  { filter: "todos",         icon: User,      labelKey: "all",         color: "res-violet" },
-  { filter: "portafolios",   icon: Layers,    labelKey: "portfolios",   color: "res-teal"   },
-  { filter: "oferta",        icon: Briefcase, labelKey: "jobs",         color: "res-blue"   },
-];
-
-const SEARCH_FILTERS = [
-  {
-    id: "tipo",
-    label: "Tipo",
-    icon: User,
-    options: ["Todos", "Usuario", "Proyecto", "Convocatoria"],
-  },
-  {
-    id: "habilidad",
-    label: "Habilidad",
-    icon: Layers,
-    options: ["Todas", "React", "Node.js", "Python", "TypeScript", "Vue", "Flutter"],
-  },
-  {
-    id: "experiencia",
-    label: "Experiencia",
-    icon: Briefcase,
-    options: ["Cualquiera", "Junior", "Semi-Senior", "Senior", "Lead"],
-  },
-  {
-    id: "profesional",
-    label: "Profesional",
-    icon: SlidersHorizontal,
-    options: ["Todos", "Freelance", "Tiempo completo", "Prácticas"],
-  },
-];
+import { EXPLORE_FILTER_ITEMS, NAV_ITEMS, SEARCH_FILTERS } from "./feedSidebarConfig";
 
 export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, activeSearchFilters = {} }) {
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
-  const [openFilter, setOpenFilter] = useState(null); 
+  const [openFilter, setOpenFilter] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,7 +17,7 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
 
   const activePage = Object.values(NAV_ITEMS)
     .flat()
-    .find(item => item.route === location.pathname)?.page ?? "home";
+    .find((item) => item.route === location.pathname)?.page ?? "home";
 
   function renderNavItem({ page, route, icon: Icon, label, labelKey, sub, color }) {
     const isActive = activePage === page;
@@ -131,7 +72,6 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
 
   function renderSearchFilters() {
     if (collapsed) {
-      // Colapsado: solo los íconos de cada filtro
       return SEARCH_FILTERS.map(({ id, icon: Icon }) => (
         <div key={id} className="resource-item collapsed" title={id}>
           <div className="resource-icon res-blue">
@@ -146,7 +86,6 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
       const selected = activeSearchFilters[id] || options[0];
       return (
         <div key={id} className="search-filter-group">
-          {/* Cabecera del acordeón */}
           <div
             className="search-filter-header"
             onClick={() => setOpenFilter(isOpen ? null : id)}
@@ -161,10 +100,9 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
             </div>
           </div>
 
-          {/* Opciones */}
           {isOpen && (
             <div className="search-filter-options">
-              {options.map(opt => (
+              {options.map((opt) => (
                 <div
                   key={opt}
                   className={`search-filter-option${selected === opt ? " selected" : ""}`}
@@ -238,7 +176,6 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
           white-space: nowrap;
         }
 
-        /* ── Filtros de búsqueda ── */
         .search-filter-group {
           margin-bottom: 4px;
           border-radius: 8px;
@@ -318,7 +255,6 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
           background: #fff5f5;
         }
 
-        /* Título de filtros cuando está colapsado */
         .search-filters-title {
           overflow: hidden;
           white-space: nowrap;
@@ -330,8 +266,6 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
       `}</style>
 
       <div className="sidebar-left">
-
-        {/* ── PANEL ── */}
         <div className="card">
           <div className="card-body">
             <div className="panel-card-title card-title">
@@ -339,7 +273,7 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
               <button
                 className="sidebar-toggle-btn"
                 onClick={() => setCollapsed(!collapsed)}
-                title={collapsed ? "Expandir menú" : "Colapsar menú"}
+                title={collapsed ? "Expandir menu" : "Colapsar menu"}
               >
                 {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
               </button>
@@ -351,7 +285,6 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
         </div>
 
         {isSearchPage ? (
-          /* ── MODO BÚSQUEDA: filtros verticales ── */
           <div className="card">
             <div className="card-body">
               <div className="card-title search-filters-title">{t("appI18n.feed.left.filters")}</div>
@@ -359,7 +292,6 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
             </div>
           </div>
         ) : (
-          /* ── MODO NORMAL: Explorar + Actividad ── */
           <>
             <div className="card">
               <div className="card-body">
@@ -376,7 +308,6 @@ export default function LeftSidebar({ onFilter, activeFilter, onSearchFilter, ac
             </div>
           </>
         )}
-
       </div>
     </>
   );

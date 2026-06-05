@@ -6,6 +6,7 @@ import { useAuth } from "../../context/useAuth";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import ThemeToggle from "../ui/ThemeTongle";
 import NotificationBell from "../notifications/NotificationBell";
+import "../../styles/components/professional/MobileNavigation.css";
 
 const languages = [
   { code: "en", label: "English", native: "English", flag: "US" },
@@ -66,7 +67,7 @@ function LanguageSwitcher() {
   );
 }
 
-export default function Navbar({ hideAuthButtons = false }) {
+export default function Navbar({ hideAuthButtons = false, mobileNavGroups = [] }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -191,9 +192,9 @@ export default function Navbar({ hideAuthButtons = false }) {
                             user.initials
                           )}
                         </div>
-                        <div>
-                          <p>
-                            {user.name} {user.lastName}
+                        <div className="pf-user-dropdown__identity">
+                          <p className="pf-user-dropdown__name-row">
+                            <span>{user.name} {user.lastName}</span>
                             {userVerified ? (
                               <ShieldCheck className="pf-user-verified pf-user-verified--dropdown" size={15} aria-label={t("appI18n.common.verifiedAccount")} />
                             ) : null}
@@ -266,6 +267,40 @@ export default function Navbar({ hideAuthButtons = false }) {
             ))}
           </div>
 
+          {mobileNavGroups.length ? (
+            <div className="pf-nav__context">
+              {mobileNavGroups.map((group) => (
+                <div className="pf-nav__context-group" key={group.title}>
+                  <p className="pf-nav__context-title">{group.title}</p>
+                  <div className="pf-nav__context-list">
+                    {group.items.map((item) => {
+                      const ContextIcon = item.icon;
+                      return (
+                        <button
+                          key={item.key || item.label}
+                          type="button"
+                          className={`pf-nav__context-item${item.active ? " is-active" : ""}`}
+                          onClick={() => {
+                            item.onClick?.();
+                            setMobileOpen(false);
+                          }}
+                        >
+                          <span className="pf-nav__context-icon">
+                            {ContextIcon ? <ContextIcon size={16} /> : null}
+                          </span>
+                          <span className="pf-nav__context-copy">
+                            <span>{item.label}</span>
+                            {item.meta ? <small>{item.meta}</small> : null}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
           <div className="pf-nav__drawer-tools">
             <LanguageSwitcher />
           </div>
@@ -284,7 +319,12 @@ export default function Navbar({ hideAuthButtons = false }) {
                 )}
               </div>
               <div>
-                <div className="pf-user__mobile-name">{user.name}</div>
+                <div className="pf-user__mobile-name">
+                  <span>{user.name}</span>
+                  {userVerified ? (
+                    <ShieldCheck className="pf-user-verified pf-user-verified--mobile" size={15} aria-label={t("appI18n.common.verifiedAccount")} />
+                  ) : null}
+                </div>
                 <div className="pf-user__mobile-email">{user.email}</div>
               </div>
             </div>

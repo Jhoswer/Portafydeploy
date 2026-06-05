@@ -1674,6 +1674,21 @@
         "tagLimitHint": "Puedes agregar hasta {{count}} tecnologias.",
         "tagLimitReached": "Limite de tecnologias alcanzado."
       },
+      "filters": {
+        "title": "Filtrar registros",
+        "summary": "{{count}}/{{total}} visibles",
+        "all": "Todos",
+        "clear": "Limpiar filtros",
+        "projectStatus": "Estado",
+        "technology": "Tecnologia",
+        "experienceType": "Tipo",
+        "area": "Area",
+        "skillCategory": "Categoria",
+        "platform": "Plataforma",
+        "educationType": "Tipo de formacion",
+        "emptyTitle": "Sin coincidencias",
+        "emptyText": "Ajusta o limpia los filtros para ver mas registros."
+      },
       "validation": {
         "experienceType": "Selecciona el tipo de experiencia.",
         "area": "Selecciona el area.",
@@ -1967,7 +1982,26 @@
           "detail": "Verifica el PDF, los enlaces sociales y el portafolio publico.",
           "tag": "Social"
         }
+
+        },
+      "createEvent": "Crear evento",
+      "newEvent": "Nuevo evento",
+      "saving": "Guardando...",
+      "save": "Guardar evento",
+      "fields": {
+        "title": "Título del evento",
+        "description": "Descripción",
+        "time": "Hora",
+        "priority": "Prioridad",
+        "tag": "Etiqueta (ej: trabajo, salud)"
+      },
+            "priority": {
+        "low": "Baja",
+        "normal": "Normal",
+        "high": "Alta"
       }
+      }
+  
     },
     "profileTrust": {
       "close": "Cerrar",
@@ -2025,8 +2059,7 @@
         "frontLabel": "anverso",
         "backLabel": "reverso"
       }
-    }
-  },
+    },
   "notifications": {
     "title": "Notificaciones",
     "back": "Volver",

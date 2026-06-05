@@ -1309,15 +1309,6 @@
         "Novembro",
         "Dezembro"
       ],
-      "weekDays": [
-        "S",
-        "T",
-        "Q",
-        "Q",
-        "S",
-        "S",
-        "D"
-      ],
       "dateLabel": "{{day}} de {{month}} de {{year}}",
       "events": {
         "updateProfile": {
@@ -1339,9 +1330,25 @@
           "title": "Conectar CV",
           "detail": "Verifique o PDF, links sociais e portfolio publico.",
           "tag": "Social"
-        }
+        },
+      "createEvent": "Criar evento",
+      "newEvent": "Novo evento",
+      "saving": "Salvando...",
+      "save": "Salvar evento",
+      "fields": {
+        "title": "Título do evento",
+        "description": "Descrição",
+        "time": "Horário",
+        "priority": "Prioridade",
+        "tag": "Etiqueta (ex: trabalho, saúde)"
+      },
+      "priority": {
+        "low": "Baixa",
+        "normal": "Normal",
+        "high": "Alta"
       }
-    },
+      }
+  },
     "portfolio": {
       "active": "Portfolio ativo",
       "completed": "{{percent}}% concluido",
@@ -1473,6 +1480,21 @@
         "minCharacters": "Minimo {{count}} caracteres",
         "tagLimitHint": "Voce pode adicionar ate {{count}} tecnologias.",
         "tagLimitReached": "Limite de tecnologias atingido."
+      },
+      "filters": {
+        "title": "Filtrar registros",
+        "summary": "{{count}}/{{total}} visiveis",
+        "all": "Todos",
+        "clear": "Limpar filtros",
+        "projectStatus": "Estado",
+        "technology": "Tecnologia",
+        "experienceType": "Tipo",
+        "area": "Area",
+        "skillCategory": "Categoria",
+        "platform": "Plataforma",
+        "educationType": "Tipo de formacao",
+        "emptyTitle": "Sem correspondencias",
+        "emptyText": "Ajuste ou limpe os filtros para ver mais registros."
       },
       "validation": {
         "experienceType": "Selecione o tipo de experiencia.",

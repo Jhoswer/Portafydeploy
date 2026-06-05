@@ -26,70 +26,8 @@ function postType(post = {}, t) {
 export default function RightSidebar() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [suggestions, setSuggestions] = useState([]);
-  const [trendingPosts, setTrendingPosts] = useState([]);
-  const [loadingSuggestions, setLoadingSuggestions] = useState(true);
-  const [loadingTrending, setLoadingTrending] = useState(true);
-  const currentUserId = String(user?.id || user?.id_user || "");
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function loadSuggestions() {
-      setLoadingSuggestions(true);
-      try {
-        const users = await fetchSuggestedUsers({
-          limit: 8,
-          signal: controller.signal,
-        });
-        setSuggestions(
-          users
-            .filter((item) => String(item.id) !== currentUserId)
-            .slice(0, 3),
-        );
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          setSuggestions([]);
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoadingSuggestions(false);
-        }
-      }
-    }
-
-    loadSuggestions();
-
-    return () => controller.abort();
-  }, [currentUserId]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function loadTrending() {
-      setLoadingTrending(true);
-      try {
-        const posts = await fetchTrendingFeedPosts({
-          limit: 5,
-          signal: controller.signal,
-        });
-        setTrendingPosts(posts);
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          setTrendingPosts([]);
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoadingTrending(false);
-        }
-      }
-    }
-
-    loadTrending();
-
-    return () => controller.abort();
-  }, []);
+  const { suggestions, loadingSuggestions } = useSuggestedUsers();
+  const { trendingPosts, loadingTrending } = useTrendingPosts();
 
   const hasSuggestions = suggestions.length > 0;
 
@@ -147,6 +85,146 @@ export default function RightSidebar() {
   );
 }
 
+export function SuggestedPeopleInline() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { suggestions, loadingSuggestions } = useSuggestedUsers(8);
+
+  if (!loadingSuggestions && suggestions.length === 0) return null;
+
+  return (
+    <section className="feed-inline-module feed-inline-module--suggestions">
+      <div className="feed-inline-module__head">
+        <div>
+          <p>{t("appI18n.feed.right.suggestedPeople")}</p>
+          <span>{t("appI18n.feed.right.professionalFallback")}</span>
+        </div>
+      </div>
+      <div className="feed-inline-module__rail" aria-label={t("appI18n.feed.right.suggestedPeople")}>
+        {loadingSuggestions ? (
+          <InlineSkeleton label={t("appI18n.feed.right.loadingProfiles")} />
+        ) : suggestions.map((suggestedUser, index) => (
+          <SuggestionItem
+            key={suggestedUser.id}
+            user={suggestedUser}
+            index={index}
+            t={t}
+            variant="inline"
+            onOpen={() => navigate(suggestedUser.profileUrl || `/perfil-profesional?usuario=${suggestedUser.id}`)}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export function TrendingPostsInline() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { trendingPosts, loadingTrending } = useTrendingPosts(6);
+
+  if (!loadingTrending && trendingPosts.length === 0) return null;
+
+  return (
+    <section className="feed-inline-module feed-inline-module--trending">
+      <div className="feed-inline-module__head">
+        <div>
+          <p>{t("appI18n.feed.right.trending")}</p>
+          <span>{t("appI18n.feed.header.trendingSubtitle")}</span>
+        </div>
+      </div>
+      <div className="feed-inline-module__rail" aria-label={t("appI18n.feed.right.trending")}>
+        {loadingTrending ? (
+          <InlineSkeleton label={t("appI18n.feed.right.loadingTrending")} />
+        ) : trendingPosts.map((post, index) => (
+          <TrendingItem
+            key={post.publicationId || post.id}
+            post={post}
+            index={index}
+            t={t}
+            variant="inline"
+            onOpen={() => navigate("/tendencias")}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function useSuggestedUsers(limit = 3) {
+  const { user } = useAuth();
+  const [suggestions, setSuggestions] = useState([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(true);
+  const currentUserId = String(user?.id || user?.id_user || "");
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadSuggestions() {
+      setLoadingSuggestions(true);
+      try {
+        const users = await fetchSuggestedUsers({
+          limit: Math.max(limit, 8),
+          signal: controller.signal,
+        });
+        setSuggestions(
+          users
+            .filter((item) => String(item.id) !== currentUserId)
+            .slice(0, limit),
+        );
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setSuggestions([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingSuggestions(false);
+        }
+      }
+    }
+
+    loadSuggestions();
+
+    return () => controller.abort();
+  }, [currentUserId, limit]);
+
+  return { suggestions, loadingSuggestions };
+}
+
+function useTrendingPosts(limit = 5) {
+  const [trendingPosts, setTrendingPosts] = useState([]);
+  const [loadingTrending, setLoadingTrending] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadTrending() {
+      setLoadingTrending(true);
+      try {
+        const posts = await fetchTrendingFeedPosts({
+          limit,
+          signal: controller.signal,
+        });
+        setTrendingPosts(posts);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setTrendingPosts([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingTrending(false);
+        }
+      }
+    }
+
+    loadTrending();
+
+    return () => controller.abort();
+  }, [limit]);
+
+  return { trendingPosts, loadingTrending };
+}
+
 function SuggestionItem({ user, index, onOpen, t }) {
   const initials = useMemo(() => initialsFromName(user.name), [user.name]);
   const colorClass = `sug-${(index % 3) + 1}`;
@@ -178,6 +256,15 @@ function TrendingItem({ post, index, onOpen, t }) {
         <div className="project-desc">{post.author?.name || "Portafy"} - {postType(post, t)}</div>
       </div>
     </button>
+  );
+}
+
+function InlineSkeleton({ label }) {
+  return (
+    <div className="feed-inline-module__loading">
+      <LoaderCircle size={16} />
+      {label}
+    </div>
   );
 }
 

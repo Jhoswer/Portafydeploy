@@ -448,6 +448,13 @@ export default function DashboardPortfolio() {
         if (isSyncing) return;
         openView(item);
       }}
+      onClearSelection={() => {
+        if (isSyncing) return;
+        setSelectedId(null);
+        setMode("view");
+        setDraft(createEmptyForm(activeSection));
+        setFieldErrors({});
+      }}
       onEdit={(item) => {
         if (isSyncing) return;
         openEdit(item);

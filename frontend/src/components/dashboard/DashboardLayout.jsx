@@ -61,6 +61,7 @@ export default function DashboardLayout() {
   );
   const viewport = useViewport();
   const isTablet = viewport < 1080;
+  const isMobile = viewport < 760;
 
   const sectionViews = useMemo(
     () => ({
@@ -95,15 +96,50 @@ export default function DashboardLayout() {
     return () => window.removeEventListener("dashboard:navigate", handler);
   }, [showSection]);
 
+  const mobileNavGroups = useMemo(() => [
+    {
+      title: t("appI18n.dashboard.layout.panel"),
+      items: [
+        {
+          key: "home",
+          label: t("appI18n.dashboard.layout.home"),
+          icon: House,
+          onClick: () => navigate("/feed"),
+        },
+      ],
+    },
+    {
+      title: t("appI18n.dashboard.layout.dashboard"),
+      items: SECTIONS.map((section) => ({
+        key: section.key,
+        label: t(`appI18n.dashboard.layout.${section.labelKey}`),
+        icon: section.icon,
+        active: activeSection === section.key,
+        onClick: () => showSection(section.key),
+      })),
+    },
+    {
+      title: t("appI18n.dashboard.layout.status"),
+      items: [
+        {
+          key: "settings",
+          label: t("appI18n.dashboard.layout.settings"),
+          icon: Settings,
+          onClick: () => navigate("/configuracion"),
+        },
+      ],
+    },
+  ], [activeSection, navigate, showSection, t]);
+
   return (
     <div style={dashboardShell.page}>
-      <Navbar />
+      <Navbar mobileNavGroups={mobileNavGroups} />
 
       <div
         style={{
           flex: 1,
           ...dashboardShell.container,
-          padding: isTablet ? "18px 16px 28px" : "24px 20px 32px",
+          padding: isMobile ? "14px 12px 26px" : isTablet ? "18px 16px 28px" : "24px 20px 32px",
           display: "grid",
           gridTemplateColumns: isTablet
             ? "minmax(0, 1fr)"
@@ -113,9 +149,11 @@ export default function DashboardLayout() {
         }}
       >
         <aside
+          className="professional-dashboard-sidebar"
           style={{
             width: isTablet ? "100%" : 260,
             flexShrink: 0,
+            display: isMobile ? "none" : undefined,
           }}
         >
           <div

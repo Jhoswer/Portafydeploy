@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import {
@@ -27,6 +27,7 @@ import {
   obtenerCv,
   cargarDatosPortafolio,
   obtenerCustomEntries,
+  subirPdfCv,
 } from "../../services/cvService";
 import {
   CvPaperClassic,
@@ -906,6 +907,20 @@ export default function CvEditor() {
     );
   }, []);
 
+  const profile = useMemo(() => {
+    if (!profileData && !user) return null;
+    return {
+      nombre: profileData?.nombre || user?.nombre || user?.name || "",
+      apellido: profileData?.apellido || user?.apellido || user?.lastName || "",
+      profesion: profileData?.profesion || user?.profesion || "",
+      biografia: profileData?.biografia || user?.biografia || "",
+      ubicacion: profileData?.ubicacion || user?.ubicacion || "",
+      email: profileData?.email || user?.email || "",
+      github: profileData?.github || user?.github || "",
+      linkedin: profileData?.linkedin || user?.linkedin || "",
+    };
+  }, [profileData, user]);
+
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
@@ -916,12 +931,42 @@ export default function CvEditor() {
         description: "Generado desde mi perfil",
         visible: false,
       };
+
+      let savedCvId = cvId;
+
       if (cvId) {
         await actualizarCv(Number(cvId), payload);
       } else {
         const res = await crearCv(payload);
-        setCvId(res.data?.id_cv ?? null);
+        savedCvId = res.data?.id_cv ?? null;
+        setCvId(savedCvId);
       }
+
+      // Generar PDF como blob y subir a Cloudinary
+      if (savedCvId) {
+        try {
+          const { pdf } = await import("@react-pdf/renderer");
+          const blob = await pdf(
+            <CvPdfDocument
+              profile={profile}
+              templateId={selectedTemplate.id}
+              fontId={selectedFont}
+              sections={sections}
+              experience={experience}
+              education={education}
+              skills={skills}
+              projects={projects}
+              customEntries={customEntries}
+              hiddenItems={hiddenItems}
+            />,
+          ).toBlob();
+          await subirPdfCv(savedCvId, blob, cvName);
+        } catch (pdfErr) {
+          console.warn("PDF upload failed:", pdfErr);
+          // No bloquear el guardado si falla el PDF
+        }
+      }
+
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {
@@ -929,22 +974,20 @@ export default function CvEditor() {
     } finally {
       setSaving(false);
     }
-  }, [cvName, selectedTemplate, selectedFont, cvId]);
-
-  const profile =
-    profileData || user
-      ? {
-          nombre: profileData?.nombre || user?.nombre || user?.name || "",
-          apellido:
-            profileData?.apellido || user?.apellido || user?.lastName || "",
-          profesion: profileData?.profesion || user?.profesion || "",
-          biografia: profileData?.biografia || user?.biografia || "",
-          ubicacion: profileData?.ubicacion || user?.ubicacion || "",
-          email: profileData?.email || user?.email || "",
-          github: profileData?.github || user?.github || "",
-          linkedin: profileData?.linkedin || user?.linkedin || "",
-        }
-      : null;
+  }, [
+    cvName,
+    selectedTemplate,
+    selectedFont,
+    cvId,
+    profile,
+    sections,
+    experience,
+    education,
+    skills,
+    projects,
+    customEntries,
+    hiddenItems,
+  ]);
 
   useEffect(() => {
     async function loadData() {

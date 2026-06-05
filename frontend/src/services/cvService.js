@@ -74,3 +74,13 @@ export async function cargarDatosPortafolio() {
 export async function obtenerCustomEntries(cvId) {
   return apiClient.get(`/cv/${cvId}/custom-entries`);
 }
+
+export async function obtenerCvsPublicos(profileId) {
+  return apiClient.get(`/cv/public/${profileId}`);
+}
+
+export async function subirPdfCv(cvId, pdfBlob, cvName) {
+  const formData = new FormData();
+  formData.append('pdf', pdfBlob, `${cvName}.pdf`);
+  return apiClient.post(`/cv/${cvId}/upload-pdf`, formData);
+}

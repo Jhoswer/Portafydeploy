@@ -24,6 +24,9 @@ import { useTranslation } from "react-i18next";
 import { MessageBox, MetaItem, StatCard } from "./ProfileSections";
 import { profileUi as ui } from "../../../styles/components/dashboard/profileStyles";
 
+import { FileText, Eye } from "lucide-react";
+import { obtenerCvsPublicos } from "../../../services/cvService";
+
 function useCloseOnOutside(open, onClose) {
   const ref = useRef(null);
 
@@ -50,7 +53,7 @@ export default function ProfileHero({
   cancelEdit,
   coverPhoto,
   coverRef,
-  cv,
+  /* cv, */
   draft,
   editing,
   formError,
@@ -80,11 +83,20 @@ export default function ProfileHero({
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useCloseOnOutside(menuOpen, () => setMenuOpen(false));
-  const contactEmail = shownProfile.email && showContact ? shownProfile.email : "";
+  const contactEmail =
+    shownProfile.email && showContact ? shownProfile.email : "";
   const initials = `${shownProfile.nombre?.[0] ?? "P"}${shownProfile.apellido?.[0] ?? "F"}`;
   const verified = shownProfile.verification?.is_verified;
-  const primaryStats = stats.filter((stat) => stat.action === "followers" || stat.action === "following");
-  const secondaryStats = stats.filter((stat) => stat.action !== "followers" && stat.action !== "following");
+  const primaryStats = stats.filter(
+    (stat) => stat.action === "followers" || stat.action === "following",
+  );
+  const secondaryStats = stats.filter(
+    (stat) => stat.action !== "followers" && stat.action !== "following",
+  );
+
+  const [cvModalOpen, setCvModalOpen] = useState(false);
+  const [publicCvs, setPublicCvs] = useState([]);
+  const [cvLoading, setCvLoading] = useState(false);
 
   return (
     <section style={heroShell}>
@@ -121,17 +133,35 @@ export default function ProfileHero({
       </div>
 
       <div style={{ padding: isMobile ? "0 18px 20px" : "0 24px 24px" }}>
-        <div style={{ ...identityGrid, gridTemplateColumns: isMobile ? "1fr" : "auto minmax(0, 1fr) auto" }}>
-          <div style={{ ...avatarWrap, justifySelf: isMobile ? "center" : "start" }}>
+        <div
+          style={{
+            ...identityGrid,
+            gridTemplateColumns: isMobile ? "1fr" : "auto minmax(0, 1fr) auto",
+          }}
+        >
+          <div
+            style={{
+              ...avatarWrap,
+              justifySelf: isMobile ? "center" : "start",
+            }}
+          >
             {profilePhoto ? (
-              <img src={profilePhoto} alt={fullName} style={avatarStyle(isMobile)} />
+              <img
+                src={profilePhoto}
+                alt={fullName}
+                style={avatarStyle(isMobile)}
+              />
             ) : (
               <div style={avatarFallbackStyle(isMobile)}>{initials}</div>
             )}
 
             {canEdit && editing ? (
               <>
-                <button type="button" onClick={() => avatarRef.current?.click()} style={ui.avatarAction}>
+                <button
+                  type="button"
+                  onClick={() => avatarRef.current?.click()}
+                  style={ui.avatarAction}
+                >
                   <Camera size={14} />
                 </button>
                 <input
@@ -145,12 +175,30 @@ export default function ProfileHero({
             ) : null}
           </div>
 
-          <div style={{ minWidth: 0, paddingTop: isMobile ? 0 : 22, textAlign: isMobile ? "center" : "left" }}>
+          <div
+            style={{
+              minWidth: 0,
+              paddingTop: isMobile ? 0 : 22,
+              textAlign: isMobile ? "center" : "left",
+            }}
+          >
             {canEdit && editing ? (
-              <EditNameFields draft={draft} setDraft={setDraft} isMobile={isMobile} />
+              <EditNameFields
+                draft={draft}
+                setDraft={setDraft}
+                isMobile={isMobile}
+              />
             ) : (
               <>
-                <div style={{ display: "flex", alignItems: "center", gap: 9, justifyContent: isMobile ? "center" : "flex-start", flexWrap: "wrap" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 9,
+                    justifyContent: isMobile ? "center" : "flex-start",
+                    flexWrap: "wrap",
+                  }}
+                >
                   <h1 style={nameStyle}>{fullName}</h1>
                   {verified ? <VerifiedBadge /> : null}
                 </div>
@@ -159,13 +207,35 @@ export default function ProfileHero({
               </>
             )}
 
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 10, justifyContent: isMobile ? "center" : "flex-start" }}>
-              <MetaItem icon={<MapPin size={14} />} text={shownProfile.ubicacion || t("appI18n.profile.locationFallback")} />
-              {contactEmail ? <MetaItem icon={<Mail size={14} />} text={contactEmail} /> : null}
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                flexWrap: "wrap",
+                marginTop: 10,
+                justifyContent: isMobile ? "center" : "flex-start",
+              }}
+            >
+              <MetaItem
+                icon={<MapPin size={14} />}
+                text={
+                  shownProfile.ubicacion ||
+                  t("appI18n.profile.locationFallback")
+                }
+              />
+              {contactEmail ? (
+                <MetaItem icon={<Mail size={14} />} text={contactEmail} />
+              ) : null}
             </div>
           </div>
 
-          <div style={{ ...actionWrap, justifyContent: isMobile ? "center" : "flex-end", paddingTop: isMobile ? 0 : 18 }}>
+          <div
+            style={{
+              ...actionWrap,
+              justifyContent: isMobile ? "center" : "flex-end",
+              paddingTop: isMobile ? 0 : 18,
+            }}
+          >
             {canEdit && editing ? (
               <>
                 <button type="button" onClick={cancelEdit} style={ui.secondary}>
@@ -174,7 +244,9 @@ export default function ProfileHero({
                 </button>
                 <button type="button" onClick={saveProfile} style={ui.primary}>
                   <Save size={14} />
-                  {saving ? t("appI18n.profile.saving") : t("appI18n.common.save")}
+                  {saving
+                    ? t("appI18n.profile.saving")
+                    : t("appI18n.common.save")}
                 </button>
               </>
             ) : (
@@ -184,40 +256,119 @@ export default function ProfileHero({
                     type="button"
                     onClick={onToggleFollow}
                     disabled={followBusy}
-                    style={isFollowing ? followingButtonStyle : followButtonStyle}
+                    style={
+                      isFollowing ? followingButtonStyle : followButtonStyle
+                    }
                   >
-                    {isFollowing ? <UserCheck size={15} /> : <UserPlus size={15} />}
-                    {isFollowing ? t("appI18n.profile.following") : followBusy ? t("appI18n.profile.processing") : t("appI18n.profile.follow")}
+                    {isFollowing ? (
+                      <UserCheck size={15} />
+                    ) : (
+                      <UserPlus size={15} />
+                    )}
+                    {isFollowing
+                      ? t("appI18n.profile.following")
+                      : followBusy
+                        ? t("appI18n.profile.processing")
+                        : t("appI18n.profile.follow")}
                   </button>
                 ) : null}
 
                 {canEdit ? (
-                  <button type="button" onClick={beginEdit} style={editButtonStyle}>
+                  <button
+                    type="button"
+                    onClick={beginEdit}
+                    style={editButtonStyle}
+                  >
                     <PencilLine size={15} />
                     {t("appI18n.profile.editProfile")}
                   </button>
                 ) : null}
 
                 <div style={{ position: "relative" }} ref={menuRef}>
-                  <button type="button" onClick={() => setMenuOpen((value) => !value)} style={menuButtonStyle} aria-label={t("appI18n.profile.moreOptions")}>
+                  <button
+                    type="button"
+                    onClick={() => setMenuOpen((value) => !value)}
+                    style={menuButtonStyle}
+                    aria-label={t("appI18n.profile.moreOptions")}
+                  >
                     <MoreHorizontal size={17} />
                   </button>
                   {menuOpen ? (
                     <div style={menuStyle}>
                       {!canEdit && contactEmail ? (
-                        <button type="button" onClick={() => { setMenuOpen(false); onAnalyticsEvent?.("contact_click"); window.location.href = `mailto:${contactEmail}`; }} style={menuItem}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMenuOpen(false);
+                            onAnalyticsEvent?.("contact_click");
+                            window.location.href = `mailto:${contactEmail}`;
+                          }}
+                          style={menuItem}
+                        >
                           <Mail size={14} /> {t("appI18n.profile.contact")}
                         </button>
                       ) : null}
-                      <button type="button" onClick={() => { setMenuOpen(false); onAnalyticsEvent?.("cv_click"); if (cv.cvUrl) window.open(cv.cvUrl, "_blank"); else window.dispatchEvent(new CustomEvent("dashboard:navigate", { detail: "cv" })); }} style={menuItem}>
-                        <Download size={14} /> {cv.cvUrl ? t("appI18n.profile.viewCv") : t("appI18n.profile.manageCv")}
-                      </button>
-                      <button type="button" onClick={() => { setMenuOpen(false); shareProfile(); }} style={menuItem}>
+                      {!canEdit ? (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            setMenuOpen(false);
+                            setCvLoading(true);
+                            try {
+                              const profileId =
+                                shownProfile?.profile_id ??
+                                shownProfile?.id_profile;
+                              const res = await obtenerCvsPublicos(profileId);
+                              setPublicCvs(res?.data ?? []);
+                            } catch {
+                              setPublicCvs([]);
+                            } finally {
+                              setCvLoading(false);
+                            }
+                            setCvModalOpen(true);
+                          }}
+                          style={menuItem}
+                        >
+                          <Eye size={14} /> {t("appI18n.profile.viewCv")}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMenuOpen(false);
+                            window.dispatchEvent(
+                              new CustomEvent("dashboard:navigate", {
+                                detail: "cv",
+                              }),
+                            );
+                          }}
+                          style={menuItem}
+                        >
+                          <FolderKanban size={14} />{" "}
+                          {t("appI18n.profile.manageCv")}
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          shareProfile();
+                        }}
+                        style={menuItem}
+                      >
                         <Share2 size={14} /> {t("appI18n.profile.shareProfile")}
                       </button>
                       {canReport ? (
-                        <button type="button" onClick={() => { setMenuOpen(false); onReportProfile?.(); }} style={{ ...menuItem, color: "#dc2626" }}>
-                          <Flag size={14} /> {t("appI18n.profile.reportProfile")}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMenuOpen(false);
+                            onReportProfile?.();
+                          }}
+                          style={{ ...menuItem, color: "#dc2626" }}
+                        >
+                          <Flag size={14} />{" "}
+                          {t("appI18n.profile.reportProfile")}
                         </button>
                       ) : null}
                     </div>
@@ -231,7 +382,14 @@ export default function ProfileHero({
         {formError ? <MessageBox color="red" text={formError} /> : null}
         {saveMessage ? <MessageBox color="green" text={saveMessage} /> : null}
 
-        <div style={{ ...primaryStatsGridStyle, gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "repeat(2, minmax(220px, 1fr))" }}>
+        <div
+          style={{
+            ...primaryStatsGridStyle,
+            gridTemplateColumns: isMobile
+              ? "minmax(0, 1fr)"
+              : "repeat(2, minmax(220px, 1fr))",
+          }}
+        >
           {primaryStats.map((stat) => (
             <StatCard
               key={stat.key || stat.label}
@@ -246,21 +404,212 @@ export default function ProfileHero({
         {secondaryStats.length ? (
           <div style={secondaryStatsStyle}>
             {secondaryStats.map((stat) => {
-              const metric = compactMetricMeta(stat.key || stat.action || stat.label);
+              const metric = compactMetricMeta(
+                stat.key || stat.action || stat.label,
+              );
 
               return (
                 <CompactMetric
                   key={stat.key || stat.label}
                   stat={stat}
                   metric={metric}
-                  onClick={stat.action ? () => onStatClick?.(stat.action) : undefined}
+                  onClick={
+                    stat.action ? () => onStatClick?.(stat.action) : undefined
+                  }
                 />
               );
             })}
           </div>
         ) : null}
 
-        {shareMessage ? <MessageBox color="blue" text={shareMessage} fit /> : null}
+        {shareMessage ? (
+          <MessageBox color="blue" text={shareMessage} fit />
+        ) : null}
+
+        {cvModalOpen && (
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(14,30,60,.48)",
+              backdropFilter: "blur(4px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 99999,
+              padding: 16,
+            }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setCvModalOpen(false);
+            }}
+          >
+            <div
+              style={{
+                background: "var(--cv-surface-modal, #fff)",
+                borderRadius: 16,
+                padding: "24px",
+                maxWidth: 480,
+                width: "100%",
+                boxShadow: "0 24px 64px rgba(14,30,60,.18)",
+                border: "1px solid var(--cv-border, rgba(205,225,245,.8))",
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "var(--f-title)",
+                    fontWeight: 800,
+                    fontSize: "1rem",
+                    color: "var(--text)",
+                  }}
+                >
+                  CVs de {fullName}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCvModalOpen(false)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "var(--muted)",
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {cvLoading ? (
+                <div
+                  style={{
+                    textAlign: "center",
+                    color: "var(--muted)",
+                    padding: "24px 0",
+                  }}
+                >
+                  Cargando...
+                </div>
+              ) : publicCvs.length === 0 ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "32px 16px",
+                    textAlign: "center",
+                  }}
+                >
+                  <FileText size={40} color="var(--muted)" />
+                  <div
+                    style={{
+                      fontFamily: "var(--f-title)",
+                      fontWeight: 700,
+                      color: "var(--text)",
+                    }}
+                  >
+                    Sin CV disponible
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--f-body)",
+                      fontSize: "0.83rem",
+                      color: "var(--muted)",
+                    }}
+                  >
+                    Este usuario no tiene CVs públicos aún.
+                  </div>
+                </div>
+              ) : (
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 10 }}
+                >
+                  {publicCvs.map((cv) => (
+                    <div
+                      key={cv.id_cv}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "12px 14px",
+                        borderRadius: 10,
+                        border:
+                          "1px solid var(--cv-border, rgba(205,225,245,.8))",
+                        background: "var(--cv-bg-secondary, #f8fbff)",
+                      }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            fontFamily: "var(--f-ui)",
+                            fontWeight: 600,
+                            fontSize: "0.9rem",
+                            color: "var(--text)",
+                          }}
+                        >
+                          {cv.name_cv}
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: "var(--f-body)",
+                            fontSize: "0.75rem",
+                            color: "var(--muted)",
+                          }}
+                        >
+                          {cv.description}
+                        </div>
+                      </div>
+                      {cv.cv_url ? (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleDescargarCv(cv.cv_url, cv.name_cv)
+                          }
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 6,
+                            padding: "7px 14px",
+                            borderRadius: 8,
+                            border: "none",
+                            background:
+                              "linear-gradient(135deg, #12369e 0%, #255dde 100%)",
+                            color: "#fff",
+                            fontFamily: "var(--f-ui)",
+                            fontSize: "0.8rem",
+                            fontWeight: 700,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Download size={13} /> Descargar
+                        </button>
+                      ) : (
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--muted)",
+                            fontStyle: "italic",
+                          }}
+                        >
+                          Sin archivo
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -320,12 +669,50 @@ function CompactMetric({ stat, metric, onClick }) {
 function EditNameFields({ draft, setDraft, isMobile }) {
   return (
     <div style={{ display: "grid", gap: 10, marginBottom: 8 }}>
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: 10 }}>
-        <input value={draft.nombre} onChange={(event) => setDraft((prev) => ({ ...prev, nombre: event.target.value }))} placeholder="Nombre" style={ui.input} />
-        <input value={draft.apellido} onChange={(event) => setDraft((prev) => ({ ...prev, apellido: event.target.value }))} placeholder="Apellido" style={ui.input} />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
+          gap: 10,
+        }}
+      >
+        <input
+          value={draft.nombre}
+          onChange={(event) =>
+            setDraft((prev) => ({ ...prev, nombre: event.target.value }))
+          }
+          placeholder="Nombre"
+          style={ui.input}
+        />
+        <input
+          value={draft.apellido}
+          onChange={(event) =>
+            setDraft((prev) => ({ ...prev, apellido: event.target.value }))
+          }
+          placeholder="Apellido"
+          style={ui.input}
+        />
       </div>
     </div>
   );
+}
+
+// Agrega esta función dentro del componente ProfileHero
+async function handleDescargarCv(url, nombre) {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = `${nombre}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(blobUrl);
+  } catch {
+    window.open(url, "_blank");
+  }
 }
 
 const heroShell = {
@@ -431,7 +818,8 @@ const verifiedBadgeStyle = {
   placeItems: "center",
   borderRadius: "50%",
   color: "#2563eb",
-  background: "linear-gradient(135deg, rgba(37,99,235,.13), rgba(14,165,233,.08))",
+  background:
+    "linear-gradient(135deg, rgba(37,99,235,.13), rgba(14,165,233,.08))",
   border: "none",
   boxShadow: "0 10px 22px rgba(37,99,235,.16)",
 };
@@ -554,14 +942,19 @@ const compactMetricStyle = (clickable, metric, hovered = false) => ({
   padding: "9px 13px 9px 10px",
   borderRadius: 16,
   border: `1px solid ${hovered ? metric.borderStrong : metric.border}`,
-  background: hovered ? `linear-gradient(135deg, ${metric.iconBg} 0%, var(--dashboard-card-bg) 100%)` : "var(--dashboard-soft-bg)",
+  background: hovered
+    ? `linear-gradient(135deg, ${metric.iconBg} 0%, var(--dashboard-card-bg) 100%)`
+    : "var(--dashboard-soft-bg)",
   color: "var(--body)",
   cursor: clickable ? "pointer" : "default",
   fontFamily: "var(--f-ui)",
   textAlign: "left",
-  boxShadow: hovered ? `0 15px 28px ${metric.shadow}` : `0 12px 24px ${metric.shadow}`,
+  boxShadow: hovered
+    ? `0 15px 28px ${metric.shadow}`
+    : `0 12px 24px ${metric.shadow}`,
   transform: hovered ? "translateY(-1px)" : "translateY(0)",
-  transition: "transform .16s ease, box-shadow .16s ease, border-color .16s ease",
+  transition:
+    "transform .16s ease, box-shadow .16s ease, border-color .16s ease",
 });
 
 const compactMetricIconStyle = (metric, hovered = false) => ({

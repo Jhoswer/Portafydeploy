@@ -36,6 +36,7 @@ use App\Http\Controllers\AdminEducationVerificationController;
 use App\Http\Controllers\AdminProfileEliminacionTableController;
 use App\Http\Controllers\BackupController;
 use App\Http\Middleware\SetLogUserContext;
+use App\Http\Controllers\CalendarEventController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -132,12 +133,17 @@ Route::middleware(['auth:sanctum', SetLogUserContext::class])->group(function ()
     Route::post('/cv/{id}/custom-entry', [CvController::class, 'storeCustomEntry']);
     Route::get('/cv/{id}/custom-entries', [CvController::class, 'getCustomEntries']);
     Route::delete('/cv/{id}/custom-entry/{entryId}', [CvController::class, 'deleteCustomEntry']);
+    Route::post('/cv/{id}/upload-pdf', [CvController::class, 'uploadPdf']);
 
     Route::post('/test-cloudinary', [MeController::class, 'testCloudinary']);
 
     // Visibilidad
     Route::get('profile/visibility', [VisibilityController::class, 'show']);
     Route::put('profile/visibility', [VisibilityController::class, 'update']);
+    
+    //Calendario
+    Route::post('/calendar/events', [CalendarEventController::class, 'store']);
+    Route::get('/calendar/events', [CalendarEventController::class, 'index']);
 
     // Company
     Route::post('/company', [CompanyController::class, 'store']);
@@ -247,3 +253,4 @@ Route::get('/company/{id}', [CompanyController::class, 'show']);
 Route::get('companies/{company}/public', [CompanyEngagementController::class, 'publicProfile']);
 Route::get('/feed/posts', [FeedController::class, 'index']);
 Route::post('postulations/{id}/interview', [PostulationController::class, 'storeInterview']);
+Route::get('/cv/public/{profileId}', [CvController::class, 'publicIndex']);

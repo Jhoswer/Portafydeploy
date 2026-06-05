@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { LockKeyhole, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -20,6 +20,7 @@ import {
 import { FeedPostCard, PostCommentsModal } from "./FeedPostCard";
 import { FeedOfferCard } from "./FeedOfferCard/FeedOfferCard";
 import { ReportPublicationModal } from "./ReportPublicationModal";
+import { SuggestedPeopleInline, TrendingPostsInline } from "./RightSidebar";
 import { normalizeFeedPost } from "../../features/feed/feedMappers";
 import { ConfirmModal } from "../../features/dashboard-portfolio/portfolioWorkspaceControls";
 import { useAuth } from "../../context/useAuth";
@@ -57,6 +58,7 @@ export default function FeedReal({ activeFilter }) {
   const [isPending, startTransition] = useTransition();
   const postsLengthRef = useRef(posts.length);
   const pendingFollowAuthorRef = useRef(null);
+  const isMobileFeed = typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches;
 
   useEffect(() => {
     postsLengthRef.current = posts.length;
@@ -89,7 +91,7 @@ export default function FeedReal({ activeFilter }) {
       if (!signal?.aborted) setLoading(false);
       if (!signal?.aborted) setRefreshing(false);
     }
-  }, []);
+  }, [activeFilter]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -285,7 +287,7 @@ export default function FeedReal({ activeFilter }) {
         authorIsFollowing: Boolean(summary.is_following),
       };
     });
-  }, [activeFilter]);
+  }, []);
 
   const toggleAuthorFollow = useCallback(async (post) => {
     if (!requireAuthenticated("seguir")) return;
@@ -429,17 +431,26 @@ export default function FeedReal({ activeFilter }) {
         {error && !loading ? <FeedState title={t("appI18n.feed.states.loadErrorTitle")} text={error} /> : null}
         {!loading && !error && filteredPosts.length === 0 ? <FeedState title={t("appI18n.feed.states.emptyTitle")} text={t("appI18n.feed.states.emptyText")} /> : null}
 
-        {!loading && !error ? filteredPosts.map((post) => {
+        {!loading && !error ? filteredPosts.map((post, index) => {
+          const inlineModules = (
+            <>
+              {isMobileFeed && index === 2 ? <SuggestedPeopleInline /> : null}
+              {isMobileFeed && index === 5 ? <TrendingPostsInline /> : null}
+            </>
+          );
+
           if (post.sourceType === "offer") {
             return (
-              <FeedOfferCard
-                key={post.id}
-                post={post}
-                userCvs={cvs}
-                onRequireAuth={requireAuthenticated}
-                canReact={canReact}
-                canComment={canComment}
-              />
+              <Fragment key={post.id}>
+                <FeedOfferCard
+                  post={post}
+                  userCvs={cvs}
+                  onRequireAuth={requireAuthenticated}
+                  canReact={canReact}
+                  canComment={canComment}
+                />
+                {inlineModules}
+              </Fragment>
             );
           }
 
@@ -447,63 +458,65 @@ export default function FeedReal({ activeFilter }) {
           const displayPost = ownedByMe === post.ownedByMe ? post : { ...post, ownedByMe };
 
           return (
-            <FeedPostCard
-              key={post.publicationId || post.id}
-              post={displayPost}
-              commentDraft={commentDrafts[post.publicationId] || ""}
-              commentError={commentErrors[post.publicationId] || ""}
-              commentMaxLength={COMMENT_MAX_LENGTH}
-              isCommentingOpen={commentingPostId === post.publicationId}
-              isLiking={busyAction === `like-${post.publicationId}`}
-              isSaving={busyAction === `save-${post.publicationId}`}
-              isCommenting={busyAction === `comment-${post.publicationId}`}
-              isUnsharing={busyAction === `unshare-${post.publicationId}`}
-              isLoadingComments={loadingCommentsId === post.publicationId}
-              isLoadingAllComments={commentsModalLoadingId === post.publicationId}
-              canReact={canReact}
-              canComment={canComment}
-              currentUserId={user?.id ?? null}
-              onOpenProfile={openProfile}
-              onViewAllComments={() => openAllComments(displayPost)}
-              onFollowAuthor={() => toggleAuthorFollow(displayPost)}
-              isFollowingAuthor={Boolean(displayPost.authorIsFollowing)}
-              isFollowAuthorBusy={String(followingAuthorId) === String(displayPost.authorId)}
-              onReportComment={(comment) => {
-                if (!requireAuthenticated("reportar")) return;
-                setReportError("");
-                setPendingReportComment({ ...comment, post: displayPost });
-              }}
-              onUnshare={ownedByMe ? () => setPendingUnsharePost(displayPost) : null}
-              onReport={!ownedByMe ? () => {
-                if (!requireAuthenticated("reportar")) return;
-                setReportError("");
-                setPendingReportPost(displayPost);
-              } : null}
-              onLike={() => runPostAction(
-                post, toggleFeedPostLike, "like",
-                (currentPost) => {
-                  const likedByMe = !currentPost.likedByMe;
-                  return { ...currentPost, likedByMe, likes: Math.max(0, currentPost.likes + (likedByMe ? 1 : -1)) };
-                },
-                PERMISSION_NAMES.FEED_REACT
-              )}
-              onSave={() => runPostAction(
-                post, toggleFeedPostSave, "save",
-                (currentPost) => {
-                  const savedByMe = !currentPost.savedByMe;
-                  return { ...currentPost, savedByMe, saves: Math.max(0, currentPost.saves + (savedByMe ? 1 : -1)) };
-                }
-              )}
-              onToggleComment={() => toggleComments(post)}
-              onCommentDraftChange={(value) => {
-                const sanitized = sanitizeCommentInput(value);
-                setCommentDrafts((prev) => ({ ...prev, [post.publicationId]: sanitized }));
-                if (commentErrors[post.publicationId]) {
-                  setCommentErrors((prev) => ({ ...prev, [post.publicationId]: "" }));
-                }
-              }}
-              onSubmitComment={(event) => submitComment(event, post)}
-            />
+            <Fragment key={post.publicationId || post.id}>
+              <FeedPostCard
+                post={displayPost}
+                commentDraft={commentDrafts[post.publicationId] || ""}
+                commentError={commentErrors[post.publicationId] || ""}
+                commentMaxLength={COMMENT_MAX_LENGTH}
+                isCommentingOpen={commentingPostId === post.publicationId}
+                isLiking={busyAction === `like-${post.publicationId}`}
+                isSaving={busyAction === `save-${post.publicationId}`}
+                isCommenting={busyAction === `comment-${post.publicationId}`}
+                isUnsharing={busyAction === `unshare-${post.publicationId}`}
+                isLoadingComments={loadingCommentsId === post.publicationId}
+                isLoadingAllComments={commentsModalLoadingId === post.publicationId}
+                canReact={canReact}
+                canComment={canComment}
+                currentUserId={user?.id ?? null}
+                onOpenProfile={openProfile}
+                onViewAllComments={() => openAllComments(displayPost)}
+                onFollowAuthor={() => toggleAuthorFollow(displayPost)}
+                isFollowingAuthor={Boolean(displayPost.authorIsFollowing)}
+                isFollowAuthorBusy={String(followingAuthorId) === String(displayPost.authorId)}
+                onReportComment={(comment) => {
+                  if (!requireAuthenticated("reportar")) return;
+                  setReportError("");
+                  setPendingReportComment({ ...comment, post: displayPost });
+                }}
+                onUnshare={ownedByMe ? () => setPendingUnsharePost(displayPost) : null}
+                onReport={!ownedByMe ? () => {
+                  if (!requireAuthenticated("reportar")) return;
+                  setReportError("");
+                  setPendingReportPost(displayPost);
+                } : null}
+                onLike={() => runPostAction(
+                  post, toggleFeedPostLike, "like",
+                  (currentPost) => {
+                    const likedByMe = !currentPost.likedByMe;
+                    return { ...currentPost, likedByMe, likes: Math.max(0, currentPost.likes + (likedByMe ? 1 : -1)) };
+                  },
+                  PERMISSION_NAMES.FEED_REACT
+                )}
+                onSave={() => runPostAction(
+                  post, toggleFeedPostSave, "save",
+                  (currentPost) => {
+                    const savedByMe = !currentPost.savedByMe;
+                    return { ...currentPost, savedByMe, saves: Math.max(0, currentPost.saves + (savedByMe ? 1 : -1)) };
+                  }
+                )}
+                onToggleComment={() => toggleComments(post)}
+                onCommentDraftChange={(value) => {
+                  const sanitized = sanitizeCommentInput(value);
+                  setCommentDrafts((prev) => ({ ...prev, [post.publicationId]: sanitized }));
+                  if (commentErrors[post.publicationId]) {
+                    setCommentErrors((prev) => ({ ...prev, [post.publicationId]: "" }));
+                  }
+                }}
+                onSubmitComment={(event) => submitComment(event, post)}
+              />
+              {inlineModules}
+            </Fragment>
           );
         }) : null}
       </main>

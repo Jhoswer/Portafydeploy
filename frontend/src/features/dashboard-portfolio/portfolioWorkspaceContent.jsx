@@ -15,6 +15,7 @@ import {
 import {
   CatalogSelectField,
   CatalogTagsField,
+  CompactSelectField,
   displayFileValue,
   FieldError,
   FileUploadField,
@@ -24,7 +25,6 @@ import {
   ProjectStatusPill,
   renderDateField,
   renderSocialPlatformField,
-  selectWithError,
   SkillDots,
   SkillLevelPicker,
   textareaWithError,
@@ -312,14 +312,13 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
 
     return (
       <>
-        <select value={value} onChange={(event) => onDraftChange(field.key, event.target.value)} style={selectWithError(errorMessage)}>
-          <option value="">{placeholder || t("appI18n.portfolio.controls.selectOption")}</option>
-          {options.map((option) => (
-            <option key={option.value ?? option} value={option.value ?? option}>
-              {option.label ?? option}
-            </option>
-          ))}
-        </select>
+        <CompactSelectField
+          value={value}
+          options={options}
+          placeholder={placeholder || t("appI18n.portfolio.controls.selectOption")}
+          errorMessage={errorMessage}
+          onChange={(nextValue) => onDraftChange(field.key, nextValue)}
+        />
         {errorMessage ? <FieldError message={errorMessage} /> : null}
       </>
     );

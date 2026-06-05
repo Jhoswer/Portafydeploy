@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { ImageUp, LoaderCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   CalendarDays,
@@ -264,6 +264,151 @@ export function SkillLevelPicker({ value, onChange }) {
   );
 }
 
+export function CompactSelectField({ value, options = [], placeholder, errorMessage, disabled = false, onChange }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef(null);
+  const selectedOption = options.find((option) => String(option.value ?? option) === String(value));
+  const selectedLabel = selectedOption?.label ?? selectedOption ?? "";
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!rootRef.current?.contains(event.target)) setIsOpen(false);
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen]);
+
+  const selectValue = (nextValue) => {
+    onChange(nextValue);
+    setIsOpen(false);
+  };
+
+  return (
+    <div ref={rootRef} style={{ position: "relative", zIndex: isOpen ? 20 : 1 }}>
+      <button
+        type="button"
+        onClick={() => {
+          if (!disabled) setIsOpen((prev) => !prev);
+        }}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        disabled={disabled}
+        style={{
+          ...selectWithError(errorMessage),
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          textAlign: "left",
+          width: "100%",
+          opacity: disabled ? 0.62 : 1,
+          cursor: disabled ? "not-allowed" : "pointer",
+        }}
+      >
+        <span
+          style={{
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            color: selectedLabel ? "var(--text)" : "var(--muted)",
+          }}
+        >
+          {selectedLabel || placeholder}
+        </span>
+        <span
+          aria-hidden="true"
+          style={{
+            width: 8,
+            height: 8,
+            borderRight: "2px solid currentColor",
+            borderBottom: "2px solid currentColor",
+            transform: isOpen ? "rotate(225deg)" : "rotate(45deg)",
+            marginRight: 2,
+            transition: "transform .16s ease",
+            flex: "0 0 auto",
+          }}
+        />
+      </button>
+
+      {isOpen ? (
+        <div
+          role="listbox"
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: "calc(100% + 8px)",
+            zIndex: 50,
+            maxHeight: 260,
+            overflowY: "auto",
+            padding: 6,
+            borderRadius: 16,
+            background: "var(--dashboard-card-bg)",
+            border: "1px solid var(--dashboard-card-border)",
+            boxShadow: "0 20px 44px rgba(14,30,60,.16), inset 0 1px 0 rgba(255,255,255,.72)",
+          }}
+        >
+          <button
+            type="button"
+            role="option"
+            aria-selected={!value}
+            onClick={() => selectValue("")}
+            style={compactSelectOptionStyle(!value)}
+          >
+            {placeholder}
+          </button>
+          {options.map((option) => {
+            const optionValue = option.value ?? option;
+            const optionLabel = option.label ?? option;
+            const isSelected = String(optionValue) === String(value);
+
+            return (
+              <button
+                key={optionValue}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => selectValue(optionValue)}
+                style={compactSelectOptionStyle(isSelected)}
+              >
+                {optionLabel}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function compactSelectOptionStyle(isSelected) {
+  return {
+    width: "100%",
+    border: 0,
+    borderRadius: 12,
+    padding: "10px 12px",
+    background: isSelected ? "rgba(49,87,213,.12)" : "transparent",
+    color: isSelected ? "var(--blue-mid)" : "var(--text)",
+    cursor: "pointer",
+    textAlign: "left",
+    fontFamily: "var(--f-body)",
+    fontWeight: isSelected ? 850 : 700,
+    fontSize: ".9rem",
+  };
+}
+
 export function CatalogTagsField({ value, selectedCategory, options, placeholder, maxTags = 8, maxTagLength = 28, errorMessage, onChange }) {
   const { t } = useTranslation();
   const canUseCatalog = selectedCategory && selectedCategory !== "Otra";
@@ -282,22 +427,14 @@ export function CatalogTagsField({ value, selectedCategory, options, placeholder
     <div style={fieldCardWithError(errorMessage)}>
       {canUseCatalog ? (
         <div>
-          <select
-            defaultValue=""
+          <CompactSelectField
+            value=""
+            options={options}
+            placeholder={t("appI18n.portfolio.controls.selectTechnology")}
             disabled={limitReached}
-            onChange={(event) => {
-              addTag(event.target.value);
-              event.target.value = "";
-            }}
-            style={selectWithError(errorMessage)}
-          >
-            <option value="">{t("appI18n.portfolio.controls.selectTechnology")}</option>
-            {options.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+            errorMessage={errorMessage}
+            onChange={addTag}
+          />
         </div>
       ) : null}
 
@@ -344,14 +481,13 @@ export function CatalogSelectField({ value, selectedCategory, options, placehold
   return (
     <div style={fieldCardWithError(errorMessage)}>
       {showCatalog ? (
-        <select value={options.includes(value) ? value : ""} onChange={(event) => onChange(event.target.value)} style={selectWithError(errorMessage)}>
-          <option value="">{t("appI18n.portfolio.controls.selectSkill")}</option>
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        <CompactSelectField
+          value={options.includes(value) ? value : ""}
+          options={options}
+          placeholder={t("appI18n.portfolio.controls.selectSkill")}
+          errorMessage={errorMessage}
+          onChange={onChange}
+        />
       ) : null}
 
       {showManualInput ? (
@@ -731,18 +867,12 @@ export function renderSocialPlatformField({ field, value, onDraftChange, t }) {
   const selectValue = SOCIAL_PLATFORM_LIBRARY.includes(value) ? value : value ? "Otra" : "";
   return (
     <div style={fieldCard}>
-      <select
+      <CompactSelectField
         value={selectValue}
-        onChange={(event) => onDraftChange(field.key, event.target.value === "Otra" ? "" : event.target.value)}
-        style={{ ...input, cursor: "pointer" }}
-      >
-        <option value="">{t("appI18n.portfolio.controls.selectOption")}</option>
-        {field.options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+        options={field.options}
+        placeholder={t("appI18n.portfolio.controls.selectOption")}
+        onChange={(nextValue) => onDraftChange(field.key, nextValue === "Otra" ? "" : nextValue)}
+      />
 
       {selectValue === "Otra" || (value && !SOCIAL_PLATFORM_LIBRARY.includes(value)) ? (
         <input
@@ -762,7 +892,7 @@ export function renderDateField({ value, field, onDraftChange }) {
     <div style={fieldCard}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, ...helperText }}>
         <CalendarDays size={15} />
-        Usa el calendario para elegir una fecha de forma mas intuitiva.
+        Selecciona una fecha desde el calendario.
       </div>
       <input
         type="date"
