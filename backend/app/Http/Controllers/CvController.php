@@ -270,31 +270,30 @@ class CvController extends Controller
      * GET /api/cv/{id}/download
      * Descarga el PDF del CV con el nombre correcto
      */
-    public function downloadPdf(int $id): \Symfony\Component\HttpFoundation\StreamedResponse
-    {
-        $cv = Cv::where('id_cv', '=', $id, 'and')
-            ->where('visible', '=', true, 'and')
-            ->where('state', '=', true, 'and')
-            ->firstOrFail();
+    public function downloadPdf(int $id): \Illuminate\Http\Response
+{
+    $cv = Cv::where('id_cv', '=', $id, 'and')
+        ->where('visible', '=', true, 'and')
+        ->where('state', '=', true, 'and')
+        ->firstOrFail();
 
-        if (!$cv->cv_url) {
-            abort(404, 'PDF no disponible');
-        }
-
-        $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $cv->name_cv) . '.pdf';
-        $url = $cv->cv_url;
-
-        return response()->streamDownload(function () use ($url) {
-            $context = stream_context_create([
-                'ssl' => [
-                    'verify_peer'      => false,
-                    'verify_peer_name' => false,
-                ]
-            ]);
-            readfile($url, false, $context);
-        }, $filename, [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]);
+    if (!$cv->cv_url) {
+        abort(404, 'PDF no disponible');
     }
+
+    $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $cv->name_cv) . '.pdf';
+
+    $ch = curl_init($cv->cv_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+    $content = curl_exec($ch);
+    curl_close($ch);
+
+    return response($content, 200, [
+        'Content-Type'        => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+    ]);
+}
 }
