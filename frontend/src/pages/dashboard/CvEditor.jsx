@@ -27,7 +27,7 @@ import {
   obtenerCv,
   cargarDatosPortafolio,
   obtenerCustomEntries,
-  subirPdfCv,
+  /* subirPdfCv, */
 } from "../../services/cvService";
 import {
   CvPaperClassic,
