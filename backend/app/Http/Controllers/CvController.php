@@ -271,29 +271,38 @@ class CvController extends Controller
      * Descarga el PDF del CV con el nombre correcto
      */
     public function downloadPdf(int $id): \Illuminate\Http\Response
-{
-    $cv = Cv::where('id_cv', '=', $id, 'and')
-        ->where('visible', '=', true, 'and')
-        ->where('state', '=', true, 'and')
-        ->firstOrFail();
+    {
+        $cv = Cv::where('id_cv', '=', $id, 'and')
+            ->where('visible', '=', true, 'and')
+            ->where('state', '=', true, 'and')
+            ->firstOrFail();
 
-    if (!$cv->cv_url) {
-        abort(404, 'PDF no disponible');
+        if (!$cv->cv_url) {
+            abort(404, 'PDF no disponible');
+        }
+
+        $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $cv->name_cv) . '.pdf';
+
+        $ch = curl_init($cv->cv_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+        $content = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        \Illuminate\Support\Facades\Log::info('CV Download', [
+            'url'      => $cv->cv_url,
+            'httpCode' => $httpCode,
+            'error'    => $error,
+            'size'     => strlen($content ?: ''),
+        ]);
+
+        return response($content, 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
     }
-
-    $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $cv->name_cv) . '.pdf';
-
-    $ch = curl_init($cv->cv_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
-    $content = curl_exec($ch);
-    curl_close($ch);
-
-    return response($content, 200, [
-        'Content-Type'        => 'application/pdf',
-        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-    ]);
-}
 }
