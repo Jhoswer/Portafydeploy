@@ -31,7 +31,7 @@ import {
 } from "../../../services/cvService";
 
 import { PDFViewer } from "@react-pdf/renderer";
-import CvPdfDocument from "../../CvPdfDocument";
+import CvPdfDocument from "../cv/CvPdfDocument";
 
 function useCloseOnOutside(open, onClose) {
   const ref = useRef(null);
