@@ -234,7 +234,7 @@ class CvController extends Controller
      * POST /api/cv/{id}/upload-pdf
      * Recibe el PDF generado en el frontend, lo sube a Cloudinary y guarda la URL.
      */
-    public function uploadPdf(Request $request, int $id): JsonResponse
+    /* public function uploadPdf(Request $request, int $id): JsonResponse
     {
         $request->validate([
             'pdf' => 'required|file|mimes:pdf|max:10240',
@@ -264,13 +264,13 @@ class CvController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
-    }
+    } */
 
     /**
      * GET /api/cv/{id}/download
      * Descarga el PDF del CV con el nombre correcto
      */
-    public function downloadPdf(int $id): \Illuminate\Http\RedirectResponse
+    /* public function downloadPdf(int $id): \Illuminate\Http\RedirectResponse
     {
         $cv = Cv::where('id_cv', '=', $id, 'and')
             ->where('visible', '=', true, 'and')
@@ -282,5 +282,5 @@ class CvController extends Controller
         }
 
         return redirect($cv->cv_url);
-    }
+    } */
 }

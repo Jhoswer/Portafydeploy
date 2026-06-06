@@ -27,8 +27,11 @@ import { profileUi as ui } from "../../../styles/components/dashboard/profileSty
 import { FileText, Eye } from "lucide-react";
 import {
   obtenerCvsPublicos,
-  getCvDownloadUrl,
+  obtenerPerfilPublico,
 } from "../../../services/cvService";
+
+import { PDFViewer } from "@react-pdf/renderer";
+import CvPdfDocument from "../../CvPdfDocument";
 
 function useCloseOnOutside(open, onClose) {
   const ref = useRef(null);
@@ -100,6 +103,13 @@ export default function ProfileHero({
   const [cvModalOpen, setCvModalOpen] = useState(false);
   const [publicCvs, setPublicCvs] = useState([]);
   const [cvLoading, setCvLoading] = useState(false);
+
+  const [cvModalOpen, setCvModalOpen] = useState(false);
+  const [publicCvs, setPublicCvs] = useState([]);
+  const [cvLoading, setCvLoading] = useState(false);
+  const [selectedCv, setSelectedCv] = useState(null);
+  const [publicPortfolio, setPublicPortfolio] = useState(null);
+  const [pdfModalOpen, setPdfModalOpen] = useState(false);
 
   return (
     <section style={heroShell}>
@@ -318,11 +328,18 @@ export default function ProfileHero({
                             setMenuOpen(false);
                             setCvLoading(true);
                             try {
-                              const profileId =
-                                shownProfile?.profile_id ??
-                                shownProfile?.id_profile;
-                              const res = await obtenerCvsPublicos(profileId);
-                              setPublicCvs(res?.data ?? []);
+                              const userId =
+                                shownProfile?.user_id ??
+                                shownProfile?.usuario_id;
+                              const [cvsRes, portfolioRes] = await Promise.all([
+                                obtenerCvsPublicos(
+                                  shownProfile?.id_profile ??
+                                    shownProfile?.profile_id,
+                                ),
+                                obtenerPerfilPublico(userId),
+                              ]);
+                              setPublicCvs(cvsRes?.data ?? []);
+                              setPublicPortfolio(portfolioRes);
                             } catch {
                               setPublicCvs([]);
                             } finally {
@@ -572,10 +589,9 @@ export default function ProfileHero({
                         </div>
                       </div>
                       {cv.cv_url ? (
-                        <a
-                          href={`${import.meta.env.VITE_API_URL}/cv/${cv.id_cv}/download`}
-                          target="_blank"
-                          rel="noreferrer"
+                        <button
+                          type="button"
+                          onClick={() => handleVerCv(cv)}
                           style={{
                             display: "inline-flex",
                             alignItems: "center",
@@ -592,8 +608,8 @@ export default function ProfileHero({
                             cursor: "pointer",
                           }}
                         >
-                          <Download size={13} /> Descargar
-                        </a>
+                          <Eye size={13} /> Ver
+                        </button>
                       ) : (
                         <span
                           style={{
@@ -615,6 +631,91 @@ export default function ProfileHero({
       </div>
     </section>
   );
+  {
+    pdfModalOpen && selectedCv && publicPortfolio && (
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(14,30,60,.6)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 99999,
+          padding: 16,
+          gap: 12,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            maxWidth: 700,
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "var(--f-title)",
+              fontWeight: 700,
+              fontSize: "1rem",
+              color: "#fff",
+            }}
+          >
+            {selectedCv.name_cv}
+          </div>
+          <button
+            type="button"
+            onClick={() => setPdfModalOpen(false)}
+            style={{
+              background: "rgba(255,255,255,.15)",
+              border: "none",
+              borderRadius: 8,
+              padding: "6px 14px",
+              color: "#fff",
+              cursor: "pointer",
+              fontFamily: "var(--f-ui)",
+            }}
+          >
+            Cerrar
+          </button>
+        </div>
+        <PDFViewer width="700" height="500" style={{ borderRadius: 12 }}>
+          <CvPdfDocument
+            profile={{
+              nombre: publicPortfolio.profile?.nombre ?? "",
+              apellido: publicPortfolio.profile?.apellido ?? "",
+              profesion: publicPortfolio.profile?.profesion ?? "",
+              biografia: publicPortfolio.profile?.biografia ?? "",
+              ubicacion: publicPortfolio.profile?.ubicacion ?? "",
+              email: publicPortfolio.profile?.email ?? "",
+              github: publicPortfolio.profile?.github ?? "",
+              linkedin: publicPortfolio.profile?.linkedin ?? "",
+            }}
+            templateId={selectedCv.template ?? "navy"}
+            fontId={selectedCv.font ?? "serif"}
+            sections={[
+              { key: "bio", enabled: true },
+              { key: "experience", enabled: true },
+              { key: "education", enabled: true },
+              { key: "skills", enabled: true },
+              { key: "projects", enabled: true },
+              { key: "social", enabled: true },
+            ]}
+            experience={publicPortfolio.experience ?? []}
+            education={publicPortfolio.formacion ?? []}
+            skills={publicPortfolio.skills ?? []}
+            projects={publicPortfolio.projects ?? []}
+            customEntries={[]}
+            hiddenItems={new Set()}
+          />
+        </PDFViewer>
+      </div>
+    );
+  }
 }
 
 function VerifiedBadge() {
@@ -699,7 +800,7 @@ function EditNameFields({ draft, setDraft, isMobile }) {
   );
 }
 
-async function handleDescargar(cvId, cvName) {
+/* async function handleDescargar(cvId, cvName) {
   try {
     const blob = await apiClient.getBlob(`/cv/${cvId}/download`);
     const url = URL.createObjectURL(blob);
@@ -716,6 +817,11 @@ async function handleDescargar(cvId, cvName) {
       "_blank",
     );
   }
+} */
+
+function handleVerCv(cv) {
+  setSelectedCv(cv);
+  setPdfModalOpen(true);
 }
 
 const heroShell = {
