@@ -282,10 +282,16 @@ class CvController extends Controller
     }
 
     $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $cv->name_cv) . '.pdf';
-    
-    $response = \Illuminate\Support\Facades\Http::get($cv->cv_url);
-    
-    return response($response->body(), 200, [
+
+    $ch = curl_init($cv->cv_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+    $content = curl_exec($ch);
+    curl_close($ch);
+
+    return response($content, 200, [
         'Content-Type'        => 'application/pdf',
         'Content-Disposition' => 'attachment; filename="' . $filename . '"',
     ]);
