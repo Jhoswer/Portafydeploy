@@ -572,9 +572,10 @@ export default function ProfileHero({
                         </div>
                       </div>
                       {cv.cv_url ? (
-                        <button
-                          type="button"
-                          onClick={() => handleDescargar(cv.id_cv, cv.name_cv)}
+                        <a
+                          href={`${import.meta.env.VITE_API_URL}/cv/${cv.id_cv}/download`}
+                          target="_blank"
+                          rel="noreferrer"
                           style={{
                             display: "inline-flex",
                             alignItems: "center",
@@ -592,7 +593,7 @@ export default function ProfileHero({
                           }}
                         >
                           <Download size={13} /> Descargar
-                        </button>
+                        </a>
                       ) : (
                         <span
                           style={{
