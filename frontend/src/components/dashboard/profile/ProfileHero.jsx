@@ -572,27 +572,27 @@ export default function ProfileHero({
                         </div>
                       </div>
                       {cv.cv_url ? (
-                        <a
-                          href={getCvDownloadUrl(cv.id_cv)}
-                          target="_blank"
-                          rel="noreferrer"
+                        <button
+                          type="button"
+                          onClick={() => handleDescargar(cv.id_cv, cv.name_cv)}
                           style={{
                             display: "inline-flex",
                             alignItems: "center",
                             gap: 6,
                             padding: "7px 14px",
                             borderRadius: 8,
-                            textDecoration: "none",
+                            border: "none",
                             background:
                               "linear-gradient(135deg, #12369e 0%, #255dde 100%)",
                             color: "#fff",
                             fontFamily: "var(--f-ui)",
                             fontSize: "0.8rem",
                             fontWeight: 700,
+                            cursor: "pointer",
                           }}
                         >
                           <Download size={13} /> Descargar
-                        </a>
+                        </button>
                       ) : (
                         <span
                           style={{
@@ -698,22 +698,24 @@ function EditNameFields({ draft, setDraft, isMobile }) {
   );
 }
 
-/* async function handleDescargarCv(url, nombre) {
+async function handleDescargar(cvId, cvName) {
   try {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = `${nombre}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(blobUrl);
+    const blob = await apiClient.getBlob(`/cv/${cvId}/download`);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${cvName}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   } catch {
-    window.open(url, "_blank");
+    window.open(
+      `${import.meta.env.VITE_API_URL}/cv/${cvId}/download`,
+      "_blank",
+    );
   }
-} */
+}
 
 const heroShell = {
   ...ui.shell,

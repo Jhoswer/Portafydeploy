@@ -41,7 +41,11 @@ async function parseBody(response) {
 
 function buildErrorMessage(data, rawText, fallbackMessage) {
   if (data?.message) return data.message;
-  if (typeof rawText === "string" && rawText.trim() && !rawText.trim().startsWith("<")) {
+  if (
+    typeof rawText === "string" &&
+    rawText.trim() &&
+    !rawText.trim().startsWith("<")
+  ) {
     return rawText.trim();
   }
   return fallbackMessage;
@@ -123,5 +127,26 @@ export const apiClient = {
   },
   delete(endpoint, options = {}) {
     return httpRequest(endpoint, { ...options, method: "DELETE" });
+  },
+
+  async getBlob(endpoint, options = {}) {
+    const { headers, auth = true, timeoutMs = 180000 } = options;
+    const finalHeaders = buildHeaders(headers, null, auth);
+    const controller = new AbortController();
+    const timeoutId = globalThis.setTimeout(
+      () => controller.abort(),
+      timeoutMs,
+    );
+    try {
+      const response = await fetch(buildUrl(endpoint), {
+        method: "GET",
+        headers: finalHeaders,
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error("Error al descargar");
+      return await response.blob();
+    } finally {
+      globalThis.clearTimeout(timeoutId);
+    }
   },
 };
