@@ -1105,8 +1105,9 @@
 }
 
 .dark .pf-nav-logos {
-  border-color: rgba(255, 255, 255, .06);
-  background: rgba(255, 255, 255, .04);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .dark .pf-nav-logos__sep {

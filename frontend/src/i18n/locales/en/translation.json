@@ -100,48 +100,27 @@
     "viewDemo": "View a demo"
   },
   "footer": {
-    "tagline": "Academic project — Universidad Mayor de San Simón",
-    "desc": "Professional platform for creatives. Share your work and connect with real opportunities.",
-    "columns": {
-      "Product": {
-        "heading": "Product",
-        "links": [
-          "How it works",
-          "Features",
-          "CV Builder",
-          "For companies",
-          "Pricing"
-        ]
-      },
-      "Community": {
-        "heading": "Community",
-        "links": [
-          "Explore projects",
-          "Featured creatives",
-          "Categories",
-          "Blog",
-          "Newsletter"
-        ]
-      },
-      "Company": {
-        "heading": "Company",
-        "links": [
-          "About",
-          "Careers",
-          "Press",
-          "Contact",
-          "Privacy",
-          "Terms"
-        ]
-      }
+  "tagline": "Academic project — Universidad Mayor de San Simón",
+  "desc": "Professional platform for creatives. Share your work and connect with real opportunities.",
+  "columns": {
+    "Product": {
+      "heading": "Product",
+      "links": ["How it works", "Features", "For companies"]
     },
-    "rights": "All rights reserved",
-    "bottom": {
-      "privacy": "Privacy",
-      "terms": "Terms",
-      "cookies": "Cookies"
+    "Community": {
+      "heading": "Community",
+      "links": ["Explore projects", "Search creatives"]
+    },
+    "Company": {
+      "heading": "Company",
+      "links": ["About", "Contact"]
     }
   },
+  "rights": "All rights reserved",
+  "bottom": {
+    "contact": "Contact"
+  }
+},
   "login": {
     "back": "Back to home",
     "title": "Log in",

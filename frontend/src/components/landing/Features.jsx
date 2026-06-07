@@ -16,7 +16,7 @@ export default function Features() {
   const items = t("features.items", { returnObjects: true });
 
   return (
-    <section className="pf-section pf-features" id="explorar">
+    <section className="pf-section pf-features" id="features">
       <div className="pf-wrap">
 
         <div className="pf-section__header">

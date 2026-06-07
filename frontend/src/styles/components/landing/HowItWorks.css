@@ -7,21 +7,23 @@
   overflow: hidden;
 }
 
-/* ── Fondo — igual al hero ────────────────────────
-   Mismo esquema de dots + blobs azules/blancos     */
+/* ── Fondo ────────────────────────────────────── */
 .pf-how__bg {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-
-  /* dots idénticos al hero */
   background-image: radial-gradient(circle, rgba(162,214,249,.25) 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.5;
 }
 
-/* blobs decorativos igual que el hero */
+.dark .pf-how__bg {
+  background-image: radial-gradient(circle, rgba(162,214,249,.10) 1px, transparent 1px);
+  opacity: 0.4;
+}
+
+/* blobs decorativos */
 .pf-how::before,
 .pf-how::after {
   content: '';
@@ -40,6 +42,10 @@
   background: radial-gradient(circle, rgba(232,72,74,.06) 0%, transparent 70%);
 }
 
+.dark .pf-how::before {
+  background: radial-gradient(circle, rgba(232,72,74,.12) 0%, transparent 70%);
+}
+
 .pf-how::after {
   bottom: -80px;
   left: -140px;
@@ -48,7 +54,10 @@
   background: radial-gradient(circle, rgba(162,214,249,.20) 0%, transparent 70%);
 }
 
-/* asegura que el contenido quede sobre el fondo */
+.dark .pf-how::after {
+  background: radial-gradient(circle, rgba(162,214,249,.06) 0%, transparent 70%);
+}
+
 .pf-how .pf-wrap {
   position: relative;
   z-index: 1;
@@ -74,9 +83,19 @@
   overflow: hidden;
 }
 
+.dark .pf-step {
+  background: hsl(218 30% 12%);
+  border-color: rgba(255, 255, 255, .07);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
 .pf-step:hover {
   transform: translateY(-6px);
   box-shadow: 0 28px 72px rgba(0, 0, 0, 0.11);
+}
+
+.dark .pf-step:hover {
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.50);
 }
 
 /* ── Ícono ────────────────────────────────────── */
@@ -90,11 +109,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* rojo pastel vibrante — coherente con el botón CTA */
   background: linear-gradient(135deg, #e84848, #f87171);
   color: #fff;
   box-shadow: 0 10px 28px rgba(232, 72, 74, 0.30);
   z-index: 2;
+}
+
+.dark .pf-step__icon-wrap {
+  box-shadow: 0 10px 28px rgba(232, 72, 74, 0.45);
 }
 
 .pf-step__icon {
@@ -110,10 +132,13 @@
   font-weight: 900;
   line-height: 1;
   letter-spacing: -3px;
-  /* más visible pero sin competir */
   color: rgba(0, 0, 0, 0.07);
   pointer-events: none;
   user-select: none;
+}
+
+.dark .pf-step__number {
+  color: rgba(255, 255, 255, 0.06);
 }
 
 /* ── Texto ────────────────────────────────────── */
@@ -128,6 +153,10 @@
   font-size: 14.5px;
   line-height: 1.65;
   color: var(--color-muted-text, #8896a7);
+}
+
+.dark .pf-step__desc {
+  color: var(--color-muted-text);
 }
 
 /* ── Responsive ───────────────────────────────── */

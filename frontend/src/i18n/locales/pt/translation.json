@@ -100,48 +100,27 @@
     "viewDemo": "Ver uma demo"
   },
   "footer": {
-    "tagline": "Projeto acadêmico — Universidad Mayor de San Simón",
-    "desc": "Plataforma profissional para criativos. Compartilhe seu trabalho e conecte-se a oportunidades reais.",
-    "columns": {
-      "Product": {
-        "heading": "Produto",
-        "links": [
-          "Como funciona",
-          "Recursos",
-          "Criador de CV",
-          "Para empresas",
-          "Preços"
-        ]
-      },
-      "Community": {
-        "heading": "Comunidade",
-        "links": [
-          "Explorar projetos",
-          "Criativos em destaque",
-          "Categorias",
-          "Blog",
-          "Newsletter"
-        ]
-      },
-      "Company": {
-        "heading": "Empresa",
-        "links": [
-          "Sobre",
-          "Carreiras",
-          "Imprensa",
-          "Contato",
-          "Privacidade",
-          "Termos"
-        ]
-      }
+  "tagline": "Projeto acadêmico — Universidade Mayor de San Simón",
+  "desc": "Plataforma profissional para criativos. Compartilhe seu trabalho e conecte-se com oportunidades reais.",
+  "columns": {
+    "Product": {
+      "heading": "Produto",
+      "links": ["Como funciona", "Recursos", "Para empresas"]
     },
-    "rights": "Todos os direitos reservados",
-    "bottom": {
-      "privacy": "Privacidade",
-      "terms": "Termos",
-      "cookies": "Cookies"
+    "Community": {
+      "heading": "Comunidade",
+      "links": ["Explorar projetos", "Buscar criativos"]
+    },
+    "Company": {
+      "heading": "Empresa",
+      "links": ["Sobre", "Contato"]
     }
   },
+  "rights": "Todos os direitos reservados",
+  "bottom": {
+    "contact": "Contato"
+  }
+},
   "login": {
     "back": "Voltar ao início",
     "title": "Entrar",

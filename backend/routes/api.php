@@ -254,4 +254,4 @@ Route::get('companies/{company}/public', [CompanyEngagementController::class, 'p
 Route::get('/feed/posts', [FeedController::class, 'index']);
 Route::post('postulations/{id}/interview', [PostulationController::class, 'storeInterview']);
 Route::get('/cv/public/{profileId}', [CvController::class, 'publicIndex']);
-/* Route::get('/cv/{id}/download', [CvController::class, 'downloadPdf']); */
+Route::get('/cv/{id}/download', [CvController::class, 'downloadPdf']);

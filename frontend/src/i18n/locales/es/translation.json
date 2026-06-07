@@ -100,48 +100,27 @@
     "viewDemo": "Ver una demo"
   },
   "footer": {
-    "tagline": "Proyecto académico — Universidad Mayor de San Simón",
-    "desc": "Plataforma profesional para creativos. Comparte tu trabajo y conecta con oportunidades reales.",
-    "columns": {
-      "Product": {
-        "heading": "Producto",
-        "links": [
-          "Cómo funciona",
-          "Características",
-          "Constructor de CV",
-          "Para empresas",
-          "Precios"
-        ]
-      },
-      "Community": {
-        "heading": "Comunidad",
-        "links": [
-          "Explorar proyectos",
-          "Creativos destacados",
-          "Categorías",
-          "Blog",
-          "Newsletter"
-        ]
-      },
-      "Company": {
-        "heading": "Empresa",
-        "links": [
-          "Acerca de",
-          "Carreras",
-          "Prensa",
-          "Contacto",
-          "Privacidad",
-          "Términos"
-        ]
-      }
+  "tagline": "Proyecto académico — Universidad Mayor de San Simón",
+  "desc": "Plataforma profesional para creativos. Comparte tu trabajo y conecta con oportunidades reales.",
+  "columns": {
+    "Product": {
+      "heading": "Producto",
+      "links": ["Cómo funciona", "Características", "Para empresas"]
     },
-    "rights": "Todos los derechos reservados",
-    "bottom": {
-      "privacy": "Privacidad",
-      "terms": "Términos",
-      "cookies": "Cookies"
+    "Community": {
+      "heading": "Comunidad",
+      "links": ["Explorar proyectos", "Buscar creativos"]
+    },
+    "Company": {
+      "heading": "Empresa",
+      "links": ["Acerca de", "Contacto"]
     }
   },
+  "rights": "Todos los derechos reservados",
+  "bottom": {
+    "contact": "Contacto"
+  }
+},
   "login": {
     "back": "Volver al inicio",
     "title": "Iniciar sesión",

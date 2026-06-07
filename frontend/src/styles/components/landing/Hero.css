@@ -8,7 +8,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* padding lateral fijo — no depende del zoom */
   padding: clamp(40px, 6vw, 80px) 24px 64px;
   overflow: hidden;
 }
@@ -21,7 +20,6 @@
   grid-template-columns: 1fr 1fr;
   gap: 64px;
   align-items: center;
-  /* mismo max-width que el resto de secciones */
   width: 100%;
   max-width: 1160px;
   margin: 0 auto;
@@ -43,12 +41,20 @@
   background: radial-gradient(circle, rgba(232,72,74,.07) 0%, transparent 70%);
 }
 
+.dark .pf-hero__blob--1 {
+  background: radial-gradient(circle, rgba(232,72,74,.12) 0%, transparent 70%);
+}
+
 .pf-hero__blob--2 {
   bottom: -80px;
   left: -180px;
   width: 500px;
   height: 500px;
   background: radial-gradient(circle, rgba(162,214,249,.22) 0%, transparent 70%);
+}
+
+.dark .pf-hero__blob--2 {
+  background: radial-gradient(circle, rgba(162,214,249,.07) 0%, transparent 70%);
 }
 
 /* ── Grid lines ───────────────────────────────── */
@@ -59,6 +65,11 @@
   background-size: 40px 40px;
   opacity: 0.5;
   pointer-events: none;
+}
+
+.dark .pf-hero__grid-lines {
+  background-image: radial-gradient(circle, rgba(162,214,249,.10) 1px, transparent 1px);
+  opacity: 0.4;
 }
 
 /* ── Texto ────────────────────────────────────── */
@@ -81,6 +92,12 @@
   padding: 6px 16px;
   width: fit-content;
   box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.dark .pf-hero__badge {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(162,214,249,.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
 }
 
 .pf-hero__title {
@@ -130,6 +147,10 @@
   margin-left: -10px;
 }
 
+.dark .pf-hero__av {
+  border-color: rgba(255,255,255,.18);
+}
+
 .pf-hero__av:first-child {
   margin-left: 0;
 }
@@ -153,13 +174,18 @@
 
 .pf-hero__slider-wrap {
   width: 100%;
-  /* altura fija — no crece con el zoom */
   height: 420px;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 24px 64px rgba(14,30,60,.14);
   border: 1px solid rgba(162,214,249,.30);
   background: #f0f6ff;
+}
+
+.dark .pf-hero__slider-wrap {
+  box-shadow: 0 24px 64px rgba(0,0,0,.45);
+  border-color: rgba(162,214,249,.08);
+  background: hsl(218 30% 12%);
 }
 
 /* ── ImageSlider ──────────────────────────────── */
@@ -206,9 +232,17 @@
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
+.dark .pf-slider__dot {
+  background: rgba(255,255,255,.25);
+}
+
 .pf-slider__dot--active {
   background: #fff;
   transform: scale(1.3);
+}
+
+.dark .pf-slider__dot--active {
+  background: rgba(255,255,255,.90);
 }
 
 /* ── Responsive ───────────────────────────────── */

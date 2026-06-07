@@ -10,7 +10,7 @@ export default function HowItWorks() {
   const steps = t("howItWorks.steps", { returnObjects: true });
 
   return (
-    <section className="pf-section pf-how" id="como-funciona">
+    <section className="pf-section pf-how" id="how-it-works">
 
       <div className="pf-how__bg" />
 
