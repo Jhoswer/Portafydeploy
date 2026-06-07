@@ -133,7 +133,7 @@ Route::middleware(['auth:sanctum', SetLogUserContext::class])->group(function ()
     Route::post('/cv/{id}/custom-entry', [CvController::class, 'storeCustomEntry']);
     Route::get('/cv/{id}/custom-entries', [CvController::class, 'getCustomEntries']);
     Route::delete('/cv/{id}/custom-entry/{entryId}', [CvController::class, 'deleteCustomEntry']);
-    /* Route::post('/cv/{id}/upload-pdf', [CvController::class, 'uploadPdf']); */
+    Route::post('/cv/{id}/upload-pdf', [CvController::class, 'uploadPdf']);
 
     Route::post('/test-cloudinary', [MeController::class, 'testCloudinary']);
 
