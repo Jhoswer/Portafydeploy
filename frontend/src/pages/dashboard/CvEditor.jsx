@@ -27,7 +27,7 @@ import {
   obtenerCv,
   cargarDatosPortafolio,
   obtenerCustomEntries,
-  /* subirPdfCv, */
+  subirPdfCv,
 } from "../../services/cvService";
 import {
   CvPaperClassic,
@@ -943,7 +943,7 @@ export default function CvEditor() {
       }
 
       // Generar PDF como blob y subir a Cloudinary
-     /*  if (savedCvId) {
+      if (savedCvId) {
         try {
           const { pdf } = await import("@react-pdf/renderer");
           const blob = await pdf(
@@ -963,9 +963,8 @@ export default function CvEditor() {
           await subirPdfCv(savedCvId, blob, cvName);
         } catch (pdfErr) {
           console.warn("PDF upload failed:", pdfErr);
-          // No bloquear el guardado si falla el PDF
         }
-      } */
+      }
 
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);

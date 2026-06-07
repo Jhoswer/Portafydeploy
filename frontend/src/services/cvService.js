@@ -83,12 +83,12 @@ export async function obtenerPerfilPublico(usuarioId) {
   return apiClient.get(`/perfil/public/${usuarioId}/overview`, { auth: false });
 }
 
-/* export async function subirPdfCv(cvId, pdfBlob, cvName) {
+export async function subirPdfCv(cvId, pdfBlob, cvName) {
   const formData = new FormData();
   formData.append('pdf', pdfBlob, `${cvName}.pdf`);
   return apiClient.post(`/cv/${cvId}/upload-pdf`, formData);
 }
- */
+
 /* export function getCvDownloadUrl(cvId) {
   return `${import.meta.env.VITE_API_URL}/cv/${cvId}/download`;
 } */
