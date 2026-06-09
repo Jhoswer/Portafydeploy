@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { PREF_CATEGORIES } from "../../../../hooks/useNotificationPrefs";
+import { PREF_CATEGORIES } from "../../../hooks/useNotificationPrefs";
 
 export default function NotificationsSection({ prefs, notifsLoading, toggle }) {
   const { t } = useTranslation();
