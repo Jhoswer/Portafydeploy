@@ -133,6 +133,26 @@ function validateSectionDraft(sectionKey, draft, t) {
   return errors;
 }
 
+function normalizeProjectTitle(value) {
+  return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function validateProjectTitleDuplicate(sectionKey, draft, activeItems, selectedId, t) {
+  if (sectionKey !== "projects" || isBlank(draft.title)) return {};
+
+  const normalizedTitle = normalizeProjectTitle(draft.title);
+  const duplicate = activeItems.some((item) => (
+    item.id !== selectedId && normalizeProjectTitle(item.title) === normalizedTitle
+  ));
+
+  if (!duplicate) return {};
+
+  return {
+    title: t("appI18n.portfolio.validation.duplicateProjectTitle"),
+    _form: t("appI18n.portfolio.validation.form"),
+  };
+}
+
 export default function DashboardPortfolio() {
   const { t } = useTranslation();
   const [itemsBySection, setItemsBySection] = useState(INITIAL_ITEMS);
@@ -368,7 +388,10 @@ export default function DashboardPortfolio() {
   const handleSave = async () => {
     if (isSyncing) return;
     const cleanDraft = buildCleanDraft();
-    const nextErrors = validateSectionDraft(activeSection, cleanDraft, t);
+    const nextErrors = {
+      ...validateSectionDraft(activeSection, cleanDraft, t),
+      ...validateProjectTitleDuplicate(activeSection, cleanDraft, activeItems, selectedId, t),
+    };
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
       setLoadError("");

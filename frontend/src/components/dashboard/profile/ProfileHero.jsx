@@ -28,6 +28,7 @@ import { FileText, Eye } from "lucide-react";
 import {
   obtenerCvsPublicos,
   obtenerPerfilPublico,
+  obtenerCustomEntriesPublicas,
 } from "../../../services/cvService";
 
 import { PDFViewer } from "@react-pdf/renderer";
@@ -106,9 +107,16 @@ export default function ProfileHero({
   const [selectedCv, setSelectedCv] = useState(null);
   const [publicPortfolio, setPublicPortfolio] = useState(null);
   const [pdfModalOpen, setPdfModalOpen] = useState(false);
-
-  function handleVerCv(cv) {
+  const [selectedCvCustomEntries, setSelectedCvCustomEntries] = useState([]);
+  
+  async function handleVerCv(cv) {
     setSelectedCv(cv);
+    try {
+      const res = await obtenerCustomEntriesPublicas(cv.id_cv);
+      setSelectedCvCustomEntries(res?.data ?? []);
+    } catch {
+      setSelectedCvCustomEntries([]);
+    }
     setPdfModalOpen(true);
   }
 
@@ -709,7 +717,7 @@ export default function ProfileHero({
                     education={publicPortfolio.formacion ?? []}
                     skills={publicPortfolio.skills ?? []}
                     projects={publicPortfolio.projects ?? []}
-                    customEntries={[]}
+                    customEntries={selectedCvCustomEntries}
                     hiddenItems={new Set()}
                   />
                 </PDFViewer>

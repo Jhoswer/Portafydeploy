@@ -1,22 +1,27 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { LayoutList } from "lucide-react";
 import { dashboardShell } from "../../../styles/components/dashboardShell";
 import { fetchVisibility } from "../../../services/visibilityService";
 import SettingsCard from "../../../components/settings/SettingsCard";
 
+
 const ITEMS = [
-  { key: "projects",   label: "Proyectos",      text: "Incluye portada y evidencias"  },
-  { key: "experience", label: "Experiencia",     text: "Timeline laboral y academica"  },
-  { key: "education",  label: "Formacion",       text: "Institucion, area y modalidad" },
-  { key: "skills",     label: "Habilidades",     text: "Skills clave y tecnologias"    },
-  { key: "links",      label: "Enlaces y redes", text: "GitHub, LinkedIn y CV"         },
+  { key: "projects",   labelKey: "settings.sections.visibility.items.projects.label",   textKey: "settings.sections.visibility.items.projects.text"   },
+  { key: "experience", labelKey: "settings.sections.visibility.items.experience.label", textKey: "settings.sections.visibility.items.experience.text" },
+  { key: "education",  labelKey: "settings.sections.visibility.items.education.label",  textKey: "settings.sections.visibility.items.education.text"  },
+  { key: "skills",     labelKey: "settings.sections.visibility.items.skills.label",     textKey: "settings.sections.visibility.items.skills.text"     },
+  { key: "links",      labelKey: "settings.sections.visibility.items.links.label",      textKey: "settings.sections.visibility.items.links.text"      },
 ];
 
 const DEFAULT = { projects: true, experience: true, education: true, skills: true, links: true };
 
 export default function VisibilitySection({ draft, setDraft }) {
+
+  const { t } = useTranslation();
+
   useEffect(() => {
-    if (draft.visibility !== null) return; // ya cargado
+    if (draft.visibility !== null) return;
     let cancelled = false;
     fetchVisibility()
       .then((vis) => { if (!cancelled) setDraft((p) => ({ ...p, visibility: vis })); })
@@ -27,18 +32,25 @@ export default function VisibilitySection({ draft, setDraft }) {
   const visibility = draft.visibility ?? DEFAULT;
 
   return (
-    <SettingsCard icon={<LayoutList size={16} />} title="Visibilidad del perfil" text="Elige que secciones se muestran en tu perfil publico.">
+    <SettingsCard
+      icon={<LayoutList size={16} />}
+      // CAMBIO: título y texto traducidos
+      title={t("settings.sections.visibility.title")}
+      text={t("settings.sections.visibility.cardText")}
+    >
       {draft.visibility === null ? (
-        <p style={dashboardShell.body}>Cargando visibilidad...</p>
+        // CAMBIO: loading traducido
+        <p style={dashboardShell.body}>{t("settings.sections.visibility.loading")}</p>
       ) : (
         <div style={{ display: "grid", gap: 10, maxWidth: 620 }}>
           {ITEMS.map((item) => {
             const isOn = visibility[item.key];
             return (
-              <div key={item.key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: 14, border: "1px solid rgba(205,225,245,.78)", background: "#fff", padding: "12px 14px" }}>
+              <div key={item.key} className="pf-settings-vis-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: 14, padding: "12px 14px" }}>
                 <span>
-                  <span style={{ display: "block", fontFamily: "var(--f-ui)", fontWeight: 850 }}>{item.label}</span>
-                  <span style={{ display: "block", ...dashboardShell.body, fontSize: ".78rem" }}>{item.text}</span>
+                  {/* CAMBIO: label y texto de cada item traducidos */}
+                  <span style={{ display: "block", fontFamily: "var(--f-ui)", fontWeight: 850 }}>{t(item.labelKey)}</span>
+                  <span style={{ display: "block", ...dashboardShell.body, fontSize: ".78rem" }}>{t(item.textKey)}</span>
                 </span>
                 <button type="button"
                   onClick={() => setDraft((p) => ({ ...p, visibility: { ...p.visibility, [item.key]: !p.visibility[item.key] } }))}

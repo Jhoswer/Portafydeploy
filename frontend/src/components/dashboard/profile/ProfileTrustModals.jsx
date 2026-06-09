@@ -25,8 +25,8 @@ const modal = {
   maxHeight: "min(760px, calc(100vh - 36px))",
   overflow: "auto",
   borderRadius: 24,
-  background: "#fff",
-  border: "1px solid rgba(205,225,245,.72)",
+  background: "var(--dashboard-card-bg, #fff)",
+  border: "1px solid var(--dashboard-card-border, rgba(205,225,245,.72))",
   boxShadow: "0 32px 80px rgba(14,30,60,.28)",
   padding: 22,
 };
@@ -61,7 +61,7 @@ function UserRow({ user, readonly, onFollow, onUnfollow, onOpenProfile, compact 
   const following = Boolean(user.is_following);
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: compact ? "auto minmax(0, 1fr)" : "auto minmax(0, 1fr) auto", gap: 12, alignItems: "center", padding: "11px 0", borderBottom: "1px solid rgba(162,214,249,.16)" }}>
+    <div style={{ display: "grid", gridTemplateColumns: compact ? "auto minmax(0, 1fr)" : "auto minmax(0, 1fr) auto", gap: 12, alignItems: "center", padding: "11px 0", borderBottom: "1px solid var(--dashboard-card-border, rgba(162,214,249,.16))" }}>
       <button type="button" onClick={() => onOpenProfile(user)} style={{ border: 0, background: "transparent", padding: 0, cursor: "pointer" }}>
         {user.photo ? (
           <img src={user.photo} alt="" style={{ width: 42, height: 42, borderRadius: "50%", objectFit: "cover" }} />
@@ -79,7 +79,7 @@ function UserRow({ user, readonly, onFollow, onUnfollow, onOpenProfile, compact 
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           onClick={() => (following ? onUnfollow(user) : onFollow(user))}
-          style={{ ...ui.secondary, gridColumn: compact ? "1 / -1" : undefined, justifySelf: compact ? "stretch" : "end", justifyContent: "center", padding: "8px 10px", color: following && hovered ? "#dc2626" : "#2048a8" }}
+          style={{ ...ui.secondary, gridColumn: compact ? "1 / -1" : undefined, justifySelf: compact ? "stretch" : "end", justifyContent: "center", padding: "8px 10px", color: following && hovered ? "#ef5759" : "#2048a8" }}
           title={following ? t("appI18n.profileTrust.unfollow") : t("appI18n.profileTrust.followBack")}
         >
           {following ? <UserMinus size={14} /> : <UserPlus size={14} />}

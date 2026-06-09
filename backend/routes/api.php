@@ -255,3 +255,4 @@ Route::get('/feed/posts', [FeedController::class, 'index']);
 Route::post('postulations/{id}/interview', [PostulationController::class, 'storeInterview']);
 Route::get('/cv/public/{profileId}', [CvController::class, 'publicIndex']);
 Route::get('/cv/{id}/download', [CvController::class, 'downloadPdf']);
+Route::get('/cv/{id}/public-custom-entries', [CvController::class, 'publicCustomEntries']);

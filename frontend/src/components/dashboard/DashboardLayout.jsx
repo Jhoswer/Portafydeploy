@@ -254,37 +254,6 @@ export default function DashboardLayout() {
                 />
                 {t("appI18n.dashboard.layout.active")}
               </div>
-              <div
-                style={{
-                  padding: "12px 14px",
-                  borderRadius: 14,
-                  background: "var(--dashboard-soft-bg)",
-                  border: "1px solid var(--dashboard-card-border)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,.8)",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--f-title)",
-                    fontWeight: 800,
-                    fontSize: "0.95rem",
-                    color: "var(--text)",
-                    marginBottom: 4,
-                  }}
-                >
-                  {t("appI18n.dashboard.layout.readyTitle")}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--f-body)",
-                    fontSize: "0.8rem",
-                    color: "var(--body)",
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {t("appI18n.dashboard.layout.readyText")}
-                </div>
-              </div>
               <button
                 type="button"
                 onClick={() => navigate("/configuracion")}

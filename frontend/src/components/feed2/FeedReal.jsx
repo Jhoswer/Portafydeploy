@@ -426,7 +426,7 @@ export default function FeedReal({ activeFilter }) {
           </button>
         </div>
 
-        {refreshing && posts.length ? <FeedSyncHint /> : null}
+        {refreshing && posts.length ? <FeedSyncHint label={t("appI18n.common.syncing")} /> : null}
         {loading ? <FeedSkeleton /> : null}
         {error && !loading ? <FeedState title={t("appI18n.feed.states.loadErrorTitle")} text={error} /> : null}
         {!loading && !error && filteredPosts.length === 0 ? <FeedState title={t("appI18n.feed.states.emptyTitle")} text={t("appI18n.feed.states.emptyText")} /> : null}
@@ -652,7 +652,7 @@ function FeedState({ title, text }) {
   );
 }
 
-function FeedSyncHint() {
+function FeedSyncHint({ label }) {
   return (
     <div style={{ height: 0, position: "relative", zIndex: 2 }}>
       <div
@@ -674,7 +674,7 @@ function FeedSyncHint() {
         }}
       >
         <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#60a5fa" }} />
-        Sincronizando
+        {label}
       </div>
     </div>
   );

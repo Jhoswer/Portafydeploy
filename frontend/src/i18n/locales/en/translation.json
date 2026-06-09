@@ -1256,60 +1256,9 @@
         "label": "Platform notifications",
         "description": "Portafy announcements and news"
       }
+    }
     },
-    "notifications": {
-      "title": "Notifications",
-      "back": "Back",
-      "markAllRead": "Mark all as read",
-      "loading": "Loading...",
-      "filter": {
-        "all": "All",
-        "unread": "Unread",
-        "read": "Read"
-      },
-      "type": {
-        "all": "All types",
-        "like": "Likes",
-        "comment": "Comments",
-        "follow": "Following",
-        "job_offer": "Job offers",
-        "postulation": "Applications"
-      },
-      "pagination": {
-        "previous": "Previous",
-        "next": "Next",
-        "pageInfo": "Page {{page}} of {{lastPage}}"
-      }
-    },
-    "notificationSettings": {
-      "title": "Settings",
-      "sub": "Choose a category and adjust only what you need.",
-      "saving": "Saving...",
-      "saveChanges": "✓ Save changes",
-      "loading": "Loading preferences...",
-      "categories": {
-        "activity_notifications": {
-          "label": "Social Activity",
-          "description": "Likes, comments and mentions on your posts"
-        },
-        "portfolio_notifications": {
-          "label": "Followed users' portfolios",
-          "description": "Project and experience updates"
-        },
-        "offer_notifications": {
-          "label": "New job postings",
-          "description": "Job offers matching your profile"
-        },
-        "support_notifications": {
-          "label": "Support messages",
-          "description": "Support replies and updates"
-        },
-        "platform_notifications": {
-          "label": "Platform notifications",
-          "description": "Portafy announcements and news"
-        }
-      }
-    },
+
     "notificationBell": {
       "title": "Notifications",
       "markAllRead": "Mark all as read",
@@ -1348,46 +1297,6 @@
         "fallbackPerson": "Someone",
         "fallbackCompany": "Company"
       }
-    }
-  },
-  "notificationBell": {
-    "title": "Notifications",
-    "markAllRead": "Mark all as read",
-    "viewAll": "View all notifications",
-    "ariaLabel": "Notifications",
-    "empty": {
-      "title": "No notifications",
-      "sub": "When someone interacts with your content, it will appear here."
-    },
-    "item": {
-      "markAsRead": "Mark as read",
-      "read": "Read",
-      "defaultText": "New notification",
-      "altAvatar": "Notification"
-    },
-    "types": {
-      "like": "Like",
-      "comment": "Comment",
-      "follow": "Follow",
-      "event": "Event",
-      "job_offer": "Job offer",
-      "postulation": "Application",
-      "job_application": "Application"
-    },
-    "messages": {
-      "like": "{{name}} liked your post",
-      "follow": "{{name}} started following you",
-      "event": "New event: {{title}}",
-      "job_offer": "{{company}} posted a job offer: {{title}}",
-      "postulation": "{{name}} applied to: {{title}}",
-      "job_application": "{{name}} applied to: {{title}}",
-      "comment": "{{name}} commented",
-      "commentWithText": "{{name}} commented: \"{{text}}\"",
-      "default": "New notification",
-      "fallbackOffer": "the offer",
-      "fallbackPerson": "Someone",
-      "fallbackCompany": "Company"
-    }
   },
   "appI18n": {
     "calendar": {
@@ -1552,7 +1461,8 @@
         "platform": "Platform",
         "url": "URL",
         "program": "Program or degree",
-        "institution": "Institution"
+        "institution": "Institution",
+        "supportDocument": "Support document"
       },
       "detail": {
         "noCategory": "No category",
@@ -1574,23 +1484,74 @@
         "active": "Active",
         "noCover": "No custom cover",
         "coverOf": "Cover for {{title}}",
-        "noTechnologies": "No technologies"
+        "noTechnologies": "No technologies",
+        "supportApproved": "Support authenticated",
+        "supportRejected": "Support needs review",
+        "supportPending": "Support under review"
       },
       "controls": {
         "selectTechnology": "Select a technology",
         "selectSkill": "Select a skill",
         "selectOption": "Select an option",
         "writePlatform": "Write the platform",
-        "dateHint": "Use the calendar to choose a date more intuitively.",
+        "dateHint": "Select a date from the calendar.",
         "uploadFile": "Attach a file",
         "noFile": "No file selected yet.",
         "chooseFile": "Choose file",
         "projectCoverHelper": "Upload a cover to better present your project",
         "projectCoverEmpty": "No cover selected. Optional, max 2 MB.",
         "uploadCover": "Upload cover",
+        "educationSupportHelper": "Academic support",
+        "educationSupportEmpty": "No support attached. PDF or image, max 6 MB.",
+        "uploadSupport": "Upload support",
         "minCharacters": "Minimum {{count}} characters",
         "tagLimitHint": "You can add up to {{count}} technologies.",
         "tagLimitReached": "Technology limit reached."
+      },
+      "projectStatuses": {
+        "complete": "Complete",
+        "inProgress": "In progress",
+        "paused": "Paused"
+      },
+      "help": {
+        "projects": {
+          "title": "Write a clear professional name to identify the project.",
+          "description": "Summarize the goal, scope and impact of the project in a few lines.",
+          "techCategory": "Select the main technical area of the project.",
+          "tags": "Select the technologies used or the most relevant ones.",
+          "repoUrl": "Add the repository link if it can be shown publicly.",
+          "demoUrl": "Add a demo or public URL where the result can be reviewed.",
+          "status": "Indicate whether the project is complete, in progress or paused.",
+          "cover": "Upload a cover image that visually represents the project."
+        },
+        "experience": {
+          "type": "Select the type of experience you are registering.",
+          "roleArea": "Choose the professional area to suggest related roles.",
+          "title": "Select or write the role performed.",
+          "company": "Enter the company, institution or client where you had this experience.",
+          "description": "Describe your tasks, achievements and measurable impact.",
+          "startDate": "Date this experience started.",
+          "endDate": "End date; if it is active, mark it as current.",
+          "isCurrent": "Mark this option if you still continue in this experience."
+        },
+        "skills": {
+          "category": "Select the group this skill belongs to.",
+          "name": "Choose a suggested skill or write your own if you selected Other.",
+          "level": "Indicate your real level: Junior, Mid or Senior."
+        },
+        "social": {
+          "platform": "Select the professional network or platform.",
+          "url": "Paste the full profile URL or link you want to show."
+        },
+        "education": {
+          "level": "Select the education type: degree, course, diploma, masters or other.",
+          "program": "Write the program, degree or certification name.",
+          "institution": "Enter the institution that issued or teaches this education.",
+          "startDate": "Education start date.",
+          "endDate": "End date; if it is active, mark it as current.",
+          "isCurrent": "Mark this option if you are still studying this education.",
+          "supportDocument": "Attach a PDF or image of the certificate, diploma or proof for future authentication."
+        }
       },
       "filters": {
         "title": "Filter records",
@@ -1616,6 +1577,7 @@
         "startDate": "Select the start date.",
         "endDate": "Select the end date or mark that you are still there.",
         "projectTitle": "Complete the project title.",
+        "duplicateProjectTitle": "You already have a project with that title. Use a different title.",
         "projectDescription": "Add a short project description.",
         "techCategory": "Select a technical category.",
         "tags": "Add at least one technology.",
@@ -4559,6 +4521,26 @@
     "backups":     "Backups",
     "mensaje":     "Message",
     "definicion":  "Definition"
+  }
+},
+"settings": {
+  "eyebrow": "Account",
+  "title": "Settings",
+  "sub": "Choose a category and adjust only what you need.",
+  "back": "Back",
+  "saving": "Saving...",
+  "saveChanges": "Save changes",
+  "saveSuccess": "Settings updated successfully.",
+  "errorLoad": "Could not load settings.",
+  "errorSave": "Could not save settings.",
+  "loading": "Loading settings...",
+  "loadingSection": "Loading section...",
+  "sections": {
+    "language":      { "title": "Language",           "text": "Global interface selector."          },
+    "location": { "title": "Region & location", "text": "What is shown on your profile.", "cardText": "This location feeds your professional profile and can be left empty if you prefer not to show it.", "country": "Country", "city": "City", "noCountry": "Don't show country", "noCity": "Don't show city", "selectCountryFirst": "Select a country first", "noLocation": "No visible location" },
+    "privacy":       { "title": "Contact privacy",     "text": "Control your visible email.",        "cardText": "Controls whether the contact email appears in public profile views.", "options": { "public": { "label": "Public",  "text": "Contact can be shown on your profile." }, "private": { "label": "Private", "text": "Hides contact in public views." } } },
+    "visibility": { "title": "Visibility", "text": "Sections visible on your profile.", "cardText": "Choose which sections appear on your public profile.", "loading": "Loading visibility...", "items": { "projects": { "label": "Projects", "text": "Includes cover and evidence" }, "experience": { "label": "Experience", "text": "Work and academic timeline" }, "education": { "label": "Education", "text": "Institution, field and modality" }, "skills": { "label": "Skills", "text": "Key skills and technologies" }, "links": { "label": "Links & networks", "text": "GitHub, LinkedIn and CV" } } },
+    "notifications": { "title": "Notifications",      "text": "Alerts and notification preferences." }
   }
 }
 }

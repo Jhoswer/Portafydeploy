@@ -89,6 +89,10 @@ export async function subirPdfCv(cvId, pdfBlob, cvName) {
   return apiClient.post(`/cv/${cvId}/upload-pdf`, formData);
 }
 
+export async function obtenerCustomEntriesPublicas(cvId) {
+  return apiClient.get(`/cv/${cvId}/public-custom-entries`, { auth: false });
+}
+
 /* export function getCvDownloadUrl(cvId) {
   return `${import.meta.env.VITE_API_URL}/cv/${cvId}/download`;
 } */

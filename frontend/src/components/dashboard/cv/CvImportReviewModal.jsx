@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckCircle2, X, Briefcase, GraduationCap, Zap, Loader2, AlertCircle } from "lucide-react";
 import { apiClient } from "../../../services/http/httpClient";
+import "../../../styles/components/dashboard/cv-module.css";
 
 // ─── Helpers para guardar entidades ──────────────────────────────────────────
 
@@ -41,13 +42,14 @@ const s = {
     justifyContent: "center", zIndex: 1100, padding: 16,
   },
   modal: {
-    background: "#fff", borderRadius: 20, width: "100%", maxWidth: 560,
+    background: "var(--cv-surface-modal)", borderRadius: 20, width: "100%", maxWidth: 560,
     maxHeight: "85vh", display: "flex", flexDirection: "column",
     boxShadow: "0 24px 64px rgba(14,30,60,.18)", overflow: "hidden",
+    border: "1px solid var(--cv-border)",
   },
   header: {
     display: "flex", justifyContent: "space-between", alignItems: "flex-start",
-    padding: "20px 24px 16px", borderBottom: "1px solid rgba(205,225,245,.72)",
+    padding: "20px 24px 16px", borderBottom: "1px solid var(--cv-border-soft)",
     flexShrink: 0,
   },
   title: { fontFamily: "var(--f-title)", fontWeight: 800, fontSize: "1.05rem", color: "var(--text)" },
@@ -65,28 +67,28 @@ const s = {
   }),
   item: (selected) => ({
     display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 12px",
-    borderRadius: 10, border: `1.5px solid ${selected ? "#255dde" : "rgba(205,225,245,.8)"}`,
-    background: selected ? "rgba(37,93,222,.04)" : "#fafcff",
+    borderRadius: 10, border: `1.5px solid ${selected ? "#255dde" : "var(--cv-border)"}`,
+    background: selected ? "var(--cv-bg-hover)" : "var(--cv-bg-secondary)",
     cursor: "pointer", transition: "all .15s", marginBottom: 6,
   }),
   checkbox: (selected) => ({
     width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 1,
     border: `2px solid ${selected ? "#255dde" : "#cbd5e1"}`,
-    background: selected ? "#255dde" : "#fff",
+    background: selected ? "#255dde" : "var(--cv-cancel-btn-bg)",
     display: "flex", alignItems: "center", justifyContent: "center",
   }),
   itemName: { fontFamily: "var(--f-ui)", fontWeight: 600, fontSize: "0.85rem", color: "var(--text)" },
   itemSub: { fontFamily: "var(--f-body)", fontSize: "0.75rem", color: "var(--muted)", marginTop: 1 },
   emptyGroup: { fontFamily: "var(--f-body)", fontSize: "0.78rem", color: "var(--muted)", fontStyle: "italic" },
   footer: {
-    padding: "14px 24px", borderTop: "1px solid rgba(205,225,245,.72)",
+    padding: "14px 24px", borderTop: "1px solid var(--cv-border-soft)",
     display: "flex", gap: 10, justifyContent: "space-between", alignItems: "center", flexShrink: 0,
   },
   selectAll: { fontFamily: "var(--f-ui)", fontSize: "0.78rem", color: "#255dde", cursor: "pointer", background: "none", border: "none" },
   btnGroup: { display: "flex", gap: 8 },
   btnSecondary: {
-    padding: "9px 18px", borderRadius: 10, border: "1px solid rgba(205,225,245,.9)",
-    background: "#fff", color: "var(--body)", fontFamily: "var(--f-ui)",
+    padding: "9px 18px", borderRadius: 10, border: "1px solid var(--cv-cancel-btn-border)",
+    background: "var(--cv-cancel-btn-bg)", color: "var(--text)", fontFamily: "var(--f-ui)",
     fontSize: "0.85rem", fontWeight: 600, cursor: "pointer",
   },
   btnPrimary: (disabled) => ({
@@ -98,13 +100,13 @@ const s = {
   }),
   errorBox: {
     display: "flex", alignItems: "center", gap: 8, padding: "10px 14px",
-    borderRadius: 10, background: "rgba(239,87,89,.06)", border: "1px solid rgba(239,87,89,.18)",
-    color: "#c0392b", fontFamily: "var(--f-body)", fontSize: "0.82rem",
+    borderRadius: 10, background: "var(--cv-error-bg)", border: "1px solid var(--cv-error-border)",
+    color: "var(--cv-error-text)", fontFamily: "var(--f-body)", fontSize: "0.82rem",
   },
   successBox: {
     display: "flex", alignItems: "center", gap: 8, padding: "10px 14px",
-    borderRadius: 10, background: "rgba(13,148,136,.06)", border: "1px solid rgba(13,148,136,.18)",
-    color: "#0d9488", fontFamily: "var(--f-body)", fontSize: "0.82rem",
+    borderRadius: 10, background: "var(--cv-success-bg)", border: "1px solid var(--cv-success-border)",
+    color: "var(--cv-success-text)", fontFamily: "var(--f-body)", fontSize: "0.82rem",
   },
 };
 

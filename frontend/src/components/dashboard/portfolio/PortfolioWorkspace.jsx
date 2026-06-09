@@ -38,6 +38,7 @@ import {
   InteractiveButton,
   InteractiveIconButton,
   PlatformIconGlyph,
+  projectStatusMeta,
   ProjectStatusPill,
   SkillDots,
   useViewport,
@@ -137,6 +138,10 @@ function itemMatchesFilters(sectionKey, item, filters) {
 }
 
 function formatFilterOption(sectionKey, key, value, t) {
+  if (sectionKey === "projects" && key === "status") {
+    return projectStatusMeta(value, t).label;
+  }
+
   if (sectionKey === "education" && key === "level") {
     const normalized = normalizeFilterValue(value);
     return t(`appI18n.portfolio.educationLevels.${normalized}`, value);
@@ -348,6 +353,10 @@ export default function PortfolioWorkspace(props) {
                   background: rgba(49,87,213,.12) !important;
                   border-color: rgba(49,87,213,.24) !important;
                   box-shadow: 0 8px 18px rgba(49,87,213,.10), inset 0 1px 0 rgba(255,255,255,.78) !important;
+                }
+
+                .dark {
+                  --portfolio-date-scheme: dark;
                 }
               `}</style>
             </div>
@@ -614,6 +623,7 @@ export default function PortfolioWorkspace(props) {
                 border: 1px solid var(--dashboard-card-border);
                 background: var(--dashboard-card-bg);
                 color: var(--text);
+                color-scheme: var(--portfolio-date-scheme, light);
                 font-family: var(--f-body);
                 font-size: .82rem;
                 font-weight: 700;

@@ -49,7 +49,7 @@ function socialPalette(platform) {
 
   if (value.includes("instagram")) return { accent: "#db2777", soft: "rgba(219,39,119,.10)", border: "rgba(219,39,119,.24)" };
   if (value.includes("linkedin")) return { accent: "#0a66c2", soft: "rgba(10,102,194,.10)", border: "rgba(10,102,194,.24)" };
-  if (value.includes("github")) return { accent: "#24292f", soft: "rgba(36,41,47,.08)", border: "rgba(36,41,47,.18)" };
+  if (value.includes("github")) return { accent: "#64748b", soft: "rgba(100,116,139,.11)", border: "rgba(100,116,139,.24)" };
   if (value.includes("facebook")) return { accent: "#1877f2", soft: "rgba(24,119,242,.10)", border: "rgba(24,119,242,.24)" };
   if (value.includes("youtube")) return { accent: "#dc2626", soft: "rgba(220,38,38,.10)", border: "rgba(220,38,38,.24)" };
   if (value === "x" || value.includes("twitter")) return { accent: "#111827", soft: "rgba(17,24,39,.08)", border: "rgba(17,24,39,.18)" };
@@ -641,7 +641,7 @@ export function SummaryCard({ title, text }) {
 
 export function EmptyCard({ icon, title, text }) {
   const Icon = icon;
-  return <div style={{ minHeight: 230, display: "grid", placeItems: "center", alignContent: "center", gap: 10, padding: 24, borderRadius: 18, background: "rgba(248,250,252,.86)", border: "1px dashed rgba(162,214,249,.28)", textAlign: "center" }}><div style={{ ...dashboardShell.iconBadge, width: 34, height: 34, borderRadius: 12, color: "#2048a8", background: "rgba(36,86,191,.10)" }}><Icon size={18} /></div><div style={{ fontFamily: "var(--f-title)", fontSize: ".96rem", fontWeight: 800, color: "var(--text)" }}>{title}</div><div style={ui.muted}>{text}</div></div>;
+  return <div style={{ minHeight: 230, display: "grid", placeItems: "center", alignContent: "center", gap: 10, padding: 24, borderRadius: 18, background: "var(--dashboard-soft-bg)", border: "1px dashed var(--dashboard-card-border)", textAlign: "center" }}><div style={{ ...dashboardShell.iconBadge, width: 34, height: 34, borderRadius: 12, color: "#2048a8", background: "rgba(36,86,191,.10)" }}><Icon size={18} /></div><div style={{ fontFamily: "var(--f-title)", fontSize: ".96rem", fontWeight: 800, color: "var(--text)" }}>{title}</div><div style={ui.muted}>{text}</div></div>;
 }
 
 export function StateBox({ title, text, action = null }) {

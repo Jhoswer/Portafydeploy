@@ -1367,6 +1367,63 @@
         "cv_click": "Clicks al CV"
       }
     },
+    "profileTrust": {
+      "close": "Cerrar",
+      "connectionsPublic": "Vista publica de conexiones",
+      "connectionsManage": "Administra tus conexiones",
+      "loadingList": "Cargando lista...",
+      "emptyUsers": "No hay usuarios para mostrar.",
+      "unfollow": "Dejar de seguir",
+      "followBack": "Seguir tambien",
+      "following": "Siguiendo",
+      "unfollowTitle": "Dejar de seguir",
+      "unfollowSubtitle": "Estas seguro de dejar de seguir a {{name}}?",
+      "thisUser": "este usuario",
+      "processing": "Procesando...",
+      "confirm": "Confirmar",
+      "viewsTitle": "Visualizaciones del perfil",
+      "viewsSubtitle": "Usuarios que visitaron tu perfil recientemente",
+      "loadingViews": "Cargando visualizaciones...",
+      "emptyViews": "Aun no hay visualizaciones registradas.",
+      "user": "Usuario",
+      "suggestTitle": "Enviar sugerencia",
+      "suggestSubtitle": "Tu idea sera revisada desde el panel de administracion",
+      "suggestName": "Nombre de la sugerencia",
+      "suggestDetail": "Motivo o detalle",
+      "chars": "{{count}}/255 caracteres",
+      "sending": "Enviando...",
+      "verifyTitle": "Verificar cuenta",
+      "verifySubtitle": "Completa el proceso para obtener la insignia de verificado",
+      "steps": [
+        "Documento",
+        "Revision",
+        "Resultado"
+      ],
+      "pending": "Tu solicitud esta pendiente. Espera la revision de administracion.",
+      "approved": "Cuenta aprobada. La insignia ya puede mostrarse en tu perfil.",
+      "rejected": "Solicitud rechazada: {{reason}}",
+      "noReason": "Sin justificativo registrado.",
+      "front": "Documento anverso",
+      "back": "Documento reverso",
+      "imageHint": "JPG, PNG o WEBP",
+      "pdf": "Documento completo en PDF",
+      "pdfHint": "Opcional si subes anverso y reverso",
+      "uploadHint": "Sube un PDF o ambas imagenes del documento. Maximo 4 MB por imagen, 6 MB PDF.",
+      "sendRequest": "Enviar solicitud",
+      "reportTitle": "Reportar perfil",
+      "reportSubtitle": "El reporte sobre {{name}} sera enviado a administracion",
+      "optionalDetail": "Detalle opcional",
+      "sendReport": "Enviar reporte",
+      "validation": {
+        "frontBack": "Si eliges imagenes, adjunta anverso y reverso.",
+        "pdfType": "El documento completo debe ser PDF.",
+        "pdfSize": "El PDF supera el maximo de 6 MB.",
+        "imageType": "El {{label}} debe ser JPG, PNG o WEBP.",
+        "imageSize": "El {{label}} supera el maximo de 4 MB.",
+        "frontLabel": "anverso",
+        "backLabel": "reverso"
+      }
+    },
     "profile": {
       "cover": "Portada",
       "editProfile": "Editar perfil",
@@ -1407,8 +1464,8 @@
         "Seguidores": "Seguidores",
         "Seguidos": "Seguidos",
         "Proyectos": "Proyectos",
-        "AÃ±os de exp.": "Anos de exp.",
-        "Años de exp.": "Anos de exp.",
+        "AÃ±os de exp.": "Años de exp.",
+        "Años de exp.": "Años de exp.",
         "Empresas": "Empresas",
         "Habilidades": "Habilidades",
         "Visitas": "Visitas",
@@ -1613,7 +1670,8 @@
         "platform": "Plataforma",
         "url": "URL",
         "program": "Programa o carrera",
-        "institution": "Institucion"
+        "institution": "Institucion",
+        "supportDocument": "Respaldo"
       },
       "detail": {
         "noCategory": "Sin categoria",
@@ -1635,23 +1693,74 @@
         "active": "Activo",
         "noCover": "Sin portada personalizada",
         "coverOf": "Portada de {{title}}",
-        "noTechnologies": "Sin tecnologias"
+        "noTechnologies": "Sin tecnologias",
+        "supportApproved": "Respaldo autenticado",
+        "supportRejected": "Respaldo observado",
+        "supportPending": "Respaldo en revision"
       },
       "controls": {
         "selectTechnology": "Selecciona una tecnologia",
         "selectSkill": "Selecciona una habilidad",
         "selectOption": "Selecciona una opcion",
         "writePlatform": "Escribe la plataforma",
-        "dateHint": "Usa el calendario para elegir una fecha de forma mas intuitiva.",
+        "dateHint": "Selecciona una fecha desde el calendario.",
         "uploadFile": "Adjunta un archivo",
         "noFile": "Aun no seleccionaste un archivo.",
         "chooseFile": "Elegir archivo",
         "projectCoverHelper": "Sube una portada para mostrar mejor tu proyecto",
         "projectCoverEmpty": "Sin portada seleccionada. Opcional, maximo 2 MB.",
         "uploadCover": "Subir portada",
+        "educationSupportHelper": "Respaldo academico",
+        "educationSupportEmpty": "Sin respaldo adjunto. PDF o imagen, maximo 6 MB.",
+        "uploadSupport": "Subir respaldo",
         "minCharacters": "Minimo {{count}} caracteres",
         "tagLimitHint": "Puedes agregar hasta {{count}} tecnologias.",
         "tagLimitReached": "Limite de tecnologias alcanzado."
+      },
+      "projectStatuses": {
+        "complete": "Completo",
+        "inProgress": "En proceso",
+        "paused": "Pausado"
+      },
+      "help": {
+        "projects": {
+          "title": "Escribe un nombre claro y profesional para identificar el proyecto.",
+          "description": "Resume el objetivo, alcance e impacto del proyecto en pocas lineas.",
+          "techCategory": "Selecciona el area tecnica principal del proyecto.",
+          "tags": "Selecciona las tecnologias usadas o las mas relevantes del proyecto.",
+          "repoUrl": "Agrega el enlace al repositorio si puede mostrarse publicamente.",
+          "demoUrl": "Agrega una demo o URL publica donde se pueda revisar el resultado.",
+          "status": "Indica si el proyecto esta completo, en proceso o pausado.",
+          "cover": "Sube una imagen de portada que represente visualmente el proyecto."
+        },
+        "experience": {
+          "type": "Selecciona el tipo de experiencia que estas registrando.",
+          "roleArea": "Elige el area profesional para sugerir cargos relacionados.",
+          "title": "Selecciona o escribe el cargo desempenado.",
+          "company": "Indica la empresa, institucion o cliente donde realizaste la experiencia.",
+          "description": "Describe tus tareas, logros e impacto medible.",
+          "startDate": "Fecha en que inicio esta experiencia.",
+          "endDate": "Fecha de cierre; si sigue activa, marca la opcion actualmente.",
+          "isCurrent": "Marca esta opcion si aun continuas en esta experiencia."
+        },
+        "skills": {
+          "category": "Selecciona el grupo al que pertenece la habilidad.",
+          "name": "Elige una habilidad sugerida o escribe una propia si seleccionaste Otra.",
+          "level": "Indica tu nivel real: Junior, Mid o Senior."
+        },
+        "social": {
+          "platform": "Selecciona la red o plataforma profesional.",
+          "url": "Pega la URL completa del perfil o enlace que quieres mostrar."
+        },
+        "education": {
+          "level": "Selecciona el tipo de formacion: carrera, curso, diplomado, maestria u otro.",
+          "program": "Escribe el nombre del programa, carrera o certificacion.",
+          "institution": "Indica la institucion que emitio o imparte esta formacion.",
+          "startDate": "Fecha de inicio de la formacion.",
+          "endDate": "Fecha de finalizacion; si sigue activa, marca actualmente.",
+          "isCurrent": "Marca esta opcion si aun estas cursando esta formacion.",
+          "supportDocument": "Adjunta un PDF o imagen del certificado, diploma o constancia para futura autenticacion."
+        }
       },
       "filters": {
         "title": "Filtrar registros",
@@ -1677,6 +1786,7 @@
         "startDate": "Selecciona la fecha de inicio.",
         "endDate": "Selecciona la fecha de fin o marca que sigues ahi.",
         "projectTitle": "Completa el titulo del proyecto.",
+        "duplicateProjectTitle": "Ya tienes un proyecto con ese titulo. Usa un titulo diferente.",
         "projectDescription": "Agrega una descripcion breve del proyecto.",
         "techCategory": "Selecciona una categoria tecnica.",
         "tags": "Agrega al menos una tecnologia.",
@@ -2063,32 +2173,32 @@
       "pageInfo": "Página {{page}} de {{lastPage}}"
     }
   },
-  "notificationSettings": {
-    "title": "Configuración",
-    "sub": "Elige una categoría y ajusta solo lo necesario.",
-    "saving": "Guardando...",
-    "saveChanges": "✓ Guardar cambios",
-    "loading": "Cargando preferencias...",
+    "notificationSettings": {
+    "title": "Configurações",
+    "sub": "Escolha uma categoria e ajuste apenas o necessário.",
+    "saving": "Salvando...",
+    "saveChanges": "✓ Salvar alterações",
+    "loading": "Carregando preferências...",
     "categories": {
       "activity_notifications": {
-        "label": "Actividad Social",
-        "description": "Likes, comentarios y menciones en tus publicaciones"
+        "label": "Atividade Social",
+        "description": "Curtidas, comentários e menções nas suas publicações"
       },
       "portfolio_notifications": {
-        "label": "Portafolios de usuarios seguidos",
-        "description": "Actualizaciones de proyectos y experiencias"
+        "label": "Portfólios de usuários seguidos",
+        "description": "Atualizações de projetos e experiências"
       },
       "offer_notifications": {
-        "label": "Nuevas convocatorias",
-        "description": "Ofertas laborales que coincidan con tu perfil"
+        "label": "Novas vagas",
+        "description": "Ofertas de emprego compatíveis com seu perfil"
       },
       "support_notifications": {
-        "label": "Mensajes de soporte",
-        "description": "Respuestas y actualizaciones de soporte"
+        "label": "Mensagens de suporte",
+        "description": "Respostas e atualizações de suporte"
       },
       "platform_notifications": {
-        "label": "Notificaciones de la plataforma",
-        "description": "Anuncios y novedades de Portafy"
+        "label": "Notificações da plataforma",
+        "description": "Anúncios e novidades do Portafy"
       }
     }
   },
@@ -4462,6 +4572,26 @@
     "backups":     "Backups",
     "mensaje":     "Mensaje",
     "definicion":  "Definición"
+  }
+},
+"settings": {
+  "eyebrow": "Cuenta",
+  "title": "Configuración",
+  "sub": "Elige una categoría y ajusta solo lo necesario.",
+  "back": "Volver",
+  "saving": "Guardando...",
+  "saveChanges": "Guardar cambios",
+  "saveSuccess": "Configuración actualizada correctamente.",
+  "errorLoad": "No se pudo cargar la configuración.",
+  "errorSave": "No se pudo guardar la configuración.",
+  "loading": "Cargando configuración...",
+  "loadingSection": "Cargando sección...",
+  "sections": {
+    "language":      { "title": "Idioma",                  "text": "Selector global de interfaz."      },
+    "location": { "title": "Región y ubicación", "text": "Lo que se muestra en tu perfil.", "cardText": "Esta ubicación alimenta el perfil profesional y puede dejarse vacía si no quieres mostrarla.", "country": "País", "city": "Ciudad", "noCountry": "No mostrar país", "noCity": "No mostrar ciudad", "selectCountryFirst": "Selecciona primero un país", "noLocation": "Sin ubicación visible" },
+    "privacy":       { "title": "Privacidad de contacto", "text": "Control del correo visible.",        "cardText": "Controla si el correo de contacto aparece en vistas públicas del perfil.", "options": { "public": { "label": "Público", "text": "El contacto puede mostrarse en tu perfil." }, "private": { "label": "Privado", "text": "Oculta el contacto en vistas públicas." } } },
+    "visibility": { "title": "Visibilidad", "text": "Secciones visibles en tu perfil.", "cardText": "Elige qué secciones se muestran en tu perfil público.", "loading": "Cargando visibilidad...", "items": { "projects": { "label": "Proyectos", "text": "Incluye portada y evidencias" }, "experience": { "label": "Experiencia", "text": "Timeline laboral y académica" }, "education": { "label": "Formación", "text": "Institución, área y modalidad" }, "skills": { "label": "Habilidades", "text": "Skills clave y tecnologías" }, "links": { "label": "Enlaces y redes", "text": "GitHub, LinkedIn y CV" } } },
+    "notifications": { "title": "Notificaciones",          "text": "Alertas y preferencias de avisos." }
   }
 }
 }

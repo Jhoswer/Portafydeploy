@@ -1135,58 +1135,6 @@
       "next": "Próximo",
       "pageInfo": "Página {{page}} de {{lastPage}}"
     }
-  },
-  "notificationSettings": {
-    "title": "Configurações",
-    "sub": "Escolha uma categoria e ajuste apenas o necessário.",
-    "saving": "Salvando...",
-    "saveChanges": "✓ Salvar alterações",
-    "loading": "Carregando preferências...",
-    "categories": {
-      "activity_notifications": {
-        "label": "Atividade Social",
-        "description": "Curtidas, comentários e menções nas suas publicações"
-      },
-      "portfolio_notifications": {
-        "label": "Portfólios de usuários seguidos",
-        "description": "Atualizações de projetos e experiências"
-      },
-      "offer_notifications": {
-        "label": "Novas vagas",
-        "description": "Ofertas de emprego compatíveis com seu perfil"
-      },
-      "support_notifications": {
-        "label": "Mensagens de suporte",
-        "description": "Respostas e atualizações de suporte"
-      },
-      "platform_notifications": {
-        "label": "Notificações da plataforma",
-        "description": "Anúncios e novidades do Portafy"
-      }
-    },
-    "notifications": {
-      "title": "Notificações",
-      "back": "Voltar",
-      "markAllRead": "Marcar todas como lidas",
-      "loading": "Carregando...",
-      "filter": {
-        "all": "Todos",
-        "unread": "Não lidos",
-        "read": "Lidos"
-      },
-      "type": {
-        "all": "Todos os tipos",
-        "like": "Curtidas",
-        "comment": "Comentários",
-        "follow": "Seguimentos",
-        "job_offer": "Vagas",
-        "postulation": "Candidaturas"
-      },
-      "pagination": {
-        "previous": "Anterior",
-        "next": "Próximo",
-        "pageInfo": "Página {{page}} de {{lastPage}}"
-      }
     },
     "notificationSettings": {
       "title": "Configurações",
@@ -1255,7 +1203,7 @@
         "fallbackPerson": "Alguém",
         "fallbackCompany": "Empresa"
       }
-    }
+    
   },
   "appI18n": {
     "calendar": {
@@ -1419,8 +1367,9 @@
         "level": "Nivel",
         "platform": "Plataforma",
         "url": "URL",
-        "program": "Programa ou carreira",
-        "institution": "Instituicao"
+        "program": "Programa ou curso",
+        "institution": "Instituicao",
+        "supportDocument": "Comprovante"
       },
       "detail": {
         "noCategory": "Sem categoria",
@@ -1442,23 +1391,74 @@
         "active": "Ativo",
         "noCover": "Sem capa personalizada",
         "coverOf": "Capa de {{title}}",
-        "noTechnologies": "Sem tecnologias"
+        "noTechnologies": "Sem tecnologias",
+        "supportApproved": "Comprovante autenticado",
+        "supportRejected": "Comprovante observado",
+        "supportPending": "Comprovante em revisao"
       },
       "controls": {
         "selectTechnology": "Selecione uma tecnologia",
         "selectSkill": "Selecione uma habilidade",
         "selectOption": "Selecione uma opcao",
         "writePlatform": "Escreva a plataforma",
-        "dateHint": "Use o calendario para escolher uma data de forma mais intuitiva.",
+        "dateHint": "Selecione uma data no calendario.",
         "uploadFile": "Anexe um arquivo",
         "noFile": "Ainda nao selecionou um arquivo.",
         "chooseFile": "Escolher arquivo",
         "projectCoverHelper": "Suba uma capa para mostrar melhor seu projeto",
         "projectCoverEmpty": "Sem capa selecionada. Opcional, maximo 2 MB.",
         "uploadCover": "Subir capa",
+        "educationSupportHelper": "Comprovante academico",
+        "educationSupportEmpty": "Sem comprovante anexado. PDF ou imagem, maximo 6 MB.",
+        "uploadSupport": "Enviar comprovante",
         "minCharacters": "Minimo {{count}} caracteres",
         "tagLimitHint": "Voce pode adicionar ate {{count}} tecnologias.",
         "tagLimitReached": "Limite de tecnologias atingido."
+      },
+      "projectStatuses": {
+        "complete": "Completo",
+        "inProgress": "Em andamento",
+        "paused": "Pausado"
+      },
+      "help": {
+        "projects": {
+          "title": "Escreva um nome claro e profissional para identificar o projeto.",
+          "description": "Resuma o objetivo, alcance e impacto do projeto em poucas linhas.",
+          "techCategory": "Selecione a area tecnica principal do projeto.",
+          "tags": "Selecione as tecnologias usadas ou as mais relevantes.",
+          "repoUrl": "Adicione o link do repositorio se ele puder ser mostrado publicamente.",
+          "demoUrl": "Adicione uma demo ou URL publica onde o resultado possa ser revisado.",
+          "status": "Indique se o projeto esta completo, em andamento ou pausado.",
+          "cover": "Envie uma imagem de capa que represente visualmente o projeto."
+        },
+        "experience": {
+          "type": "Selecione o tipo de experiencia que voce esta registrando.",
+          "roleArea": "Escolha a area profissional para sugerir cargos relacionados.",
+          "title": "Selecione ou escreva o cargo exercido.",
+          "company": "Informe a empresa, instituicao ou cliente dessa experiencia.",
+          "description": "Descreva suas tarefas, conquistas e impacto mensuravel.",
+          "startDate": "Data em que esta experiencia comecou.",
+          "endDate": "Data de encerramento; se continua ativa, marque a opcao atual.",
+          "isCurrent": "Marque esta opcao se voce ainda continua nesta experiencia."
+        },
+        "skills": {
+          "category": "Selecione o grupo ao qual a habilidade pertence.",
+          "name": "Escolha uma habilidade sugerida ou escreva uma propria se selecionou Outra.",
+          "level": "Indique seu nivel real: Junior, Mid ou Senior."
+        },
+        "social": {
+          "platform": "Selecione a rede ou plataforma profissional.",
+          "url": "Cole a URL completa do perfil ou link que deseja mostrar."
+        },
+        "education": {
+          "level": "Selecione o tipo de formacao: curso, graduacao, diploma, mestrado ou outro.",
+          "program": "Escreva o nome do programa, curso ou certificacao.",
+          "institution": "Informe a instituicao que emitiu ou oferece esta formacao.",
+          "startDate": "Data de inicio da formacao.",
+          "endDate": "Data de finalizacao; se continua ativa, marque atualmente.",
+          "isCurrent": "Marque esta opcao se ainda esta cursando esta formacao.",
+          "supportDocument": "Anexe um PDF ou imagem do certificado, diploma ou comprovante para autenticacao futura."
+        }
       },
       "filters": {
         "title": "Filtrar registros",
@@ -1484,6 +1484,7 @@
         "startDate": "Selecione a data de inicio.",
         "endDate": "Selecione a data de fim ou marque que ainda continua.",
         "projectTitle": "Complete o titulo do projeto.",
+        "duplicateProjectTitle": "Voce ja tem um projeto com esse titulo. Use um titulo diferente.",
         "projectDescription": "Adicione uma descricao breve do projeto.",
         "techCategory": "Selecione uma categoria tecnica.",
         "tags": "Adicione pelo menos uma tecnologia.",
@@ -4427,5 +4428,26 @@
     "mensaje":     "Mensagem",
     "definicion":  "Definição"
   }
+},
+"settings": {
+  "eyebrow": "Conta",
+  "title": "Configurações",
+  "sub": "Escolha uma categoria e ajuste apenas o necessário.",
+  "back": "Voltar",
+  "saving": "Salvando...",
+  "saveChanges": "Salvar alterações",
+  "saveSuccess": "Configurações atualizadas com sucesso.",
+  "errorLoad": "Não foi possível carregar as configurações.",
+  "errorSave": "Não foi possível salvar as configurações.",
+  "loading": "Carregando configurações...",
+  "loadingSection": "Carregando seção...",
+  "sections": {
+    "language":      { "title": "Idioma",               "text": "Seletor global de interface."        },
+    "location": { "title": "Região e localização", "text": "O que aparece no seu perfil.", "cardText": "Esta localização alimenta o perfil profissional e pode ser deixada vazia se não quiser exibi-la.", "country": "País", "city": "Cidade", "noCountry": "Não mostrar país", "noCity": "Não mostrar cidade", "selectCountryFirst": "Selecione um país primeiro", "noLocation": "Sem localização visível" },
+    "privacy":       { "title": "Privacidade de contato", "text": "Controle do e-mail visível.", "cardText": "Controla se o e-mail de contato aparece nas visualizações públicas do perfil.", "options": { "public": { "label": "Público", "text": "O contato pode ser exibido no seu perfil." }, "private": { "label": "Privado", "text": "Oculta o contato em visualizações públicas." } } },
+    "visibility": { "title": "Visibilidade", "text": "Seções visíveis no seu perfil.", "cardText": "Escolha quais seções aparecem no seu perfil público.", "loading": "Carregando visibilidade...", "items": { "projects": { "label": "Projetos", "text": "Inclui capa e evidências" }, "experience": { "label": "Experiência", "text": "Linha do tempo profissional e acadêmica" }, "education": { "label": "Formação", "text": "Instituição, área e modalidade" }, "skills": { "label": "Habilidades", "text": "Skills principais e tecnologias" }, "links": { "label": "Links e redes", "text": "GitHub, LinkedIn e CV" } } },
+    "notifications": { "title": "Notificações",         "text": "Alertas e preferências de avisos."   }
+  }
 }
 }
+

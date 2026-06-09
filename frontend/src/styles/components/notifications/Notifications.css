@@ -362,3 +362,210 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+/* ── Notification Settings (pf-settings-notif) ── */
+.pf-settings-notif {
+  display: grid;
+  gap: 0;
+}
+
+.pf-settings-notif__list {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 18px 46px rgba(14, 30, 60, .08);
+  overflow: hidden;
+}
+
+.pf-settings-notif__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(14, 30, 60, .06);
+  transition: background 0.15s;
+}
+
+.pf-settings-notif__row:last-child {
+  border-bottom: none;
+}
+
+.pf-settings-notif__row:hover {
+  background: rgba(239, 246, 255, .5);
+}
+
+.pf-settings-notif__row--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pf-settings-notif__info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pf-settings-notif__label {
+  font-family: var(--f-ui, var(--font-ui));
+  font-size: .88rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.pf-settings-notif__desc {
+  font-family: var(--f-body, var(--font-body));
+  font-size: .76rem;
+  color: #64748b;
+}
+
+/* ── Toggle switch ── */
+.pf-toggle {
+  flex-shrink: 0;
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border: none;
+  border-radius: 999px;
+  background: #cbd5e1;
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 0;
+}
+
+.pf-toggle--on {
+  background: #22c55e;
+}
+
+.pf-toggle--locked {
+  cursor: not-allowed;
+}
+
+.pf-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.18);
+  transition: transform 0.2s;
+}
+
+.pf-toggle--on .pf-toggle__thumb {
+  transform: translateX(20px);
+}
+
+/* dark mode */
+.dark .pf-settings-notif__list {
+  background: rgba(12, 18, 30, .98);
+  border: 1px solid rgba(255, 255, 255, .07);
+}
+
+.dark .pf-settings-notif__row {
+  border-bottom-color: rgba(255, 255, 255, .06);
+}
+
+.dark .pf-settings-notif__row:hover {
+  background: rgba(255, 255, 255, .04);
+}
+
+.dark .pf-settings-notif__label {
+  color: hsl(210 40% 92%);
+}
+
+.dark .pf-settings-notif__desc {
+  color: hsl(215 20% 48%);
+}
+
+
+/* ── Location selects ── */
+.pf-settings-select {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(205, 225, 245, .86);
+  background: #fff;
+  color: #0f172a;
+  font-family: var(--f-body, var(--font-body));
+  font-size: .9rem;
+  padding: 10px 12px;
+  outline: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.pf-settings-select:focus {
+  border-color: rgba(32, 72, 168, .4);
+}
+
+.pf-settings-select--disabled {
+  opacity: 0.68;
+  cursor: not-allowed;
+}
+
+.pf-settings-location-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(205, 225, 245, .3);
+  color: #0f172a;
+  font-family: var(--f-body, var(--font-body));
+  font-size: .82rem;
+}
+
+/* dark mode */
+.dark .pf-settings-select {
+  background: rgba(12, 18, 30, .98);
+  border-color: rgba(255, 255, 255, .1);
+  color: hsl(210 40% 92%);
+}
+
+.dark .pf-settings-select:focus {
+  border-color: rgba(100, 140, 255, .4);
+}
+
+.dark .pf-settings-select option {
+  background: #0f172a;
+  color: hsl(210 40% 92%);
+}
+
+.dark .pf-settings-location-preview {
+  background: rgba(255, 255, 255, .06);
+  color: hsl(210 40% 92%);
+}
+.pf-settings-privacy-btn {
+  background: #fff;
+  border: 1px solid rgba(205, 225, 245, .78);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pf-settings-privacy-btn--active {
+  border-color: rgba(232, 72, 74, .22);
+  background: rgba(232, 72, 74, .07);
+}
+
+.dark .pf-settings-privacy-btn {
+  background: rgba(12, 18, 30, .98);
+  border-color: rgba(255, 255, 255, .08);
+}
+
+.dark .pf-settings-privacy-btn--active {
+  border-color: rgba(232, 72, 74, .22);
+  background: rgba(232, 72, 74, .07);
+}
+
+.pf-settings-vis-row {
+  background: #fff;
+  border: 1px solid rgba(205, 225, 245, .78);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.dark .pf-settings-vis-row {
+  background: rgba(12, 18, 30, .98);
+  border-color: rgba(255, 255, 255, .08);
+}

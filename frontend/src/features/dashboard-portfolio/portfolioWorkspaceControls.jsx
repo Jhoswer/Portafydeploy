@@ -65,31 +65,40 @@ export function PlatformIconGlyph({ platform }) {
   return <Link2 {...iconProps} />;
 }
 
-export function ProjectStatusPill({ status, compact = false }) {
+export function projectStatusMeta(status, t = (key, fallback) => fallback) {
   const normalized = String(status || "").toLowerCase();
-  const meta = normalized.includes("paus")
-    ? {
-        label: "Pausado",
-        Icon: PauseCircle,
-        color: "#b7791f",
-        background: "rgba(251,191,36,.15)",
-        border: "rgba(251,191,36,.26)",
-      }
-    : normalized.includes("complet") || normalized.includes("completo")
-      ? {
-          label: "Completo",
-          Icon: CheckCircle2,
-          color: "#15803d",
-          background: "rgba(34,197,94,.14)",
-          border: "rgba(34,197,94,.24)",
-        }
-      : {
-          label: "En proceso",
-          Icon: CircleDashed,
-          color: "#3157d5",
-          background: "rgba(79,140,255,.13)",
-          border: "rgba(79,140,255,.24)",
-        };
+  if (normalized.includes("paus")) {
+    return {
+      label: t("appI18n.portfolio.projectStatuses.paused", "Pausado"),
+      Icon: PauseCircle,
+      color: "#b7791f",
+      background: "rgba(251,191,36,.15)",
+      border: "rgba(251,191,36,.26)",
+    };
+  }
+
+  if (normalized.includes("complet") || normalized.includes("completo")) {
+    return {
+      label: t("appI18n.portfolio.projectStatuses.complete", "Completo"),
+      Icon: CheckCircle2,
+      color: "#15803d",
+      background: "rgba(34,197,94,.14)",
+      border: "rgba(34,197,94,.24)",
+    };
+  }
+
+  return {
+    label: t("appI18n.portfolio.projectStatuses.inProgress", "En proceso"),
+    Icon: CircleDashed,
+    color: "#3157d5",
+    background: "rgba(79,140,255,.13)",
+    border: "rgba(79,140,255,.24)",
+  };
+}
+
+export function ProjectStatusPill({ status, compact = false }) {
+  const { t } = useTranslation();
+  const meta = projectStatusMeta(status, t);
   const Icon = meta.Icon;
 
   return (
@@ -117,6 +126,7 @@ export function ProjectStatusPill({ status, compact = false }) {
 }
 
 export function ProjectStatusPicker({ value, options = [], errorMessage, onChange }) {
+  const { t } = useTranslation();
   const [hoveredStatus, setHoveredStatus] = useState("");
   const activeStatus = hoveredStatus || value;
   const statuses = options.length ? options : ["Completo", "En proceso", "Pausado"];
@@ -133,6 +143,7 @@ export function ProjectStatusPicker({ value, options = [], errorMessage, onChang
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(132px, 1fr))", gap: 10 }}>
         {statuses.map((status) => {
           const meta = statusMeta(status);
+          const translatedMeta = projectStatusMeta(status, t);
           const Icon = meta.Icon;
           const isActive = activeStatus === status;
 
@@ -164,7 +175,7 @@ export function ProjectStatusPicker({ value, options = [], errorMessage, onChang
               <span style={{ width: 28, height: 28, borderRadius: 10, display: "grid", placeItems: "center", background: isActive ? "rgba(255,255,255,.62)" : "var(--dashboard-icon-bg)" }}>
                 <Icon size={15} />
               </span>
-              {status}
+              {translatedMeta.label}
             </button>
           );
         })}
@@ -887,18 +898,18 @@ export function renderSocialPlatformField({ field, value, onDraftChange, t }) {
   );
 }
 
-export function renderDateField({ value, field, onDraftChange }) {
+export function renderDateField({ value, field, onDraftChange, t }) {
   return (
     <div style={fieldCard}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, ...helperText }}>
         <CalendarDays size={15} />
-        Selecciona una fecha desde el calendario.
+        {t("appI18n.portfolio.controls.dateHint")}
       </div>
       <input
         type="date"
         value={value}
         onChange={(event) => onDraftChange(field.key, event.target.value)}
-        style={{ ...input, cursor: "pointer" }}
+        style={{ ...input, cursor: "pointer", colorScheme: "var(--portfolio-date-scheme, light)" }}
       />
     </div>
   );

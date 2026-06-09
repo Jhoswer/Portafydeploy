@@ -100,12 +100,18 @@
 }
 
 .dark .dashboard-nav-item.is-active {
-  background: rgba(232, 72, 74, .14) !important;
+  background: rgba(239, 87, 89, .14) !important;
+  color: #ef5759 !important;
 }
 
 .dark .dashboard-nav-icon {
   background: rgba(255, 255, 255, .06) !important;
   color: hsl(210 40% 92%) !important;
+}
+
+.dark .dashboard-nav-item.is-active .dashboard-nav-icon {
+  background: rgba(239, 87, 89, .18) !important;
+  color: #ef5759 !important;
 }
 
 .dark .dashboard-status-pill {

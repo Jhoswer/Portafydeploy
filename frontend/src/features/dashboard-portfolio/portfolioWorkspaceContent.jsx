@@ -21,6 +21,7 @@ import {
   FileUploadField,
   inputWithError,
   PlatformIconGlyph,
+  projectStatusMeta,
   ProjectStatusPicker,
   ProjectStatusPill,
   renderDateField,
@@ -32,42 +33,42 @@ import {
 
 const FIELD_HELP = {
   projects: {
-    title: "Escribe un nombre claro y profesional para identificar el proyecto.",
-    description: "Resume el objetivo, alcance e impacto del proyecto en pocas lineas.",
-    techCategory: "Selecciona el area tecnica principal del proyecto.",
-    tags: "Selecciona las tecnologias usadas o las mas relevantes del proyecto.",
-    repoUrl: "Agrega el enlace al repositorio si puede mostrarse publicamente.",
-    demoUrl: "Agrega una demo o URL publica donde se pueda revisar el resultado.",
-    status: "Indica si el proyecto esta completo, en proceso o pausado.",
-    cover: "Sube una imagen de portada que represente visualmente el proyecto.",
+    title: "title",
+    description: "description",
+    techCategory: "techCategory",
+    tags: "tags",
+    repoUrl: "repoUrl",
+    demoUrl: "demoUrl",
+    status: "status",
+    cover: "cover",
   },
   experience: {
-    type: "Selecciona el tipo de experiencia que estas registrando.",
-    roleArea: "Elige el area profesional para sugerir cargos relacionados.",
-    title: "Selecciona o escribe el cargo desempenado.",
-    company: "Indica la empresa, institucion o cliente donde realizaste la experiencia.",
-    description: "Describe tus tareas, logros e impacto medible.",
-    startDate: "Fecha en que inicio esta experiencia.",
-    endDate: "Fecha de cierre; si sigue activa, marca la opcion actualmente.",
-    isCurrent: "Marca esta opcion si aun continuas en esta experiencia.",
+    type: "type",
+    roleArea: "roleArea",
+    title: "title",
+    company: "company",
+    description: "description",
+    startDate: "startDate",
+    endDate: "endDate",
+    isCurrent: "isCurrent",
   },
   skills: {
-    category: "Selecciona el grupo al que pertenece la habilidad.",
-    name: "Elige una habilidad sugerida o escribe una propia si seleccionaste Otra.",
-    level: "Indica tu nivel real: Junior, Mid o Senior.",
+    category: "category",
+    name: "name",
+    level: "level",
   },
   social: {
-    platform: "Selecciona la red o plataforma profesional.",
-    url: "Pega la URL completa del perfil o enlace que quieres mostrar.",
+    platform: "platform",
+    url: "url",
   },
   education: {
-    level: "Selecciona el tipo de formacion: carrera, curso, diplomado, maestria u otro.",
-    program: "Escribe el nombre del programa, carrera o certificacion.",
-    institution: "Indica la institucion que emitio o imparte esta formacion.",
-    startDate: "Fecha de inicio de la formacion.",
-    endDate: "Fecha de finalizacion; si sigue activa, marca actualmente.",
-    isCurrent: "Marca esta opcion si aun estas cursando esta formacion.",
-    supportDocument: "Adjunta un PDF o imagen del certificado, diploma o constancia para futura autenticacion.",
+    level: "level",
+    program: "program",
+    institution: "institution",
+    startDate: "startDate",
+    endDate: "endDate",
+    isCurrent: "isCurrent",
+    supportDocument: "supportDocument",
   },
 };
 
@@ -97,7 +98,7 @@ export function getItemTitle(activeKey, item) {
 }
 
 export function getItemSubtitle(activeKey, item, t) {
-  if (activeKey === "projects") return item.status;
+  if (activeKey === "projects") return projectStatusMeta(item.status, t).label;
   if (activeKey === "experience") return `${item.type} · ${item.company}`;
   if (activeKey === "skills") return item.category ? `${item.category} · ${item.level}` : item.level;
   if (activeKey === "social") return compactUrl(item.url);
@@ -221,7 +222,10 @@ export function FormContent({ activeMeta, draft, extraData, fieldErrors, onDraft
         <div style={{ display: "grid", gap: 12 }}>
           {activeMeta.extraFields.map((field) => (
             <label key={field.key} style={{ display: "grid", gap: 6 }}>
-              <FieldLabelWithHelp label={t(`appI18n.portfolio.fields.${field.key}`, field.label)} help={FIELD_HELP[activeMeta.key]?.[field.key]} />
+              <FieldLabelWithHelp
+                label={t(`appI18n.portfolio.fields.${field.key}`, field.label)}
+                help={getFieldHelp(activeMeta.key, field.key, t)}
+              />
               {renderExtraField(field, extraData[field.key] ?? "", fieldErrors?.[field.key], onExtraChange, t)}
             </label>
           ))}
@@ -230,7 +234,10 @@ export function FormContent({ activeMeta, draft, extraData, fieldErrors, onDraft
 
       {visibleFields.map((field) => (
         <label key={field.key} style={{ display: "grid", gap: 6 }}>
-          <FieldLabelWithHelp label={t(`appI18n.portfolio.fields.${field.key}`, field.label)} help={FIELD_HELP[activeMeta.key]?.[field.key]} />
+          <FieldLabelWithHelp
+            label={t(`appI18n.portfolio.fields.${field.key}`, field.label)}
+            help={getFieldHelp(activeMeta.key, field.key, t)}
+          />
           {renderField(field, draft[field.key], draft, fieldErrors?.[field.key], onDraftChange, activeMeta, extraData, t)}
         </label>
       ))}
@@ -350,7 +357,7 @@ function renderField(field, value, draft, errorMessage, onDraftChange, activeMet
   if (field.type === "date") {
     return (
       <>
-        {renderDateField({ value, field, onDraftChange })}
+        {renderDateField({ value, field, onDraftChange, t })}
         {errorMessage ? <FieldError message={errorMessage} /> : null}
       </>
     );
@@ -460,7 +467,7 @@ function FieldHelpDot({ text }) {
         color: "#2563eb",
         background: "rgba(37,99,235,.12)",
         border: "1px solid rgba(37,99,235,.22)",
-        cursor: "help",
+        cursor: "pointer",
         outline: "none",
       }}
     >
@@ -492,6 +499,11 @@ function FieldHelpDot({ text }) {
       ) : null}
     </span>
   );
+}
+
+function getFieldHelp(sectionKey, fieldKey, t) {
+  const helpKey = FIELD_HELP[sectionKey]?.[fieldKey];
+  return helpKey ? t(`appI18n.portfolio.help.${sectionKey}.${helpKey}`, "") : "";
 }
 
 function renderFieldMeta(field, value, t) {

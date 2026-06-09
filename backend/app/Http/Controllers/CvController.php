@@ -267,6 +267,24 @@ class CvController extends Controller
     }
 
     /**
+     * GET /api/cv/{id}/public-custom-entries
+     * Custom entries públicas de un CV visible
+     */
+    public function publicCustomEntries(int $id): JsonResponse
+    {
+        $cv = Cv::where('id_cv', '=', $id, 'and')
+            ->where('visible', '=', true, 'and')
+            ->where('state', '=', true, 'and')
+            ->firstOrFail();
+
+        $entries = \App\Models\CvCustomEntry::where('id_cv', '=', $id, 'and')
+            ->where('visibility', '=', true, 'and')
+            ->get();
+
+        return response()->json(['status' => 'success', 'data' => $entries]);
+    }
+
+    /**
      * GET /api/cv/{id}/download
      * Descarga el PDF del CV con el nombre correcto
      */

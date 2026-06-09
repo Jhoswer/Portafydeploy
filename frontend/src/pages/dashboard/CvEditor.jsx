@@ -18,6 +18,8 @@ import {
   EyeOff,
 } from "lucide-react";
 /* import AuthTopbar from "../../components/landing/AuthTopbar"; */
+import Navbar from "../../components/landing/Navbar";
+import "../../styles/components/dashboard/cv-module.css";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import CvPdfDocument from "../../components/dashboard/cv/CvPdfDocument";
 import { apiClient } from "../../services/http/httpClient";
@@ -124,14 +126,14 @@ const DEFAULT_SECTIONS = [
 const ui = {
   page: {
     minHeight: "100vh",
-    background: "#f0f4f8",
+    background: "var(--cv-bg, #f0f4f8)",
     display: "flex",
     flexDirection: "column",
     fontFamily: "var(--f-body, system-ui, sans-serif)",
   },
   topbar: {
-    background: "#fff",
-    borderBottom: "1px solid rgba(205,225,245,.8)",
+    background: "var(--cv-surface, #fff)",
+    borderBottom: "1px solid var(--cv-border, rgba(205,225,245,.8))",
     padding: "0 20px",
     height: 52,
     display: "flex",
@@ -139,8 +141,8 @@ const ui = {
     justifyContent: "space-between",
     flexShrink: 0,
     position: "sticky",
-    top: 0,
-    zIndex: 100,
+    top: 60,
+    zIndex: 90,
   },
   topbarLeft: { display: "flex", alignItems: "center", gap: 12 },
   topbarRight: { display: "flex", alignItems: "center", gap: 8 },
@@ -150,9 +152,9 @@ const ui = {
     gap: 6,
     padding: "6px 12px",
     borderRadius: 8,
-    border: "1px solid rgba(205,225,245,.9)",
-    background: "#fff",
-    color: "#374151",
+    border: "1px solid var(--cv-cancel-btn-border)",
+    background: "var(--cv-cancel-btn-bg)",
+    color: "var(--text)",
     fontFamily: "var(--f-ui, system-ui)",
     fontSize: "0.82rem",
     fontWeight: 600,
@@ -161,7 +163,7 @@ const ui = {
   cvName: {
     fontSize: "13px",
     fontWeight: 600,
-    color: "#1e293b",
+    color: "var(--text)",
     border: "none",
     outline: "none",
     background: "transparent",
@@ -170,7 +172,7 @@ const ui = {
   divider: {
     width: 1,
     height: 20,
-    background: "rgba(205,225,245,.9)",
+    background: "var(--cv-border)",
   },
   btnSecondary: {
     display: "inline-flex",
@@ -178,9 +180,9 @@ const ui = {
     gap: 6,
     padding: "6px 14px",
     borderRadius: 8,
-    border: "1px solid rgba(205,225,245,.9)",
-    background: "#fff",
-    color: "#374151",
+    border: "1px solid var(--cv-cancel-btn-border)",
+    background: "var(--cv-cancel-btn-bg)",
+    color: "var(--text)",
     fontFamily: "var(--f-ui, system-ui)",
     fontSize: "0.82rem",
     fontWeight: 600,
@@ -217,8 +219,8 @@ const ui = {
   },
   // Panel izquierdo
   leftPanel: {
-    background: "#fff",
-    borderRight: "1px solid rgba(205,225,245,.8)",
+    background: "var(--cv-surface)",
+    borderRight: "1px solid var(--cv-border)",
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
@@ -226,11 +228,11 @@ const ui = {
   panelTitle: {
     fontSize: "10px",
     fontWeight: 700,
-    color: "#94a3b8",
+    color: "var(--muted)",
     textTransform: "uppercase",
     letterSpacing: ".07em",
     padding: "14px 14px 8px",
-    borderBottom: "1px solid rgba(205,225,245,.5)",
+    borderBottom: "1px solid var(--cv-border-soft)",
     flexShrink: 0,
     display: "flex",
     alignItems: "center",
@@ -245,14 +247,14 @@ const ui = {
     gap: 6,
   },
   templateCard: (active) => ({
-    border: active ? "2px solid #185FA5" : "1.5px solid rgba(205,225,245,.8)",
+    border: active ? "2px solid #185FA5" : "1.5px solid var(--cv-border)",
     borderRadius: 10,
     padding: "8px",
     cursor: "pointer",
     display: "flex",
     flexDirection: "column",
     gap: 5,
-    background: active ? "rgba(24,95,165,.03)" : "#fff",
+    background: active ? "var(--cv-bg-hover)" : "var(--cv-surface)",
     transition: "border-color .15s",
   }),
   templateThumb: (bg) => ({
@@ -275,31 +277,31 @@ const ui = {
   templateLabel: {
     fontSize: "11px",
     fontWeight: 600,
-    color: "#1e293b",
+    color: "var(--text)",
   },
   templateSub: {
     fontSize: "10px",
-    color: "#94a3b8",
+    color: "var(--muted)",
   },
   activeBadge: {
     fontSize: "9px",
     fontWeight: 700,
     color: "#185FA5",
-    background: "#dbeafe",
+    background: "rgba(24,95,165,.12)",
     padding: "2px 6px",
     borderRadius: 4,
     width: "fit-content",
   },
   // Canvas central
   canvas: {
-    background: "#e2e8f0",
+    background: "var(--cv-bg-secondary, #e2e8f0)",
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
   },
   canvasToolbar: {
-    background: "#fff",
-    borderBottom: "1px solid rgba(205,225,245,.8)",
+    background: "var(--cv-surface)",
+    borderBottom: "1px solid var(--cv-border)",
     padding: "8px 16px",
     display: "flex",
     alignItems: "center",
@@ -310,8 +312,8 @@ const ui = {
     display: "flex",
     alignItems: "center",
     gap: 4,
-    background: "#f8fafc",
-    border: "1px solid rgba(205,225,245,.9)",
+    background: "var(--cv-bg-secondary)",
+    border: "1px solid var(--cv-border)",
     borderRadius: 6,
     padding: "2px 4px",
   },
@@ -322,7 +324,7 @@ const ui = {
     background: "transparent",
     cursor: "pointer",
     fontSize: "14px",
-    color: "#64748b",
+    color: "var(--muted)",
     borderRadius: 4,
     display: "flex",
     alignItems: "center",
@@ -332,7 +334,7 @@ const ui = {
   zoomVal: {
     fontSize: "11px",
     fontWeight: 600,
-    color: "#374151",
+    color: "var(--text)",
     minWidth: 32,
     textAlign: "center",
   },
@@ -346,20 +348,20 @@ const ui = {
   },
   // Panel derecho
   rightPanel: {
-    background: "#fff",
-    borderLeft: "1px solid rgba(205,225,245,.8)",
+    background: "var(--cv-surface)",
+    borderLeft: "1px solid var(--cv-border)",
     display: "flex",
     flexDirection: "column",
     overflowY: "auto",
   },
   propSection: {
-    borderBottom: "1px solid rgba(205,225,245,.5)",
+    borderBottom: "1px solid var(--cv-border-soft)",
   },
   // eslint-disable-next-line no-unused-vars
   propTitle: (open) => ({
     fontSize: "11px",
     fontWeight: 700,
-    color: "#64748b",
+    color: "var(--muted)",
     textTransform: "uppercase",
     letterSpacing: ".06em",
     padding: "11px 14px",
@@ -383,18 +385,18 @@ const ui = {
     background: color,
     cursor: "pointer",
     border: "2px solid transparent",
-    boxShadow: active ? `0 0 0 2px #fff, 0 0 0 4px ${color}` : "none",
+    boxShadow: active ? `0 0 0 2px var(--cv-surface), 0 0 0 4px ${color}` : "none",
     transition: "transform .15s",
   }),
   fontOptions: { display: "flex", gap: 5 },
   fontOpt: (active) => ({
     fontSize: "11px",
     padding: "4px 10px",
-    border: `1px solid ${active ? "#185FA5" : "rgba(205,225,245,.9)"}`,
+    border: `1px solid ${active ? "#185FA5" : "var(--cv-border)"}`,
     borderRadius: 6,
     cursor: "pointer",
-    color: active ? "#185FA5" : "#374151",
-    background: active ? "#eff6ff" : "#fff",
+    color: active ? "#185FA5" : "var(--text)",
+    background: active ? "rgba(24,95,165,.08)" : "var(--cv-cancel-btn-bg)",
     fontWeight: active ? 700 : 400,
     transition: "all .15s",
   }),
@@ -427,7 +429,7 @@ const ui = {
   },
   sectionLabel: {
     fontSize: "12px",
-    color: "#374151",
+    color: "var(--text)",
   },
 };
 
@@ -1053,7 +1055,7 @@ export default function CvEditor() {
   return (
     <div style={ui.page}>
       {/* Topbar */}
-      {/* <AuthTopbar /> */}
+      <Navbar />
       <div style={ui.topbar}>
         <div style={ui.topbarLeft}>
           <button type="button" style={ui.backBtn} onClick={() => navigate(-1)}>

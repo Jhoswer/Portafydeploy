@@ -1123,11 +1123,12 @@
 }
 
 .dark .pf-product-nav {
-  background: rgba(255, 255, 255, .05);
+  background: transparent;
+  box-shadow: none;
 }
 
 .dark .pf-product-nav__item {
-  color: hsl(210 30% 72%);
+  color: hsl(210 25% 60%);
 }
 
 .dark .pf-product-nav__item:hover {
@@ -1138,6 +1139,7 @@
 .dark .pf-product-nav__item.is-active {
   background: rgba(255, 255, 255, .10);
   color: hsl(210 40% 92%);
+  box-shadow: none;
 }
 
 .dark .pf-lang__trigger {
